@@ -104,23 +104,20 @@ const TrustBanner = () => {
         <JanoshikLogo key="jano" />,
     ];
 
+    // Dynamically clone and duplicate the logos using the spread operator to create 4 sets
+    // This provides enough width to cover large displays without gaps or jumps during loops
+    const allLogos = [...Array(4)].flatMap((_, setIdx) => 
+        baseLogos.map((logo, logoIdx) => 
+            React.cloneElement(logo, { key: `logo-${setIdx}-${logoIdx}` })
+        )
+    );
+
     return (
-        <section className="w-full bg-white border-y border-slate-200 overflow-hidden py-8 relative z-10 flex">
+        <section className="w-full bg-white border-y border-slate-200 overflow-hidden py-8 relative z-10">
             {/* The infinite scrolling container */}
-            {/* Pause animation on hover via group and group-hover */}
-            <div className="flex w-max animate-marquee hover:[animation-play-state:paused] cursor-pointer">
-
-                {/* First set of logos */}
-                <div className="flex shrink-0 items-center gap-16 px-8 md:gap-24 md:px-12">
-                    {baseLogos}
-                </div>
-
-                {/* Second duplicated set of logos for seamless loop */}
-                <div className="flex shrink-0 items-center gap-16 px-8 md:gap-24 md:px-12">
-                    {/* Re-mapping to assign unique keys for the duplicate set */}
-                    {baseLogos.map((logo, index) => React.cloneElement(logo, { key: `dup-${index}` }))}
-                </div>
-
+            {/* Pause animation on hover */}
+            <div className="flex w-max shrink-0 animate-marquee-four-sets hover:[animation-play-state:paused] cursor-pointer gap-16 px-8 md:gap-24 md:px-12">
+                {allLogos}
             </div>
         </section>
     );
