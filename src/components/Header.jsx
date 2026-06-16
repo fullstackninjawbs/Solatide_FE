@@ -134,19 +134,18 @@ const Header = () => {
 
     return (
         <header
-            className={`top-0 left-0 w-full z-50 transition-all duration-300 ${isHome
-                ? `fixed ${isScrollingUp || !isScrolled
-                    ? 'bg-transparent border-b border-transparent'
-                    : 'bg-white/70 backdrop-blur-md border-b border-slate-200 shadow-sm'
-                }`
-                : `sticky ${isScrollingUp || !isScrolled
-                    ? 'bg-transparent border-b border-transparent'
-                    : 'bg-white/85 backdrop-blur-md border-b border-slate-200 shadow-sm'
-                }`
-                }`}
+            className={`top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out ${
+                isHome ? 'fixed' : 'sticky'
+            } ${
+                !isScrolled
+                    ? 'bg-transparent border-b border-transparent shadow-none'
+                    : 'bg-white border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
+            }`}
         >
 
-            <div className="w-full flex justify-center items-center py-[5px] px-4 gap-2 text-[12px] font-semibold text-[#214A9E]">
+            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[12px] font-semibold text-[#214A9E] ${
+                !isScrolled ? 'h-7 opacity-100' : 'h-0 opacity-0 pointer-events-none'
+            }`}>
                 <span className="tracking-wide">Card Payments Available</span>
                 <div className="flex items-center gap-1">
                     <VisaSVG />
