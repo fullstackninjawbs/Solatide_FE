@@ -84,9 +84,9 @@ const ShopProducts = () => {
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 
                 {/* Filters Sidebar */}
-                <aside className="w-full lg:w-[280px] bg-white rounded-3xl p-6 border border-slate-200/60 shadow-sm shrink-0 text-left">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-                        <h2 className="text-[17px] font-bold text-slate-800">Filters</h2>
+                <aside className="w-full lg:w-[280px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 text-left">
+                    <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
+                        <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
                         <button 
                             onClick={() => {
                                 setSelectedCategory('All Products');
@@ -100,9 +100,9 @@ const ShopProducts = () => {
 
                     {/* Availability Filter */}
                     <div className="mb-8">
-                        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">Availability</h3>
+                        <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Availability</h3>
                         <div className="space-y-3.5">
-                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-slate-600 hover:text-slate-900">
+                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
                                 <input 
                                     type="radio" 
                                     name="availability"
@@ -112,7 +112,7 @@ const ShopProducts = () => {
                                 />
                                 <span>In Stock</span>
                             </label>
-                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-slate-600 hover:text-slate-900">
+                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
                                 <input 
                                     type="radio" 
                                     name="availability"
@@ -127,10 +127,10 @@ const ShopProducts = () => {
 
                     {/* Category Filter */}
                     <div>
-                        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">Category</h3>
+                        <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Category</h3>
                         <div className="space-y-3.5">
                             {categories.map(category => (
-                                <label key={category} className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-slate-600 hover:text-slate-900">
+                                <label key={category} className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
                                     <input 
                                         type="radio" 
                                         name="category"
@@ -245,15 +245,15 @@ const ShopProducts = () => {
                                         <span className="text-[11px] font-extrabold text-[#0ea5e9] tracking-wider uppercase mb-1">
                                             {product.category}
                                         </span>
-                                        <h3 className="text-[15px] sm:text-base font-bold text-slate-800 tracking-tight leading-snug">
+                                        <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
                                             {product.name}
                                         </h3>
-                                        <div className="flex items-center justify-between mt-3.5">
-                                            <span className="text-base sm:text-lg font-extrabold text-[#1a4494]">
+                                        <div className="flex items-center justify-between mt-4">
+                                            <span className="text-[18px] sm:text-[20px] font-extrabold text-[#214A9E]">
                                                 {product.price}
                                             </span>
-                                            <button className={`h-9 w-9 rounded-full bg-[#e0eaf5]/85 text-[#1a4494] flex items-center justify-center hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                            <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#dbeafe] hover:scale-105 transition-all cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                                 </svg>
                                             </button>
