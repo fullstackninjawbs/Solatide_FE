@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import drImage from '../../assets/drImage.png'
+import drImage from '../../assets/images/drImage.png'
 import CommonButton from '../../components/CommonBtn'
 
 export default function AboutSolatide() {
