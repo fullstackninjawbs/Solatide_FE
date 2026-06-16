@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import productVialImage from '../../assets/homePageFirstSection.png';
 
 const ShopProducts = () => {
@@ -6,8 +6,10 @@ const ShopProducts = () => {
     const [availability, setAvailability] = useState('In Stock');
     const [sortBy, setSortBy] = useState('Best Selling');
     const [viewMode, setViewMode] = useState('grid');
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const products = [
+    const fallbackProducts = [
         {
             id: 1,
             name: 'Bacteriostatic Water 10mL',
@@ -63,6 +65,37 @@ const ShopProducts = () => {
             status: 'In Stock'
         }
     ];
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                // Fetch from the backend API. Supported query parameters: category, availability, sort
+                const url = new URL('http://localhost:5000/api/products');
+                
+                if (selectedCategory !== 'All Products') {
+                    url.searchParams.append('category', selectedCategory);
+                }
+                url.searchParams.append('availability', availability);
+                url.searchParams.append('sort', sortBy);
+
+                const response = await fetch(url.toString());
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.products) {
+                    setProducts(result.data.products);
+                } else {
+                    setProducts(fallbackProducts);
+                }
+            } catch (error) {
+                console.warn('Backend server is currently offline or unreachable. Displaying fallback products instead.');
+                setProducts(fallbackProducts);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [selectedCategory, availability, sortBy]);
 
     const categories = [
         'All Products',
@@ -205,9 +238,9 @@ const ShopProducts = () => {
                             ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full" 
                             : "flex flex-col gap-4 w-full"
                         }>
-                            {filteredProducts.map((product) => (
+                             {filteredProducts.map((product) => (
                                 <div
-                                    key={product.id}
+                                    key={product._id || product.id}
                                     className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
@@ -250,7 +283,9 @@ const ShopProducts = () => {
                                         </h3>
                                         <div className="flex items-center justify-between mt-4">
                                             <span className="text-[18px] sm:text-[20px] font-extrabold text-[#214A9E]">
-                                                {product.price}
+                                                {typeof product.price === 'number'
+                                                    ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                    : product.price}
                                             </span>
                                             <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#dbeafe] hover:scale-105 transition-all cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
