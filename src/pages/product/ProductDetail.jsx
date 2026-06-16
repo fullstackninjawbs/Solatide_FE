@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import retatrutideVial from '../../assets/retatrutide_vial.png';
 import { products } from '../../data/products';
+import ProductInfoSection from './ProductInfoSection';
+import ProductReviewsSection from './ProductReviewsSection';
+import ProductFaqSection from './ProductFaqSection';
+import ProductSuggestionsSection from './ProductSuggestionsSection';
+
+
+
+
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -237,6 +245,18 @@ const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Product Information Accordions Section */}
+                <ProductInfoSection product={product} />
+
+                {/* Product Reviews Section */}
+                <ProductReviewsSection product={product} />
+
+                {/* FAQ Section */}
+                <ProductFaqSection />
+
+                {/* Suggestions Section */}
+                <ProductSuggestionsSection currentProduct={product} />
             </div>
         </div>
     );
