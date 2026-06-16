@@ -1,6 +1,7 @@
-import homeVial from '../assets/homePageFirstSection.png';
-import retatrutideWhiteVial from '../assets/RetatrutideMad.png';
-import retatrutideBlueVial from '../assets/retatrutide_vial.png';
+import homeVial from '../assets/images/homePageFirstSection.png';
+import retatrutideWhiteVial from '../assets/images/RetatrutideMad.png';
+import retatrutideBlueVial from '../assets/images/retatrutide_vial.png';
+
 
 export const products = [
     {

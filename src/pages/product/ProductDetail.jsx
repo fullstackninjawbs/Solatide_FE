@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import retatrutideVial from '../../assets/retatrutide_vial.png';
+import retatrutideVial from '../../assets/images/retatrutide_vial.png';
 import { products } from '../../data/products';
 import ProductInfoSection from './ProductInfoSection';
 import ProductReviewsSection from './ProductReviewsSection';

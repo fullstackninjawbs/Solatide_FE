@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { products } from '../../data/products';
-import productVialImage from '../../assets/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.png';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
