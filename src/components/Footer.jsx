@@ -8,10 +8,8 @@ import twiterIcon from '../assets/icons/twiter.png'
 function Footer() {
     return (
         <footer className="bg-[#071120] text-white pt-16 pb-8 px-4 sm:px-6 lg:px-8 border-t border-slate-900">
-            <div className="mx-auto max-w-7xl">
-                {/* Top Newsletter & Socials bar */}
+            <div className="main-container">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between pb-12 gap-6">
-                    {/* Newsletter Container - Single Integrated White Pill */}
                     <div className="w-full max-w-sm">
                         <form className="flex bg-white rounded-full p-1 border border-sky-400 shadow-sm" onSubmit={(e) => e.preventDefault()}>
                             <input
@@ -60,17 +58,17 @@ function Footer() {
                                     <circle cx="16" cy="34" r="1.5" fill="#0ea5e9" />
                                     <circle cx="24" cy="22" r="2.5" fill="#38bdf8" />
                                     <circle cx="26" cy="30" r="1.5" fill="#0ea5e9" />
-                                    
+
                                     <line x1="24" y1="8" x2="34" y2="14" stroke="#0ea5e9" strokeWidth="0.75" />
                                     <line x1="34" y1="14" x2="38" y2="24" stroke="#38bdf8" strokeWidth="0.75" />
                                     <line x1="38" y1="24" x2="34" y2="34" stroke="#0ea5e9" strokeWidth="0.75" />
                                     <line x1="34" y1="34" x2="26" y2="40" stroke="#38bdf8" strokeWidth="0.75" />
-                                    
+
                                     <line x1="24" y1="8" x2="16" y2="14" stroke="#0ea5e9" strokeWidth="0.75" />
                                     <line x1="16" y1="14" x2="12" y2="24" stroke="#38bdf8" strokeWidth="0.75" />
                                     <line x1="12" y1="24" x2="16" y2="34" stroke="#0ea5e9" strokeWidth="0.75" />
                                     <line x1="16" y1="34" x2="26" y2="40" stroke="#38bdf8" strokeWidth="0.75" />
-                                    
+
                                     <line x1="24" y1="22" x2="16" y2="14" stroke="#38bdf8" strokeWidth="0.75" />
                                     <line x1="24" y1="22" x2="24" y2="8" stroke="#0ea5e9" strokeWidth="0.75" />
                                     <line x1="24" y1="22" x2="34" y2="14" stroke="#38bdf8" strokeWidth="0.75" />

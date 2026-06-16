@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import productVialImage from '../../assets/images/homePageFirstSection.png'
+import productVialImage from '../../assets/homePageFirstSection.png'
 
 const ShopPeptides = () => {
     const products = [
