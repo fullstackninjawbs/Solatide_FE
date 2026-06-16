@@ -55,7 +55,6 @@ const ProductCategories = () => {
     return (
         <section className="relative w-full bg-[#f4f7fa] py-20 lg:py-24 overflow-hidden">
             <div className="main-container">
-                {/* Section Header */}
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-3 block">
                         Product Categories

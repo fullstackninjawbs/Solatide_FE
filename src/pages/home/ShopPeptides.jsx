@@ -37,7 +37,6 @@ const ShopPeptides = () => {
     return (
         <section className="relative w-full bg-white py-16 lg:py-20 overflow-hidden">
             <div className="main-container">
-                {/* Header Row */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
                     <div className="text-left">
                         <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-3 block">
