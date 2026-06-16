@@ -50,9 +50,9 @@ const ProductDetail = () => {
                 {/* Hero Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                     {/* Left Column: Image Galleries */}
-                    <div className="lg:col-span-7 flex gap-5 items-start">
+                    <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-5 items-start w-full">
                         {/* Thumbnails list */}
-                        <div className="flex flex-col gap-4 shrink-0">
+                        <div className="flex flex-row md:flex-col gap-3 shrink-0 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
                             {images.map((img, idx) => (
                                 <button
                                     key={idx}
@@ -84,7 +84,7 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Main Preview Image */}
-                        <div className="flex-grow bg-white rounded-3xl border border-[#E8E8E8] p-4 flex items-center justify-center overflow-hidden h-[450px] sm:h-[580px] w-full">
+                        <div className="flex-grow bg-white rounded-3xl border border-[#E8E8E8] p-4 flex items-center justify-center overflow-hidden h-[320px] sm:h-[450px] md:h-[580px] w-full">
                             {images[activeTab] ? (
                                 <img
                                     src={images[activeTab]}

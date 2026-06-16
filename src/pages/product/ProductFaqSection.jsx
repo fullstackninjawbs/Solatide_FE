@@ -83,7 +83,7 @@ const ProductFaqSection = () => {
     };
 
     return (
-        <div className="mt-20 max-w-[1440px] mx-auto text-left px-4 sm:px-0" style={{ fontFamily: 'Poppins' }}>
+        <div className="mt-20 max-w-[1440px] mx-auto text-left" style={{ fontFamily: 'Poppins' }}>
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-8">
                 <div>
