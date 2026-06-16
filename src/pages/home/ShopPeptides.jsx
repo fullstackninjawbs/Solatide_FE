@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import productVialImage from '../../assets/homePageFirstSection.png'
 
 const ShopPeptides = () => {
-    const products = [
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fallbackProducts = [
         {
             id: 1,
             name: 'Bacteriostatic Water 10mL',
@@ -33,6 +36,29 @@ const ShopPeptides = () => {
             inStock: true
         }
     ];
+
+    useEffect(() => {
+        const fetchFeaturedProducts = async () => {
+            try {
+                // Fetch up to 4 featured products from API
+                const response = await fetch('http://localhost:5000/api/products?limit=4');
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.products) {
+                    setProducts(result.data.products);
+                } else {
+                    setProducts(fallbackProducts);
+                }
+            } catch (error) {
+                console.warn('Backend server unreachable for homepage. Using fallback products.');
+                setProducts(fallbackProducts);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFeaturedProducts();
+    }, []);
 
     return (
         <section className="relative w-full bg-white py-16 lg:py-20 overflow-hidden">
@@ -70,7 +96,7 @@ const ShopPeptides = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full relative z-10">
                         {products.map((product) => (
                             <div
-                                key={product.id}
+                                key={product._id || product.id}
                                 className="group flex flex-col bg-white transition-all duration-300"
                             >
                                 {/* Vial Graphic Container */}
@@ -81,14 +107,31 @@ const ShopPeptides = () => {
                                         alt={product.name}
                                     />
 
-                                    {/* In Stock Badge */}
-                                    <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
-                                        In Stock
-                                    </span>
+                                    {/* Dynamic Badges */}
+                                    {product.status === 'In Stock' && (
+                                        <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            In Stock
+                                        </span>
+                                    )}
+                                    {product.status === 'Sold Out' && (
+                                        <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#fef2f2] px-2.5 py-1 text-[10px] font-bold text-red-600 border border-red-200">
+                                            Sold Out
+                                        </span>
+                                    )}
+                                    {product.status === 'Sale' && (
+                                        <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#fef3c7] px-2.5 py-1 text-[10px] font-bold text-amber-700 border border-amber-200">
+                                            Sale
+                                        </span>
+                                    )}
+                                    {!product.status && (
+                                        <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            {product.inStock ? 'In Stock' : 'Sold Out'}
+                                        </span>
+                                    )}
 
                                     {/* Star Rating Badge */}
                                     <span className="absolute top-4 right-4 inline-flex items-center rounded-md bg-[#fffbeb] px-2.5 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
-                                        ★ {product.rating}
+                                        ★ {product.rating || '5.0'}
                                     </span>
                                 </div>
 
@@ -99,9 +142,14 @@ const ShopPeptides = () => {
                                     </h3>
                                     <div className="flex items-center justify-between mt-3">
                                         <span className="text-base sm:text-lg font-extrabold text-[#00bfef]">
-                                            {product.price}
+                                            {typeof product.price === 'number'
+                                                ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                : product.price}
                                         </span>
-                                        <button className="h-9 w-9 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none">
+                                        <button 
+                                            className={`h-9 w-9 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            disabled={!product.inStock && product.status === 'Sold Out'}
+                                        >
                                             {/* Shopping Cart Outline SVG */}
                                             <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
