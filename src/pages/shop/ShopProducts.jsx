@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import productVialImage from '../../assets/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { products } from '../../data/products';
 
 const ShopProducts = () => {

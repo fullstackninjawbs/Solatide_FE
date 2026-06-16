@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import productVialImage from '../../assets/homePageFirstSection.png'
+import productVialImage from '../../assets/images/homePageFirstSection.png'
 
 const ShopPeptides = () => {
     const [products, setProducts] = useState([]);

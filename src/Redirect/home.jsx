@@ -5,6 +5,13 @@ import ProductCategories from "../pages/home/ProductCategories";
 import ByTheNumbers from "../pages/home/ByTheNumbers";
 import ShopPeptides from "../pages/home/ShopPeptides";
 import AboutSolatide from "../pages/home/AboutSolatide";
+import WhySolatide from '../pages/home/WhySolatide';
+import FeaturedProducts from '../pages/home/FeaturedProducts';
+import QualityAssurance from '../pages/home/QualityAssurance';
+import ExploreProducts from '../pages/home/ExploreProducts';
+import Testimonials from '../pages/home/Testimonials';
+import Faq from '../pages/home/Faq';
+import NeverMissRestock from '../pages/home/NeverMissRestock';
 
 const Home = () => {
     return (
@@ -15,6 +22,13 @@ const Home = () => {
             <ShopPeptides />
             <ProductCategories />
             <AboutSolatide />
+            <WhySolatide />
+            <FeaturedProducts />
+            <QualityAssurance />
+            <ExploreProducts />
+            <Testimonials />
+            <Faq />
+            <NeverMissRestock />
         </>
     );
 };
