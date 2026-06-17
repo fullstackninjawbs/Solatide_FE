@@ -96,21 +96,18 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
 
                             {/* Info */}
                             <div className="flex flex-col flex-grow text-left mt-4 justify-between">
-                                <div>
-                                    <span className="text-[11px] font-extrabold text-[#0ea5e9] tracking-wider uppercase mb-1 block">
-                                        {product.category}
-                                    </span>
-                                    <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
-                                        <Link to={`/product/${product.id}`} className="hover:text-[#214A9E] transition-colors line-clamp-2">
-                                            {product.name}
-                                        </Link>
-                                    </h3>
-                                </div>
-                                <div className="flex items-center justify-between mt-4">
-                                    <span className="text-[18px] sm:text-[20px] font-extrabold text-[#214A9E]">
-                                        {product.price}
-                                    </span>
-                                    <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                 <div>
+                                     <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
+                                         <Link to={`/product/${product.id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
+                                             {product.name}
+                                         </Link>
+                                     </h3>
+                                 </div>
+                                 <div className="flex items-center justify-between mt-4">
+                                     <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
+                                         {product.price}
+                                     </span>
+                                     <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         <ShoppingCart className="h-5 w-5" />
                                     </button>
                                 </div>

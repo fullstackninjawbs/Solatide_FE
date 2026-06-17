@@ -75,7 +75,7 @@ const ShopProducts = () => {
             <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Filters Sidebar */}
-                <aside className="w-full lg:w-[280px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 text-left">
+                <aside className="w-full lg:w-[340px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 text-left">
                     <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
                         <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
                         <button
@@ -92,25 +92,43 @@ const ShopProducts = () => {
                     {/* Availability Filter */}
                     <div className="mb-8">
                         <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Availability</h3>
-                        <div className="space-y-3.5">
-                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
+                        <div className="space-y-2">
+                            <label className={`flex items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
                                     name="availability"
                                     checked={availability === 'In Stock'}
                                     onChange={() => setAvailability('In Stock')}
-                                    className="h-4.5 w-4.5 text-[#0ea5e9] focus:ring-[#0ea5e9]/20 border-slate-300"
+                                    className="sr-only"
                                 />
+                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
+                                    availability === 'In Stock'
+                                        ? 'border-2 border-[#214A9E] bg-white'
+                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                }`}>
+                                    {availability === 'In Stock' && (
+                                        <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                    )}
+                                </div>
                                 <span>In Stock</span>
                             </label>
-                            <label className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
+                            <label className={`flex items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
                                     name="availability"
                                     checked={availability === 'Out of Stock'}
                                     onChange={() => setAvailability('Out of Stock')}
-                                    className="h-4.5 w-4.5 text-[#0ea5e9] focus:ring-[#0ea5e9]/20 border-slate-300"
+                                    className="sr-only"
                                 />
+                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
+                                    availability === 'Out of Stock'
+                                        ? 'border-2 border-[#214A9E] bg-white'
+                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                }`}>
+                                    {availability === 'Out of Stock' && (
+                                        <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                    )}
+                                </div>
                                 <span>Out of Stock</span>
                             </label>
                         </div>
@@ -119,16 +137,25 @@ const ShopProducts = () => {
                     {/* Category Filter */}
                     <div>
                         <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Category</h3>
-                        <div className="space-y-3.5">
+                        <div className="space-y-2">
                             {categories.map(category => (
-                                <label key={category} className="flex items-center gap-3 cursor-pointer group text-[14px] font-medium text-[#1E1E1E] hover:text-black">
+                                <label key={category} className={`flex items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${selectedCategory === category ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                     <input
                                         type="radio"
                                         name="category"
                                         checked={selectedCategory === category}
                                         onChange={() => setSelectedCategory(category)}
-                                        className="h-4.5 w-4.5 text-[#0ea5e9] focus:ring-[#0ea5e9]/20 border-slate-300"
+                                        className="sr-only"
                                     />
+                                    <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
+                                        selectedCategory === category
+                                            ? 'border-2 border-[#214A9E] bg-white'
+                                            : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                    }`}>
+                                        {selectedCategory === category && (
+                                            <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                        )}
+                                    </div>
                                     <span>{category}</span>
                                 </label>
                             ))}
@@ -258,16 +285,13 @@ const ShopProducts = () => {
 
                                     {/* Info */}
                                     <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
-                                        <span className="text-[11px] font-extrabold text-[#0ea5e9] tracking-wider uppercase mb-1">
-                                            {product.category}
-                                        </span>
                                         <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
-                                            <Link to={`/product/${product.id}`} className="hover:text-[#214A9E] transition-colors">
+                                            <Link to={`/product/${product.id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
                                         <div className="flex items-center justify-between mt-4">
-                                            <span className="text-[18px] sm:text-[20px] font-extrabold text-[#214A9E]">
+                                            <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
                                                 {typeof product.price === 'number'
                                                     ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                                     : product.price}

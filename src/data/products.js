@@ -28,7 +28,7 @@ export const products = [
         tag: 'Dual GLP-1/GIP Receptor Agonist',
         description: 'Retatrutide is a triple agonist research peptide targeting GLP-1, GIP, and glucagon receptors for laboratory investigation of integrated metabolic pathways. ≥99% purity based on available third-party documentation. Strictly for in-vitro research use only.',
         reviewsCount: 44,
-        image: retatrutideWhiteVial
+        image: retatrutideBlueVial
     },
     {
         id: 3,

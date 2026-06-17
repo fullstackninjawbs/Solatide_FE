@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import retatrutideVial from '../../assets/images/retatrutide_vial.png';
 import { products } from '../../data/products';
@@ -13,6 +13,11 @@ import ProductSuggestionsSection from './ProductSuggestionsSection';
 
 const ProductDetail = () => {
     const { id } = useParams();
+    // Scroll to top on ID change
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [id]);
+
     // Fallback to Retatrutide (ID: 2) if not found
     const product = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
 
@@ -173,7 +178,7 @@ const ProductDetail = () => {
                             </span>
 
                             {/* Product Title */}
-                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#214A9E] leading-tight mb-4" style={{ fontWeight: 600 }}>
+                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#1E1E1E] leading-tight mb-4" style={{ fontWeight: 600 }}>
                                 {product.name}
                             </h1>
 
@@ -190,7 +195,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Price */}
-                            <div className="text-3xl sm:text-[36px] font-bold text-[#214A9E] mb-6">
+                            <div className="text-3xl sm:text-[36px] font-bold text-[#00bfef] mb-6">
                                 {product.price}
                             </div>
 
