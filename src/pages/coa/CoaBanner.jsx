@@ -75,7 +75,7 @@ const CoaBanner = () => {
 
             <section className="w-full bg-white py-10 lg:py-14">
                 <div className="main-container">
-                    <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+                    <div className="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
                         <aside className="hidden lg:block w-[296px] shrink-0 sticky top-24 self-start">
                             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                                 <div className="px-5 pt-5 pb-3">
