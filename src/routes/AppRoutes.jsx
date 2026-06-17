@@ -6,6 +6,7 @@ import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
 import CoaAndTesting from '../Redirect/COAAndTesting'
 import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
+import ContactUs from '../Redirect/ContactUs'
 
 const AppRoutes = () => {
     return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
                 <Route path="product/:id" element={<ProductDetail />} />
                 <Route path="coa" element={<CoaAndTesting />} />
                 <Route path="calculator" element={<ConcentrationCalculator />} />
+                <Route path="contact" element={<ContactUs />} />
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>
