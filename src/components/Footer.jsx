@@ -38,7 +38,7 @@ function Footer() {
                             <img src={instagramIcon} alt="Instagram" className="h-4.5 w-4.5 object-contain" />
                         </a>
                         <a href="#" className="h-8 w-8 flex items-center justify-center rounded-full bg-white text-[#071120] hover:opacity-90 transition-opacity">
-                            <img src={twiterIcon} alt="X" className="h-4 w-4 object-contain" />
+                            <img src={twiterIcon} alt="X" className="h-4.5 w-4.5 object-contain" />
                         </a>
                     </div>
                 </div>

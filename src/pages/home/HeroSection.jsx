@@ -86,7 +86,6 @@ const HeroSection = () => {
                                     borderRadius: '9999px',
                                     background: '#009bf2',
                                     fontSize: '14px',
-                                    boxShadow: '0 4px 12px -3px rgba(0,155,242,0.40)',
                                     flexShrink: 0,
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.95)' }}

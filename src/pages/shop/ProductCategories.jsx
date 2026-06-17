@@ -1,61 +1,69 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const ProductCategories = () => {
+const ProductCategories = ({ isHome = false }) => {
     const categories = [
         {
             id: 1,
             title: 'Metabolic Pathway Research',
             description: 'Compounds selected for metabolic pathway research and related studies',
             path: '/shop?category=Metabolic',
-            icon: '/Frame (1).png'
+            icon: '/g3327 (1).png'
         },
         {
             id: 2,
             title: 'Tissue & Cellular Research',
             description: 'Research compounds studied in recovery and tissue-response models',
             path: '/shop?category=Tissue',
-            icon: '/Group.png'
+            icon: '/Frame.png'
         },
         {
             id: 3,
             title: 'Dermal & Pigmentation Research',
             description: 'Peptides used in dermal and pigmentation-focused research environments',
             path: '/shop?category=Dermal',
-            icon: '/Frame.png'
+            icon: '/Group.png'
         },
         {
             id: 4,
             title: 'Research Solutions',
             description: 'Supporting compounds and materials for laboratory-based research',
             path: '/shop?category=Solutions',
-            icon: '/g3327 (1).png'
+            icon: '/Frame (1).png'
         }
     ];
 
     return (
         <section className="relative w-full bg-[#f4f7fa] py-20 lg:py-24 overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className={isHome ? "main-container" : "max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8"}>
                 {/* Section Header */}
-                <div className="text-left max-w-none mb-12">
-                    <span className="text-[#00bfef] text-[15px] font-extrabold tracking-widest uppercase mb-3 block">
-                        Research Category
+                <div className={isHome ? "text-center max-w-3xl mx-auto mb-16" : "text-left max-w-none mb-12"}>
+                    <span className="text-[#00bfef] text-[13px] sm:text-[15px] font-extrabold tracking-widest uppercase mb-3 block">
+                        {isHome ? "Product Categories" : "Research Category"}
                     </span>
-                    <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold text-[#1E1E1E] tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
-                        Browse the Full Research Catalogue
-                    </h2>
+                    {isHome ? (
+                        <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#102a5c] tracking-tight">
+                            Shop by <span className="text-[#1a4494]">Research</span> Category
+                        </h2>
+                    ) : (
+                        <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold text-[#1E1E1E] tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+                            Browse the Full Research Catalogue
+                        </h2>
+                    )}
 
-                    <div className="space-y-6 text-[#6A6A6A] text-[16px] leading-[1.6] max-w-none" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
-                        <p>
-                            This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
-                        </p>
-                        <p>
-                            This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
-                        </p>
-                        <p>
-                            Where a topic-specific page is more useful than a broad catalogue view, the site's overview pages and comparison resources provide more structured scientific context.
-                        </p>
-                    </div>
+                    {!isHome && (
+                        <div className="space-y-6 text-[#6A6A6A] text-[16px] leading-[1.6] max-w-none" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
+                            <p>
+                                This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
+                            </p>
+                            <p>
+                                This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
+                            </p>
+                            <p>
+                                Where a topic-specific page is more useful than a broad catalogue view, the site's overview pages and comparison resources provide more structured scientific context.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Categories Cards Grid */}
@@ -100,11 +108,13 @@ const ProductCategories = () => {
                 </div>
 
                 {/* Bottom Guide Link */}
-                <div className="text-left">
-                    <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
-                        New to research peptides? View our <Link to="/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
-                    </p>
-                </div>
+                {!isHome && (
+                    <div className="text-left">
+                        <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
+                            New to research peptides? View our <Link to="/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
+                        </p>
+                    </div>
+                )}
             </div>
         </section>
     )

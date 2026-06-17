@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.png'
-import cartIcon from '../../assets/icons/cartIcon.png'
 
 const FeaturedProducts = () => {
     const scrollRef = useRef(null)
@@ -79,17 +79,17 @@ const FeaturedProducts = () => {
                     {/* Left Carousel Navigation Trigger */}
                     <button
                         onClick={() => handleScroll('left')}
-                        className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-[#e0eaf5]/90 border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none"
+                        className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none"
                     >
-                        <span className="text-lg">←</span>
+                        <ChevronLeft className="h-5 w-5" />
                     </button>
 
                     {/* Right Carousel Navigation Trigger */}
                     <button
                         onClick={() => handleScroll('right')}
-                        className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-slate-50 transition-all cursor-pointer focus:outline-none"
+                        className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none"
                     >
-                        <span className="text-lg">→</span>
+                        <ChevronRight className="h-5 w-5" />
                     </button>
 
                     {/* Cards Flex/Slider container */}
@@ -117,22 +117,25 @@ const FeaturedProducts = () => {
                                     </span>
 
                                     {/* Star Rating Badge */}
-                                    <span className="absolute top-4 right-4 inline-flex items-center rounded-md bg-[#fffbeb] px-2.5 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
-                                        ★ {product.rating}
+                                    <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
+                                        <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                        <span>{product.rating}</span>
                                     </span>
                                 </div>
 
                                 {/* Text Details */}
                                 <div className="flex flex-col mt-4">
-                                    <h3 className="text-[15px] sm:text-base font-medium text-slate-800 text-left tracking-tight">
+                                    <h3 className="text-[15px] sm:text-base font-bold text-slate-800 text-left tracking-tight">
                                         {product.name}
                                     </h3>
                                     <div className="flex items-center justify-between mt-3">
-                                        <span className="text-base text-[16px] sm:text-lg font-semibold text-[#00E5FF]">
+                                        <span className="text-base text-[16px] sm:text-lg font-extrabold text-[#00bfef]">
                                             {product.price}
                                         </span>
-                                        <button className="focus:outline-none hover:opacity-80 transition-opacity">
-                                            <img src={cartIcon} className="h-10 w-10 object-contain" alt="Cart" />
+                                        <button
+                                            className="h-11 w-11 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none"
+                                        >
+                                            <ShoppingCart className="h-5 w-5" />
                                         </button>
                                     </div>
                                 </div>

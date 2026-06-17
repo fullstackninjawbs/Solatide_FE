@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/homePageFirstSection.png'
 
 const ShopPeptides = () => {
@@ -80,12 +81,12 @@ const ShopPeptides = () => {
                 </div>
 
                 <div className="relative w-full">
-                    <button className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-[#e0eaf5]/90 border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none">
-                        <span className="text-lg">←</span>
+                    <button className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none">
+                        <ChevronLeft className="h-5 w-5" />
                     </button>
 
-                    <button className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-slate-50 transition-all cursor-pointer focus:outline-none">
-                        <span className="text-lg">→</span>
+                    <button className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none">
+                        <ChevronRight className="h-5 w-5" />
                     </button>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full relative z-10">
@@ -122,8 +123,9 @@ const ShopPeptides = () => {
                                         </span>
                                     )}
 
-                                    <span className="absolute top-4 right-4 inline-flex items-center rounded-md bg-[#fffbeb] px-2.5 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
-                                        ★ {product.rating || '5.0'}
+                                    <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
+                                        <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                        <span>{product.rating || '5.0'}</span>
                                     </span>
                                 </div>
 
@@ -138,12 +140,10 @@ const ShopPeptides = () => {
                                                 : product.price}
                                         </span>
                                         <button
-                                            className={`h-9 w-9 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            className={`h-11 w-11 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             disabled={!product.inStock && product.status === 'Sold Out'}
                                         >
-                                            <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                            </svg>
+                                            <ShoppingCart className="h-5 w-5" />
                                         </button>
                                     </div>
                                 </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ShoppingCart, Star } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { products } from '../../data/products';
 
@@ -249,8 +250,9 @@ const ShopProducts = () => {
                                             </span>
                                         )}
 
-                                        <span className="absolute top-3 right-3 inline-flex items-center rounded-md bg-white/90 backdrop-blur-sm px-2 py-0.5 text-[9px] font-extrabold text-[#d97706] shadow-sm">
-                                            ★ {product.rating}
+                                        <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-extrabold text-[#d97706] shadow-sm">
+                                            <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                            <span>{product.rating}</span>
                                         </span>
                                     </Link>
 
@@ -270,10 +272,8 @@ const ShopProducts = () => {
                                                     ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                                     : product.price}
                                             </span>
-                                            <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#dbeafe] hover:scale-105 transition-all cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                </svg>
+                                            <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                                <ShoppingCart className="h-5 w-5" />
                                             </button>
                                         </div>
                                     </div>

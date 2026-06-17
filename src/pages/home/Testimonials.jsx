@@ -52,14 +52,14 @@ const Testimonials = () => {
                     </div>
                     {/* Carousel Nav Arrows */}
                     <div className="flex gap-3 shrink-0">
-                        <button 
-                            onClick={() => handleScroll('left')} 
+                        <button
+                            onClick={() => handleScroll('left')}
                             className="h-10 w-10 rounded-full border border-slate-100 shadow-sm flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-slate-50 transition-all cursor-pointer focus:outline-none"
                         >
                             <span className="text-lg">←</span>
                         </button>
-                        <button 
-                            onClick={() => handleScroll('right')} 
+                        <button
+                            onClick={() => handleScroll('right')}
                             className="h-10 w-10 rounded-full border border-[#00ADEE] flex items-center justify-center text-[#00ADEE] font-extrabold hover:bg-[#DEF5FF]/30 transition-all cursor-pointer focus:outline-none"
                         >
                             <span className="text-lg">→</span>
@@ -68,13 +68,13 @@ const Testimonials = () => {
                 </div>
 
                 {/* Slider Container */}
-                <div 
+                <div
                     ref={scrollRef}
                     className="flex overflow-x-auto gap-6 w-full relative z-10 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-2"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     {testimonials.map((t) => (
-                        <div 
+                        <div
                             key={t.id}
                             className="snap-start shrink-0 w-[90%] sm:w-[48%] lg:w-[calc(33.33%-16px)] flex flex-col justify-between bg-white border border-[#EBEBEB] rounded-[20px] p-6 lg:p-8 text-left shadow-sm hover:shadow-md transition-shadow duration-300"
                         >
@@ -96,10 +96,10 @@ const Testimonials = () => {
                                 <div className="w-full h-[1px] bg-slate-100 mb-5"></div>
                                 {/* Reviewer Profile */}
                                 <div className="flex items-center gap-3.5">
-                                    <img 
-                                        src={t.avatar} 
-                                        alt={t.name} 
-                                        className="h-11 w-11 rounded-full object-cover select-none border border-slate-100" 
+                                    <img
+                                        src={t.avatar}
+                                        alt={t.name}
+                                        className="h-11 w-11 rounded-full object-cover select-none border border-slate-100"
                                     />
                                     <div className="flex flex-col">
                                         <span className="text-[15px] font-bold text-slate-800 leading-tight">{t.name}</span>

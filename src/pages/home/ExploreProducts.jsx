@@ -1,14 +1,15 @@
 import React from 'react'
 import exporleImage from '../../assets/images/exporleImage.png'
+import RetatrutideMad from '../../assets/images/RetatrutideMad.png'
 import CommonButton from '../../components/CommonBtn'
 
 const ExploreProducts = () => {
     return (
         <section
-            className="w-full bg-cover bg-center py-20 lg:py-24 text-left relative flex items-center min-h-[360px] md:min-h-[400px]  overflow-hidden"
+            className="w-full bg-cover bg-center py-20 lg:py-24 text-left relative flex items-center min-h-[360px] md:min-h-[400px] overflow-hidden"
             style={{ backgroundImage: `url(${exporleImage})` }}
         >
-            <div className="main-container relative z-10 w-full">
+            <div className="main-container relative z-10 w-full flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div className="max-w-xl flex flex-col items-start">
                     <h2 className="text-[32px] md:text-[40px] font-anek font-bold text-[#1D1D1F] leading-tight mb-4">
                         Confidence in Every Batch
@@ -20,6 +21,13 @@ const ExploreProducts = () => {
                         <span>Explore Products</span>
                         <span>→</span>
                     </button>
+                </div>
+                <div className="hidden md:flex md:w-[35%] lg:w-[25%] items-center justify-center shrink-0 pr-4 lg:pr-12 animate-fade-in">
+                    <img
+                        src={RetatrutideMad}
+                        alt="Retatrutide 10mg Vial"
+                        className="h-[260px] lg:h-[300px] object-contain select-none filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]"
+                    />
                 </div>
             </div>
         </section>

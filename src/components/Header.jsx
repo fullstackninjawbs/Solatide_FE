@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { ShoppingCart } from 'lucide-react'
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-1.5 py-0.5 flex items-center justify-center h-[18px] shrink-0">
@@ -329,18 +330,14 @@ const Header = () => {
                         </Link>
 
                         <button className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0">
-                            <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
+                            <ShoppingCart className="h-[17px] w-[17px]" />
                         </button>
 
                     </div>
 
                     <div className="flex lg:hidden items-center gap-2.5">
                         <button className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0">
-                            <svg className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
+                            <ShoppingCart className="h-[17px] w-[17px]" />
                         </button>
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

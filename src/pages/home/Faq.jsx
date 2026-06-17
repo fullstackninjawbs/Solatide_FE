@@ -37,7 +37,7 @@ const Faq = () => {
 
     return (
         <section className="w-full bg-[#F5F8FC] py-16 lg:py-20 text-left">
-            <div className="main-container max-w-[1024px]">
+            <div className="main-container max-w-[1440px]">
                 {/* Header */}
                 <div className="mb-10">
                     <span className="text-[#00ADEE] text-[14px] font-semibold mb-2 block uppercase tracking-wider">FAQ</span>
@@ -51,24 +51,24 @@ const Faq = () => {
                     {faqs.map((faq, index) => {
                         const isOpen = openIndex === index;
                         return (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className="bg-white rounded-[16px] shadow-sm border border-slate-100 overflow-hidden transition-all duration-300"
                             >
                                 <button
                                     onClick={() => toggleFaq(index)}
                                     className="w-full px-6 py-5 flex items-center justify-between gap-4 text-left focus:outline-none cursor-pointer"
                                 >
-                                    <span className="text-[15px] sm:text-[16px] font-bold text-slate-800 leading-snug">
+                                    <span className="text-[15px] sm:text-[16px] font-semibold text-slate-800 leading-snug">
                                         {faq.question}
                                     </span>
-                                    <ChevronDown 
-                                        className={`w-5 h-5 text-[#1a4494] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+                                    <ChevronDown
+                                        className={`w-5 h-5 text-[#1a4494] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
                                     />
                                 </button>
-                                
+
                                 {/* Collapsible Answer */}
-                                <div 
+                                <div
                                     className={`transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[200px] border-t border-slate-50' : 'max-h-0'}`}
                                 >
                                     <div className="px-6 py-5 text-[14px] text-slate-600 leading-relaxed bg-[#fcfdfe]">

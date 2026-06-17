@@ -1,6 +1,7 @@
 import React from 'react'
 import WhySolatideImage from '../../assets/images/WhySolatideImage.png'
 import RetatrutideMad from '../../assets/images/RetatrutideMad.png'
+import Rectangle4381 from '../../assets/images/Rectangle 4381.png'
 import CommonButton from '../../components/CommonBtn'
 
 const WhySolatide = () => {
@@ -43,8 +44,9 @@ const WhySolatide = () => {
                     </div>
 
                     <div className="w-full lg:w-[28%] flex flex-col gap-8">
-                        <div className="rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 aspect-[1.48] bg-white p-6 flex items-center justify-center">
-                            <img src={RetatrutideMad} alt="Retatrutide 10mg Vial" className="max-h-full object-contain select-none" />
+                        <div className="relative rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 aspect-[1.48] flex items-center justify-center bg-white">
+                            <img src={Rectangle4381} alt="Background pattern" className="absolute inset-0 w-full h-full object-cover select-none" />
+                            <img src={RetatrutideMad} alt="Retatrutide 10mg Vial" className="relative z-10 max-h-[85%] object-contain select-none" />
                         </div>
 
                         <ul className="flex flex-col gap-3 text-[14.5px] font-semibold text-[#0AD6ED]">
