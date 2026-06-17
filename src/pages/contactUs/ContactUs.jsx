@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom'
 const ContactUs = () => {
     return (
         <div className="w-full bg-white min-h-screen">
-            <section className="w-full bg-[#F0F5FB] py-12 text-center">
+            <section className="w-full bg-[#F0F5FB] py-12 text-left">
                 <div className="main-container">
                     <h1
-                        className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
+                        className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4 text-center"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                     >
                         Contact Us
                     </h1>
-                    <p className="text-[16px] font-regular font-weight-400 text-[#6A6A6A] leading-[1.75] w-full mx-auto">
+                    <p className="text-[16px] font-regular font-weight-400 text-[#6A6A6A] leading-[1.75] w-full mx-auto text-left">
                         Get in touch with our team for inquiries, research support, or product-related questions. We're here to provide accurate information and assist with your research needs.
                     </p>
                 </div>

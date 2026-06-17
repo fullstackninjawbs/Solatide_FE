@@ -50,8 +50,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Product Overview'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2 mb-4">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3 mb-4">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         {product.name} is a high-grade research compound. Products selected for website presentation meet Solatide Biosciences' ≥99% purity standard based on available third-party documentation. This multi-receptor activation profile makes it a valuable research tool for investigating coordinated metabolic signalling, receptor crosstalk, and integrated pathway regulation in laboratory models.
                                     </span>
@@ -86,8 +86,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Technical Specifications'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         Purity standard minimum of 99% verified via independent high-performance liquid chromatography (HPLC) and mass spectrometry analysis. Product is supplied as a sterile lyophilised white powder and must be stored at -20°C for long-term stability.
                                     </span>
@@ -114,8 +114,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Research Applications'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         For in-vitro research use only. This compound is studied extensively in receptor activation kinetics, signaling pathway dynamics, metabolic pathways, and tissue cellular interactions in lab-controlled models.
                                     </span>
@@ -150,8 +150,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Third-party Batch Verification'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         Every batch is analyzed independently by third-party testing laboratories. HPLC/MS assays guarantee absolute identity, formulation consistency, and purity values.
                                     </span>
@@ -178,8 +178,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Batch Documentation Available'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         Certificates of Analysis (COA) and spectral reports are recorded and matching documentation is supplied with every transaction to ensure transparent lab compliance.
                                     </span>
@@ -206,8 +206,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Fast international dispatch'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         Orders are dispatched globally via express priority couriers with protective, temperature-managed packaging layers.
                                     </span>
@@ -235,8 +235,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Tracking Provided After Dispatch'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         Tracking coordinates are generated and sent immediately upon package collection to let you follow transit progress step-by-step.
                                     </span>
@@ -263,8 +263,8 @@ const ProductInfoSection = ({ product }) => {
                         </button>
                         {openItems['Support via Telegram and Email'] && (
                             <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-2">
-                                    <span className="text-[#214A9E] mt-1.5">•</span>
+                                <p className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
                                         For questions, custom volume discounts, or document verifications, contact our support team at any time via Telegram or email.
                                     </span>

@@ -4,8 +4,7 @@ import { ShoppingCart, Star } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { products } from '../../data/products';
 
-const ShopProducts = () => {
-    const [selectedCategory, setSelectedCategory] = useState('All Products');
+const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const [availability, setAvailability] = useState('In Stock');
     const [sortBy, setSortBy] = useState('Best selling');
     const [viewMode, setViewMode] = useState('grid');
@@ -38,7 +37,8 @@ const ShopProducts = () => {
         'All Products',
         'Metabolic Pathway Research',
         'Tissue & Cellular Research',
-        'Dermal & Pigmentation Research'
+        'Dermal & Pigmentation Research',
+        'Research Solutions'
     ];
 
     const filteredProducts = products.filter(product => {
