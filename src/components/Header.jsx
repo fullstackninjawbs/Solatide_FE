@@ -76,7 +76,9 @@ const Header = () => {
     const [selectedCountry, setSelectedCountry] = useState(countriesList[0])
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
+    const [isMoreOpen, setIsMoreOpen] = useState(false)
     const dropdownRef = React.useRef(null)
+    const moreDropdownRef = React.useRef(null)
     const lastScrollY = React.useRef(0);
 
     useEffect(() => {
@@ -114,6 +116,9 @@ const Header = () => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsCountryDropdownOpen(false)
             }
+            if (moreDropdownRef.current && !moreDropdownRef.current.contains(event.target)) {
+                setIsMoreOpen(false)
+            }
         }
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
@@ -127,25 +132,21 @@ const Header = () => {
         { name: 'COA & Testing', path: '/coa' },
         { name: 'Calculator', path: '/calculator' },
         { name: "FAQ's", path: '/faq' },
-        { name: 'More', path: '/more' },
     ]
 
     const isActive = (path) => location.pathname === path
 
     return (
         <header
-            className={`top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out ${
-                isHome ? 'fixed' : 'sticky'
-            } ${
-                !isScrolled
+            className={`top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
+                } ${!isScrolled
                     ? 'bg-transparent border-b border-transparent shadow-none'
                     : 'bg-white border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
-            }`}
+                }`}
         >
 
-            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[12px] font-semibold text-[#214A9E] ${
-                !isScrolled ? 'h-7 opacity-100' : 'h-0 opacity-0 pointer-events-none'
-            }`}>
+            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[12px] font-semibold text-[#214A9E] ${!isScrolled ? 'h-7 opacity-100' : 'h-0 opacity-0 pointer-events-none'
+                }`}>
                 <span className="tracking-wide">Card Payments Available</span>
                 <div className="flex items-center gap-1">
                     <VisaSVG />
@@ -209,6 +210,44 @@ const Header = () => {
                                 {link.name}
                             </Link>
                         ))}
+                        <div className="relative" ref={moreDropdownRef}>
+                            <button
+                                onClick={() => setIsMoreOpen(!isMoreOpen)}
+                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${
+                                    isMoreOpen
+                                        ? 'text-[#1a4494]'
+                                        : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
+                                }`}
+                            >
+                                More
+                            </button>
+
+                            <div
+                                className={`absolute right-0 lg:right-auto lg:left-0 top-[calc(100%+8px)] bg-white border border-slate-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-3 min-w-[200px] flex flex-col transition-all duration-300 origin-top-left ${
+                                    isMoreOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible'
+                                }`}
+                            >
+                                {[
+                                    { name: 'Contact Us', path: '/contact' },
+                                    { name: 'Research Resource', path: '/research-resource' },
+                                    { name: 'Research Insights', path: '/research-insights' },
+                                    { name: 'Affiliate Program', path: '/affiliate' },
+                                ].map((link) => (
+                                    <Link
+                                        key={link.name}
+                                        to={link.path}
+                                        onClick={() => setIsMoreOpen(false)}
+                                        className={`whitespace-nowrap px-5 py-2.5 text-[14px] font-medium transition-colors text-left ${
+                                            isActive(link.path)
+                                                ? 'bg-[#EBF3FF] text-[#1a4494]'
+                                                : 'text-[#374151] hover:bg-slate-50 hover:text-[#1a4494]'
+                                        }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
                     </nav>
 
 

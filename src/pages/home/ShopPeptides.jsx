@@ -40,10 +40,9 @@ const ShopPeptides = () => {
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
             try {
-                // Fetch up to 4 featured products from API
                 const response = await fetch('http://localhost:5000/api/products?limit=4');
                 const result = await response.json();
-                
+
                 if (result.success && result.data && result.data.products) {
                     setProducts(result.data.products);
                 } else {
@@ -80,26 +79,21 @@ const ShopPeptides = () => {
                     </Link>
                 </div>
 
-                {/* Product Slider Area */}
                 <div className="relative w-full">
-                    {/* Left Carousel Navigation Trigger */}
                     <button className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-[#e0eaf5]/90 border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none">
                         <span className="text-lg">←</span>
                     </button>
 
-                    {/* Right Carousel Navigation Trigger */}
                     <button className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] font-extrabold hover:bg-slate-50 transition-all cursor-pointer focus:outline-none">
                         <span className="text-lg">→</span>
                     </button>
 
-                    {/* Cards Grid container */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full relative z-10">
                         {products.map((product) => (
                             <div
                                 key={product._id || product.id}
                                 className="group flex flex-col bg-white transition-all duration-300"
                             >
-                                {/* Vial Graphic Container */}
                                 <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[24px] flex items-center justify-center border border-slate-100/50">
                                     <img
                                         src={productVialImage}
@@ -107,7 +101,6 @@ const ShopPeptides = () => {
                                         alt={product.name}
                                     />
 
-                                    {/* Dynamic Badges */}
                                     {product.status === 'In Stock' && (
                                         <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
                                             In Stock
@@ -129,13 +122,11 @@ const ShopPeptides = () => {
                                         </span>
                                     )}
 
-                                    {/* Star Rating Badge */}
                                     <span className="absolute top-4 right-4 inline-flex items-center rounded-md bg-[#fffbeb] px-2.5 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
                                         ★ {product.rating || '5.0'}
                                     </span>
                                 </div>
 
-                                {/* Text Details */}
                                 <div className="flex flex-col mt-4">
                                     <h3 className="text-[15px] sm:text-base font-bold text-slate-800 text-left tracking-tight">
                                         {product.name}
@@ -146,11 +137,10 @@ const ShopPeptides = () => {
                                                 ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                                 : product.price}
                                         </span>
-                                        <button 
+                                        <button
                                             className={`h-9 w-9 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#e0eaf5] transition-all cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             disabled={!product.inStock && product.status === 'Sold Out'}
                                         >
-                                            {/* Shopping Cart Outline SVG */}
                                             <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                             </svg>
