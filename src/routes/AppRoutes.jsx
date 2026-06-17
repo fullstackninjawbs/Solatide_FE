@@ -8,6 +8,7 @@ import CoaAndTesting from '../Redirect/COAAndTesting'
 import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
 import ContactUs from '../Redirect/ContactUs'
 import ResearchResource from '../pages/researchResource/ResearchResource'
+import Faq from '../Redirect/Faq'
 
 const AppRoutes = () => {
     return (
@@ -21,6 +22,7 @@ const AppRoutes = () => {
                 <Route path="contact" element={<ContactUs />} />
                 <Route path="research-resource" element={<ResearchResource />} />
                 <Route path="resource" element={<ResearchResource />} />
+                <Route path="Faq" element={<Faq />} />
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>
