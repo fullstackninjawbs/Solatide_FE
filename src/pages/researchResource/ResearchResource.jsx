@@ -85,7 +85,7 @@ const ResearchResource = () => {
                 <div className="flex flex-col lg:flex-row gap-8 items-start">
                     
                     {/* Left Sticky Sidebar navigation */}
-                    <aside className="w-full lg:w-[320px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 sticky top-[90px] text-left">
+                    <aside className="hidden lg:block w-[320px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 sticky top-[90px] text-left">
                         <h3 className="text-[17px] font-semibold text-[#1E1E1E] mb-4 px-2">On this page</h3>
                         <nav className="space-y-1">
                             {sections.map((sec) => (
