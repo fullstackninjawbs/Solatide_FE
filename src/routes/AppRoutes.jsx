@@ -7,6 +7,7 @@ import ProductDetail from '../pages/product/ProductDetail'
 import CoaAndTesting from '../Redirect/COAAndTesting'
 import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
 import ContactUs from '../Redirect/ContactUs'
+import Faq from '../Redirect/Faq'
 
 const AppRoutes = () => {
     return (
@@ -18,6 +19,9 @@ const AppRoutes = () => {
                 <Route path="coa" element={<CoaAndTesting />} />
                 <Route path="calculator" element={<ConcentrationCalculator />} />
                 <Route path="contact" element={<ContactUs />} />
+                <Route path="Faq" element={<Faq />} />
+
+
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>

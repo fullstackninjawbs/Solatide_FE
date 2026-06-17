@@ -42,7 +42,6 @@ const Testimonials = () => {
     return (
         <section className="w-full bg-white py-16 lg:py-20 overflow-hidden">
             <div className="main-container">
-                {/* Header Section */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-12">
                     <div className="text-left">
                         <span className="text-[#00ADEE] text-[14px] font-semibold mb-2 block">Testimonials</span>
@@ -50,7 +49,6 @@ const Testimonials = () => {
                             Trusted by <span className="text-[#1a4494]">World-Class</span> Researchers
                         </h2>
                     </div>
-                    {/* Carousel Nav Arrows */}
                     <div className="flex gap-3 shrink-0">
                         <button
                             onClick={() => handleScroll('left')}
@@ -67,7 +65,6 @@ const Testimonials = () => {
                     </div>
                 </div>
 
-                {/* Slider Container */}
                 <div
                     ref={scrollRef}
                     className="flex overflow-x-auto gap-6 w-full relative z-10 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-2"
@@ -79,22 +76,18 @@ const Testimonials = () => {
                             className="snap-start shrink-0 w-[90%] sm:w-[48%] lg:w-[calc(33.33%-16px)] flex flex-col justify-between bg-white border border-[#EBEBEB] rounded-[20px] p-6 lg:p-8 text-left shadow-sm hover:shadow-md transition-shadow duration-300"
                         >
                             <div>
-                                {/* Rating Stars */}
                                 <div className="flex gap-1 mb-5">
                                     {[...Array(t.rating)].map((_, i) => (
                                         <span key={i} className="text-[#FFB800] text-[18px]">★</span>
                                     ))}
                                 </div>
-                                {/* Quote */}
                                 <p className="text-[14.5px] lg:text-[15px] text-[#4B5563] leading-[1.6] mb-6">
                                     {t.quote}
                                 </p>
                             </div>
 
                             <div>
-                                {/* Divider Line */}
                                 <div className="w-full h-[1px] bg-slate-100 mb-5"></div>
-                                {/* Reviewer Profile */}
                                 <div className="flex items-center gap-3.5">
                                     <img
                                         src={t.avatar}
