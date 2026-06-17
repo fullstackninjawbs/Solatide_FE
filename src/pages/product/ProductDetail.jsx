@@ -62,9 +62,8 @@ const ProductDetail = () => {
                                 <button
                                     key={idx}
                                     onClick={() => setActiveTab(idx)}
-                                    className={`w-[70px] h-[70px] sm:w-[85px] sm:h-[85px] rounded-xl overflow-hidden border-2 flex items-center justify-center p-1.5 transition-all bg-white ${
-                                        activeTab === idx ? 'border-[#214A9E]' : 'border-slate-200 hover:border-slate-300'
-                                    }`}
+                                    className={`w-[70px] h-[70px] sm:w-[85px] sm:h-[85px] rounded-xl overflow-hidden border-2 flex items-center justify-center p-1.5 transition-all bg-white ${activeTab === idx ? 'border-[#214A9E]' : 'border-slate-200 hover:border-slate-300'
+                                        }`}
                                 >
                                     {idx === 0 ? (
                                         img ? (
@@ -97,74 +96,7 @@ const ProductDetail = () => {
                                     className="w-full h-full object-cover rounded-2xl transition-transform duration-300"
                                 />
                             ) : (
-                                // Render mock HPLC only for Retatrutide (ID 2) if no image
-                                product.id === 2 && activeTab !== 0 ? (
-                                    <div className="w-full h-full bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between overflow-y-auto text-left shadow-inner">
-                                        {/* Header */}
-                                        <div className="flex justify-between items-start border-b border-slate-100 pb-4">
-                                            <div>
-                                                <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-extrabold uppercase border border-emerald-200/50">
-                                                    VERIFIED PASS
-                                                </span>
-                                                <h4 className="text-sm font-bold text-slate-800 mt-1.5 uppercase tracking-wider">
-                                                    Certificate of Analysis
-                                                </h4>
-                                                <p className="text-[11px] text-slate-400">HPLC & MS-Spectrometry Assay Report</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="text-[14px] font-bold text-[#214A9E]">SOLATIDE</span>
-                                                <p className="text-[8px] text-slate-400 uppercase tracking-widest">Biosciences</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Info Grid */}
-                                        <div className="grid grid-cols-2 gap-4 my-4 text-[11px] border-b border-slate-50 pb-4">
-                                            <div>
-                                                <span className="text-slate-400 block">Compound:</span>
-                                                <span className="font-bold text-slate-700">{product.name}</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-slate-400 block">Lot Number:</span>
-                                                <span className="font-mono font-bold text-slate-700">Lot: RT24B01</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-slate-400 block">Purity Standard:</span>
-                                                <span className="font-bold text-slate-700">99.42% (HPLC Assayed)</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-slate-400 block">Expiration:</span>
-                                                <span className="font-bold text-slate-700">05/2026</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Mini Graph / Visualization */}
-                                        <div className="flex-grow bg-slate-50 rounded-xl p-3 border border-slate-100 flex flex-col justify-between min-h-[120px]">
-                                            <span className="text-[9px] font-bold text-slate-400 uppercase">HPLC Chromatogram Signal (220nm)</span>
-                                            <div className="w-full flex-grow flex items-end relative h-[100px] border-l border-b border-slate-300 ml-4 mb-2">
-                                                {/* Peak Graph Path */}
-                                                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                                    <path
-                                                        d="M 0 95 Q 20 95 30 95 T 40 95 T 50 15 T 60 95 T 70 95 T 100 95"
-                                                        fill="none"
-                                                        stroke="#214A9E"
-                                                        strokeWidth="2.5"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-                                                </svg>
-                                                <span className="absolute bottom-[-15px] left-[50%] translate-x-[-50%] text-[8px] text-slate-400 font-mono">5.23 min (Retatrutide Peak)</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Footer */}
-                                        <div className="text-[10px] text-slate-400 mt-4 border-t border-slate-100 pt-3 flex justify-between items-center">
-                                            <span>Certified by: Lead Analytical Chemist</span>
-                                            <span className="font-bold text-slate-600">Solatide Quality Assurance</span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="text-slate-300 text-sm font-medium">No Image Available</div>
-                                )
+                                <div className="text-slate-300 text-sm font-medium">No Image Available</div>
                             )}
                         </div>
                     </div>
