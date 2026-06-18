@@ -9,6 +9,7 @@ import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
 import ContactUs from '../Redirect/ContactUs'
 import ResearchResource from '../pages/researchResource/ResearchResource'
 import Faq from '../Redirect/Faq'
+import About from '../Redirect/About'
 
 const AppRoutes = () => {
     return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
             <Route path="/" element={<MainLayout />}>
                 <Route index element={<Home />} />
                 <Route path="shop" element={<Shop />} />
+                <Route path="about" element={<About />} />
                 <Route path="product/:id" element={<ProductDetail />} />
                 <Route path="coa" element={<CoaAndTesting />} />
                 <Route path="calculator" element={<ConcentrationCalculator />} />
