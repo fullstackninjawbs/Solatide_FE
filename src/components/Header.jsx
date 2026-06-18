@@ -86,31 +86,36 @@ const Header = () => {
     const lastScrollY = React.useRef(0);
 
     useEffect(() => {
+        let ticking = false;
+
         const handleScroll = () => {
-            const currentScrollY = window.scrollY;
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
 
-            // Automatically close mobile menu on scroll has been removed per user request
+                    if (currentScrollY < lastScrollY.current) {
+                        if (currentScrollY > 50) {
+                            setIsScrollingUp(true);
+                        } else {
+                            setIsScrollingUp(false);
+                        }
+                    } else {
+                        setIsScrollingUp(false);
+                    }
 
-            if (currentScrollY < lastScrollY.current) {
+                    // Hysteresis: Collapse at 50px, Expand at 10px to prevent infinite loop
+                    if (currentScrollY > 50) {
+                        setIsScrolled(true);
+                    } else if (currentScrollY <= 10) {
+                        setIsScrolled(false);
+                        setIsScrollingUp(false);
+                    }
 
-                if (currentScrollY > 50) {
-                    setIsScrollingUp(true);
-                } else {
-                    setIsScrollingUp(false);
-                }
-            } else {
-                setIsScrollingUp(false);
+                    lastScrollY.current = currentScrollY;
+                    ticking = false;
+                });
+                ticking = true;
             }
-
-
-            if (currentScrollY > 10) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-                setIsScrollingUp(false);
-            }
-
-            lastScrollY.current = currentScrollY;
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -148,14 +153,14 @@ const Header = () => {
 
     return (
         <header
-            className={`top-0 left-0 w-full z-[999] transition-all duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
+            className={`top-0 left-0 w-full z-[999] transform-gpu transition-[background-color,border-color,box-shadow] duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
                 } ${(!isScrolled && !isMobileMenuOpen)
                     ? 'bg-transparent border-none shadow-none'
-                    : 'bg-white border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
+                    : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                 }`}
         >
 
-            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[13.5px] font-semibold text-[#214A9E] ${(!isScrolled && !isMobileMenuOpen) ? 'h-9 opacity-100' : 'h-0 opacity-0 pointer-events-none'
+            <div className={`w-full overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center gap-2 text-[13.5px] font-semibold text-[#214A9E] ${(!isScrolled && !isMobileMenuOpen) ? 'h-9 opacity-100' : 'h-0 opacity-0 pointer-events-none'
                 }`}>
                 <span className="tracking-wide">Card Payments Available</span>
                 <div className="flex items-center gap-1">
@@ -212,9 +217,9 @@ const Header = () => {
                             <Link
                                 key={link.name}
                                 to={link.path}
-                                className={`px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap ${isActive(link.path)
-                                    ? 'bg-[#e0eaf5] text-[#1a4494] rounded-full shadow-sm'
-                                    : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80 rounded-full'
+                                className={`px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${(isActive(link.path) && !isMoreOpen)
+                                    ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
+                                    : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
                                     }`}
                             >
                                 {link.name}
@@ -223,8 +228,10 @@ const Header = () => {
                         <div className="relative" ref={moreDropdownRef}>
                             <button
                                 onClick={() => setIsMoreOpen(!isMoreOpen)}
-                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${isMoreOpen
-                                    ? 'text-[#1a4494]'
+                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${(isMoreOpen || [
+                                    '/contact', '/research-resource', '/ResearchInsight', '/affiliate'
+                                ].includes(location.pathname))
+                                    ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
                                     : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
                                     }`}
                             >
