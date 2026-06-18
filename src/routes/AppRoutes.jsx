@@ -12,6 +12,7 @@ import Faq from '../Redirect/Faq'
 import About from '../Redirect/About'
 import ResearchInsight from '../Redirect/ResearchInsight'
 import ShippingPolicy from '../pages/Shipping_Policy/ShippingPolicy'
+import PrivacyPolicy from '../pages/PrivacyPolicy/Privacy_policy'
 
 const AppRoutes = () => {
     return (
@@ -29,6 +30,7 @@ const AppRoutes = () => {
                 <Route path="Faq" element={<Faq />} />
                 <Route path="/ResearchInsight" element={<ResearchInsight />} />
                 <Route path="shipping-policy" element={<ShippingPolicy />} />
+                <Route path="privacy" element={<PrivacyPolicy />} />
 
 
                 <Route path="*" element={<Home />} />
