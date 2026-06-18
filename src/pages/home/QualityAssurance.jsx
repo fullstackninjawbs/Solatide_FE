@@ -2,9 +2,9 @@ import React from 'react'
 
 const QualityAssurance = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 lg:py-24">
+        <section className="w-full bg-[#F5F8FC] py-12 lg:py-16">
             <div className="main-container">
-                
+
                 {/* Header Block */}
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-12 text-left">
                     <div className="w-full lg:w-[45%]">
@@ -14,7 +14,7 @@ const QualityAssurance = () => {
                             </span>
                         </div>
                         <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif]">
-                            Manufacturer QC and<br/>
+                            Manufacturer QC and<br />
                             <span className="text-[#1a4494]">Release Standards</span>
                         </h2>
                     </div>
@@ -27,14 +27,14 @@ const QualityAssurance = () => {
 
                 {/* Main Content Grid */}
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-6">
-                    
+
                     {/* Left Card */}
                     <div className="w-full lg:w-[45%] bg-white rounded-[24px] p-8 lg:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col text-left">
                         <div className="mb-6 self-start bg-[#EAF7FD] text-[#00ADEE] text-[10px] font-black tracking-widest px-4 py-2 rounded-full uppercase">
                             Every Production Batch
                         </div>
                         <h3 className="text-[26px] sm:text-[32px] font-bold text-[#1D1D1F] leading-[1.2] mb-6">
-                            Post-manufacturing QC before<br/>research release.
+                            Post-manufacturing QC before<br />research release.
                         </h3>
                         <p className="text-[14px] text-[#4B5563] leading-[1.6] mb-6">
                             Each production batch is subject to post-manufacturing analytical quality control before dispatch for research supply. This creates a release checkpoint after manufacturing, rather than relying only on catalogue-level supplier claims.

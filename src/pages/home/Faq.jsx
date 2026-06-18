@@ -36,7 +36,7 @@ const Faq = () => {
     }
 
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 lg:py-24 text-left">
+        <section className="w-full bg-[#F5F8FC] py-12 lg:py-16 text-left">
             <div className="main-container">
                 {/* Header */}
                 <div className="mb-12">
@@ -48,7 +48,7 @@ const Faq = () => {
 
                 {/* Content Layout */}
                 <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
-                    
+
                     {/* Left Column Card */}
                     <div className="w-full lg:w-[32%] bg-white rounded-[24px] p-8 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col text-left">
                         <h3 className="text-[20px] font-bold text-[#1D1D1F] leading-[1.3] mb-4">

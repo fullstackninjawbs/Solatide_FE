@@ -4,10 +4,10 @@ import drImage from '../../assets/images/drImage.png'
 
 export default function AboutSolatide() {
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
+        <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12 lg:gap-[8%]">
-                    
+
                     {/* Left Side: Image with Badge */}
                     <div className="w-full lg:w-[45%] shrink-0 relative">
                         <div className="rounded-[24px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.1] lg:aspect-[1.05]">
@@ -33,7 +33,7 @@ export default function AboutSolatide() {
 
                         {/* Title */}
                         <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif] mb-6">
-                            Built on Science.<br/>
+                            Built on Science.<br />
                             <span className="text-[#1a4494]">Driven by Trust.</span>
                         </h2>
 

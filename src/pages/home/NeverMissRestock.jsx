@@ -7,7 +7,7 @@ const NeverMissRestock = () => {
     }
 
     return (
-        <section className="w-full bg-white py-16 lg:py-20 text-center">
+        <section className="w-full bg-white py-12 lg:py-16 text-center">
             <div className="main-container max-w-[1440px]">
 
                 <div className="mb-8">
