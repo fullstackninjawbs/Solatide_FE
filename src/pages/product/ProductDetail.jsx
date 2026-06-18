@@ -13,19 +13,71 @@ import ProductSuggestionsSection from './ProductSuggestionsSection';
 
 const ProductDetail = () => {
     const { id } = useParams();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [quantity, setQuantity] = useState(1);
+    const [activeTab, setActiveTab] = useState(0);
+
     // Scroll to top on ID change
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [id]);
 
-    // Fallback to Retatrutide (ID: 2) if not found
-    const product = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
+    useEffect(() => {
+        const controller = new AbortController();
+        const signal = controller.signal;
 
-    const [quantity, setQuantity] = useState(1);
-    const [activeTab, setActiveTab] = useState(0);
+        const fetchProduct = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`http://localhost:5000/api/products/${id}`, { signal });
+                const result = await response.json();
+                if (!signal.aborted) {
+                    if (result.success && result.data && result.data.product) {
+                        setProduct(result.data.product);
+                    } else {
+                        const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
+                        setProduct(fallback);
+                    }
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.warn('Backend product details API unreachable. Using static fallback.');
+                    const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
+                    setProduct(fallback);
+                }
+            } finally {
+                if (!signal.aborted) {
+                    setLoading(false);
+                }
+            }
+        };
+        fetchProduct();
+
+        return () => {
+            controller.abort();
+        };
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="w-full min-h-screen bg-white flex items-center justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#214A9E]"></div>
+            </div>
+        );
+    }
+
+    if (!product) {
+        return (
+            <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 text-slate-500 font-medium">
+                <p>Product not found</p>
+                <Link to="/shop" className="mt-4 text-[#214A9E] hover:underline font-semibold">Back to Shop</Link>
+            </div>
+        );
+    }
 
     const images = [
-        product.image || null,
+        product.image || product.imageUrl || retatrutideVial,
         product.coaImage1 || null,
         product.coaImage2 || null
     ];

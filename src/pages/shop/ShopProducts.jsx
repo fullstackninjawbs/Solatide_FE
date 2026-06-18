@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
-import { products } from '../../data/products';
-
 const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const [availability, setAvailability] = useState('In Stock');
     const [sortBy, setSortBy] = useState('Best selling');
@@ -41,34 +39,28 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         'Research Solutions'
     ];
 
-    const filteredProducts = products.filter(product => {
-        const categoryMatch = selectedCategory === 'All Products' || product.category === selectedCategory;
-        const stockMatch = availability === 'All' ||
-            (availability === 'In Stock' && product.inStock) ||
-            (availability === 'Out of Stock' && !product.inStock);
-        return categoryMatch && stockMatch;
-    });
+    const [productsList, setProductsList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-        const getPrice = (pStr) => {
-            const num = parseFloat(pStr.replace(/[^0-9.]/g, ''));
-            return isNaN(num) ? 0 : num;
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(
+                    `http://localhost:5000/api/products?category=${encodeURIComponent(selectedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
+                );
+                const result = await response.json();
+                if (result.success && result.data && result.data.products) {
+                    setProductsList(result.data.products);
+                }
+            } catch (err) {
+                console.error('Error fetching products:', err);
+            } finally {
+                setLoading(false);
+            }
         };
-
-        if (sortBy === 'Price, low to high') {
-            return getPrice(a.price) - getPrice(b.price);
-        }
-        if (sortBy === 'Price, high to low') {
-            return getPrice(b.price) - getPrice(a.price);
-        }
-        if (sortBy === 'Alphabetically, A-Z') {
-            return a.name.localeCompare(b.name);
-        }
-        if (sortBy === 'Alphabetically, Z-A') {
-            return b.name.localeCompare(a.name);
-        }
-        return a.id - b.id;
-    });
+        fetchProducts();
+    }, [selectedCategory, availability, sortBy]);
 
     return (
         <div className="main-container py-12">
@@ -165,7 +157,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                     {/* Toolbar */}
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
                         <span className="text-[15px] text-[#1E1E1E]">
-                            <span className="font-semibold">{sortedProducts.length}</span> <span className="text-slate-500 font-normal">items</span>
+                            <span className="font-semibold">{productsList.length}</span> <span className="text-slate-500 font-normal">items</span>
                         </span>
 
                         <div className="flex items-center gap-3">
@@ -235,7 +227,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                     </div>
 
                     {/* Product Grid */}
-                    {sortedProducts.length === 0 ? (
+                    {productsList.length === 0 ? (
                         <div className="w-full text-center py-20 bg-white rounded-3xl border border-slate-200/50">
                             <p className="text-slate-400 font-semibold">No products match your filter criteria.</p>
                         </div>
@@ -244,13 +236,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
                             : "flex flex-col gap-4 w-full"
                         }>
-                            {sortedProducts.map((product) => (
+                            {productsList.map((product) => (
                                 <div
                                     key={product._id || product.id}
                                     className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
-                                    <Link to={`/product/${product.id}`} className={`relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px]' : 'w-full h-[240px]'} block`}>
+                                    <Link to={`/product/${product.id || product._id}`} className={`relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px]' : 'w-full h-[240px]'} block`}>
                                         <img
                                             src={product.image || productVialImage}
                                             className={`object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`}
@@ -283,7 +275,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     {/* Info */}
                                     <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
                                         <h3 className="text-[18px] font-weight-500  font-medium text-[#1E1E1E] tracking-tight leading-snug">
-                                            <Link to={`/product/${product.id}`} className="hover:text-[#00bfef] transition-colors">
+                                            <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>

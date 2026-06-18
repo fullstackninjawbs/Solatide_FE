@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.png'
@@ -8,53 +8,36 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 const FeaturedProducts = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const products = [
-        {
-            id: 1,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 2,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 3,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 4,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 5,
-            name: 'Bacteriostatic Water 10mL (Extra)',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        }
+    const fallbackProducts = [
+        { id: 1, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 2, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 3, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 4, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true }
     ];
 
-    const handleScroll = (direction) => {
-        if (scrollRef.current) {
-            const { scrollLeft, clientWidth } = scrollRef.current
-            const offset = clientWidth * 0.75 // Scroll by 75% of the visible container width
-            const scrollTo = direction === 'left' ? scrollLeft - offset : scrollLeft + offset
-            scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' })
-        }
-    }
+    useEffect(() => {
+        const fetchFeatured = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('http://localhost:5000/api/products?limit=8');
+                const result = await response.json();
+                if (result.success && result.data && result.data.products) {
+                    setProducts(result.data.products);
+                } else {
+                    setProducts(fallbackProducts);
+                }
+            } catch (error) {
+                console.warn('Backend featured API unreachable. Using fallback products.');
+                setProducts(fallbackProducts);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchFeatured();
+    }, []);
 
     return (
         <section className="relative w-full bg-[#f8fafc] py-12 lg:py-16 overflow-hidden">
@@ -104,9 +87,9 @@ const FeaturedProducts = () => {
                         className="w-full relative z-10 !pb-4"
                     >
                         {products.map((product) => (
-                            <SwiperSlide key={product.id}>
+                            <SwiperSlide key={product._id || product.id}>
                                 <div className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)]">
-                                    <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
+                                    <Link to={`/product/${product.id || product._id}`} className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center block">
                                         <img
                                             src={productVialImage}
                                             className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
@@ -114,22 +97,26 @@ const FeaturedProducts = () => {
                                         />
 
                                         <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
-                                            In Stock
+                                            {product.inStock ? 'In Stock' : 'Sold Out'}
                                         </span>
 
                                         <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
                                             <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
-                                            <span>{product.rating}</span>
+                                            <span>{product.rating || '5.0'}</span>
                                         </span>
-                                    </div>
+                                    </Link>
 
                                     <div className="flex flex-col mt-4 px-1.5 pb-2">
                                         <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-none text-left font-['Anek_Telugu',sans-serif]">
-                                            {product.name}
+                                            <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors">
+                                                {product.name}
+                                            </Link>
                                         </h3>
                                         <div className="flex items-center justify-between mt-3.5">
                                             <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu',sans-serif]">
-                                                {product.price}
+                                                {typeof product.price === 'number'
+                                                    ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                    : product.price}
                                             </span>
                                             <button
                                                 className="h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none"

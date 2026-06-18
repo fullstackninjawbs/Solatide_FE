@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 import { products } from '../../data/products';
@@ -6,9 +6,34 @@ import productVialImage from '../../assets/images/homePageFirstSection.png';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
+    const [suggestedProducts, setSuggestedProducts] = useState([]);
 
-    // Get 5 products, excluding the current product
-    const suggestedProducts = products.filter(p => p.id !== currentProduct.id).slice(0, 6);
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/products?limit=7');
+                const result = await response.json();
+                if (result.success && result.data && result.data.products) {
+                    // Filter out current product
+                    const filtered = result.data.products.filter(
+                        p => p._id !== currentProduct._id && p.id !== currentProduct.id
+                    ).slice(0, 5);
+                    setSuggestedProducts(filtered);
+                } else {
+                    const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
+                    setSuggestedProducts(fallback);
+                }
+            } catch (error) {
+                console.warn('Backend suggestions API unreachable. Using static fallback.');
+                const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
+                setSuggestedProducts(fallback);
+            }
+        };
+
+        if (currentProduct) {
+            fetchSuggestions();
+        }
+    }, [currentProduct]);
 
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
@@ -63,12 +88,12 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 >
                     {suggestedProducts.map(product => (
                         <div
-                            key={product.id}
+                            key={product._id || product.id}
                             className="w-[280px] sm:w-[310px] shrink-0 bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 snap-start flex flex-col group/card"
                         >
                             {/* Product Image Link */}
                             <Link
-                                to={`/product/${product.id}`}
+                                to={`/product/${product.id || product._id}`}
                                 className="relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 w-full h-[240px] block"
                             >
                                 <img
@@ -98,14 +123,16 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                             <div className="flex flex-col flex-grow text-left mt-4 justify-between">
                                  <div>
                                      <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
-                                         <Link to={`/product/${product.id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
+                                         <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
                                              {product.name}
                                          </Link>
                                      </h3>
                                  </div>
                                  <div className="flex items-center justify-between mt-4">
                                      <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
-                                         {product.price}
+                                         {typeof product.price === 'number'
+                                             ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                             : product.price}
                                      </span>
                                      <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         <ShoppingCart className="h-5 w-5" />
