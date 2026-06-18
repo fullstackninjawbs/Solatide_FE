@@ -26,7 +26,6 @@ export default function AboutSolatide() {
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center pt-2">
                         {/* Subtitle */}
                         <div className="flex items-center gap-2 mb-3">
-                            <div className="w-2 h-2 rounded-full bg-[#00E5FF]"></div>
                             <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 About Solatide
                             </span>
@@ -85,7 +84,7 @@ export default function AboutSolatide() {
                         <div className="flex flex-wrap items-center gap-4">
                             <Link
                                 to="/shop"
-                                className="bg-[#00ADEE] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
+                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
                             >
                                 Explore Products <span>→</span>
                             </Link>

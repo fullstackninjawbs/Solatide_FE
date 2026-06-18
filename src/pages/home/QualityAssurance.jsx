@@ -6,10 +6,9 @@ const QualityAssurance = () => {
             <div className="main-container">
                 
                 {/* Header Block */}
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-12 text-left">
-                    <div className="w-full lg:w-1/2">
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="w-2 h-2 rounded-full bg-[#00E5FF]"></div>
+                <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-12 text-left">
+                    <div className="w-full lg:w-[45%]">
+                        <div className="mb-3">
                             <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 Quality Assurance
                             </span>
@@ -19,7 +18,7 @@ const QualityAssurance = () => {
                             <span className="text-[#1a4494]">Release Standards</span>
                         </h2>
                     </div>
-                    <div className="w-full lg:w-[45%] flex items-end pb-2">
+                    <div className="w-full lg:w-[55%] flex items-start lg:pt-8">
                         <p className="text-[14.5px] text-[#4B5563] leading-[1.6]">
                             Every production batch undergoes post-manufacturing analytical quality control before dispatch. Manufacturer QC may include HPLC-UV purity, LC-MS identity, endotoxin, sterility, amino acid analysis, and internal release checks. If required release criteria are not met, the batch is not released.
                         </p>
@@ -27,7 +26,7 @@ const QualityAssurance = () => {
                 </div>
 
                 {/* Main Content Grid */}
-                <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-6">
                     
                     {/* Left Card */}
                     <div className="w-full lg:w-[45%] bg-white rounded-[24px] p-8 lg:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col text-left">
@@ -37,7 +36,7 @@ const QualityAssurance = () => {
                         <h3 className="text-[26px] sm:text-[32px] font-bold text-[#1D1D1F] leading-[1.2] mb-6">
                             Post-manufacturing QC before<br/>research release.
                         </h3>
-                        <p className="text-[14px] text-[#4B5563] leading-[1.6] mb-8 flex-grow">
+                        <p className="text-[14px] text-[#4B5563] leading-[1.6] mb-6">
                             Each production batch is subject to post-manufacturing analytical quality control before dispatch for research supply. This creates a release checkpoint after manufacturing, rather than relying only on catalogue-level supplier claims.
                         </p>
                         <div className="bg-[#F5F8FC] border border-[#EAF7FD] rounded-[14px] p-5">
@@ -49,8 +48,8 @@ const QualityAssurance = () => {
 
                     {/* Right Card */}
                     <div className="w-full lg:w-[55%] bg-white rounded-[24px] p-8 lg:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100 text-left">
-                        <div className="mb-8">
-                            <h3 className="text-[18px] sm:text-[20px] font-bold text-[#1D1D1F] mb-2">
+                        <div className="mb-6">
+                            <h3 className="text-[18px] sm:text-[20px] font-bold text-[#1D1D1F] mb-1">
                                 Manufacturer QC may include
                             </h3>
                             <p className="text-[12.5px] text-[#6B7280]">
@@ -86,12 +85,12 @@ const QualityAssurance = () => {
                                     desc: "Manufacturer release criteria are reviewed before materials proceed to research dispatch."
                                 }
                             ].map((item, index) => (
-                                <div key={index} className="flex gap-6 py-5 border-t border-slate-100 first:border-0 first:pt-0 last:pb-0">
+                                <div key={index} className="flex gap-6 py-6 border-t border-slate-100 first:border-0 first:pt-0 last:pb-0">
                                     <div className="text-[13px] font-extrabold text-[#1a4494] pt-0.5 shrink-0">
                                         {item.num}
                                     </div>
                                     <div className="flex flex-col">
-                                        <h4 className="text-[14px] font-bold text-[#1D1D1F] mb-1.5">{item.title}</h4>
+                                        <h4 className="text-[14px] font-bold text-[#1D1D1F] mb-1">{item.title}</h4>
                                         <p className="text-[12.5px] text-[#6B7280] leading-[1.6]">{item.desc}</p>
                                     </div>
                                 </div>

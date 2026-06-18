@@ -45,7 +45,7 @@ const ShopPeptides = () => {
     }, []);
 
     return (
-        <section className="relative w-full bg-white py-12 lg:py-16 overflow-hidden">
+        <section className="relative w-full bg-[#f8fafc] py-12 lg:py-16 overflow-hidden">
             <div className="main-container">
                 <div className="text-center mb-10">
                     <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case mb-3 block align-middle leading-none font-['Poppins',sans-serif]">

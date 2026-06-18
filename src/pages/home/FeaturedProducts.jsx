@@ -57,7 +57,7 @@ const FeaturedProducts = () => {
     }
 
     return (
-        <section className="relative w-full bg-white py-12 lg:py-16 overflow-hidden">
+        <section className="relative w-full bg-[#f8fafc] py-12 lg:py-16 overflow-hidden">
             <div className="main-container">
                 {/* Section Header */}
                 <div className="text-center mb-10">

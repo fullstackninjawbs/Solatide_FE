@@ -79,12 +79,13 @@ const HeroSection = () => {
 
                             <Link
                                 to="/shop"
-                                className="inline-flex items-center justify-center gap-2 text-white font-bold whitespace-nowrap transition-all duration-200"
+                                className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-bold whitespace-nowrap transition-all duration-200"
                                 style={{
                                     width: '180px',
                                     height: '46px',
                                     borderRadius: '9999px',
-                                    background: '#009bf2',
+                                    // background: '#009bf2',
+
                                     fontSize: '14px',
                                     flexShrink: 0,
                                 }}
@@ -102,22 +103,10 @@ const HeroSection = () => {
                                     borderRadius: '9999px',
                                     padding: '0 24px',
                                     fontSize: '14px',
-                                    borderColor: '#C7DDF7',
+                                    borderColor: '#007DD0',
                                     flexShrink: 0,
                                 }}
                             >
-                                <svg
-                                    className="shrink-0"
-                                    width="15" height="15"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
                                 View Documents →
                             </Link>
 
