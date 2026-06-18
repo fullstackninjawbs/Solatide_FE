@@ -113,7 +113,7 @@ const TrustBanner = () => {
     );
 
     return (
-        <section className="w-full bg-white border-y border-slate-200 overflow-hidden py-8 relative z-10">
+        <section className="w-full bg-white overflow-hidden py-8 relative z-10">
             {/* The infinite scrolling container */}
             {/* Pause animation on hover */}
             <div className="flex w-max shrink-0 animate-marquee-four-sets hover:[animation-play-state:paused] cursor-pointer gap-16 px-8 md:gap-24 md:px-12">

@@ -102,7 +102,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'All Products' }
     const details = isSpecificCategory ? categoryDetails[selectedCategory] : null;
 
     return (
-        <section className="relative w-full bg-[#f4f7fa] py-20 lg:py-24 overflow-hidden">
+        <section className="relative w-full bg-[#f4f7fa] py-12 lg:py-16 overflow-hidden">
             <div className={isHome ? "main-container" : "max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8"}>
 
                 {/* Specific Category View */}

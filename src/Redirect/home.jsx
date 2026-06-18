@@ -18,9 +18,9 @@ const Home = () => {
         <>
             <HeroSection />
             <TrustBanner />
-            <ByTheNumbers />
             <ShopPeptides />
-            <ProductCategories isHome={true} />
+            <ByTheNumbers />
+            {/* <ProductCategories isHome={true} /> */}
             <FeaturedProducts />
             <WhySolatide />
             <AboutSolatide />

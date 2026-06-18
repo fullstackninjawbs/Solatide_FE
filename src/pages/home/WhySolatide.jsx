@@ -6,29 +6,23 @@ const WhySolatide = () => {
         <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-16">
-                    
-                    {/* Left Side: Content */}
                     <div className="w-full lg:w-[45%] flex flex-col text-left">
-                        {/* Subtitle */}
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-2 h-2 rounded-full bg-[#00E5FF]"></div>
                             <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 Why Solatide
                             </span>
                         </div>
-                        
-                        {/* Title */}
+
                         <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-tight font-['Anek_Telugu',sans-serif] mb-6">
-                            We Do the Testing, So <br/>
+                            We Do the Testing, So <br />
                             <span className="text-[#1a4494]">You Don't Have To</span>
                         </h2>
-                        
-                        {/* Paragraph */}
+
                         <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-8">
                             The research peptide market is crowded with vague listings, difficult-to-verify supplier claims, inflated markups, and incomplete batch documentation. Solatide is built to reduce that uncertainty with online batch verification, batch-level documentation, post-manufacturing QC, and fairer research supply pricing.
                         </p>
-                        
-                        {/* Highlight Box */}
+
                         <div className="border-l-4 border-[#00ADEE] pl-5 mb-8">
                             <h3 className="text-[16px] font-bold text-[#1D1D1F] mb-2">
                                 Batch documentation should be easy to verify.
@@ -37,8 +31,7 @@ const WhySolatide = () => {
                                 Available COA and laboratory documentation is organised through Solatide's COA & Lab Testing page, helping researchers review batch information at the product or batch level where available.
                             </p>
                         </div>
-                        
-                        {/* Buttons */}
+
                         <div className="flex flex-wrap items-center gap-4">
                             <Link
                                 to="/shop"
@@ -55,7 +48,6 @@ const WhySolatide = () => {
                         </div>
                     </div>
 
-                    {/* Right Side: Card */}
                     <div className="w-full lg:w-[50%]">
                         <div className="bg-white rounded-[24px] p-8 sm:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100">
                             <h3 className="text-[20px] font-bold text-[#1E1E1E] mb-3">
@@ -64,8 +56,7 @@ const WhySolatide = () => {
                             <p className="text-[14px] text-[#6B7280] mb-8 border-b border-slate-100 pb-6">
                                 A transparent research supply process starts with batch information researchers can review — not unsupported claims or supplier statements that cannot be verified.
                             </p>
-                            
-                            {/* List Items */}
+
                             <div className="flex flex-col gap-6">
                                 {[
                                     {
@@ -102,7 +93,7 @@ const WhySolatide = () => {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             {/* Procurement Check Box */}
                             <div className="mt-8 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-4">
                                 <p className="text-[12.5px] text-[#4B5563] leading-relaxed">
@@ -111,7 +102,7 @@ const WhySolatide = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </section>
