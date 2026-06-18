@@ -91,60 +91,62 @@ const HeroSection = () => {
 
                         </div>
 
-                        {/* Inline Features Row */}
-                        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mt-4 pt-6 border-t border-slate-100 w-full">
-                            
-                            {/* Feature 1 */}
-                            <div className="flex items-center gap-3">
-                                <HexBadge>
-                                    <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                </HexBadge>
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 tracking-tight whitespace-nowrap">
-                                        <span className="text-[#00ACEE] font-extrabold">≥99%</span> Purity Standard
-                                    </span>
-                                    <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap">
-                                        HPLC-UV/LC-MS + Endotoxin
-                                    </span>
+                        {/* Features Container (No Box) */}
+                        <div className="mt-6 w-full max-w-[760px]">
+                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-0">
+                                
+                                {/* Feature 1 */}
+                                <div className="flex items-center gap-3">
+                                    <HexBadge>
+                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
+                                    </HexBadge>
+                                    <div className="flex flex-col text-left">
+                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
+                                            <span className="text-[#00ACEE] font-semibold">≥99%</span> Purity Standard
+                                        </span>
+                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                            HPLC-UV/LC-MS + Endotoxin
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Vertical Divider */}
-                            <div className="hidden md:block w-[1px] h-8 bg-slate-200"></div>
+                                {/* Vertical Divider */}
+                                <div className="hidden md:block w-[1.5px] h-10 bg-slate-300/80 self-center"></div>
 
-                            {/* Feature 2 */}
-                            <div className="flex items-center gap-3">
-                                <HexBadge>
-                                    <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                </HexBadge>
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 tracking-tight whitespace-nowrap">
-                                        <span className="text-[#00ACEE] font-extrabold">Lot-Traceable</span> Vials
-                                    </span>
-                                    <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap">
-                                        Vial-to-COA Verified
-                                    </span>
+                                {/* Feature 2 */}
+                                <div className="flex items-center gap-3">
+                                    <HexBadge>
+                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
+                                    </HexBadge>
+                                    <div className="flex flex-col text-left">
+                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
+                                            <span className="text-[#00ACEE] font-semibold">Lot-Traceable</span> Vials
+                                        </span>
+                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                            Vial-to-COA Verified
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Vertical Divider */}
-                            <div className="hidden md:block w-[1px] h-8 bg-slate-200"></div>
+                                {/* Vertical Divider */}
+                                <div className="hidden md:block w-[1.5px] h-10 bg-slate-300/80 self-center"></div>
 
-                            {/* Feature 3 */}
-                            <div className="flex items-center gap-3">
-                                <HexBadge>
-                                    <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                </HexBadge>
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 tracking-tight whitespace-nowrap">
-                                        <span className="text-[#00ACEE] font-extrabold">Verifiable</span> Reports
-                                    </span>
-                                    <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap">
-                                        Third-Party Results
-                                    </span>
+                                {/* Feature 3 */}
+                                <div className="flex items-center gap-3">
+                                    <HexBadge>
+                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
+                                    </HexBadge>
+                                    <div className="flex flex-col text-left">
+                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
+                                            <span className="text-[#00ACEE] font-semibold">Verifiable</span> Reports
+                                        </span>
+                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                            Third-Party Results
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
 
                     </div>
