@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
+import ReactCountryFlag from "react-country-flag"
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-1.5 py-0.5 flex items-center justify-center h-[18px] shrink-0">
@@ -33,40 +34,40 @@ const ApplePaySVG = () => (
 
 
 const countriesList = [
-    { name: 'Australia', code: 'AUD', flag: '🇦🇺' },
-    { name: 'United States', code: 'USD', flag: '🇺🇸' },
-    { name: 'United Kingdom', code: 'GBP', flag: '🇬🇧' },
-    { name: 'Canada', code: 'CAD', flag: '🇨🇦' },
-    { name: 'Euro Zone', code: 'EUR', flag: '🇪🇺' },
-    { name: 'New Zealand', code: 'NZD', flag: '🇳🇿' },
-    { name: 'Afghanistan', code: 'AFN', flag: '🇦🇫' },
-    { name: 'Åland Islands', code: 'EUR', flag: '🇦🇽' },
-    { name: 'Albania', code: 'ALL', flag: '🇦🇱' },
-    { name: 'Algeria', code: 'DZD', flag: '🇩🇿' },
-    { name: 'Andorra', code: 'EUR', flag: '🇦🇩' },
-    { name: 'Angola', code: 'AOA', flag: '🇦🇴' },
-    { name: 'Anguilla', code: 'XCD', flag: '🇦🇮' },
-    { name: 'Antigua & Barbuda', code: 'XCD', flag: '🇦🇬' },
-    { name: 'Argentina', code: 'ARS', flag: '🇦🇷' },
-    { name: 'Armenia', code: 'AMD', flag: '🇦🇲' },
-    { name: 'Austria', code: 'EUR', flag: '🇦🇹' },
-    { name: 'Bahamas', code: 'BSD', flag: '🇧🇸' },
-    { name: 'Bahrain', code: 'BHD', flag: '🇧🇭' },
-    { name: 'Bangladesh', code: 'BDT', flag: '🇧🇩' },
-    { name: 'Belgium', code: 'EUR', flag: '🇧🇪' },
-    { name: 'Brazil', code: 'BRL', flag: '🇧🇷' },
-    { name: 'China', code: 'CNY', flag: '🇨🇳' },
-    { name: 'Denmark', code: 'DKK', flag: '🇩🇰' },
-    { name: 'Egypt', code: 'EGP', flag: '🇪🇬' },
-    { name: 'Fiji', code: 'FJD', flag: '🇫🇯' },
-    { name: 'Finland', code: 'EUR', flag: '🇫🇮' },
-    { name: 'France', code: 'EUR', flag: '🇫🇷' },
-    { name: 'Germany', code: 'EUR', flag: '🇩🇪' },
-    { name: 'India', code: 'INR', flag: '🇮🇳' },
-    { name: 'Japan', code: 'JPY', flag: '🇯🇵' },
-    { name: 'Singapore', code: 'SGD', flag: '🇸🇬' },
-    { name: 'South Africa', code: 'ZAR', flag: '🇿🇦' },
-    { name: 'Switzerland', code: 'CHF', flag: '🇨🇭' }
+    { name: 'Australia', code: 'AUD', countryCode: 'AU' },
+    { name: 'United States', code: 'USD', countryCode: 'US' },
+    { name: 'United Kingdom', code: 'GBP', countryCode: 'GB' },
+    { name: 'Canada', code: 'CAD', countryCode: 'CA' },
+    { name: 'Euro Zone', code: 'EUR', countryCode: 'EU' },
+    { name: 'New Zealand', code: 'NZD', countryCode: 'NZ' },
+    { name: 'Afghanistan', code: 'AFN', countryCode: 'AF' },
+    { name: 'Åland Islands', code: 'EUR', countryCode: 'AX' },
+    { name: 'Albania', code: 'ALL', countryCode: 'AL' },
+    { name: 'Algeria', code: 'DZD', countryCode: 'DZ' },
+    { name: 'Andorra', code: 'EUR', countryCode: 'AD' },
+    { name: 'Angola', code: 'AOA', countryCode: 'AO' },
+    { name: 'Anguilla', code: 'XCD', countryCode: 'AI' },
+    { name: 'Antigua & Barbuda', code: 'XCD', countryCode: 'AG' },
+    { name: 'Argentina', code: 'ARS', countryCode: 'AR' },
+    { name: 'Armenia', code: 'AMD', countryCode: 'AM' },
+    { name: 'Austria', code: 'EUR', countryCode: 'AT' },
+    { name: 'Bahamas', code: 'BSD', countryCode: 'BS' },
+    { name: 'Bahrain', code: 'BHD', countryCode: 'BH' },
+    { name: 'Bangladesh', code: 'BDT', countryCode: 'BD' },
+    { name: 'Belgium', code: 'EUR', countryCode: 'BE' },
+    { name: 'Brazil', code: 'BRL', countryCode: 'BR' },
+    { name: 'China', code: 'CNY', countryCode: 'CN' },
+    { name: 'Denmark', code: 'DKK', countryCode: 'DK' },
+    { name: 'Egypt', code: 'EGP', countryCode: 'EG' },
+    { name: 'Fiji', code: 'FJD', countryCode: 'FJ' },
+    { name: 'Finland', code: 'EUR', countryCode: 'FI' },
+    { name: 'France', code: 'EUR', countryCode: 'FR' },
+    { name: 'Germany', code: 'EUR', countryCode: 'DE' },
+    { name: 'India', code: 'INR', countryCode: 'IN' },
+    { name: 'Japan', code: 'JPY', countryCode: 'JP' },
+    { name: 'Singapore', code: 'SGD', countryCode: 'SG' },
+    { name: 'South Africa', code: 'ZAR', countryCode: 'ZA' },
+    { name: 'Switzerland', code: 'CHF', countryCode: 'CH' }
 ]
 
 const Header = () => {
@@ -276,7 +277,7 @@ const Header = () => {
                                 onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
                                 className="inline-flex items-center gap-1.5 bg-[#102a5c] text-white px-3 py-[7px] rounded-full text-[12px] font-bold cursor-pointer hover:bg-[#1a4494] transition-colors shrink-0 select-none"
                             >
-                                <span className="text-sm leading-none">{selectedCountry.flag}</span>
+                                <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
                                 <span>{selectedCountry.code}</span>
                                 <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
                                     <path d="M7 10l5 5 5-5H7z" />
@@ -314,7 +315,7 @@ const Header = () => {
                                                         : 'hover:bg-white/70 text-[#102a5c]'
                                                         }`}
                                                 >
-                                                    <span className="text-base shrink-0 leading-none">{country.flag}</span>
+                                                    <span className="text-base shrink-0 leading-none"><ReactCountryFlag countryCode={country.countryCode} svg /></span>
                                                     <span className="truncate flex-1">{country.name}</span>
                                                     <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                 </button>
@@ -382,7 +383,7 @@ const Header = () => {
                                     onClick={() => setIsMobileCountryDropdownOpen(!isMobileCountryDropdownOpen)}
                                     className="inline-flex items-center gap-1.5 bg-[#102a5c] text-white px-3.5 py-2 rounded-full text-xs font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
                                 >
-                                    <span className="text-sm leading-none">{selectedCountry.flag}</span>
+                                    <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
                                     <span className="uppercase">{selectedCountry.code}</span>
                                     <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
                                         <path d="M7 10l5 5 5-5H7z" />
@@ -420,7 +421,7 @@ const Header = () => {
                                                             : 'hover:bg-white/70 text-[#102a5c]'
                                                             }`}
                                                     >
-                                                        <span className="text-base shrink-0 leading-none">{country.flag}</span>
+                                                        <span className="text-base shrink-0 leading-none"><ReactCountryFlag countryCode={country.countryCode} svg /></span>
                                                         <span className="truncate flex-1">{country.name}</span>
                                                         <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                     </button>
