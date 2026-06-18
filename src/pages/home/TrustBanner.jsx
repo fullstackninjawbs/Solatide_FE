@@ -103,19 +103,14 @@ const TrustBanner = () => {
         <GmpLogo key="gmp" />,
         <JanoshikLogo key="jano" />,
     ];
-
-    // Dynamically clone and duplicate the logos using the spread operator to create 4 sets
-    // This provides enough width to cover large displays without gaps or jumps during loops
-    const allLogos = [...Array(4)].flatMap((_, setIdx) => 
-        baseLogos.map((logo, logoIdx) => 
+    const allLogos = [...Array(4)].flatMap((_, setIdx) =>
+        baseLogos.map((logo, logoIdx) =>
             React.cloneElement(logo, { key: `logo-${setIdx}-${logoIdx}` })
         )
     );
 
     return (
         <section className="w-full bg-white overflow-hidden py-8 relative z-10">
-            {/* The infinite scrolling container */}
-            {/* Pause animation on hover */}
             <div className="flex w-max shrink-0 animate-marquee-four-sets hover:[animation-play-state:paused] cursor-pointer gap-16 px-8 md:gap-24 md:px-12">
                 {allLogos}
             </div>

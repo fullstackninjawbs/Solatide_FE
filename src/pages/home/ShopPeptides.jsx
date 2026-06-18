@@ -151,7 +151,7 @@ const ShopPeptides = () => {
                 <div className="flex justify-center mt-10">
                     <Link
                         to="/shop"
-                        className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:opacity-90 text-white text-[14px] font-extrabold py-3.5 px-8 rounded-full transition-all shadow-md flex items-center gap-2 shrink-0 tracking-wide"
+                        className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:opacity-90 text-white text-[14px] font-semibold py-3.5 px-8 rounded-full transition-all shadow-md flex items-center gap-2 shrink-0 tracking-wide"
                     >
                         View All Products <span className="text-base leading-none">→</span>
                     </Link>

@@ -62,7 +62,7 @@ const HeroSection = () => {
 
                             <Link
                                 to="/shop"
-                                className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-bold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
+                                className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
                                 style={{
                                     height: '46px',
                                     borderRadius: '9999px',

@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonBtn'
 const ExploreProducts = () => {
     return (
         <section
-            className="w-full bg-cover bg-center py-20 lg:py-24 text-left relative flex items-center min-h-[360px] md:min-h-[400px] overflow-hidden"
+            className="w-full bg-cover bg-center py-12 lg:py-16 text-left relative flex items-center min-h-[360px] md:min-h-[400px] overflow-hidden"
             style={{ backgroundImage: `url(${exporleImage})` }}
         >
             <div className="main-container relative z-10 w-full flex flex-col md:flex-row md:items-center justify-between gap-8">

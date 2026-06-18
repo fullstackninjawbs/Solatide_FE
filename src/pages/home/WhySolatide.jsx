@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const WhySolatide = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
+        <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-16">
 
@@ -39,7 +39,7 @@ const WhySolatide = () => {
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                             <Link
                                 to="/shop"
-                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
+                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-semibold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
                             >
                                 Shop Now <span>→</span>
                             </Link>

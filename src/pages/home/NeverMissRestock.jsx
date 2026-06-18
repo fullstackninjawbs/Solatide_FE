@@ -7,7 +7,7 @@ const NeverMissRestock = () => {
     }
 
     return (
-        <section className="w-full bg-white py-16 lg:py-20 text-center">
+        <section className="w-full bg-white py-12 lg:py-16 text-center">
             <div className="main-container max-w-[1440px]">
 
                 <div className="mb-8">
@@ -75,7 +75,7 @@ const NeverMissRestock = () => {
                             href="#"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto h-[40px] px-6 rounded-[12px] bg-gradient-to-r from-[#00ADEE] to-[#0079CE] hover:opacity-95 text-white font-bold text-[13.5px] flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#00ADEE]/10 whitespace-nowrap"
+                            className="w-full sm:w-auto h-[40px] px-6 rounded-[12px] bg-gradient-to-r from-[#00ADEE] to-[#0079CE] hover:opacity-95 text-white font-semibold text-[13.5px] flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#00ADEE]/10 whitespace-nowrap"
                         >
                             Join Now
                         </a>

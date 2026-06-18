@@ -40,7 +40,7 @@ const Testimonials = () => {
     }
 
     return (
-        <section className="w-full bg-white py-16 lg:py-20 overflow-hidden">
+        <section className="w-full bg-white py-12 lg:py-16 overflow-hidden">
             <div className="main-container">
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-12">
                     <div className="text-left">
