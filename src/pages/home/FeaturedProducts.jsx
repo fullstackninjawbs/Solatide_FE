@@ -1,10 +1,13 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.png'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const FeaturedProducts = () => {
-    const scrollRef = useRef(null)
 
     const products = [
         {
@@ -54,94 +57,100 @@ const FeaturedProducts = () => {
     }
 
     return (
-        <section className="relative w-full bg-white py-16 lg:py-20 overflow-hidden">
+        <section className="relative w-full bg-white py-12 lg:py-16 overflow-hidden">
             <div className="main-container">
                 {/* Section Header */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-                    <div className="text-left">
-                        <span className="text-[#00ADEE] text-[14px] font-semibold mb-2 block">
-                            Featured Products
-                        </span>
-                        <h2 className="text-[32px] md:text-[44px] font-anek font-bold text-[#1D1D1F] leading-tight">
-                            Best-<span className="text-[#1a4494]">Selling</span> Compounds
-                        </h2>
-                    </div>
-                    <Link
-                        to="/shop"
-                        className="text-[#00ADEE] text-sm font-semibold hover:text-[#008bdb] transition-colors flex items-center gap-1.5 shrink-0"
-                    >
-                        View All Product <span className="text-base">→</span>
-                    </Link>
+                <div className="text-center mb-10">
+                    <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case mb-3 block align-middle leading-none font-['Poppins',sans-serif]">
+                        Featured Products
+                    </span>
+                    <h2 className="text-[48px] font-semibold text-[#1E1E1E] tracking-normal leading-none font-['Anek_Telugu',sans-serif]">
+                        Best-<span className="text-[#1a4494]">Selling</span> Compounds
+                    </h2>
                 </div>
 
                 {/* Product Slider Area */}
                 <div className="relative w-full">
                     {/* Left Carousel Navigation Trigger */}
                     <button
-                        onClick={() => handleScroll('left')}
-                        className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none"
+                        className="featured-prev absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none hover:bg-slate-50 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </button>
 
                     {/* Right Carousel Navigation Trigger */}
                     <button
-                        onClick={() => handleScroll('right')}
-                        className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none"
+                        className="featured-next absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none hover:bg-slate-50 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
 
-                    {/* Cards Flex/Slider container */}
-                    <div
-                        ref={scrollRef}
-                        className="flex overflow-x-auto gap-6 w-full relative z-10 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-2"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    <Swiper
+                        modules={[Navigation]}
+                        spaceBetween={24}
+                        slidesPerView={1}
+                        navigation={{
+                            prevEl: '.featured-prev',
+                            nextEl: '.featured-next',
+                        }}
+                        breakpoints={{
+                            640: {
+                                slidesPerView: 2,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                            },
+                        }}
+                        className="w-full relative z-10 !pb-4"
                     >
                         {products.map((product) => (
-                            <div
-                                key={product.id}
-                                className="snap-start shrink-0 w-[85%] sm:w-[48%] lg:w-[calc(25%-18px)] group flex flex-col bg-white transition-all duration-300"
-                            >
-                                {/* Vial Graphic Container */}
-                                <div className="relative w-full aspect-square overflow-hidden bg-[#eef2f6] rounded-[24px] flex items-center justify-center border border-slate-100/50">
-                                    <img
-                                        src={productVialImage}
-                                        className="w-full h-full object-cover object-center select-none transition-transform duration-500 group-hover:scale-105"
-                                        alt={product.name}
-                                    />
+                            <SwiperSlide key={product.id}>
+                                <div className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)]">
+                                    <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
+                                        <img
+                                            src={productVialImage}
+                                            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                                            alt={product.name}
+                                        />
 
-                                    {/* In Stock Badge */}
-                                    <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
-                                        In Stock
-                                    </span>
-
-                                    {/* Star Rating Badge */}
-                                    <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
-                                        <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
-                                        <span>{product.rating}</span>
-                                    </span>
-                                </div>
-
-                                {/* Text Details */}
-                                <div className="flex flex-col mt-4">
-                                    <h3 className="text-[15px] sm:text-base font-bold text-slate-800 text-left tracking-tight">
-                                        {product.name}
-                                    </h3>
-                                    <div className="flex items-center justify-between mt-3">
-                                        <span className="text-base text-[16px] sm:text-lg font-extrabold text-[#00bfef]">
-                                            {product.price}
+                                        <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            In Stock
                                         </span>
-                                        <button
-                                            className="h-11 w-11 rounded-full bg-[#e0eaf5]/80 text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none"
-                                        >
-                                            <ShoppingCart className="h-5 w-5" />
-                                        </button>
+
+                                        <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
+                                            <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                            <span>{product.rating}</span>
+                                        </span>
+                                    </div>
+
+                                    <div className="flex flex-col mt-4 px-1.5 pb-2">
+                                        <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-none text-left font-['Anek_Telugu',sans-serif]">
+                                            {product.name}
+                                        </h3>
+                                        <div className="flex items-center justify-between mt-3.5">
+                                            <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu',sans-serif]">
+                                                {product.price}
+                                            </span>
+                                            <button
+                                                className="h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none"
+                                            >
+                                                <ShoppingCart className="h-5 w-5" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </SwiperSlide>
                         ))}
-                    </div>
+                    </Swiper>
+                </div>
+
+                <div className="flex justify-center mt-10">
+                    <Link
+                        to="/shop"
+                        className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:opacity-90 text-white text-[14px] font-extrabold py-3.5 px-8 rounded-full transition-all shadow-md flex items-center gap-2 shrink-0 tracking-wide"
+                    >
+                        View All Products <span className="text-base leading-none">→</span>
+                    </Link>
                 </div>
             </div>
         </section>

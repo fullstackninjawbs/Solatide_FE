@@ -104,7 +104,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'All Products' }
     return (
         <section className="relative w-full bg-[#f4f7fa] py-20 lg:py-24 overflow-hidden">
             <div className={isHome ? "main-container" : "max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8"}>
-                
+
                 {/* Specific Category View */}
                 {isSpecificCategory ? (
                     <div className="text-left max-w-none mb-12">
@@ -229,11 +229,11 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'All Products' }
                     <div className="w-full">
                         {/* Section Header */}
                         <div className={isHome ? "text-center max-w-3xl mx-auto mb-16" : "text-left max-w-none mb-12"}>
-                            <span className="text-[#00bfef] text-[13px] sm:text-[15px] font-extrabold tracking-widest uppercase mb-3 block">
+                            <span className="text-[#00E5FF] text-[14px] font-weight-600 font-semibold font-['Poppins',sans-serif] tracking-widest uppercase mb-3 block">
                                 {isHome ? "Product Categories" : "Research Category"}
                             </span>
                             {isHome ? (
-                                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#102a5c] tracking-tight">
+                                <h2 className="text-[48px] font-weight-600 font-semibold text-[#102a5c] tracking-tight font-['Anek_Telugu',sans-serif]">
                                     Shop by <span className="text-[#1a4494]">Research</span> Category
                                 </h2>
                             ) : (

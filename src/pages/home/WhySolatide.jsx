@@ -1,73 +1,117 @@
 import React from 'react'
-import WhySolatideImage from '../../assets/images/WhySolatideImage.png'
-import RetatrutideMad from '../../assets/images/RetatrutideMad.png'
-import Rectangle4381 from '../../assets/images/Rectangle 4381.png'
-import CommonButton from '../../components/CommonBtn'
+import { Link } from 'react-router-dom'
 
 const WhySolatide = () => {
     return (
         <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
             <div className="main-container">
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-8">
-                    <div className="w-full lg:w-[35%] flex flex-col text-left">
-                        <span className="text-[14px] font-semibold text-[#00ADEE] mb-2 block">Why Solatide</span>
-                        <h2 className="text-[32px] md:text-[48px] lg:text-[54px] font-anek font-bold text-[#1D1D1F] leading-[1.15] tracking-[0px] mb-6">
-                            Why Choose
-                            <br />
-                            <span className="text-[#1a4494]">Solatide</span>
-                            <br />
-                            Biosciences?
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-16">
+                    
+                    {/* Left Side: Content */}
+                    <div className="w-full lg:w-[45%] flex flex-col text-left">
+                        {/* Subtitle */}
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="w-2 h-2 rounded-full bg-[#00E5FF]"></div>
+                            <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
+                                Why Solatide
+                            </span>
+                        </div>
+                        
+                        {/* Title */}
+                        <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-tight font-['Anek_Telugu',sans-serif] mb-6">
+                            We Do the Testing, So <br/>
+                            <span className="text-[#1a4494]">You Don't Have To</span>
                         </h2>
-
-                        <div className="space-y-4 text-[15px] text-[#4B5563] leading-[1.6] max-w-[500px]">
-                            <p>
-                                Solatide Biosciences focuses on delivering research compounds with clarity, consistency, and transparent documentation. Each product is supported by independent third-party analytical documentation.
+                        
+                        {/* Paragraph */}
+                        <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-8">
+                            The research peptide market is crowded with vague listings, difficult-to-verify supplier claims, inflated markups, and incomplete batch documentation. Solatide is built to reduce that uncertainty with online batch verification, batch-level documentation, post-manufacturing QC, and fairer research supply pricing.
+                        </p>
+                        
+                        {/* Highlight Box */}
+                        <div className="border-l-4 border-[#00ADEE] pl-5 mb-8">
+                            <h3 className="text-[16px] font-bold text-[#1D1D1F] mb-2">
+                                Batch documentation should be easy to verify.
+                            </h3>
+                            <p className="text-[14px] text-[#4B5563] leading-relaxed">
+                                Available COA and laboratory documentation is organised through Solatide's COA & Lab Testing page, helping researchers review batch information at the product or batch level where available.
                             </p>
-                            <p>
-                                Our approach is designed to simplify sourcing for research customers by maintaining clear standards, reliable global dispatch, and responsive support channels. Every step is aligned with a research-use-only framework, ensuring both compliance and confidence in product selection.
+                        </div>
+                        
+                        {/* Buttons */}
+                        <div className="flex flex-wrap items-center gap-4">
+                            <Link
+                                to="/shop"
+                                className="bg-[#00ADEE] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
+                            >
+                                Shop Now <span>→</span>
+                            </Link>
+                            <Link
+                                to="/coa"
+                                className="text-[#1a4494] text-[14px] font-extrabold py-3.5 px-4 transition-all hover:opacity-80"
+                            >
+                                Verify batch documentation
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Right Side: Card */}
+                    <div className="w-full lg:w-[50%]">
+                        <div className="bg-white rounded-[24px] p-8 sm:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100">
+                            <h3 className="text-[20px] font-bold text-[#1E1E1E] mb-3">
+                                Built to reduce sourcing uncertainty
+                            </h3>
+                            <p className="text-[14px] text-[#6B7280] mb-8 border-b border-slate-100 pb-6">
+                                A transparent research supply process starts with batch information researchers can review — not unsupported claims or supplier statements that cannot be verified.
                             </p>
-                        </div>
-
-                        <div className="mt-8">
-                            <CommonButton
-                                title="Shop Now"
-                                width="w-[165px]"
-                                className="bg-[#00ADEE] bg-none hover:bg-[#0098d1]"
-                            />
+                            
+                            {/* List Items */}
+                            <div className="flex flex-col gap-6">
+                                {[
+                                    {
+                                        title: "Online batch verification",
+                                        desc: "Available batch documentation can be reviewed through Solatide's COA & Lab Testing page where available."
+                                    },
+                                    {
+                                        title: "We do the testing, so researchers do not have to chase it",
+                                        desc: "Post-manufacturing QC and available analytical documentation help reduce reliance on supplier claims that cannot be checked."
+                                    },
+                                    {
+                                        title: "Batch-level documentation and traceability",
+                                        desc: "Available analytical records are organised around compound identity, strength, format, batch references, and documentation status."
+                                    },
+                                    {
+                                        title: "Fairer research supply pricing",
+                                        desc: "Solatide aims to keep research compounds accessible without unnecessary inflated reseller markups."
+                                    },
+                                    {
+                                        title: "Research-use-only positioning",
+                                        desc: "No human-use, dosing, therapeutic, cosmetic, diagnostic, or veterinary positioning across product information."
+                                    }
+                                ].map((item, index) => (
+                                    <div key={index} className="flex gap-4 pb-6 border-b border-slate-100 last:border-0 last:pb-0">
+                                        <div className="mt-1 w-5 h-5 rounded-full bg-[#E0F7FA] flex items-center justify-center shrink-0">
+                                            <svg className="w-3 h-3 text-[#00ADEE]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <h4 className="text-[14px] font-bold text-[#1E1E1E] mb-1">{item.title}</h4>
+                                            <p className="text-[13px] text-[#6B7280] leading-relaxed">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Procurement Check Box */}
+                            <div className="mt-8 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-4">
+                                <p className="text-[12.5px] text-[#4B5563] leading-relaxed">
+                                    <span className="font-bold text-[#1E1E1E]">Procurement check:</span> If a supplier cannot clearly explain batch identity, testing status, documentation availability, and intended-use restrictions, that uncertainty matters.
+                                </p>
+                            </div>
                         </div>
                     </div>
-
-                    <div className="w-full lg:w-[28%] shrink-0">
-                        <div className="rounded-[24px] rounded-br-[120px] overflow-hidden shadow-md aspect-[0.72] w-full h-full border border-white/40">
-                            <img src={WhySolatideImage} alt="Scientists in lab" className="w-full h-full object-cover select-none" />
-                        </div>
-                    </div>
-
-                    <div className="w-full lg:w-[28%] flex flex-col gap-8">
-                        <div className="relative rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 aspect-[1.48] flex items-center justify-center bg-white">
-                            <img src={Rectangle4381} alt="Background pattern" className="absolute inset-0 w-full h-full object-cover select-none" />
-                            <img src={RetatrutideMad} alt="Retatrutide 10mg Vial" className="relative z-10 max-h-[85%] object-contain select-none" />
-                        </div>
-
-                        <ul className="flex flex-col gap-3 text-[14.5px] font-semibold text-[#0AD6ED]">
-                            <li className="flex items-start gap-2">
-                                <span className="text-[#0AD6ED] text-lg leading-none mt-[-1px]">•</span>
-                                <a href="#" className="underline hover:text-[#008bdb] transition-colors">Third-party documentation where available</a>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-[#0AD6ED] text-lg leading-none mt-[-1px]">•</span>
-                                <a href="#" className="underline hover:text-[#008bdb] transition-colors">Reliable global dispatch</a>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-[#0AD6ED] text-lg leading-none mt-[-1px]">•</span>
-                                <a href="#" className="underline hover:text-[#008bdb] transition-colors">Fast international dispatch</a>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-[#0AD6ED] text-lg leading-none mt-[-1px]">•</span>
-                                <a href="#" className="underline hover:text-[#008bdb] transition-colors">Support via Telegram and email</a>
-                            </li>
-                        </ul>
-                    </div>
+                    
                 </div>
             </div>
         </section>

@@ -21,9 +21,9 @@ const Home = () => {
             <ByTheNumbers />
             <ShopPeptides />
             <ProductCategories isHome={true} />
-            <AboutSolatide />
-            <WhySolatide />
             <FeaturedProducts />
+            <WhySolatide />
+            <AboutSolatide />
             <QualityAssurance />
             <ExploreProducts />
             <Testimonials />

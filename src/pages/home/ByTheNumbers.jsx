@@ -5,10 +5,10 @@ const ByTheNumbers = () => {
         <section className="relative w-full bg-[#f4f7fa] py-20 lg:py-24 overflow-hidden">
             <div className="main-container">
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-3 block">
+                    <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case mb-3 block align-middle leading-none font-['Poppins',sans-serif]">
                         By The Numbers
                     </span>
-                    <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#102a5c] leading-tight">
+                    <h2 className="text-[48px] font-semibold text-[#1E1E1E] tracking-normal leading-none font-['Anek_Telugu',sans-serif]">
                         Science You Can <span className="text-[#1a4494]">Trust</span>
                     </h2>
                 </div>
