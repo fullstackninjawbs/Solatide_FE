@@ -209,7 +209,7 @@ const Header = () => {
                     </div>
 
 
-                    <nav className="hidden lg:flex items-center gap-1">
+                    <nav className="hidden xl:flex items-center gap-1">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
@@ -234,7 +234,7 @@ const Header = () => {
                             </button>
 
                             <div
-                                className={`absolute right-0 lg:right-auto lg:left-0 top-[calc(100%+8px)] bg-white border border-slate-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-3 min-w-[200px] flex flex-col transition-all duration-300 origin-top-left ${isMoreOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible'
+                                className={`absolute right-0 xl:right-auto xl:left-0 top-[calc(100%+8px)] bg-white border border-slate-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-3 min-w-[200px] flex flex-col transition-all duration-300 origin-top-left ${isMoreOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible'
                                     }`}
                             >
                                 {[
@@ -260,7 +260,7 @@ const Header = () => {
                     </nav>
 
 
-                    <div className="hidden lg:flex items-center gap-2.5">
+                    <div className="hidden xl:flex items-center gap-2.5">
 
                         <div className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20">
                             <svg className="h-[14px] w-[14px] text-[#1a4494]/70 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
@@ -343,7 +343,7 @@ const Header = () => {
 
                     </div>
 
-                    <div className="flex lg:hidden items-center gap-2.5">
+                    <div className="flex xl:hidden items-center gap-2.5">
                         <button className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0">
                             <ShoppingCart className="h-[17px] w-[17px]" />
                         </button>
@@ -363,7 +363,7 @@ const Header = () => {
                 </div>
 
                 {isMobileMenuOpen && (
-                    <div className="lg:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 shadow-lg rounded-b-xl absolute left-0 w-full z-[999] max-h-[80vh] overflow-y-auto">
+                    <div className="xl:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 shadow-lg rounded-b-xl absolute left-0 w-full z-[999] max-h-[80vh] overflow-y-auto">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
