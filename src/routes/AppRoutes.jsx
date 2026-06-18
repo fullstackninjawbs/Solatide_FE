@@ -10,6 +10,7 @@ import ContactUs from '../Redirect/ContactUs'
 import ResearchResource from '../pages/researchResource/ResearchResource'
 import Faq from '../Redirect/Faq'
 import About from '../Redirect/About'
+import ResearchInsight from '../Redirect/ResearchInsight'
 
 const AppRoutes = () => {
     return (
@@ -25,6 +26,9 @@ const AppRoutes = () => {
                 <Route path="research-resource" element={<ResearchResource />} />
                 <Route path="resource" element={<ResearchResource />} />
                 <Route path="Faq" element={<Faq />} />
+                <Route path="/ResearchInsight" element={<ResearchInsight />} />
+
+
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>
