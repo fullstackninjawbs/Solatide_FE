@@ -7,27 +7,25 @@ const WhySolatide = () => {
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-16">
 
-                    {/* Left Side: Content */}
                     <div className="w-full lg:w-[45%] flex flex-col text-left">
-                        {/* Subtitle */}
                         <div className="flex items-center gap-2 mb-3">
                             <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 Why Solatide
                             </span>
                         </div>
 
-                        {/* Title */}
+
                         <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-tight font-['Anek_Telugu',sans-serif] mb-6">
                             We Do the Testing, So <br />
                             <span className="text-[#1a4494]">You Don't Have To</span>
                         </h2>
 
-                        {/* Paragraph */}
+
                         <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-8">
                             The research peptide market is crowded with vague listings, difficult-to-verify supplier claims, inflated markups, and incomplete batch documentation. Solatide is built to reduce that uncertainty with online batch verification, batch-level documentation, post-manufacturing QC, and fairer research supply pricing.
                         </p>
 
-                        {/* Highlight Box */}
+
                         <div className="border-l-4 border-[#00ADEE] pl-5 mb-8">
                             <h3 className="text-[16px] font-bold text-[#1D1D1F] mb-2">
                                 Batch documentation should be easy to verify.
@@ -37,7 +35,7 @@ const WhySolatide = () => {
                             </p>
                         </div>
 
-                        {/* Buttons */}
+
                         <div className="flex flex-wrap items-center gap-4">
                             <Link
                                 to="/shop"
@@ -54,7 +52,6 @@ const WhySolatide = () => {
                         </div>
                     </div>
 
-                    {/* Right Side: Card */}
                     <div className="w-full lg:w-[50%]">
                         <div className="bg-white rounded-[24px] p-8 sm:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100">
                             <h3 className="text-[20px] font-bold text-[#1E1E1E] mb-3">
@@ -64,7 +61,7 @@ const WhySolatide = () => {
                                 A transparent research supply process starts with batch information researchers can review — not unsupported claims or supplier statements that cannot be verified.
                             </p>
 
-                            {/* List Items */}
+
                             <div className="flex flex-col gap-6">
                                 {[
                                     {
