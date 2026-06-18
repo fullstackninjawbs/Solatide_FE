@@ -48,7 +48,7 @@ const FeatureCard = ({ icon, title, subtitle }) => (
 const HeroSection = () => {
     return (
 
-        <section className="relative w-full overflow-hidden bg-white flex items-center min-h-[760px] lg:min-h-[860px] pt-[140px] pb-[80px]">
+        <section className="relative w-full overflow-hidden bg-white flex items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-[92px] sm:pt-[100px] md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <img
                     src={heroImage}
@@ -59,7 +59,7 @@ const HeroSection = () => {
 
             </div>
 
-            <div className="lg:hidden absolute inset-0 z-0 bg-white/82" />
+            <div className="lg:hidden absolute inset-0 z-0 bg-white" />
 
             <div className="main-container w-full relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
@@ -163,16 +163,6 @@ const HeroSection = () => {
 
                 </div>
             </div>
-
-            <div className="lg:hidden absolute inset-0 z-0 opacity-[0.06]">
-                <img
-                    src={heroImage}
-                    className="w-full h-full object-cover"
-                    alt=""
-                    draggable={false}
-                />
-            </div>
-
         </section>
     )
 }

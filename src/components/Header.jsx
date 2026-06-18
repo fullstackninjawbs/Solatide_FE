@@ -76,15 +76,21 @@ const Header = () => {
     const [isScrollingUp, setIsScrollingUp] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState(countriesList[0])
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
+    const [isMobileCountryDropdownOpen, setIsMobileCountryDropdownOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [isMoreOpen, setIsMoreOpen] = useState(false)
     const dropdownRef = React.useRef(null)
+    const mobileCountryDropdownRef = React.useRef(null)
     const moreDropdownRef = React.useRef(null)
     const lastScrollY = React.useRef(0);
 
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
+
+            // Automatically close mobile menu on scroll to avoid blocking view
+            setIsMobileMenuOpen(false);
+            setIsMobileCountryDropdownOpen(false);
 
             if (currentScrollY < lastScrollY.current) {
 
@@ -117,6 +123,9 @@ const Header = () => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsCountryDropdownOpen(false)
             }
+            if (mobileCountryDropdownRef.current && !mobileCountryDropdownRef.current.contains(event.target)) {
+                setIsMobileCountryDropdownOpen(false)
+            }
             if (moreDropdownRef.current && !moreDropdownRef.current.contains(event.target)) {
                 setIsMoreOpen(false)
             }
@@ -140,14 +149,14 @@ const Header = () => {
 
     return (
         <header
-            className={`top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
-                } ${!isScrolled
+            className={`top-0 left-0 w-full z-[999] transition-all duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
+                } ${(!isScrolled && !isMobileMenuOpen)
                     ? 'bg-transparent border-b border-transparent shadow-none'
                     : 'bg-white border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                 }`}
         >
 
-            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[12px] font-semibold text-[#214A9E] ${!isScrolled ? 'h-7 opacity-100' : 'h-0 opacity-0 pointer-events-none'
+            <div className={`w-full overflow-hidden transition-all duration-300 ease-in-out flex justify-center items-center gap-2 text-[12px] font-semibold text-[#214A9E] ${(!isScrolled && !isMobileMenuOpen) ? 'h-7 opacity-100' : 'h-0 opacity-0 pointer-events-none'
                 }`}>
                 <span className="tracking-wide">Card Payments Available</span>
                 <div className="flex items-center gap-1">
@@ -292,7 +301,7 @@ const Header = () => {
                                         />
                                     </div>
 
-                                    <div className="max-h-[240px] overflow-y-auto flex flex-col gap-0.5 pr-1">
+                                    <div className="max-h-[240px] overflow-y-auto custom-scrollbar flex flex-col gap-0.5 pr-1">
                                         {countriesList
                                             .filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.code.toLowerCase().includes(searchQuery.toLowerCase()))
                                             .map((country) => (
@@ -356,7 +365,7 @@ const Header = () => {
                 </div>
 
                 {isMobileMenuOpen && (
-                    <div className="lg:hidden border-t border-slate-100 bg-white/98 backdrop-blur-md px-4 py-4 space-y-1 shadow-lg rounded-b-xl absolute left-0 w-full z-40">
+                    <div className="lg:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 shadow-lg rounded-b-xl absolute left-0 w-full z-[999] max-h-[80vh] overflow-y-auto">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
@@ -371,19 +380,19 @@ const Header = () => {
                             </Link>
                         ))}
                         <div className="pt-4 border-t border-slate-100 mt-2 flex flex-col gap-3">
-                            <div className="relative">
+                            <div className="relative" ref={mobileCountryDropdownRef}>
                                 <div
-                                    onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                                    className="inline-flex self-start items-center gap-1.5 bg-[#102a5c] text-white px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer select-none"
+                                    onClick={() => setIsMobileCountryDropdownOpen(!isMobileCountryDropdownOpen)}
+                                    className="inline-flex items-center gap-1.5 bg-[#102a5c] text-white px-3.5 py-2 rounded-full text-xs font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
                                 >
                                     <span className="text-sm leading-none">{selectedCountry.flag}</span>
-                                    <span>{selectedCountry.code}</span>
-                                    <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
+                                    <span className="uppercase">{selectedCountry.code}</span>
+                                    <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
                                         <path d="M7 10l5 5 5-5H7z" />
                                     </svg>
                                 </div>
 
-                                {isCountryDropdownOpen && (
+                                {isMobileCountryDropdownOpen && (
                                     <div className="mt-2 w-full bg-[#f4f7fc] border border-slate-200/80 rounded-2xl shadow-xl z-50 p-3 flex flex-col text-[#102a5c]">
                                         <div className="relative flex items-center bg-white border border-slate-200 rounded-xl px-3 py-2 mb-2">
                                             <svg className="h-4 w-4 text-[#102a5c]/60 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -391,14 +400,14 @@ const Header = () => {
                                             </svg>
                                             <input
                                                 type="text"
-                                                placeholder="Search"
+                                                placeholder="Search country..."
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 className="w-full bg-transparent border-0 p-0 text-[13px] text-[#102a5c] placeholder-[#102a5c]/50 font-medium focus:ring-0 focus:outline-none"
                                             />
                                         </div>
 
-                                        <div className="max-h-[180px] overflow-y-auto flex flex-col gap-0.5 pr-1">
+                                        <div className="max-h-[180px] overflow-y-auto custom-scrollbar flex flex-col gap-0.5 pr-1">
                                             {countriesList
                                                 .filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.code.toLowerCase().includes(searchQuery.toLowerCase()))
                                                 .map((country) => (
@@ -406,9 +415,8 @@ const Header = () => {
                                                         key={country.name}
                                                         onClick={() => {
                                                             setSelectedCountry(country)
-                                                            setIsCountryDropdownOpen(false)
+                                                            setIsMobileCountryDropdownOpen(false)
                                                             setSearchQuery('')
-                                                            setIsMobileMenuOpen(false)
                                                         }}
                                                         className={`w-full flex items-center gap-2.5 px-3 py-2 text-[13px] font-semibold rounded-xl text-left transition-colors ${selectedCountry.name === country.name
                                                             ? 'bg-[#e0eaf5] text-[#1a4494]'
