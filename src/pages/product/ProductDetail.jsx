@@ -172,7 +172,7 @@ const ProductDetail = () => {
 
                             {/* Buttons */}
                             <div className="flex flex-col gap-4 w-full">
-                                <button className="w-full bg-[#008fe2] hover:bg-[#007cc5] text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none">
+                                <button className="w-full bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90 text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none">
                                     Add to cart
                                 </button>
                                 <button className="w-full bg-white hover:bg-slate-50 text-[#1E1E1E] text-[15px] font-bold py-4 rounded-xl border border-[#1E1E1E] transition-all focus:outline-none">

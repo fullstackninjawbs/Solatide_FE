@@ -6,42 +6,23 @@ import productVialImage from '../../assets/images/homePageFirstSection.png'
 const ShopPeptides = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const fallbackProducts = [
-        {
-            id: 1,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 2,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 3,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        },
-        {
-            id: 4,
-            name: 'Bacteriostatic Water 10mL',
-            price: 'Rs. 1,400.00',
-            rating: '5.0',
-            inStock: true
-        }
+        { id: 1, name: 'Bacteriostatic Water 10mL (Item 1)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 2, name: 'Bacteriostatic Water 10mL (Item 2)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 3, name: 'Bacteriostatic Water 10mL (Item 3)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 4, name: 'Bacteriostatic Water 10mL (Item 4)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 5, name: 'Bacteriostatic Water 10mL (Item 5)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 6, name: 'Bacteriostatic Water 10mL (Item 6)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 7, name: 'Bacteriostatic Water 10mL (Item 7)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
+        { id: 8, name: 'Bacteriostatic Water 10mL (Item 8)', price: 'Rs. 1,400.00', rating: '5.0', inStock: true }
     ];
 
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products?limit=4');
+                const response = await fetch('http://localhost:5000/api/products?limit=12');
                 const result = await response.json();
 
                 if (result.success && result.data && result.data.products) {
@@ -60,37 +41,59 @@ const ShopPeptides = () => {
         fetchFeaturedProducts();
     }, []);
 
+    const nextSlide = () => {
+        if (currentIndex + 4 < products.length) {
+            setCurrentIndex(prev => prev + 1);
+        }
+    };
+
+    const prevSlide = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(prev => prev - 1);
+        }
+    };
+
     return (
         <section className="relative w-full bg-white py-16 lg:py-20 overflow-hidden">
             <div className="main-container">
-                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-                    <div className="text-left">
-                        <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-3 block">
-                            Featured Research Compounds
-                        </span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102a5c] tracking-tight">
-                            Shop Peptides
-                        </h2>
-                    </div>
-                    <Link
-                        to="/shop"
-                        className="text-[#00bfef] text-sm font-extrabold hover:text-[#009bf2] transition-colors flex items-center gap-1.5 shrink-0"
-                    >
-                        View All Products <span className="text-base">→</span>
-                    </Link>
+                <div className="text-center mb-10">
+                    <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-3 block">
+                        Featured Research Compounds
+                    </span>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102a5c] tracking-tight">
+                        Shop Peptides
+                    </h2>
                 </div>
 
                 <div className="relative w-full">
-                    <button className="absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none">
+                    <button 
+                        onClick={prevSlide} 
+                        disabled={currentIndex === 0}
+                        className={`absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 hover:scale-105 cursor-pointer'}`}
+                    >
                         <ChevronLeft className="h-5 w-5" />
                     </button>
 
-                    <button className="absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] hover:bg-slate-50 hover:scale-105 transition-all cursor-pointer focus:outline-none">
+                    <button 
+                        onClick={nextSlide} 
+                        disabled={currentIndex + 4 >= products.length}
+                        className={`absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none ${currentIndex + 4 >= products.length ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 hover:scale-105 cursor-pointer'}`}
+                    >
                         <ChevronRight className="h-5 w-5" />
                     </button>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full relative z-10">
-                        {products.map((product) => (
+                    <style dangerouslySetInnerHTML={{__html: `
+                        @keyframes gridFade {
+                            0% { opacity: 0.3; transform: translateX(10px); }
+                            100% { opacity: 1; transform: translateX(0); }
+                        }
+                        .animate-gridFade {
+                            animation: gridFade 0.4s ease-out forwards;
+                        }
+                    `}} />
+
+                    <div key={currentIndex} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full relative z-10 animate-gridFade">
+                        {products.slice(currentIndex, currentIndex + 4).map((product) => (
                             <div
                                 key={product._id || product.id}
                                 className="group flex flex-col bg-white transition-all duration-300"
@@ -150,6 +153,15 @@ const ShopPeptides = () => {
                             </div>
                         ))}
                     </div>
+                </div>
+
+                <div className="flex justify-center mt-10">
+                    <Link
+                        to="/shop"
+                        className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:opacity-90 text-white text-[14px] font-extrabold py-3.5 px-8 rounded-full transition-all shadow-md flex items-center gap-2 shrink-0 tracking-wide"
+                    >
+                        View All Products <span className="text-base leading-none">→</span>
+                    </Link>
                 </div>
             </div>
         </section>

@@ -101,11 +101,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     onChange={() => setAvailability('In Stock')}
                                     className="sr-only"
                                 />
-                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                                    availability === 'In Stock'
-                                        ? 'border-2 border-[#214A9E] bg-white'
-                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                }`}>
+                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'In Stock'
+                                    ? 'border-2 border-[#214A9E] bg-white'
+                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                    }`}>
                                     {availability === 'In Stock' && (
                                         <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
                                     )}
@@ -120,11 +119,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     onChange={() => setAvailability('Out of Stock')}
                                     className="sr-only"
                                 />
-                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                                    availability === 'Out of Stock'
-                                        ? 'border-2 border-[#214A9E] bg-white'
-                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                }`}>
+                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'Out of Stock'
+                                    ? 'border-2 border-[#214A9E] bg-white'
+                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                    }`}>
                                     {availability === 'Out of Stock' && (
                                         <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
                                     )}
@@ -147,11 +145,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         onChange={() => setSelectedCategory(category)}
                                         className="sr-only"
                                     />
-                                    <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                                        selectedCategory === category
-                                            ? 'border-2 border-[#214A9E] bg-white'
-                                            : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                    }`}>
+                                    <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category
+                                        ? 'border-2 border-[#214A9E] bg-white'
+                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                        }`}>
                                         {selectedCategory === category && (
                                             <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
                                         )}
@@ -200,8 +197,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                                     setIsSortOpen(false);
                                                 }}
                                                 className={`w-full text-left px-4 py-2.5 text-[14px] flex items-center transition-colors ${sortBy === option
-                                                        ? 'text-[#214A9E] font-medium bg-[#eef2f6]/40'
-                                                        : 'text-[#102a5c] font-normal hover:bg-slate-100/50'
+                                                    ? 'text-[#214A9E] font-medium bg-[#eef2f6]/40'
+                                                    : 'text-[#102a5c] font-normal hover:bg-slate-100/50'
                                                     }`}
                                             >
                                                 {/* Checkmark */}
@@ -285,13 +282,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                                     {/* Info */}
                                     <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
-                                        <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
+                                        <h3 className="text-[18px] font-weight-500  font-medium text-[#1E1E1E] tracking-tight leading-snug">
                                             <Link to={`/product/${product.id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
-                                        <div className="flex items-center justify-between mt-4">
-                                            <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
+                                        <div className="flex items-center justify-between mt-2">
+                                            <span className="text-[18px] sm:text-[20px] font-weight-600  font-semibold text-[#00E5FF]">
                                                 {typeof product.price === 'number'
                                                     ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                                     : product.price}
