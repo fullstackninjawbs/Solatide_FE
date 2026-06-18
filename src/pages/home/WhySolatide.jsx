@@ -39,7 +39,7 @@ const WhySolatide = () => {
                         <div className="flex flex-wrap items-center gap-4">
                             <Link
                                 to="/shop"
-                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
+                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-semibold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
                             >
                                 Shop Now <span>→</span>
                             </Link>
