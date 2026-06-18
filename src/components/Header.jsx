@@ -279,8 +279,8 @@ const Header = () => {
                             >
                                 <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
                                 <span>{selectedCountry.code}</span>
-                                <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
-                                    <path d="M7 10l5 5 5-5H7z" />
+                                <svg className={`fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
+                                    <path d="M5 8l7 8 7-8H5z" />
                                 </svg>
                             </div>
 
@@ -381,12 +381,14 @@ const Header = () => {
                             <div className="relative" ref={mobileCountryDropdownRef}>
                                 <div
                                     onClick={() => setIsMobileCountryDropdownOpen(!isMobileCountryDropdownOpen)}
-                                    className="inline-flex items-center gap-1.5 bg-[#102a5c] text-white px-3.5 py-2 rounded-full text-xs font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
+                                    className="flex items-center justify-between w-full bg-[#102a5c] text-white px-4 py-3 rounded-xl text-sm font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
                                 >
-                                    <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
-                                    <span className="uppercase">{selectedCountry.code}</span>
-                                    <svg className={`h-[11px] w-[11px] fill-white ml-0.5 transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
-                                        <path d="M7 10l5 5 5-5H7z" />
+                                    <div className="flex items-center gap-2.5">
+                                        <span className="text-base leading-none flex items-center shrink-0"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
+                                        <span className="uppercase tracking-wider">{selectedCountry.code}</span>
+                                    </div>
+                                    <svg className={`fill-white transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
+                                        <path d="M5 8l7 8 7-8H5z" />
                                     </svg>
                                 </div>
 

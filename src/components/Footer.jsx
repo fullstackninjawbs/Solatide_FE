@@ -108,7 +108,7 @@ function Footer() {
                         <ul className="space-y-3 text-xs text-slate-400">
                             <li><Link to="/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Policy</Link></li>
                             <li><Link to="/faq" className="hover:text-white transition-colors duration-200">FAQs</Link></li>
-                            <li><Link to="/shipping-info" className="hover:text-white transition-colors duration-200">Shipping Information</Link></li>
+                            <li><Link to="/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Information</Link></li>
                             <li><Link to="/returns" className="hover:text-white transition-colors duration-200">Returns & Refunds</Link></li>
                         </ul>
                     </div>

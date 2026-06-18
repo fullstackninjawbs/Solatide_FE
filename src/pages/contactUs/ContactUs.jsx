@@ -62,7 +62,7 @@ const ContactUs = () => {
                                 <Link to="/faq" className="text-[#00E5FF] hover:underline font-medium">FAQ page</Link>.
                                 You may also find helpful information on our{' '}
                                 <Link to="/coa" className="text-[#00E5FF] hover:underline font-medium">COA & Lab Testing</Link> page or{' '}
-                                <Link to="/shipping" className="text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link> page.
+                                <Link to="/shipping-policy" className="text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link> page.
                             </p>
                         </div>
                     </div>

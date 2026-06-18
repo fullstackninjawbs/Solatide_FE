@@ -214,7 +214,7 @@ const Faqs = () => {
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/shipping" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link>
+                                    <Link to="/shipping-policy" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>

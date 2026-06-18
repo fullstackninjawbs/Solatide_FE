@@ -30,7 +30,7 @@ const HowOrdersHandledSection = () => {
                         </p>
 
                         <p className="text-[14.5px] text-[#4B5563] leading-[1.6]">
-                            For detailed shipping information, visit our <Link to="/shipping" className="text-[#0AD6ED] font-semibold hover:underline">Shipping Policy</Link>.
+                            For detailed shipping information, visit our <Link to="/shipping-policy" className="text-[#0AD6ED] font-semibold hover:underline">Shipping Policy</Link>.
                         </p>
                     </div>
 

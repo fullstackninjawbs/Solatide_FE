@@ -24,7 +24,7 @@ const UsefulLinksSection = () => {
                         </li>
                         <li className="flex items-center gap-2.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#0AD6ED] shrink-0"></div>
-                            <Link to="/shipping" className="text-[14.5px] text-[#0AD6ED] hover:underline font-semibold">
+                            <Link to="/shipping-policy" className="text-[14.5px] text-[#0AD6ED] hover:underline font-semibold">
                                 Shipping Policy
                             </Link>
                         </li>
