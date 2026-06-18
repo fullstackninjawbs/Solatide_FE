@@ -36,16 +36,16 @@ const WhySolatide = () => {
                         </div>
 
 
-                        <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                             <Link
                                 to="/shop"
-                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
+                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
                             >
                                 Shop Now <span>→</span>
                             </Link>
                             <Link
                                 to="/coa"
-                                className="text-[#1a4494] text-[14px] font-extrabold py-3.5 px-4 transition-all hover:opacity-80"
+                                className="text-[#1a4494] text-[14px] font-extrabold py-2 px-0 sm:py-3.5 sm:px-4 transition-all hover:opacity-80 w-full text-center sm:text-left sm:w-auto"
                             >
                                 Verify batch documentation
                             </Link>
@@ -62,7 +62,7 @@ const WhySolatide = () => {
                             </p>
 
 
-                            <div className="flex flex-col gap-6">
+                            <div className="flex flex-col">
                                 {[
                                     {
                                         title: "Online batch verification",
@@ -85,7 +85,7 @@ const WhySolatide = () => {
                                         desc: "No human-use, dosing, therapeutic, cosmetic, diagnostic, or veterinary positioning across product information."
                                     }
                                 ].map((item, index) => (
-                                    <div key={index} className="flex gap-4 pb-6 border-b border-slate-100 last:border-0 last:pb-0">
+                                    <div key={index} className="flex gap-4 py-4 border-b border-slate-100 first:pt-0 last:border-0 last:pb-0">
                                         <div className="mt-1 w-5 h-5 rounded-full bg-[#E0F7FA] flex items-center justify-center shrink-0">
                                             <svg className="w-3 h-3 text-[#00ADEE]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

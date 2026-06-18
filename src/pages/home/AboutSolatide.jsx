@@ -81,16 +81,16 @@ export default function AboutSolatide() {
                         </div>
 
                         {/* Buttons */}
-                        <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                             <Link
                                 to="/shop"
-                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center gap-2 shrink-0 tracking-wide"
+                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white text-[14px] font-extrabold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
                             >
                                 Explore Products <span>→</span>
                             </Link>
                             <Link
                                 to="/coa"
-                                className="text-[#1a4494] text-[14px] font-extrabold py-3.5 px-4 transition-all hover:opacity-80"
+                                className="text-[#1a4494] text-[14px] font-extrabold py-2 px-0 sm:py-3.5 sm:px-4 transition-all hover:opacity-80 w-full text-center sm:text-left sm:w-auto"
                             >
                                 View documentation process
                             </Link>
