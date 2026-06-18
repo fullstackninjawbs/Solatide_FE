@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import heroImage from '../../assets/images/homePageFirstSection.png'
+import mobileHeroImage from '../../assets/images/Gemini_Generated_Image_m88804m88804m888 1 (1).png'
 import group1Icon from '../../assets/icons/Group (1).png'
 
 
@@ -31,7 +32,7 @@ const HexBadge = ({ children }) => (
 const HeroSection = () => {
     return (
 
-        <section className="relative w-full overflow-hidden bg-white flex items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-[92px] sm:pt-[100px] md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
+        <section className="relative w-full overflow-hidden bg-white flex flex-col sm:flex-row items-stretch sm:items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-[92px] sm:pt-[100px] md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <img
                     src={heroImage}
@@ -44,7 +45,16 @@ const HeroSection = () => {
 
             <div className="lg:hidden absolute inset-0 z-0 bg-white" />
 
-            <div className="main-container w-full relative z-10">
+            {/* Mobile Hero Image (Zero margins, touches header and side edges, hidden on sm and above) */}
+            <div className="sm:hidden w-full overflow-hidden shrink-0 relative z-10">
+                <img
+                    src={mobileHeroImage}
+                    className="w-full h-auto object-cover"
+                    alt="Solatide Biosciences – Research Grade Peptides"
+                />
+            </div>
+
+            <div className="main-container w-full relative z-10 mt-6 sm:mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
                     <div className="lg:col-span-8 flex flex-col justify-center text-left">
@@ -94,7 +104,7 @@ const HeroSection = () => {
                         {/* Features Container (No Box) */}
                         <div className="mt-6 w-full max-w-[760px]">
                             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-0">
-                                
+
                                 {/* Feature 1 */}
                                 <div className="flex items-center gap-3">
                                     <HexBadge>

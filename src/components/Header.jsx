@@ -89,9 +89,7 @@ const Header = () => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
 
-            // Automatically close mobile menu on scroll to avoid blocking view
-            setIsMobileMenuOpen(false);
-            setIsMobileCountryDropdownOpen(false);
+            // Automatically close mobile menu on scroll has been removed per user request
 
             if (currentScrollY < lastScrollY.current) {
 
@@ -152,7 +150,7 @@ const Header = () => {
         <header
             className={`top-0 left-0 w-full z-[999] transition-all duration-300 ease-in-out ${isHome ? 'fixed' : 'sticky'
                 } ${(!isScrolled && !isMobileMenuOpen)
-                    ? 'bg-transparent border-b border-transparent shadow-none'
+                    ? 'bg-transparent border-none shadow-none'
                     : 'bg-white border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                 }`}
         >
