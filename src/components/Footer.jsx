@@ -104,12 +104,12 @@ function Footer() {
                     </div>
 
                     <div className="col-span-1 md:col-span-2">
-                        <h4 className="text-sm font-bold text-white mb-4">Policies</h4>
+                        <h4 className="text-sm font-bold text-white mb-4">Support & Policies</h4>
                         <ul className="space-y-3 text-xs text-slate-400">
                             <li><Link to="/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Policy</Link></li>
-                            <li><Link to="/faq" className="hover:text-white transition-colors duration-200">FAQs</Link></li>
-                            <li><Link to="/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Information</Link></li>
+                            <li><Link to="/terms" className="hover:text-white transition-colors duration-200">Terms of Services</Link></li>
                             <li><Link to="/returns" className="hover:text-white transition-colors duration-200">Returns & Refunds</Link></li>
+                            <li><Link to="/privacy" className="hover:text-white transition-colors duration-200">Privacy Policy</Link></li>
                         </ul>
                     </div>
 

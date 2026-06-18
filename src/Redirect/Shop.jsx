@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import ShopBanner from '../pages/shop/ShopBanner';
 import ProductCategories from '../pages/shop/ProductCategories';
 import ShopProducts from '../pages/shop/ShopProducts';
+import ShopFaq from '../pages/shop/ShopFaq';
 
 const Shop = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -45,6 +46,7 @@ const Shop = () => {
             <ProductCategories 
                 selectedCategory={selectedCategory} 
             />
+            <ShopFaq />
         </div>
     );
 };
