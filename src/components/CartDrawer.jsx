@@ -108,7 +108,7 @@ const CartDrawer = () => {
                     ) : (
                         <div className="flex flex-col gap-6">
                             {cartItems.map((item) => (
-                                <div key={item.id || item._id} className="flex gap-4">
+                                <div key={item.cartItemId || item.id || item._id} className="flex gap-4">
                                     {/* Item Image */}
                                     <div className="w-20 h-20 bg-[#f8fafc] rounded-xl flex items-center justify-center shrink-0 border border-slate-100 overflow-hidden p-2">
                                         {item.image ? (
@@ -121,21 +121,28 @@ const CartDrawer = () => {
                                     {/* Item Details */}
                                     <div className="flex flex-col flex-1 text-left">
                                         <div className="flex justify-between items-start gap-2">
-                                            <h3 className="text-[14px] font-semibold text-[#1E1E1E] leading-tight">
-                                                {item.name}
-                                            </h3>
+                                            <div>
+                                                <h3 className="text-[14px] font-semibold text-[#1E1E1E] leading-tight">
+                                                    {item.name}
+                                                </h3>
+                                                {item.selectedVariant && (
+                                                    <p className="text-[12px] text-slate-400 mt-1 font-medium">
+                                                        Option: {item.selectedVariant.title}
+                                                    </p>
+                                                )}
+                                            </div>
                                             <span className="text-[14px] font-semibold text-[#1E1E1E] whitespace-nowrap">
                                                 Rs. {formatPrice(getNumericPrice(item.price) * item.quantity)}
                                             </span>
                                         </div>
-                                        <p className="text-[13px] text-slate-500 mt-1">Rs. {formatPrice(item.price)}</p>
+                                        <p className="text-[13px] text-slate-500 mt-1 font-medium">Rs. {formatPrice(item.price)}</p>
                                         
                                         {/* Actions (Qty + Trash) */}
                                         <div className="flex items-center gap-4 mt-auto pt-2">
                                             {/* Qty Selector */}
                                             <div className="flex items-center bg-[#f8fafc] rounded-lg border border-slate-200">
                                                 <button 
-                                                    onClick={() => updateQuantity(item.id || item._id, item.quantity - 1)}
+                                                    onClick={() => updateQuantity(item.cartItemId || item.id || item._id, item.quantity - 1)}
                                                     className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-black focus:outline-none"
                                                 >
                                                     <Minus size={12} />
@@ -144,7 +151,7 @@ const CartDrawer = () => {
                                                     {item.quantity}
                                                 </span>
                                                 <button 
-                                                    onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)}
+                                                    onClick={() => updateQuantity(item.cartItemId || item.id || item._id, item.quantity + 1)}
                                                     className="w-7 h-7 flex items-center justify-center text-[#008fe2] hover:text-[#007cc5] focus:outline-none"
                                                 >
                                                     <Plus size={12} />
@@ -153,7 +160,7 @@ const CartDrawer = () => {
                                             
                                             {/* Trash */}
                                             <button 
-                                                onClick={() => removeFromCart(item.id || item._id)}
+                                                onClick={() => removeFromCart(item.cartItemId || item.id || item._id)}
                                                 className="text-slate-400 hover:text-red-500 transition-colors focus:outline-none"
                                             >
                                                 <Trash2 size={16} />

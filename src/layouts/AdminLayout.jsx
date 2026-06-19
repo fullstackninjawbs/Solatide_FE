@@ -60,10 +60,10 @@ const AdminLayout = () => {
   const filteredMenuItems = menuItems.filter(item => item.roles.includes(adminUser.role));
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex font-sans">
+    <div className="h-screen bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden">
       {/* Sidebar */}
       <aside
-        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative ${
+        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen ${
           isSidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
@@ -75,9 +75,9 @@ const AdminLayout = () => {
           {isSidebarOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
 
-        <div>
+        <div className="flex flex-col flex-grow overflow-hidden">
           {/* Header/Logo mimicking the website's top-left branding */}
-          <div className="h-20 flex items-center px-6 border-b border-slate-100 gap-3">
+          <div className="h-20 flex items-center px-6 border-b border-slate-100 gap-3 shrink-0">
             <div className="h-9 w-9 rounded-xl bg-brand-navy flex items-center justify-center font-bold text-white tracking-wider shadow-sm shrink-0">
               S
             </div>
@@ -90,7 +90,7 @@ const AdminLayout = () => {
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-4 space-y-1">
+          <nav className="p-4 space-y-1 flex-grow overflow-y-auto custom-scrollbar">
             {filteredMenuItems.map(item => {
               const Icon = item.icon;
               const isActive =
@@ -123,7 +123,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Footer/Logout */}
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-4 border-t border-slate-100 shrink-0">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-650 transition-all duration-200 cursor-pointer focus:outline-none"
@@ -135,9 +135,9 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Workspace */}
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="flex-grow flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-40">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-40 shrink-0">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-bold text-brand-navy capitalize">
               {location.pathname === '/admin'

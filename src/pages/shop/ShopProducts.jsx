@@ -249,7 +249,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     {/* Product Vial Image */}
                                     <Link to={`/product/${product.id || product._id}`} className={`relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px]' : 'w-full h-[240px]'} block`}>
                                         <img
-                                            src={product.image || productVialImage}
+                                            src={product.imageUrl || product.image || productVialImage}
                                             className={`object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`}
                                             alt={product.name}
                                         />

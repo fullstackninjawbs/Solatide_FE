@@ -84,3 +84,20 @@ body,
     scrollbar-color: #cbd5e1 transparent;
   }
 }
+
+/* Product Description HTML Formatting Styles */
+.product-description-content ul {
+  list-style-type: disc !important;
+  margin-left: 1.25rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+.product-description-content li {
+  margin-bottom: 0.25rem !important;
+}
+.product-description-content p {
+  margin-bottom: 0.75rem !important;
+}
+.product-description-content strong {
+  font-weight: 700 !important;
+}

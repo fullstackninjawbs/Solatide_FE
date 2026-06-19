@@ -19,10 +19,21 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState(0);
     const { addToCart } = useCart();
+    const [selectedVariant, setSelectedVariant] = useState(null);
+
     // Scroll to top on ID change
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [id]);
+
+    useEffect(() => {
+        if (product && product.variants && product.variants.length > 0) {
+            setSelectedVariant(product.variants[0]);
+        } else {
+            setSelectedVariant(null);
+        }
+        setActiveTab(0);
+    }, [product]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -77,10 +88,18 @@ const ProductDetail = () => {
         );
     }
 
-    const images = [
-        product.image || product.imageUrl || retatrutideVial,
+    const dbImages = product.images && product.images.length > 0
+        ? product.images.map(img => img.url)
+        : [product.imageUrl || product.image || retatrutideVial].filter(Boolean);
+
+    const coaImages = [
         product.coaImage1 || null,
         product.coaImage2 || null
+    ];
+
+    const images = [
+        ...dbImages,
+        ...coaImages
     ];
 
     const badges = [
@@ -92,6 +111,25 @@ const ProductDetail = () => {
 
     const incrementQty = () => setQuantity(prev => prev + 1);
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
+
+    const formatPrice = (priceVal) => {
+        if (typeof priceVal === 'number') {
+            return `Rs. ${priceVal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+        if (typeof priceVal === 'string' && !priceVal.startsWith('Rs.')) {
+            return `Rs. ${priceVal}`;
+        }
+        return priceVal;
+    };
+
+    const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
+    const displayCompareAtPrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice;
+    const displaySku = selectedVariant ? selectedVariant.sku : product.sku;
+    const isOutOfStock = selectedVariant
+        ? selectedVariant.stockQty <= 0
+        : product.inStock === false || product.stockQuantity <= 0;
+
+    const hasVariantsToSelect = product.variants && product.variants.length > 0 && !(product.variants.length === 1 && product.variants[0].title === 'Default Title');
 
     return (
         <div className="w-full bg-white py-12">
@@ -118,7 +156,7 @@ const ProductDetail = () => {
                                     className={`w-[70px] h-[70px] sm:w-[85px] sm:h-[85px] rounded-xl overflow-hidden border-2 flex items-center justify-center p-1.5 transition-all bg-white ${activeTab === idx ? 'border-[#214A9E]' : 'border-slate-200 hover:border-slate-300'
                                         }`}
                                 >
-                                    {idx === 0 ? (
+                                    {idx < dbImages.length ? (
                                         img ? (
                                             <img src={img} alt="Product Thumbnail" className="w-full h-full object-contain" />
                                         ) : (
@@ -169,7 +207,7 @@ const ProductDetail = () => {
                             </h1>
 
                             {/* Ratings */}
-                            <div className="flex items-center gap-2 mb-4">
+                            <div className="flex items-center gap-2 mb-2">
                                 <div className="flex text-amber-500 text-lg">
                                     {'★★★★★'.split('').map((char, i) => (
                                         <span key={i}>{char}</span>
@@ -180,18 +218,33 @@ const ProductDetail = () => {
                                 </a>
                             </div>
 
+                            {displaySku && (
+                                <div className="text-[13px] text-slate-500 mb-4 uppercase tracking-wider">
+                                    SKU: <span className="font-semibold text-slate-800">{displaySku}</span>
+                                </div>
+                            )}
+
                             {/* Price */}
-                            <div className="text-3xl sm:text-[36px] font-bold text-[#214A9E] mb-6">
-                                {product.price}
+                            <div className="flex items-baseline gap-3 mb-6">
+                                <span className="text-3xl sm:text-[36px] font-bold text-[#214A9E]">
+                                    {displayPrice}
+                                </span>
+                                {displayCompareAtPrice && (
+                                    <span className="text-xl text-slate-400 line-through">
+                                        {formatPrice(displayCompareAtPrice)}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Product Description */}
-                            <p className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6" style={{ fontWeight: 400 }}>
-                                {product.description}
-                            </p>
+                            <div 
+                                className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content" 
+                                style={{ fontWeight: 400 }}
+                                dangerouslySetInnerHTML={{ __html: product.description }}
+                            />
 
                             {/* Badges list */}
-                            <div className="flex flex-wrap gap-2.5 mb-8">
+                            <div className="flex flex-wrap gap-2.5 mb-6">
                                 {badges.map((badge, idx) => (
                                     <span
                                         key={idx}
@@ -201,6 +254,30 @@ const ProductDetail = () => {
                                     </span>
                                 ))}
                             </div>
+
+                            {/* Variant Selector */}
+                            {hasVariantsToSelect && (
+                                <div className="mb-6">
+                                    <span className="text-[15px] font-semibold text-[#1E1E1E] block mb-2.5">
+                                        Options
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {product.variants.map((v, index) => (
+                                            <button
+                                                key={v.sku || index}
+                                                onClick={() => setSelectedVariant(v)}
+                                                className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all focus:outline-none ${
+                                                    selectedVariant?.sku === v.sku
+                                                        ? 'border-[#214A9E] bg-[#214A9E] text-white'
+                                                        : 'border-slate-200 bg-white text-[#1E1E1E] hover:border-slate-300'
+                                                }`}
+                                            >
+                                                {v.title}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Quantity Selector */}
                             <div className="flex items-center gap-5 mb-6">
@@ -227,12 +304,24 @@ const ProductDetail = () => {
                             {/* Buttons */}
                             <div className="flex flex-col gap-4 w-full">
                                 <button 
-                                    onClick={() => addToCart(product, quantity)}
-                                    className="w-full bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90 text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none"
+                                    onClick={() => addToCart(product, quantity, selectedVariant)}
+                                    disabled={isOutOfStock}
+                                    className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none ${
+                                        isOutOfStock 
+                                            ? 'bg-slate-300 cursor-not-allowed' 
+                                            : 'bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90'
+                                    }`}
                                 >
-                                    Add to cart
+                                    {isOutOfStock ? 'Sold Out' : 'Add to cart'}
                                 </button>
-                                <button className="w-full bg-white hover:bg-slate-50 text-[#1E1E1E] text-[15px] font-bold py-4 rounded-xl border border-[#1E1E1E] transition-all focus:outline-none">
+                                <button 
+                                    disabled={isOutOfStock}
+                                    className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none ${
+                                        isOutOfStock
+                                            ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
+                                            : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
+                                    }`}
+                                >
                                     Buy it Now
                                 </button>
                             </div>

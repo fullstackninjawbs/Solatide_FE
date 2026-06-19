@@ -31,30 +31,45 @@ export const CartProvider = ({ children }) => {
         }
     }, [cartItems]);
 
-    const addToCart = (product, quantity = 1) => {
+    const addToCart = (product, quantity = 1, selectedVariant = null) => {
         setCartItems(prevItems => {
-            const existingItem = prevItems.find(item => item.id === product.id || (product._id && item._id === product._id));
+            const variantSku = selectedVariant?.sku || '';
+            const cartItemId = selectedVariant 
+                ? `${product._id || product.id || ''}-${variantSku}` 
+                : `${product._id || product.id || ''}`;
+
+            const existingItem = prevItems.find(item => item.cartItemId === cartItemId);
             if (existingItem) {
                 return prevItems.map(item =>
-                    (item.id === product.id || (product._id && item._id === product._id))
+                    item.cartItemId === cartItemId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
-            return [...prevItems, { ...product, quantity }];
+            return [...prevItems, { 
+                ...product, 
+                quantity, 
+                selectedVariant, 
+                cartItemId,
+                price: selectedVariant ? selectedVariant.price : product.price,
+                sku: selectedVariant ? selectedVariant.sku : product.sku,
+                image: product.imageUrl || product.image
+            }];
         });
         setIsCartOpen(true);
     };
 
-    const removeFromCart = (productId) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== productId && item._id !== productId));
+    const removeFromCart = (cartItemId) => {
+        setCartItems(prevItems => prevItems.filter(item => 
+            item.cartItemId !== cartItemId && item.id !== cartItemId && item._id !== cartItemId
+        ));
     };
 
-    const updateQuantity = (productId, newQuantity) => {
+    const updateQuantity = (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
         setCartItems(prevItems =>
             prevItems.map(item =>
-                (item.id === productId || item._id === productId)
+                (item.cartItemId === cartItemId || item.id === cartItemId || item._id === cartItemId)
                     ? { ...item, quantity: newQuantity }
                     : item
             )

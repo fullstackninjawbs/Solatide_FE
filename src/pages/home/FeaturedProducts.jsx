@@ -98,7 +98,7 @@ const FeaturedProducts = () => {
                                 >
                                     <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
                                         <img
-                                            src={product.image || productVialImage}
+                                            src={product.imageUrl || product.image || productVialImage}
                                             className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                                             alt={product.name}
                                         />
