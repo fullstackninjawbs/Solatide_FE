@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 import ReactCountryFlag from "react-country-flag"
+import { useCart } from '../context/CartContext'
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-2 py-0.5 flex items-center justify-center h-[22px] shrink-0">
@@ -72,6 +73,7 @@ const countriesList = [
 
 const Header = () => {
     const location = useLocation()
+    const { setIsCartOpen, cartTotalCount } = useCart()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
@@ -80,6 +82,7 @@ const Header = () => {
     const [isMobileCountryDropdownOpen, setIsMobileCountryDropdownOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [isMoreOpen, setIsMoreOpen] = useState(false)
+    const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
     const dropdownRef = React.useRef(null)
     const mobileCountryDropdownRef = React.useRef(null)
     const moreDropdownRef = React.useRef(null)
@@ -228,8 +231,8 @@ const Header = () => {
                         <div className="relative" ref={moreDropdownRef}>
                             <button
                                 onClick={() => setIsMoreOpen(!isMoreOpen)}
-                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${(isMoreOpen || [
-                                    '/contact', '/research-resource', '/ResearchInsight', '/affiliate'
+                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${([
+                                    '/contact', '/research-resource', '/ResearchInsight', '/AffiliatePro'
                                 ].includes(location.pathname))
                                     ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
                                     : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
@@ -246,7 +249,7 @@ const Header = () => {
                                     { name: 'Contact Us', path: '/contact' },
                                     { name: 'Research Resource', path: '/research-resource' },
                                     { name: 'Research Insights', path: '/ResearchInsight' },
-                                    { name: 'Affiliate Program', path: '/affiliate' },
+                                    { name: 'Affiliate Program', path: '/AffiliatePro' },
                                 ].map((link) => (
                                     <Link
                                         key={link.name}
@@ -342,15 +345,31 @@ const Header = () => {
                             Contact Us
                         </Link>
 
-                        <button className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0">
+                        <button 
+                            onClick={() => setIsCartOpen(true)}
+                            className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0"
+                        >
                             <ShoppingCart className="h-[17px] w-[17px]" />
+                            {cartTotalCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-[#1a4494] text-white text-[10px] font-bold w-[18px] h-[18px] flex items-center justify-center rounded-full border-2 border-white">
+                                    {cartTotalCount}
+                                </span>
+                            )}
                         </button>
 
                     </div>
 
                     <div className="flex xl:hidden items-center gap-2.5">
-                        <button className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0">
+                        <button 
+                            onClick={() => setIsCartOpen(true)}
+                            className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
+                        >
                             <ShoppingCart className="h-[17px] w-[17px]" />
+                            {cartTotalCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-[#1a4494] text-white text-[10px] font-bold w-[18px] h-[18px] flex items-center justify-center rounded-full border-2 border-white">
+                                    {cartTotalCount}
+                                </span>
+                            )}
                         </button>
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -382,6 +401,42 @@ const Header = () => {
                                 {link.name}
                             </Link>
                         ))}
+
+                        <div className="flex flex-col">
+                            <button
+                                onClick={() => setIsMobileMoreOpen(!isMobileMoreOpen)}
+                                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${['/research-resource', '/ResearchInsight', '/AffiliatePro'].includes(location.pathname)
+                                    ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
+                                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                                    }`}
+                            >
+                                <span>More</span>
+                                <svg className={`w-4 h-4 transition-transform duration-200 ${isMobileMoreOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {isMobileMoreOpen && (
+                                <div className="mt-1 flex flex-col gap-1 pl-4">
+                                    {[
+                                        { name: 'Research Resource', path: '/research-resource' },
+                                        { name: 'Research Insights', path: '/ResearchInsight' },
+                                        { name: 'Affiliate Program', path: '/AffiliatePro' },
+                                    ].map((link) => (
+                                        <Link
+                                            key={link.name}
+                                            to={link.path}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className={`block px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${isActive(link.path)
+                                                ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
+                                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                                                }`}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         <div className="pt-4 border-t border-slate-100 mt-2 flex flex-col gap-3">
                             <div className="relative" ref={mobileCountryDropdownRef}>
                                 <div

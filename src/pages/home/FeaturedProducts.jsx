@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.png'
+import { products as localProducts } from '../../data/products'
+import { useCart } from '../../context/CartContext'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 const FeaturedProducts = () => {
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -88,10 +92,13 @@ const FeaturedProducts = () => {
                     >
                         {products.map((product) => (
                             <SwiperSlide key={product._id || product.id}>
-                                <div className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)]">
-                                    <Link to={`/product/${product.id || product._id}`} className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center block">
+                                <div 
+                                    onClick={() => navigate(`/product/${product._id || product.id}`)}
+                                    className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
+                                >
+                                    <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
                                         <img
-                                            src={productVialImage}
+                                            src={product.image || productVialImage}
                                             className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                                             alt={product.name}
                                         />
@@ -104,7 +111,7 @@ const FeaturedProducts = () => {
                                             <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
                                             <span>{product.rating || '5.0'}</span>
                                         </span>
-                                    </Link>
+                                    </div>
 
                                     <div className="flex flex-col mt-4 px-1.5 pb-2">
                                         <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-none text-left font-['Anek_Telugu',sans-serif]">
@@ -119,7 +126,12 @@ const FeaturedProducts = () => {
                                                     : product.price}
                                             </span>
                                             <button
-                                                className="h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addToCart(product, 1);
+                                                }}
+                                                className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                disabled={!product.inStock && product.status === 'Sold Out'}
                                             >
                                                 <ShoppingCart className="h-5 w-5" />
                                             </button>

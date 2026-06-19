@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/homePageFirstSection.png'
+import { products as localProducts } from '../../data/products';
+import { useCart } from '../../context/CartContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 const ShopPeptides = () => {
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fallbackProducts = [
-        { id: 1, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 2, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 3, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 4, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 5, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 6, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 7, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true },
-        { id: 8, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', rating: '5.0', inStock: true }
-    ];
+    const fallbackProducts = localProducts;
 
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
@@ -89,7 +84,10 @@ const ShopPeptides = () => {
                     >
                         {products.map((product) => (
                             <SwiperSlide key={product._id || product.id}>
-                                <div className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)]">
+                                <div 
+                                    onClick={() => navigate(`/product/${product._id || product.id}`)}
+                                    className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
+                                >
                                     <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
                                         <img
                                             src={productVialImage}
@@ -135,6 +133,10 @@ const ShopPeptides = () => {
                                                     : product.price}
                                             </span>
                                             <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addToCart(product, 1);
+                                                }}
                                                 className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 disabled={!product.inStock && product.status === 'Sold Out'}
                                             >
