@@ -44,7 +44,7 @@ const WhySolatide = () => {
                                 Shop Now <span>→</span>
                             </Link>
                             <Link
-                                to="/coa"
+                                to="/ViewDocument"
                                 className="text-[#1a4494] text-[14px] font-extrabold py-2 px-0 sm:py-3.5 sm:px-4 transition-all hover:opacity-80 w-full text-center sm:text-left sm:w-auto"
                             >
                                 Verify batch documentation

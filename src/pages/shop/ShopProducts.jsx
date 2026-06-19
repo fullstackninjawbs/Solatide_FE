@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
+import { products } from '../../data/products';
+import { useCart } from '../../context/CartContext';
 const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
     const [availability, setAvailability] = useState('In Stock');
     const [sortBy, setSortBy] = useState('Best selling');
     const [viewMode, setViewMode] = useState('grid');
@@ -239,7 +243,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             {productsList.map((product) => (
                                 <div
                                     key={product._id || product.id}
-                                    className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
+                                    onClick={() => navigate(`/product/${product._id || product.id}`)}
+                                    className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
                                     <Link to={`/product/${product.id || product._id}`} className={`relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px]' : 'w-full h-[240px]'} block`}>
@@ -285,7 +290,12 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                                     ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                                     : product.price}
                                             </span>
-                                            <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addToCart(product, 1);
+                                                }}
+                                                className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                 <ShoppingCart className="h-5 w-5" />
                                             </button>
                                         </div>

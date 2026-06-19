@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 import { products } from '../../data/products';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
+import { useCart } from '../../context/CartContext';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
     const [suggestedProducts, setSuggestedProducts] = useState([]);
+    const { addToCart } = useCart();
 
     useEffect(() => {
         const fetchSuggestions = async () => {
@@ -50,20 +52,20 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
     return (
         <div className="mt-20 max-w-[1440px] mx-auto text-left relative" style={{ fontFamily: 'Poppins' }}>
             {/* Header Section */}
-            <div className="flex justify-between items-end mb-8">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0 mb-8">
                 <div>
                     <span className="text-[#00bfef] text-[13px] font-extrabold tracking-wider uppercase block mb-1">
                         More Products
                     </span>
-                    <h2 className="text-3xl sm:text-[36px] font-semibold text-[#1E1E1E]">
+                    <h2 className="text-3xl sm:text-[36px] leading-tight font-semibold text-[#1E1E1E]">
                         You may also like:
                     </h2>
                 </div>
                 <Link
                     to="/shop"
-                    className="text-[#008fe2] hover:text-[#007cc5] text-[14px] font-bold flex items-center gap-1.5 transition-colors focus:outline-none"
+                    className="text-[#008fe2] hover:text-[#007cc5] text-[14px] font-bold flex items-center gap-1.5 transition-colors focus:outline-none mt-2 sm:mt-0"
                 >
-                    <span>View All Product</span>
+                    <span className="whitespace-nowrap">View All Product</span>
                     <span className="text-[16px]">→</span>
                 </Link>
             </div>
@@ -134,7 +136,14 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                              ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                              : product.price}
                                      </span>
-                                     <button className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                     <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            addToCart(product, 1);
+                                        }}
+                                        className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                     >
                                         <ShoppingCart className="h-5 w-5" />
                                     </button>
                                 </div>

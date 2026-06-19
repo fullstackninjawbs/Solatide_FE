@@ -20,6 +20,7 @@ import ResearchInsight from '../Redirect/ResearchInsight'
 import ShippingPolicy from '../pages/Shipping_Policy/ShippingPolicy'
 import PrivacyPolicy from '../pages/PrivacyPolicy/Privacy_policy'
 import ViewDocument from '../Redirect/ViewDocument'
+import AffiliatePro from '../Redirect/AffiliatePro'
 
 const AppRoutes = () => {
     return (
@@ -59,9 +60,7 @@ const AppRoutes = () => {
                 <Route path="shipping-policy" element={<ShippingPolicy />} />
                 <Route path="privacy" element={<PrivacyPolicy />} />
                 <Route path="/ViewDocument" element={<ViewDocument />} />
-
-
-
+                <Route path="/AffiliatePro" element={<AffiliatePro />} />
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>

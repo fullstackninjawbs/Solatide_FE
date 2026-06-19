@@ -6,6 +6,7 @@ import ProductInfoSection from './ProductInfoSection';
 import ProductReviewsSection from './ProductReviewsSection';
 import ProductFaqSection from './ProductFaqSection';
 import ProductSuggestionsSection from './ProductSuggestionsSection';
+import { useCart } from '../../context/CartContext';
 
 
 
@@ -17,7 +18,7 @@ const ProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState(0);
-
+    const { addToCart } = useCart();
     // Scroll to top on ID change
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -157,12 +158,13 @@ const ProductDetail = () => {
                     <div className="lg:col-span-5 text-left flex flex-col gap-6" style={{ fontFamily: 'Poppins' }}>
                         <div>
                             {/* Category Tag */}
-                            <span className="text-[#00bfef] text-[14px] sm:text-[15px] font-extrabold tracking-wide block mb-3 uppercase">
+
+                            <span className="text-[#00E5FF] text-[14px] sm:text-[15px] font-regular font-weight-400 tracking-wide block mb-3 uppercase">
                                 {product.tag || 'Dual GLP-1/GIP Receptor Agonist'}
                             </span>
 
                             {/* Product Title */}
-                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#1E1E1E] leading-tight mb-4" style={{ fontWeight: 600 }}>
+                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#214A9E] leading-tight mb-4" style={{ fontWeight: 600 }}>
                                 {product.name}
                             </h1>
 
@@ -179,7 +181,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Price */}
-                            <div className="text-3xl sm:text-[36px] font-bold text-[#00bfef] mb-6">
+                            <div className="text-3xl sm:text-[36px] font-bold text-[#214A9E] mb-6">
                                 {product.price}
                             </div>
 
@@ -224,7 +226,10 @@ const ProductDetail = () => {
 
                             {/* Buttons */}
                             <div className="flex flex-col gap-4 w-full">
-                                <button className="w-full bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90 text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none">
+                                <button 
+                                    onClick={() => addToCart(product, quantity)}
+                                    className="w-full bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90 text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none"
+                                >
                                     Add to cart
                                 </button>
                                 <button className="w-full bg-white hover:bg-slate-50 text-[#1E1E1E] text-[15px] font-bold py-4 rounded-xl border border-[#1E1E1E] transition-all focus:outline-none">
