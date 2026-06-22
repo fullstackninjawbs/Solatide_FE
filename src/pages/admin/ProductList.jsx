@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,7 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
+  const { formatAUD } = useCurrency();
 
   const categories = [
     'All',
@@ -223,11 +225,9 @@ const ProductList = () => {
                     </td>
                     <td className="py-3.5 text-slate-500 line-clamp-1 mt-3.5">{product.category}</td>
                     <td className="py-3.5 text-slate-400 font-mono text-xs">{product.sku || '—'}</td>
-                    <td className="py-3.5 font-bold text-brand-navy">
-                      {typeof product.price === 'number'
-                        ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                        : product.price}
-                    </td>
+                     <td className="py-3.5 font-bold text-brand-navy">
+                       {formatAUD(product.price)}
+                     </td>
                     <td className="py-3.5 pr-6 text-right">
                       <div className="flex justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link

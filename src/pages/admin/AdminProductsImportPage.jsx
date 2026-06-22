@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, FileSpreadsheet, Play, CheckCircle, AlertTriangle, Eye, RefreshCw, Layers } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const AdminProductsImportPage = () => {
   const [file, setFile] = useState(null);
@@ -14,6 +15,7 @@ const AdminProductsImportPage = () => {
   
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const { formatAUD } = useCurrency();
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -224,7 +226,7 @@ const AdminProductsImportPage = () => {
                           <td className="py-3 text-center text-slate-550">{p.variants.length}</td>
                           <td className="py-3 text-center text-slate-550">{p.images.length}</td>
                           <td className="py-3 text-right pr-4 font-bold text-brand-navy">
-                            Rs. {p.price?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            {formatAUD(p.price)}
                           </td>
                         </tr>
                       ))}

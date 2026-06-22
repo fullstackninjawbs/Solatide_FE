@@ -127,8 +127,29 @@ export const CurrencyProvider = ({ children }) => {
     return `${symbol}${formattedVal}${suffix}`;
   };
 
+  // Admin helper: always formats from INR base to AUD regardless of selected currency
+  const formatAUD = (amount) => {
+    if (amount === undefined || amount === null) return '—';
+    let numericAmount = amount;
+    if (typeof amount === 'string') {
+      const stripped = amount.replace(/[^\d.]/g, '');
+      const parsed = parseFloat(stripped);
+      if (!isNaN(parsed)) {
+        numericAmount = parsed;
+      } else {
+        return amount;
+      }
+    }
+    const audRate = rates['AUD'] || fallbackRates['AUD'];
+    const converted = numericAmount * audRate;
+    return `$${new Intl.NumberFormat('en-AU', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(converted)} AUD`;
+  };
+
   return (
-    <CurrencyContext.Provider value={{ selectedCountry, changeCountry, formatPrice }}>
+    <CurrencyContext.Provider value={{ selectedCountry, changeCountry, formatPrice, formatAUD }}>
       {children}
     </CurrencyContext.Provider>
   );

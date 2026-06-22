@@ -11,13 +11,15 @@ import {
   Upload,
   BookOpen
 } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const Dashboard = () => {
-  // Analytics stats matching Solatide theme
+  const { formatAUD } = useCurrency();
+  // Analytics stats matching Solatide theme (raw INR values, displayed as AUD)
   const stats = [
-    { name: 'Revenue (MTD)', value: 'Rs. 245,600.00', change: '+12.4%', icon: DollarSign, color: 'bg-emerald-50 text-emerald-600' },
+    { name: 'Revenue (MTD)', value: formatAUD(245600), change: '+12.4%', icon: DollarSign, color: 'bg-emerald-50 text-emerald-600' },
     { name: 'Orders Today', value: '18', change: '+8.2%', icon: ShoppingBag, color: 'bg-brand-blue/10 text-brand-blue' },
-    { name: 'Average Order Value', value: 'Rs. 13,640.00', change: '-2.1%', icon: TrendingUp, color: 'bg-brand-cyan/10 text-brand-cyan' },
+    { name: 'Average Order Value', value: formatAUD(13640), change: '-2.1%', icon: TrendingUp, color: 'bg-brand-cyan/10 text-brand-cyan' },
     { name: 'New Customers', value: '44', change: '+24.5%', icon: Users, color: 'bg-indigo-50 text-indigo-650' }
   ];
 
