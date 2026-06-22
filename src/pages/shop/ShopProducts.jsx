@@ -4,9 +4,11 @@ import { ShoppingCart, Star } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const [availability, setAvailability] = useState('In Stock');
     const [sortBy, setSortBy] = useState('Best selling');
     const [viewMode, setViewMode] = useState('grid');
@@ -247,10 +249,16 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
-                                    <Link to={`/product/${product.id || product._id}`} className={`relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px]' : 'w-full h-[240px]'} block`}>
+                                    <Link 
+                                        to={`/product/${product.id || product._id}`} 
+                                        className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[260px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
+                                    >
                                         <img
                                             src={product.imageUrl || product.image || productVialImage}
-                                            className={`object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`}
+                                            className={product.imageUrl || product.image
+                                                ? `object-contain w-full h-full p-3 sm:p-4 md:p-5 select-none transition-transform duration-500 group-hover:scale-105`
+                                                : `object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`
+                                            }
                                             alt={product.name}
                                         />
 
@@ -286,9 +294,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         </h3>
                                         <div className="flex items-center justify-between mt-2">
                                             <span className="text-[18px] sm:text-[20px] font-weight-600  font-semibold text-[#00E5FF]">
-                                                {typeof product.price === 'number'
-                                                    ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                                    : product.price}
+                                                {formatPrice(product.price)}
                                             </span>
                                             <button 
                                                 onClick={(e) => {

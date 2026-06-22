@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.png'
 import { products as localProducts } from '../../data/products'
 import { useCart } from '../../context/CartContext'
+import { useCurrency } from '../../context/CurrencyContext'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -12,6 +13,7 @@ import 'swiper/css/navigation';
 const FeaturedProducts = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -96,10 +98,13 @@ const FeaturedProducts = () => {
                                     onClick={() => navigate(`/product/${product._id || product.id}`)}
                                     className="group flex flex-col bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
                                 >
-                                    <div className="relative w-full h-[240px] sm:h-[260px] overflow-hidden bg-[#eef2f6] rounded-[20px] flex items-center justify-center">
+                                    <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
                                         <img
                                             src={product.imageUrl || product.image || productVialImage}
-                                            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                                            className={product.imageUrl || product.image
+                                                ? `object-contain w-full h-full p-3 select-none transition-transform duration-500 group-hover:scale-105`
+                                                : `w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105`
+                                            }
                                             alt={product.name}
                                         />
 
@@ -121,9 +126,7 @@ const FeaturedProducts = () => {
                                         </h3>
                                         <div className="flex items-center justify-between mt-3.5">
                                             <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu',sans-serif]">
-                                                {typeof product.price === 'number'
-                                                    ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                                    : product.price}
+                                                {formatPrice(product.price)}
                                             </span>
                                             <button
                                                 onClick={(e) => {

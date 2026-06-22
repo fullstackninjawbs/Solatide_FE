@@ -4,11 +4,13 @@ import { ShoppingCart, Star } from 'lucide-react';
 import { products } from '../../data/products';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
     const [suggestedProducts, setSuggestedProducts] = useState([]);
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
 
     useEffect(() => {
         const fetchSuggestions = async () => {
@@ -96,11 +98,14 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                             {/* Product Image Link */}
                             <Link
                                 to={`/product/${product.id || product._id}`}
-                                className="relative overflow-hidden bg-[#eef2f6] rounded-[18px] flex items-center justify-center border border-slate-100/50 w-full h-[240px] block"
+                                className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
                                     src={product.imageUrl || product.image || productVialImage}
-                                    className="object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover/card:scale-[1.78] translate-y-3"
+                                    className={product.imageUrl || product.image
+                                        ? `object-contain w-full h-full p-3 select-none transition-transform duration-500 group-hover/card:scale-105`
+                                        : `object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover/card:scale-[1.78] translate-y-3`
+                                    }
                                     alt={product.name}
                                 />
 
@@ -132,9 +137,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                  </div>
                                  <div className="flex items-center justify-between mt-4">
                                      <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
-                                         {typeof product.price === 'number'
-                                             ? `Rs. ${product.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                             : product.price}
+                                         {formatPrice(product.price)}
                                      </span>
                                      <button 
                                         onClick={(e) => {

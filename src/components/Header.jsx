@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
+import { useCurrency, countriesList } from '../context/CurrencyContext'
+import SearchModal from './SearchModal'
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-2 py-0.5 flex items-center justify-center h-[22px] shrink-0">
@@ -32,54 +34,17 @@ const ApplePaySVG = () => (
     </span>
 )
 
-
-
-const countriesList = [
-    { name: 'Australia', code: 'AUD', countryCode: 'AU' },
-    { name: 'United States', code: 'USD', countryCode: 'US' },
-    { name: 'United Kingdom', code: 'GBP', countryCode: 'GB' },
-    { name: 'Canada', code: 'CAD', countryCode: 'CA' },
-    { name: 'Euro Zone', code: 'EUR', countryCode: 'EU' },
-    { name: 'New Zealand', code: 'NZD', countryCode: 'NZ' },
-    { name: 'Afghanistan', code: 'AFN', countryCode: 'AF' },
-    { name: 'Åland Islands', code: 'EUR', countryCode: 'AX' },
-    { name: 'Albania', code: 'ALL', countryCode: 'AL' },
-    { name: 'Algeria', code: 'DZD', countryCode: 'DZ' },
-    { name: 'Andorra', code: 'EUR', countryCode: 'AD' },
-    { name: 'Angola', code: 'AOA', countryCode: 'AO' },
-    { name: 'Anguilla', code: 'XCD', countryCode: 'AI' },
-    { name: 'Antigua & Barbuda', code: 'XCD', countryCode: 'AG' },
-    { name: 'Argentina', code: 'ARS', countryCode: 'AR' },
-    { name: 'Armenia', code: 'AMD', countryCode: 'AM' },
-    { name: 'Austria', code: 'EUR', countryCode: 'AT' },
-    { name: 'Bahamas', code: 'BSD', countryCode: 'BS' },
-    { name: 'Bahrain', code: 'BHD', countryCode: 'BH' },
-    { name: 'Bangladesh', code: 'BDT', countryCode: 'BD' },
-    { name: 'Belgium', code: 'EUR', countryCode: 'BE' },
-    { name: 'Brazil', code: 'BRL', countryCode: 'BR' },
-    { name: 'China', code: 'CNY', countryCode: 'CN' },
-    { name: 'Denmark', code: 'DKK', countryCode: 'DK' },
-    { name: 'Egypt', code: 'EGP', countryCode: 'EG' },
-    { name: 'Fiji', code: 'FJD', countryCode: 'FJ' },
-    { name: 'Finland', code: 'EUR', countryCode: 'FI' },
-    { name: 'France', code: 'EUR', countryCode: 'FR' },
-    { name: 'Germany', code: 'EUR', countryCode: 'DE' },
-    { name: 'India', code: 'INR', countryCode: 'IN' },
-    { name: 'Japan', code: 'JPY', countryCode: 'JP' },
-    { name: 'Singapore', code: 'SGD', countryCode: 'SG' },
-    { name: 'South Africa', code: 'ZAR', countryCode: 'ZA' },
-    { name: 'Switzerland', code: 'CHF', countryCode: 'CH' }
-]
-
 const Header = () => {
     const location = useLocation()
+    const navigate = useNavigate()
     const { setIsCartOpen, cartTotalCount } = useCart()
+    const { selectedCountry, changeCountry } = useCurrency()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState(countriesList[0])
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
     const [isMobileCountryDropdownOpen, setIsMobileCountryDropdownOpen] = useState(false)
+    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [isMoreOpen, setIsMoreOpen] = useState(false)
     const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
@@ -270,14 +235,18 @@ const Header = () => {
 
                     <div className="hidden xl:flex items-center gap-2.5">
 
-                        <div className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20">
+                        <div 
+                            onClick={() => setIsSearchModalOpen(true)}
+                            className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20 cursor-pointer"
+                        >
                             <svg className="h-[14px] w-[14px] text-[#1a4494]/70 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input
                                 type="text"
                                 placeholder="Search"
-                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none"
+                                readOnly
+                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none cursor-pointer"
                             />
                         </div>
                         <div className="relative" ref={dropdownRef}>
@@ -314,7 +283,7 @@ const Header = () => {
                                                 <button
                                                     key={country.name}
                                                     onClick={() => {
-                                                        setSelectedCountry(country)
+                                                        changeCountry(country)
                                                         setIsCountryDropdownOpen(false)
                                                         setSearchQuery('')
                                                     }}
@@ -474,7 +443,7 @@ const Header = () => {
                                                     <button
                                                         key={country.name}
                                                         onClick={() => {
-                                                            setSelectedCountry(country)
+                                                            changeCountry(country)
                                                             setIsMobileCountryDropdownOpen(false)
                                                             setSearchQuery('')
                                                         }}
@@ -503,6 +472,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
+            {isSearchModalOpen && (
+                <SearchModal 
+                    onClose={() => setIsSearchModalOpen(false)} 
+                    navigate={navigate} 
+                />
+            )}
         </header>
     )
 }

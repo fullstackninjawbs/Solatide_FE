@@ -7,6 +7,7 @@ import ProductReviewsSection from './ProductReviewsSection';
 import ProductFaqSection from './ProductFaqSection';
 import ProductSuggestionsSection from './ProductSuggestionsSection';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 
 
@@ -19,6 +20,7 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState(0);
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const [selectedVariant, setSelectedVariant] = useState(null);
 
     // Scroll to top on ID change
@@ -39,6 +41,23 @@ const ProductDetail = () => {
         const controller = new AbortController();
         const signal = controller.signal;
 
+        const saveToRecentlyViewed = (prod) => {
+            if (!prod) return;
+            const stored = localStorage.getItem('recentlyViewed');
+            let list = [];
+            if (stored) {
+                try {
+                    list = JSON.parse(stored);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            list = list.filter(item => (item._id || item.id) !== (prod._id || prod.id));
+            list.unshift(prod);
+            list = list.slice(0, 4);
+            localStorage.setItem('recentlyViewed', JSON.stringify(list));
+        };
+
         const fetchProduct = async () => {
             try {
                 setLoading(true);
@@ -47,9 +66,11 @@ const ProductDetail = () => {
                 if (!signal.aborted) {
                     if (result.success && result.data && result.data.product) {
                         setProduct(result.data.product);
+                        saveToRecentlyViewed(result.data.product);
                     } else {
                         const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
                         setProduct(fallback);
+                        saveToRecentlyViewed(fallback);
                     }
                 }
             } catch (err) {
@@ -57,6 +78,7 @@ const ProductDetail = () => {
                     console.warn('Backend product details API unreachable. Using static fallback.');
                     const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
                     setProduct(fallback);
+                    saveToRecentlyViewed(fallback);
                 }
             } finally {
                 if (!signal.aborted) {
@@ -111,16 +133,6 @@ const ProductDetail = () => {
 
     const incrementQty = () => setQuantity(prev => prev + 1);
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
-
-    const formatPrice = (priceVal) => {
-        if (typeof priceVal === 'number') {
-            return `Rs. ${priceVal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-        }
-        if (typeof priceVal === 'string' && !priceVal.startsWith('Rs.')) {
-            return `Rs. ${priceVal}`;
-        }
-        return priceVal;
-    };
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
     const displayCompareAtPrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice;

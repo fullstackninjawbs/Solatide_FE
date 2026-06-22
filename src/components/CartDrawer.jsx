@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { X, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 
 const CartDrawer = () => {
     const { 
@@ -15,6 +16,7 @@ const CartDrawer = () => {
     } = useCart();
     const navigate = useNavigate();
     const drawerRef = useRef(null);
+    const { formatPrice } = useCurrency();
 
     // Close when clicking outside
     useEffect(() => {
@@ -38,17 +40,7 @@ const CartDrawer = () => {
         };
     }, [isCartOpen, setIsCartOpen]);
 
-    const formatPrice = (priceStr) => {
-        if (typeof priceStr === 'number') {
-            return priceStr.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        if (typeof priceStr === 'string') {
-            const match = priceStr.replace(/,/g, '').match(/\d+(\.\d+)?/);
-            const numericPrice = match ? parseFloat(match[0]) : 0;
-            return numericPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        return priceStr;
-    };
+    // Deleted local formatPrice helper in favor of context-level formatting
     
     const getNumericPrice = (priceStr) => {
         if (typeof priceStr === 'string') {
@@ -132,10 +124,10 @@ const CartDrawer = () => {
                                                 )}
                                             </div>
                                             <span className="text-[14px] font-semibold text-[#1E1E1E] whitespace-nowrap">
-                                                Rs. {formatPrice(getNumericPrice(item.price) * item.quantity)}
+                                                {formatPrice(getNumericPrice(item.price) * item.quantity)}
                                             </span>
                                         </div>
-                                        <p className="text-[13px] text-slate-500 mt-1 font-medium">Rs. {formatPrice(item.price)}</p>
+                                        <p className="text-[13px] text-slate-500 mt-1 font-medium">{formatPrice(item.price)}</p>
                                         
                                         {/* Actions (Qty + Trash) */}
                                         <div className="flex items-center gap-4 mt-auto pt-2">
@@ -178,7 +170,7 @@ const CartDrawer = () => {
                     <div className="border-t border-slate-100 p-6 bg-white flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                             <span className="text-[15px] text-[#1E1E1E] font-medium">Estimated total</span>
-                            <span className="text-[18px] font-bold text-[#1E1E1E]">Rs. {formatPrice(cartTotalPrice)}</span>
+                            <span className="text-[18px] font-bold text-[#1E1E1E]">{formatPrice(cartTotalPrice)}</span>
                         </div>
                         <p className="text-[13px] text-slate-500 leading-relaxed">
                             Taxes included. Discounts and shipping calculated at checkout.
