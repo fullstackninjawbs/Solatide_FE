@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import AdminLayout from '../layouts/AdminLayout'
@@ -16,11 +15,11 @@ import ContactUs from '../Redirect/ContactUs'
 import ResearchResource from '../pages/researchResource/ResearchResource'
 import Faq from '../Redirect/Faq'
 import About from '../Redirect/About'
-import ResearchInsight from '../Redirect/ResearchInsight'
 import ShippingPolicy from '../pages/Shipping_Policy/ShippingPolicy'
 import PrivacyPolicy from '../pages/PrivacyPolicy/Privacy_policy'
 import ViewDocument from '../Redirect/ViewDocument'
 import AffiliatePro from '../Redirect/AffiliatePro'
+import ResearchInsight from '../Redirect/ResearchInsight'
 
 const AppRoutes = () => {
     return (
@@ -55,12 +54,12 @@ const AppRoutes = () => {
                 <Route path="contact" element={<ContactUs />} />
                 <Route path="research-resource" element={<ResearchResource />} />
                 <Route path="resource" element={<ResearchResource />} />
-                <Route path="Faq" element={<Faq />} />
-                <Route path="/ResearchInsight" element={<ResearchInsight />} />
+                <Route path="faq" element={<Faq />} />
+                <Route path="/research-insight" element={<ResearchInsight />} />
                 <Route path="shipping-policy" element={<ShippingPolicy />} />
                 <Route path="privacy" element={<PrivacyPolicy />} />
-                <Route path="/ViewDocument" element={<ViewDocument />} />
-                <Route path="/AffiliatePro" element={<AffiliatePro />} />
+                <Route path="/view-document" element={<ViewDocument />} />
+                <Route path="/affiliate-pro" element={<AffiliatePro />} />
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>

@@ -1,4 +1,3 @@
-import React from 'react'
 import ResearchInsights from '../pages/researchInsights/ResearchInsights'
 
 const ResearchInsight = () => {

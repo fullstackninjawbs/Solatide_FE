@@ -232,7 +232,7 @@ const Header = () => {
                             <button
                                 onClick={() => setIsMoreOpen(!isMoreOpen)}
                                 className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${([
-                                    '/contact', '/research-resource', '/ResearchInsight', '/AffiliatePro'
+                                    '/contact', '/research-resource', '/research-insight', '/affiliate-pro'
                                 ].includes(location.pathname))
                                     ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
                                     : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
@@ -248,8 +248,8 @@ const Header = () => {
                                 {[
                                     { name: 'Contact Us', path: '/contact' },
                                     { name: 'Research Resource', path: '/research-resource' },
-                                    { name: 'Research Insights', path: '/ResearchInsight' },
-                                    { name: 'Affiliate Program', path: '/AffiliatePro' },
+                                    { name: 'Research Insights', path: '/research-insight' },
+                                    { name: 'Affiliate Program', path: '/affiliate-pro' },
                                 ].map((link) => (
                                     <Link
                                         key={link.name}
@@ -345,7 +345,7 @@ const Header = () => {
                             Contact Us
                         </Link>
 
-                        <button 
+                        <button
                             onClick={() => setIsCartOpen(true)}
                             className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0"
                         >
@@ -360,7 +360,7 @@ const Header = () => {
                     </div>
 
                     <div className="flex xl:hidden items-center gap-2.5">
-                        <button 
+                        <button
                             onClick={() => setIsCartOpen(true)}
                             className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
                         >
@@ -405,7 +405,7 @@ const Header = () => {
                         <div className="flex flex-col">
                             <button
                                 onClick={() => setIsMobileMoreOpen(!isMobileMoreOpen)}
-                                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${['/research-resource', '/ResearchInsight', '/AffiliatePro'].includes(location.pathname)
+                                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${['/research-resource', '/research-insight', '/affiliate-pro'].includes(location.pathname)
                                     ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
                                     : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
                                     }`}
@@ -419,8 +419,8 @@ const Header = () => {
                                 <div className="mt-1 flex flex-col gap-1 pl-4">
                                     {[
                                         { name: 'Research Resource', path: '/research-resource' },
-                                        { name: 'Research Insights', path: '/ResearchInsight' },
-                                        { name: 'Affiliate Program', path: '/AffiliatePro' },
+                                        { name: 'Research Insights', path: '/research-insight' },
+                                        { name: 'Affiliate Program', path: '/affiliate-pro' },
                                     ].map((link) => (
                                         <Link
                                             key={link.name}

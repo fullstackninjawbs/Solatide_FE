@@ -86,7 +86,7 @@ const HeroSection = () => {
                             </Link>
 
                             <Link
-                                to="/ViewDocument"
+                                to="/view-document"
                                 className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 active:bg-slate-100 transition-all duration-200 whitespace-nowrap border w-full sm:w-[210px]"
                                 style={{
                                     height: '46px',
