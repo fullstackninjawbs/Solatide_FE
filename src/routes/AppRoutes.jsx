@@ -39,6 +39,7 @@ import PrivacyPolicy from '../pages/PrivacyPolicy/Privacy_policy'
 import ViewDocument from '../Redirect/ViewDocument'
 import AffiliatePro from '../Redirect/AffiliatePro'
 import ResearchInsight from '../Redirect/ResearchInsight'
+import Checkout from '../pages/checkout/Checkout'
 
 const AppRoutes = () => {
     return (
@@ -93,6 +94,9 @@ const AppRoutes = () => {
                 <Route path="/affiliate-pro" element={<AffiliatePro />} />
                 <Route path="*" element={<Home />} />
             </Route>
+
+            {/* Standalone Checkout Route (No Navbar/Footer) */}
+            <Route path="/checkout" element={<Checkout />} />
         </Routes>
     )
 }
