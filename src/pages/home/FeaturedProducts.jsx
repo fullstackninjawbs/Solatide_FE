@@ -43,7 +43,7 @@ const FeaturedProducts = () => {
                 setLoading(false);
             }
         };
-        fetchFeatured();
+        fetchFeaturedProducts();
     }, []);
 
     return (
