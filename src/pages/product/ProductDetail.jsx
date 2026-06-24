@@ -9,6 +9,7 @@ import ProductSuggestionsSection from './ProductSuggestionsSection';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 
 
 
@@ -23,6 +24,7 @@ const ProductDetail = () => {
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
 
     // Scroll to top on ID change
     useEffect(() => {
@@ -328,15 +330,21 @@ const ProductDetail = () => {
                                     {isOutOfStock ? 'Sold Out' : 'Add to cart'}
                                 </button>
                                 <button 
-                                    disabled={isOutOfStock}
-                                    className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none ${
-                                        isOutOfStock
+                                    onClick={() => initiateCheckout([{ ...product, quantity, selectedVariant }])}
+                                    disabled={isOutOfStock || isCheckingOut}
+                                    className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none flex items-center justify-center gap-2 ${
+                                        isOutOfStock || isCheckingOut
                                             ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
                                             : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
                                     }`}
                                 >
-                                    Buy it Now
+                                    {isCheckingOut ? (
+                                        <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
+                                    ) : (
+                                        'Buy it Now'
+                                    )}
                                 </button>
+                                {checkoutError && <p className="text-[12px] text-red-500 font-medium text-center">{checkoutError}</p>}
                             </div>
                         </div>
                     </div>

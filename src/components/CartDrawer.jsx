@@ -3,6 +3,7 @@ import { X, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
+import { useTagadaCheckout } from '../hooks/useTagadaCheckout';
 
 const CartDrawer = () => {
     const { 
@@ -17,6 +18,7 @@ const CartDrawer = () => {
     const navigate = useNavigate();
     const drawerRef = useRef(null);
     const { formatPrice } = useCurrency();
+    const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
 
     // Close when clicking outside
     useEffect(() => {
@@ -175,14 +177,19 @@ const CartDrawer = () => {
                         <p className="text-[13px] text-slate-500 leading-relaxed">
                             Taxes included. Discounts and shipping calculated at checkout.
                         </p>
+                        {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
                         <button 
                             onClick={() => {
-                                setIsCartOpen(false);
-                                navigate('/checkout');
+                                initiateCheckout(cartItems);
                             }}
-                            className="w-full bg-[#008fe2] hover:bg-[#007cc5] text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none mt-2"
+                            disabled={isCheckingOut}
+                            className="w-full bg-[#008fe2] hover:bg-[#007cc5] text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none mt-2 flex items-center justify-center gap-2"
                         >
-                            Check out
+                            {isCheckingOut ? (
+                                <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Redirecting...</>
+                            ) : (
+                                'Check out'
+                            )}
                         </button>
                     </div>
                 )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, Save, CheckCircle, XCircle } from 'lucide-react';
-import { apiService } from '../../../../services/api';
+import { apiService } from '../../../services/api';
 
 // ─── Helper: mask API keys for display ───────────────────────────────────────
 const maskKey = (key) => {
