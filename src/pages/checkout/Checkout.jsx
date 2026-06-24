@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { Country, State } from 'country-state-city';
+import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 
 // ─── Card brand icons ─────────────────────────────────────────────────────────
@@ -242,19 +243,13 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
       // 1) Create order
-      const orderRes = await fetch('/api/v1/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity ?? 1 })),
-          shippingAddress: `${address}${apt ? ', ' + apt : ''}, ${city}, ${stateProvince} ${postcode}, ${country}`,
-          customerEmail: email,
-          customerName: `${firstName} ${lastName}`,
-          paymentMethod: paymentMethod === 'card' ? 'tagada' : paymentMethod,
-        }),
+      const orderRes = await apiService.createOrder({
+        products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity ?? 1 })),
+        shippingAddress: `${address}${apt ? ', ' + apt : ''}, ${city}, ${stateProvince} ${postcode}, ${country}`,
+        customerEmail: email,
+        customerName: `${firstName} ${lastName}`,
+        paymentMethod: paymentMethod === 'card' ? 'tagada' : paymentMethod,
       });
       const orderData = await orderRes.json();
       if (!orderRes.ok) throw new Error(orderData.message || 'Failed to create order');
@@ -263,10 +258,8 @@ const Checkout = () => {
 
       if (paymentMethod === 'card') {
         // 2) Create TagadaPay payment
-        const payRes = await fetch('/api/payments/tagada/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ orderId, cardNumber: cardNumber.replace(/\s/g, ''), expiry, cvc }),
+        const payRes = await apiService.createTagadaPayment({
+          orderId, cardNumber: cardNumber.replace(/\s/g, ''), expiry, cvc
         });
         const payData = await payRes.json();
         if (!payRes.ok) throw new Error(payData.message || 'Payment failed');

@@ -5,6 +5,7 @@ import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
@@ -52,8 +53,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(
-                    `http://localhost:5000/api/products?category=${encodeURIComponent(selectedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
+                const response = await apiService.getProducts(
+                    `category=${encodeURIComponent(selectedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
                 );
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {

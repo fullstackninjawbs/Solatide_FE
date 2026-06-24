@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -26,16 +27,15 @@ const ProductList = () => {
       setLoading(true);
       setError('');
       
-      // Query parameters for backend search
-      let url = 'http://localhost:5000/api/products?limit=100';
+      let queryParams = 'limit=100';
       if (searchQuery) {
-        url += `&search=${encodeURIComponent(searchQuery)}`;
+        queryParams += `&search=${encodeURIComponent(searchQuery)}`;
       }
       if (selectedCategory && selectedCategory !== 'All') {
-        url += `&category=${encodeURIComponent(selectedCategory)}`;
+        queryParams += `&category=${encodeURIComponent(selectedCategory)}`;
       }
 
-      const response = await fetch(url);
+      const response = await apiService.getProducts(queryParams);
       const result = await response.json();
       if (result.success && result.data && result.data.products) {
         setProducts(result.data.products);
@@ -60,14 +60,7 @@ const ProductList = () => {
     }
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
+      const response = await apiService.deleteProduct(id);
       if (response.ok || response.status === 204) {
         setProducts(products.filter(p => p._id !== id));
       } else {

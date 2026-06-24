@@ -8,6 +8,7 @@ import ProductFaqSection from './ProductFaqSection';
 import ProductSuggestionsSection from './ProductSuggestionsSection';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 
 
 
@@ -61,7 +62,7 @@ const ProductDetail = () => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:5000/api/products/${id}`, { signal });
+                const response = await apiService.getProductById(id, { signal });
                 const result = await response.json();
                 if (!signal.aborted) {
                     if (result.success && result.data && result.data.product) {

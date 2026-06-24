@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Search, X, Star } from 'lucide-react';
 import productVialImage from '../assets/images/homePageFirstSection.png';
 import { useCurrency } from '../context/CurrencyContext';
+import { apiService } from '../services/api';
 
 export const SearchModal = ({ onClose, navigate }) => {
   const [searchVal, setSearchVal] = useState('');
@@ -16,7 +17,7 @@ export const SearchModal = ({ onClose, navigate }) => {
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products?limit=100');
+        const response = await apiService.getProducts('limit=100');
         const result = await response.json();
         if (result.success && result.data && result.data.products) {
           setDbProducts(result.data.products);

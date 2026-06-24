@@ -5,6 +5,7 @@ import productVialImage from '../../assets/images/RectangleMadBackground.png'
 import { products as localProducts } from '../../data/products'
 import { useCart } from '../../context/CartContext'
 import { useCurrency } from '../../context/CurrencyContext'
+import { apiService } from '../../services/api'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -25,10 +26,10 @@ const FeaturedProducts = () => {
     ];
 
     useEffect(() => {
-        const fetchFeatured = async () => {
+        const fetchFeaturedProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:5000/api/products?limit=8');
+                const response = await apiService.getProducts('limit=8');
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
                     setProducts(result.data.products);

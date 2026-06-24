@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { apiService } from '../../services/api';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -21,13 +22,7 @@ const AdminLogin = () => {
       setLoading(true);
       setError('');
       
-      const response = await fetch('http://localhost:5000/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await apiService.adminLogin({ email, password });
 
       const result = await response.json();
       

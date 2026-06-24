@@ -5,6 +5,7 @@ import { products } from '../../data/products';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
@@ -15,7 +16,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products?limit=7');
+                const response = await apiService.getProducts('limit=7');
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
                     // Filter out current product

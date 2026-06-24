@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { CreditCard, Save, CheckCircle, XCircle } from 'lucide-react';
+import { apiService } from '../../../../services/api';
 
 // ─── Helper: mask API keys for display ───────────────────────────────────────
 const maskKey = (key) => {
@@ -45,15 +47,11 @@ const PaymentSettings = () => {
   const [showProdKey, setShowProdKey] = useState(false);
   const [showWebhookSecret, setShowWebhookSecret] = useState(false);
 
-  const token = () => localStorage.getItem('adminToken') || localStorage.getItem('token');
-
   // ── Load settings ──────────────────────────────────────────────────────────
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('/api/admin/settings/tagada', {
-          headers: { Authorization: `Bearer ${token()}` },
-        });
+        const res = await apiService.getTagadaSettings();
         const data = await res.json();
         if (data.success) {
           setForm((prev) => ({ ...prev, ...data.data }));
@@ -83,14 +81,7 @@ const PaymentSettings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/settings/tagada', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token()}`,
-        },
-        body: JSON.stringify(form),
-      });
+      const res = await apiService.saveTagadaSettings(form);
       const data = await res.json();
       if (data.success) {
         setToast({ type: 'success', msg: 'TagadaPay settings saved successfully' });

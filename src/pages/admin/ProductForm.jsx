@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
+import { apiService } from '../../services/api';
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -60,7 +61,7 @@ const ProductForm = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await apiService.getProductById(id);
         const result = await response.json();
         if (result.success && result.data && result.data.product) {
           const product = result.data.product;
@@ -189,20 +190,7 @@ const ProductForm = () => {
     };
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const method = isEditMode ? 'PATCH' : 'POST';
-      const endpoint = isEditMode 
-        ? `http://localhost:5000/api/products/${id}`
-        : 'http://localhost:5000/api/products';
-
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(finalPayload)
-      });
+      const response = await apiService.saveProduct(isEditMode ? id : null, JSON.stringify(finalPayload));
 
       const result = await response.json();
       if (result.success) {

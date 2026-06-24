@@ -5,6 +5,7 @@ import productVialImage from '../../assets/images/homePageFirstSection.png'
 import { products as localProducts } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -22,7 +23,7 @@ const ShopPeptides = () => {
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products?limit=12');
+                const response = await apiService.getProducts('limit=12');
                 const result = await response.json();
 
                 if (result.success && result.data && result.data.products) {

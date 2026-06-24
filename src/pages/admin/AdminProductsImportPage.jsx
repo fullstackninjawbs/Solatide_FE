@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, FileSpreadsheet, Play, CheckCircle, AlertTriangle, Eye, RefreshCw, Layers } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
+import { apiService } from '../../services/api';
 
 const AdminProductsImportPage = () => {
   const [file, setFile] = useState(null);
@@ -65,16 +66,9 @@ const AdminProductsImportPage = () => {
     formData.append('file', file);
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/products/import/preview', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
+      const response = await apiService.previewProductsImport(formData);
       const result = await response.json();
+
       if (result.success && result.data) {
         setPreviewData(result.data);
       } else {
@@ -105,16 +99,9 @@ const AdminProductsImportPage = () => {
     formData.append('publishDefault', publishDefault.toString());
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/products/import/commit', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
+      const response = await apiService.commitProductsImport(formData);
       const result = await response.json();
+
       if (result.success && result.data) {
         setImportSummary(result.data);
         setFile(null); // Clear file input after import completes
