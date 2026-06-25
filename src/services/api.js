@@ -56,6 +56,11 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
+  getOrderById: async (id) => {
+    return fetch(`${API_URL}/api/v1/orders/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
 
   // Admin Settings
   getTagadaSettings: async () => {

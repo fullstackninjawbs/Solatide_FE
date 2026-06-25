@@ -20,12 +20,20 @@ import PrivacyPolicy from '../pages/PrivacyPolicy/Privacy_policy'
 import ViewDocument from '../Redirect/ViewDocument'
 import AffiliatePro from '../Redirect/AffiliatePro'
 import ResearchInsight from '../Redirect/ResearchInsight'
+import Checkout from '../pages/checkout/Checkout'
+import CheckoutSuccess from '../pages/checkout/CheckoutSuccess'
+import CheckoutFailure from '../pages/checkout/CheckoutFailure'
 
 const AppRoutes = () => {
     return (
         <Routes>
             {/* Admin Auth Route */}
             <Route path="/admin/login" element={<AdminLogin />} />
+
+            {/* Checkout Routes (standalone — no MainLayout header/footer) */}
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/failure" element={<CheckoutFailure />} />
 
             {/* Admin Panel Dashboard (Protected Layout) */}
             <Route path="/admin" element={<AdminLayout />}>

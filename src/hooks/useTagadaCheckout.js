@@ -35,6 +35,8 @@ export const useTagadaCheckout = () => {
 
       // 3) Redirect to Tagada Hosted Checkout Page
       if (payData.checkoutUrl) {
+        // Save orderId so the success page can retrieve it after redirect
+        localStorage.setItem('solatide_last_order_id', orderId);
         window.location.href = payData.checkoutUrl;
       } else {
         throw new Error('No checkout URL returned from TagadaPay');
