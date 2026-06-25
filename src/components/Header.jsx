@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart } from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ShoppingCart, Search } from 'lucide-react'
 import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
+import SearchModal from './SearchModal'
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-2 py-0.5 flex items-center justify-center h-[22px] shrink-0">
@@ -73,7 +74,9 @@ const countriesList = [
 
 const Header = () => {
     const location = useLocation()
+    const navigate = useNavigate()
     const { setIsCartOpen, cartTotalCount } = useCart()
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
@@ -233,14 +236,16 @@ const Header = () => {
 
                     <div className="hidden xl:flex items-center gap-2.5">
 
-                        <div className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20">
-                            <svg className="h-[14px] w-[14px] text-[#1a4494]/70 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                        <div 
+                            onClick={() => setIsSearchOpen(true)}
+                            className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 cursor-pointer hover:bg-[#d0dfef]"
+                        >
+                            <Search className="h-[14px] w-[14px] text-[#1a4494]/70 mr-2 shrink-0" />
                             <input
                                 type="text"
                                 placeholder="Search"
-                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none"
+                                readOnly
+                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none cursor-pointer"
                             />
                         </div>
                         <div className="relative" ref={dropdownRef}>
@@ -323,6 +328,13 @@ const Header = () => {
                     </div>
 
                     <div className="flex xl:hidden items-center gap-2.5">
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
+                            aria-label="Open Search"
+                        >
+                            <Search className="h-[17px] w-[17px]" />
+                        </button>
                         <button
                             onClick={() => setIsCartOpen(true)}
                             className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
@@ -431,6 +443,9 @@ const Header = () => {
                     </div>
                 )}
             </div>
+            {isSearchOpen && (
+                <SearchModal onClose={() => setIsSearchOpen(false)} navigate={navigate} />
+            )}
         </header>
     )
 }
