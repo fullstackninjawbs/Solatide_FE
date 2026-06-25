@@ -12,10 +12,14 @@ const NeverMissRestock = () => {
 
                 <div className="mb-8">
                     <span className="text-[#00ADEE] text-[13px] font-semibold mb-2 block uppercase tracking-wider">
-                        Never Miss A Restock
+                        Stay updated with restocks and important product updates
                     </span>
                     <h2 className="text-[26px] sm:text-[36px] font-anek font-bold text-[#1D1D1F] leading-tight max-w-none mx-auto px-4">
-                        Stay updated with restocks and important product updates
+                        Never Miss A
+                        <span className="text-[#00ADEE] mb-2 tracking-wider">
+                            &nbsp;Restock
+                        </span>
+
                     </h2>
                 </div>
 

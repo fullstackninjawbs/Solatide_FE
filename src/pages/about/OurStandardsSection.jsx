@@ -1,56 +1,111 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import WhySolatideImage from '../../assets/images/WhySolatideImage.png'
 
 const OurStandardsSection = () => {
     return (
-        <section className="w-full bg-white py-12 md:py-16">
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
-                    
-                    {/* Left content */}
-                    <div className="w-full lg:w-[50%] flex flex-col text-left justify-center order-2 lg:order-1">
-                        <h2 className="text-[28px] md:text-[34px] font-bold text-[#1a4494] mb-4 font-anek leading-tight">Our Standards</h2>
-                        
-                        <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-5">
-                            Where third-party documentation is published, it reflects our preference for high-purity material and transparent supporting data. Our focus is consistency, traceability, and clear supporting information rather than vague marketing claims.
-                        </p>
-
-                        <p className="text-[15px] text-[#4B5563] font-semibold leading-[1.6] mb-3">
-                            Quality verification follows a rigorous process:
-                        </p>
-
-                        <ul className="space-y-3.5 text-[14.5px] text-[#4B5563] leading-[1.6] list-disc pl-5 mb-6">
-                            <li>
-                                Every production batch undergoes post-manufacturing quality control by the manufacturer before dispatch, which may include HPLC analysis, mass spectrometry, purity assessment, and other internal release checks
-                            </li>
-                            <li>
-                                Batches that do not meet internal specifications are rejected and never enter our inventory
-                            </li>
-                            <li>
-                                Selected products or batches are submitted to independent third-party laboratories for additional analytical verification
-                            </li>
-                            <li>
-                                Where available, documentation is made available on product pages
-                            </li>
-                            <li>
-                                Documentation availability, scope, and format vary by product and testing cycle
-                            </li>
-                        </ul>
-
+        <section className="w-full bg-[#f8fafd] py-16 md:py-24">
+            <div className="main-container">
+                
+                {/* Header Row (2 Columns) */}
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start mb-12">
+                    <div className="w-full lg:w-1/2 text-left">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#0ea5e9]"></div>
+                            <span className="text-[14px] font-bold text-[#0ea5e9] tracking-wider uppercase">Quality Assurance</span>
+                        </div>
+                        <h2 className="text-[32px] md:text-[48px] font-bold text-[#1D1D1F] font-anek leading-[1.1] tracking-[0px]">
+                            Manufacturer QC and
+                            <br />
+                            Release <span className="text-[#1a4494]">Standards</span>
+                        </h2>
+                    </div>
+                    <div className="w-full lg:w-1/2 pt-2">
                         <p className="text-[14.5px] text-[#4B5563] leading-[1.6]">
-                            Visit our <Link to="/coa" className="text-[#0AD6ED] font-semibold hover:underline">COA & Lab Testing</Link> page for more information about our verification process.
+                            Every production batch undergoes post-manufacturing analytical quality control before dispatch. Manufacturer QC may include HPLC-UV purity, LC-MS identity, endotoxin, sterility, amino acid analysis, and internal release checks. If required release criteria are not met, the batch is not released.
                         </p>
                     </div>
+                </div>
 
-                    {/* Right image */}
-                    <div className="w-full lg:w-[40%] shrink-0 order-1 lg:order-2">
-                        <div className="rounded-[20px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.2] lg:aspect-[1.15]">
-                            <img src={WhySolatideImage} alt="Scientist analyzing laboratory samples" className="w-full h-full object-cover select-none" />
+                {/* Main Cards Row */}
+                <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                    {/* Left Card */}
+                    <div className="w-full lg:w-1/2 bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 md:p-10 text-left flex flex-col">
+                        <div className="inline-block bg-[#e0f2fe] text-[#0ea5e9] text-[11px] font-bold px-3 py-1 rounded-full mb-6 self-start uppercase tracking-wider">
+                            EVERY PRODUCTION BATCH
+                        </div>
+                        <h3 className="text-[28px] md:text-[32px] font-bold text-[#1a4494] mb-6 leading-[1.2]">
+                            Post-manufacturing QC before research release.
+                        </h3>
+                        <p className="text-[14.5px] text-[#6A6A6A] leading-[1.6] mb-8">
+                            Each production batch is subject to post-manufacturing analytical quality control before dispatch for research supply. This creates a release checkpoint after manufacturing, rather than relying only on catalogue-level supplier claims.
+                        </p>
+                        <div className="bg-[#f8fafd] border border-slate-200 rounded-[12px] p-5 mt-auto">
+                            <p className="text-[13.5px] text-[#4B5563] leading-[1.6]">
+                                <span className="font-bold text-[#1D1D1F]">Release rule:</span> if required QC checks do not meet release criteria, the batch is not released for dispatch.
+                            </p>
                         </div>
                     </div>
 
+                    {/* Right Card (List) */}
+                    <div className="w-full lg:w-1/2 bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 md:p-10 text-left flex flex-col">
+                        <h3 className="text-[20px] font-bold text-[#1a4494] mb-2">Manufacturer QC may include</h3>
+                        <p className="text-[13px] text-[#6A6A6A] mb-6">Testing scope may vary by compound, batch, and relevant analytical requirements.</p>
+                        
+                        <div className="flex flex-col gap-0 divide-y divide-slate-100">
+                            {[
+                                {
+                                    num: '01',
+                                    title: 'HPLC-UV purity testing',
+                                    desc: 'Used to assess chromatographic purity for relevant compounds and tested batches.'
+                                },
+                                {
+                                    num: '02',
+                                    title: 'LC-MS identity confirmation',
+                                    desc: 'Used to support compound identity confirmation where applicable.'
+                                },
+                                {
+                                    num: '03',
+                                    title: 'Endotoxin and sterility checks',
+                                    desc: 'Included where relevant to the product type, batch, and available release documentation.'
+                                },
+                                {
+                                    num: '04',
+                                    title: 'Amino acid analysis',
+                                    desc: 'Used where relevant to support composition or identity review for applicable peptide materials.'
+                                },
+                                {
+                                    num: '05',
+                                    title: 'Internal release checks',
+                                    desc: 'Manufacturer release criteria are reviewed before materials proceed to research dispatch.'
+                                }
+                            ].map((item, idx) => (
+                                <div key={idx} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                                    <div className="text-[13px] font-bold text-[#1a4494] shrink-0 mt-0.5">{item.num}</div>
+                                    <div>
+                                        <h4 className="text-[14.5px] font-bold text-[#1D1D1F] mb-1">{item.title}</h4>
+                                        <p className="text-[13px] text-[#6A6A6A] leading-[1.5]">{item.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
+
+                {/* Bottom 3 Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 text-left">
+                        <h4 className="text-[14px] font-bold text-[#1D1D1F] mb-2">Documentation trail</h4>
+                        <p className="text-[13px] text-[#6A6A6A] leading-[1.5]">Available analytical documentation is connected to the relevant product or batch for online review where available.</p>
+                    </div>
+                    <div className="bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 text-left">
+                        <h4 className="text-[14px] font-bold text-[#1D1D1F] mb-2">Release criteria</h4>
+                        <p className="text-[13px] text-[#6A6A6A] leading-[1.5]">If required QC checks do not meet release criteria, the batch is not released for dispatch.</p>
+                    </div>
+                    <div className="bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 text-left">
+                        <h4 className="text-[14px] font-bold text-[#1D1D1F] mb-2">Testing scope</h4>
+                        <p className="text-[13px] text-[#6A6A6A] leading-[1.5]">QC may include HPLC-UV purity, LC-MS identity, endotoxin, sterility, amino acid analysis, and internal release checks depending on the product and batch.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
     )

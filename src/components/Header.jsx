@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ShoppingCart } from 'lucide-react'
 import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
-import { useCurrency, countriesList } from '../context/CurrencyContext'
-import SearchModal from './SearchModal'
-import Logo from './Logo'
 
 const VisaSVG = () => (
     <span className="bg-white border border-slate-200/60 rounded px-2 py-0.5 flex items-center justify-center h-[22px] shrink-0">
@@ -35,17 +32,54 @@ const ApplePaySVG = () => (
     </span>
 )
 
+
+
+const countriesList = [
+    { name: 'Australia', code: 'AUD', countryCode: 'AU' },
+    { name: 'United States', code: 'USD', countryCode: 'US' },
+    { name: 'United Kingdom', code: 'GBP', countryCode: 'GB' },
+    { name: 'Canada', code: 'CAD', countryCode: 'CA' },
+    { name: 'Euro Zone', code: 'EUR', countryCode: 'EU' },
+    { name: 'New Zealand', code: 'NZD', countryCode: 'NZ' },
+    { name: 'Afghanistan', code: 'AFN', countryCode: 'AF' },
+    { name: 'Åland Islands', code: 'EUR', countryCode: 'AX' },
+    { name: 'Albania', code: 'ALL', countryCode: 'AL' },
+    { name: 'Algeria', code: 'DZD', countryCode: 'DZ' },
+    { name: 'Andorra', code: 'EUR', countryCode: 'AD' },
+    { name: 'Angola', code: 'AOA', countryCode: 'AO' },
+    { name: 'Anguilla', code: 'XCD', countryCode: 'AI' },
+    { name: 'Antigua & Barbuda', code: 'XCD', countryCode: 'AG' },
+    { name: 'Argentina', code: 'ARS', countryCode: 'AR' },
+    { name: 'Armenia', code: 'AMD', countryCode: 'AM' },
+    { name: 'Austria', code: 'EUR', countryCode: 'AT' },
+    { name: 'Bahamas', code: 'BSD', countryCode: 'BS' },
+    { name: 'Bahrain', code: 'BHD', countryCode: 'BH' },
+    { name: 'Bangladesh', code: 'BDT', countryCode: 'BD' },
+    { name: 'Belgium', code: 'EUR', countryCode: 'BE' },
+    { name: 'Brazil', code: 'BRL', countryCode: 'BR' },
+    { name: 'China', code: 'CNY', countryCode: 'CN' },
+    { name: 'Denmark', code: 'DKK', countryCode: 'DK' },
+    { name: 'Egypt', code: 'EGP', countryCode: 'EG' },
+    { name: 'Fiji', code: 'FJD', countryCode: 'FJ' },
+    { name: 'Finland', code: 'EUR', countryCode: 'FI' },
+    { name: 'France', code: 'EUR', countryCode: 'FR' },
+    { name: 'Germany', code: 'EUR', countryCode: 'DE' },
+    { name: 'India', code: 'INR', countryCode: 'IN' },
+    { name: 'Japan', code: 'JPY', countryCode: 'JP' },
+    { name: 'Singapore', code: 'SGD', countryCode: 'SG' },
+    { name: 'South Africa', code: 'ZAR', countryCode: 'ZA' },
+    { name: 'Switzerland', code: 'CHF', countryCode: 'CH' }
+]
+
 const Header = () => {
     const location = useLocation()
-    const navigate = useNavigate()
     const { setIsCartOpen, cartTotalCount } = useCart()
-    const { selectedCountry, changeCountry } = useCurrency()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
+    const [selectedCountry, setSelectedCountry] = useState(countriesList[0])
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
     const [isMobileCountryDropdownOpen, setIsMobileCountryDropdownOpen] = useState(false)
-    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [isMoreOpen, setIsMoreOpen] = useState(false)
     const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
@@ -112,10 +146,10 @@ const Header = () => {
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Shop', path: '/shop' },
-        { name: 'About', path: '/about' },
         { name: 'COA & Testing', path: '/coa' },
         { name: 'Calculator', path: '/calculator' },
         { name: "FAQ's", path: '/faq' },
+        { name: 'Affiliate Program', path: '/affiliate-pro' },
     ]
 
     const isActive = (path) => location.pathname === path
@@ -143,7 +177,41 @@ const Header = () => {
                 <div className="flex h-[64px] items-center justify-between gap-6">
 
                     <div className="flex items-center flex-shrink-0">
-                        <Logo />
+                        <Link to="/" className="flex items-center gap-2">
+                            <div className="flex-shrink-0">
+                                <svg className="h-9 w-9" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="8" r="2" fill="#0ea5e9" />
+                                    <circle cx="34" cy="14" r="3" fill="#1a4494" />
+                                    <circle cx="38" cy="24" r="2.5" fill="#0ea5e9" />
+                                    <circle cx="34" cy="34" r="2" fill="#1a4494" />
+                                    <circle cx="26" cy="40" r="3" fill="#0ea5e9" />
+                                    <circle cx="16" cy="14" r="1.5" fill="#1a4494" />
+                                    <circle cx="12" cy="24" r="2.5" fill="#0ea5e9" />
+                                    <circle cx="16" cy="34" r="1.5" fill="#1a4494" />
+                                    <circle cx="24" cy="22" r="2.5" fill="#0ea5e9" />
+                                    <circle cx="26" cy="30" r="1.5" fill="#1a4494" />
+                                    <line x1="24" y1="8" x2="34" y2="14" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="34" y1="14" x2="38" y2="24" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="38" y1="24" x2="34" y2="34" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="34" y1="34" x2="26" y2="40" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="24" y1="8" x2="16" y2="14" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="16" y1="14" x2="12" y2="24" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="12" y1="24" x2="16" y2="34" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="16" y1="34" x2="26" y2="40" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="24" y1="22" x2="16" y2="14" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="24" y1="22" x2="24" y2="8" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="24" y1="22" x2="34" y2="14" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="24" y1="22" x2="38" y2="24" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="24" y1="22" x2="26" y2="30" stroke="#0ea5e9" strokeWidth="0.75" />
+                                    <line x1="26" y1="30" x2="34" y2="34" stroke="#1a4494" strokeWidth="0.75" />
+                                    <line x1="26" y1="30" x2="16" y2="34" stroke="#0ea5e9" strokeWidth="0.75" />
+                                </svg>
+                            </div>
+                            <div className="flex flex-col text-left leading-none">
+                                <span className="text-[16px] font-extrabold tracking-widest text-[#1a4494] leading-none">SOLATIDE</span>
+                                <span className="text-[8px] font-bold tracking-[0.20em] text-[#0ea5e9] leading-none mt-[3px]">BIOSCIENCES</span>
+                            </div>
+                        </Link>
                     </div>
 
 
@@ -152,7 +220,7 @@ const Header = () => {
                             <Link
                                 key={link.name}
                                 to={link.path}
-                                className={`px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${(isActive(link.path) && !isMoreOpen)
+                                className={`px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${isActive(link.path)
                                     ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
                                     : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
                                     }`}
@@ -160,60 +228,19 @@ const Header = () => {
                                 {link.name}
                             </Link>
                         ))}
-                        <div className="relative" ref={moreDropdownRef}>
-                            <button
-                                onClick={() => setIsMoreOpen(!isMoreOpen)}
-                                className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${([
-                                    '/contact', '/research-resource', '/research-insight', '/affiliate-pro'
-                                ].includes(location.pathname))
-                                    ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
-                                    : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
-                                    }`}
-                            >
-                                More
-                            </button>
-
-                            <div
-                                className={`absolute right-0 xl:right-auto xl:left-0 top-[calc(100%+8px)] bg-white border border-slate-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-3 min-w-[200px] flex flex-col transition-all duration-300 origin-top-left ${isMoreOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible'
-                                    }`}
-                            >
-                                {[
-                                    { name: 'Contact Us', path: '/contact' },
-                                    { name: 'Research Resource', path: '/research-resource' },
-                                    { name: 'Research Insights', path: '/research-insight' },
-                                    { name: 'Affiliate Program', path: '/affiliate-pro' },
-                                ].map((link) => (
-                                    <Link
-                                        key={link.name}
-                                        to={link.path}
-                                        onClick={() => setIsMoreOpen(false)}
-                                        className={`whitespace-nowrap px-5 py-2.5 text-[14px] font-medium transition-colors text-left ${isActive(link.path)
-                                            ? 'bg-[#EBF3FF] text-[#1a4494]'
-                                            : 'text-[#374151] hover:bg-slate-50 hover:text-[#1a4494]'
-                                            }`}
-                                    >
-                                        {link.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
                     </nav>
 
 
                     <div className="hidden xl:flex items-center gap-2.5">
 
-                        <div 
-                            onClick={() => setIsSearchModalOpen(true)}
-                            className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20 cursor-pointer"
-                        >
+                        <div className="relative flex items-center bg-[#e0eaf5] rounded-full px-4 py-[7px] w-52 transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a4494]/20">
                             <svg className="h-[14px] w-[14px] text-[#1a4494]/70 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input
                                 type="text"
                                 placeholder="Search"
-                                readOnly
-                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none cursor-pointer"
+                                className="w-full bg-transparent border-0 p-0 text-[13px] text-[#1a4494] placeholder-[#1a4494]/60 font-medium focus:ring-0 focus:outline-none"
                             />
                         </div>
                         <div className="relative" ref={dropdownRef}>
@@ -250,7 +277,7 @@ const Header = () => {
                                                 <button
                                                     key={country.name}
                                                     onClick={() => {
-                                                        changeCountry(country)
+                                                        setSelectedCountry(country)
                                                         setIsCountryDropdownOpen(false)
                                                         setSearchQuery('')
                                                     }}
@@ -338,41 +365,6 @@ const Header = () => {
                             </Link>
                         ))}
 
-                        <div className="flex flex-col">
-                            <button
-                                onClick={() => setIsMobileMoreOpen(!isMobileMoreOpen)}
-                                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${['/research-resource', '/research-insight', '/affiliate-pro'].includes(location.pathname)
-                                    ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
-                                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
-                                    }`}
-                            >
-                                <span>More</span>
-                                <svg className={`w-4 h-4 transition-transform duration-200 ${isMobileMoreOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            {isMobileMoreOpen && (
-                                <div className="mt-1 flex flex-col gap-1 pl-4">
-                                    {[
-                                        { name: 'Research Resource', path: '/research-resource' },
-                                        { name: 'Research Insights', path: '/research-insight' },
-                                        { name: 'Affiliate Program', path: '/affiliate-pro' },
-                                    ].map((link) => (
-                                        <Link
-                                            key={link.name}
-                                            to={link.path}
-                                            onClick={() => setIsMobileMenuOpen(false)}
-                                            className={`block px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${isActive(link.path)
-                                                ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
-                                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
-                                                }`}
-                                        >
-                                            {link.name}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                         <div className="pt-4 border-t border-slate-100 mt-2 flex flex-col gap-3">
                             <div className="relative" ref={mobileCountryDropdownRef}>
                                 <div
@@ -410,7 +402,7 @@ const Header = () => {
                                                     <button
                                                         key={country.name}
                                                         onClick={() => {
-                                                            changeCountry(country)
+                                                            setSelectedCountry(country)
                                                             setIsMobileCountryDropdownOpen(false)
                                                             setSearchQuery('')
                                                         }}
@@ -439,12 +431,6 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            {isSearchModalOpen && (
-                <SearchModal 
-                    onClose={() => setIsSearchModalOpen(false)} 
-                    navigate={navigate} 
-                />
-            )}
         </header>
     )
 }

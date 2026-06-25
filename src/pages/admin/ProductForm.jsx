@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { apiService } from '../../services/api';
+import JoditEditor from 'jodit-react';
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const ProductForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   // Product state attributes matching Expanded Product Model
   const [formData, setFormData] = useState({
     id: '', // Custom Numeric ID
@@ -47,6 +48,21 @@ const ProductForm = () => {
     'Research Solutions'
   ];
 
+  const joditConfig = {
+    readonly: false,
+    placeholder: 'Describe the research compound uses, criteria, storage specifications...',
+    height: 350,
+    hidePoweredByJodit: true,
+    buttons: [
+      'bold', 'italic', 'underline', 'strikethrough', '|',
+      'ul', 'ol', '|',
+      'font', 'fontsize', 'brush', 'paragraph', '|',
+      'image', 'video', 'table', 'link', '|',
+      'align', 'undo', 'redo', '|',
+      'hr', 'eraser', 'copyformat', 'fullsize'
+    ]
+  };
+
   // Fetch product details if in edit mode
   useEffect(() => {
     if (!isEditMode) {
@@ -65,7 +81,7 @@ const ProductForm = () => {
         const result = await response.json();
         if (result.success && result.data && result.data.product) {
           const product = result.data.product;
-          
+
           setFormData({
             id: product.id || '',
             name: product.name || '',
@@ -83,8 +99,8 @@ const ProductForm = () => {
             casNumber: product.casNumber || '',
             appearance: product.appearance || 'Lyophilised white powder',
             purity: product.purity || '≥99%',
-            researchApplications: Array.isArray(product.researchApplications) 
-              ? product.researchApplications.join('\n') 
+            researchApplications: Array.isArray(product.researchApplications)
+              ? product.researchApplications.join('\n')
               : '',
             imageUrl: product.imageUrl || '',
             images: product.images || [],
@@ -173,8 +189,8 @@ const ProductForm = () => {
       : [];
 
     // Ensure at least one image exists (use fallback if empty)
-    const finalImages = formData.images.length > 0 
-      ? formData.images 
+    const finalImages = formData.images.length > 0
+      ? formData.images
       : (formData.imageUrl ? [{ url: formData.imageUrl }] : []);
 
     const finalPayload = {
@@ -240,14 +256,14 @@ const ProductForm = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Core Product Info (ColSpan 8) */}
           <div className="lg:col-span-8 space-y-6">
-            
+
             {/* Title & Description Card */}
             <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-5">
               <h3 className="text-base font-bold text-brand-navy pb-3 border-b border-slate-100 flex items-center gap-2">
                 <Sparkles className="h-4.5 w-4.5 text-brand-cyan" />
                 <span>General Information</span>
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">
                 <div className="sm:col-span-8">
                   <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -283,15 +299,14 @@ const ProductForm = () => {
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Description
                 </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Describe the research compound uses, criteria, storage specifications..."
-                  rows={6}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
-                  required
-                />
+                <div className="bg-white rounded-xl overflow-hidden border border-slate-200 focus-within:border-brand-blue focus-within:ring-1 focus-within:ring-brand-blue transition-all">
+                  <JoditEditor
+                    value={formData.description}
+                    config={joditConfig}
+                    tabIndex={1}
+                    onBlur={newContent => setFormData(prev => ({ ...prev, description: newContent }))}
+                  />
+                </div>
               </div>
             </div>
 
@@ -300,7 +315,7 @@ const ProductForm = () => {
               <h3 className="text-base font-bold text-brand-navy pb-3 border-b border-slate-100">
                 Technical Specifications
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -424,13 +439,13 @@ const ProductForm = () => {
 
           {/* Right Column: Pricing, Stock, Media, Visibility (ColSpan 4) */}
           <div className="lg:col-span-4 space-y-6">
-            
+
             {/* Status & Category Card */}
             <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-5">
               <h3 className="text-base font-bold text-brand-navy pb-3 border-b border-slate-100">
                 Visibility & Category
               </h3>
-              
+
               <div>
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Category
@@ -563,7 +578,7 @@ const ProductForm = () => {
               <h3 className="text-base font-bold text-brand-navy pb-3 border-b border-slate-100">
                 Media & Cloudinary Images
               </h3>
-              
+
               {/* Image previews list */}
               {formData.images.length > 0 && (
                 <div className="grid grid-cols-3 gap-2.5">

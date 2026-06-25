@@ -6,6 +6,7 @@ import ByTheNumbers from "../pages/home/ByTheNumbers";
 import ShopPeptides from "../pages/home/ShopPeptides";
 import AboutSolatide from "../pages/home/AboutSolatide";
 import WhySolatide from '../pages/home/WhySolatide';
+import OurCommitment from '../pages/home/OurCommitment';
 import FeaturedProducts from '../pages/home/FeaturedProducts';
 import QualityAssurance from '../pages/home/QualityAssurance';
 import ExploreProducts from '../pages/home/ExploreProducts';
@@ -23,9 +24,9 @@ const Home = () => {
             {/* <ProductCategories isHome={true} /> */}
             <FeaturedProducts />
             <WhySolatide />
-            <AboutSolatide />
-            <QualityAssurance />
-            <ExploreProducts />
+            <OurCommitment />
+            {/* <QualityAssurance /> */}
+            {/* <ExploreProducts /> */}
             <Testimonials />
             <Faq />
             <NeverMissRestock />

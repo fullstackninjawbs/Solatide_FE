@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import drImage from '../../assets/images/drImage.png'
+import CommonButton from '../../components/CommonBtn'
 
 export default function AboutSolatide() {
     return (
@@ -40,7 +41,7 @@ export default function AboutSolatide() {
                                 Our role is to help researchers source with less uncertainty: clearer compound information, accessible documentation where available, Australian dispatch, and strict research-use-only positioning across the store.
                             </p>
                         </div>
-                        <div className="flex flex-col gap-5 mb-8">
+                        <div className="flex flex-col gap-3 mb-8">
                             {[
                                 {
                                     title: "Transparent research supply",
@@ -60,11 +61,9 @@ export default function AboutSolatide() {
                                 }
                             ].map((item, index) => (
                                 <div key={index} className="flex gap-3 items-start">
-                                    <div className="mt-1 w-4.5 h-4.5 rounded-full bg-[#E0F7FA] flex items-center justify-center shrink-0">
-                                        <svg className="w-2.5 h-2.5 text-[#00ADEE]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
+                                    <svg className="mt-[3px] w-3.5 h-3.5 text-[#00ADEE] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
                                     <p className="text-[13.5px] text-[#6B7280] leading-[1.5]">
                                         <span className="font-bold text-[#1E1E1E]">{item.title}</span> {item.desc}
                                     </p>
@@ -74,15 +73,12 @@ export default function AboutSolatide() {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <Link
-                                to="/shop"
-                                className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white text-[14px] font-semibold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
-                            >
-                                Explore Products <span>→</span>
+                            <Link to="/shop">
+                                <CommonButton title="Explore Products" width="180px" showArrow={true} />
                             </Link>
                             <Link
                                 to="/coa"
-                                className="text-[#1a4494] text-[14px] font-semibold py-2 px-0 sm:py-3.5 sm:px-4 transition-all hover:opacity-80 w-full text-center sm:text-left sm:w-auto"
+                                className="text-[#1a4494] font-bold text-[14px] hover:underline px-2 py-2 text-center sm:text-left"
                             >
                                 View documentation process
                             </Link>
