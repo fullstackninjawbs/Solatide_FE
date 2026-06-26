@@ -59,6 +59,7 @@ const AdminLayout = () => {
     { name: 'Collections', path: '/admin/products/collections', icon: Layers, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
     { name: 'Inventory', path: '/admin/products/inventory', icon: Box, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Import CSV', path: '/admin/products/import', icon: Upload, roles: ['super_admin', 'operations', 'admin'] },
+    { name: 'Batch Records', path: '/admin/batches', icon: FileText, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'COAs & Batches', path: '/admin/coas', icon: FileText, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Discounts', path: '/admin/discounts', icon: Tag, roles: ['super_admin', 'operations', 'admin'] },

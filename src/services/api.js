@@ -96,5 +96,37 @@ export const apiService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
+  },
+
+  // Batches (Admin)
+  getBatches: async () => {
+    return fetch(`${API_URL}/api/admin/batches`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  getBatchById: async (id) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  createBatch: async (data) => {
+    return fetch(`${API_URL}/api/admin/batches`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  updateBatch: async (id, data) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  deleteBatch: async (id) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
   }
 };

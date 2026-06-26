@@ -6,6 +6,8 @@ import Dashboard from '../pages/admin/Dashboard'
 import ProductList from '../pages/admin/ProductList'
 import ProductForm from '../pages/admin/ProductForm'
 import AdminProductsImportPage from '../pages/admin/AdminProductsImportPage'
+import BatchList from '../pages/admin/products/BatchList'
+import BatchForm from '../pages/admin/products/BatchForm'
 import Home from '../Redirect/home'
 import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
@@ -42,6 +44,9 @@ const AppRoutes = () => {
                 <Route path="products/new" element={<ProductForm />} />
                 <Route path="products/edit/:id" element={<ProductForm />} />
                 <Route path="products/import" element={<AdminProductsImportPage />} />
+                <Route path="batches" element={<BatchList />} />
+                <Route path="batches/new" element={<BatchForm />} />
+                <Route path="batches/:id/edit" element={<BatchForm />} />
                 <Route path="coas" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">COA Batch Management (Phase 4)</div>} />
                 <Route path="orders" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Orders Management (Phase 4)</div>} />
                 <Route path="customers" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Customers Account Profiles (Phase 4)</div>} />

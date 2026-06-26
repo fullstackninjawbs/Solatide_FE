@@ -40,7 +40,8 @@ const ProductForm = () => {
       canonicalUrl: ''
     },
     tagadaVariantId: '',
-    _originalVariants: []
+    _originalVariants: [],
+    currentBatch: null
   });
 
   const categories = [
@@ -112,7 +113,8 @@ const ProductForm = () => {
               canonicalUrl: product.seo?.canonicalUrl || ''
             },
             tagadaVariantId: product.variants?.[0]?.tagadaVariantId || '',
-            _originalVariants: product.variants || []
+            _originalVariants: product.variants || [],
+            currentBatch: product.currentBatch || null
           });
         } else {
           setError('Product not found.');
@@ -428,6 +430,63 @@ const ProductForm = () => {
                   className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
                 />
               </div>
+            </div>
+
+            {/* Current Batch Info */}
+            <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-base font-bold text-brand-navy">
+                  Current Batch Record
+                </h3>
+                {formData.currentBatch && (
+                  <Link 
+                    to={`/admin/batches/${formData.currentBatch._id || formData.currentBatch.id}`}
+                    className="text-[13px] font-bold text-brand-blue hover:underline"
+                  >
+                    Edit Batch
+                  </Link>
+                )}
+              </div>
+              
+              {formData.currentBatch ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-lg font-bold text-slate-800">{formData.currentBatch.batchId}</span>
+                    {formData.currentBatch.coaStatus === 'approved' ? (
+                      <span className="bg-[#e0f2fe] text-[#0369a1] text-xs font-bold px-2.5 py-1 rounded-full border border-[#bae6fd]">
+                        Active / Shipping
+                      </span>
+                    ) : (
+                      <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full border border-amber-200">
+                        COA Pending
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-xs text-slate-500 font-medium block">Purity</span>
+                      <span className="text-sm font-semibold text-slate-800">{formData.currentBatch.purity || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-500 font-medium block">Measured Content</span>
+                      <span className="text-sm font-semibold text-slate-800">{formData.currentBatch.measuredContent || 'N/A'}</span>
+                    </div>
+                  </div>
+                  
+                  {formData.currentBatch.coaUrl && (
+                    <div className="pt-2">
+                      <a href={formData.currentBatch.coaUrl} target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold text-[#214A9E] hover:underline flex items-center gap-1">
+                        View COA Document →
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-sm text-slate-500 py-4 text-center bg-slate-50 rounded-xl border border-slate-200 border-dashed">
+                  No current batch assigned. Create or assign a batch from the Batches menu.
+                </div>
+              )}
             </div>
 
             {/* SEO Override Settings */}
