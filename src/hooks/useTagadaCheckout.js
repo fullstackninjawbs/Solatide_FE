@@ -30,7 +30,7 @@ export const useTagadaCheckout = () => {
       // 2) Initiate Tagada Checkout Session
       const payRes = await apiService.createTagadaPayment({ orderId });
       const payData = await payRes.json();
-      
+
       if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');
 
       // 3) Redirect to Tagada Hosted Checkout Page

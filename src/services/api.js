@@ -26,6 +26,12 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  deleteAllProducts: async () => {
+    return fetch(`${API_URL}/api/products`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   previewProductsImport: async (data) => {
     return fetch(`${API_URL}/api/products/import/preview`, {
       method: 'POST',

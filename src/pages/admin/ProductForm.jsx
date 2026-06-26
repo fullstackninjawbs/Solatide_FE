@@ -38,7 +38,9 @@ const ProductForm = () => {
       title: '',
       description: '',
       canonicalUrl: ''
-    }
+    },
+    tagadaVariantId: '',
+    _originalVariants: []
   });
 
   const categories = [
@@ -108,7 +110,9 @@ const ProductForm = () => {
               title: product.seo?.title || '',
               description: product.seo?.description || '',
               canonicalUrl: product.seo?.canonicalUrl || ''
-            }
+            },
+            tagadaVariantId: product.variants?.[0]?.tagadaVariantId || '',
+            _originalVariants: product.variants || []
           });
         } else {
           setError('Product not found.');
@@ -193,6 +197,28 @@ const ProductForm = () => {
       ? formData.images
       : (formData.imageUrl ? [{ url: formData.imageUrl }] : []);
 
+    // Construct variants array
+    let updatedVariants = [...formData._originalVariants];
+    if (updatedVariants.length === 0) {
+      updatedVariants.push({
+        title: 'Default Title',
+        sku: formData.sku || `${formData.id || 'new'}-default`,
+        price: parseFloat(formData.price) || 0,
+        stockQty: parseInt(formData.stockQuantity, 10) || 0,
+        inventoryPolicy: 'deny',
+        requiresShipping: true,
+        taxable: true,
+        tagadaVariantId: formData.tagadaVariantId
+      });
+    } else {
+      updatedVariants[0] = {
+        ...updatedVariants[0],
+        tagadaVariantId: formData.tagadaVariantId,
+        sku: formData.sku || updatedVariants[0].sku,
+        price: parseFloat(formData.price) || updatedVariants[0].price
+      };
+    }
+
     const finalPayload = {
       ...formData,
       price: parseFloat(formData.price),
@@ -202,7 +228,8 @@ const ProductForm = () => {
       researchApplications: formattedApps,
       images: finalImages,
       // If we don't have images list, save main imageUrl
-      imageUrl: finalImages[0]?.url || ''
+      imageUrl: finalImages[0]?.url || '',
+      variants: updatedVariants
     };
 
     try {
@@ -542,6 +569,19 @@ const ProductForm = () => {
                   value={formData.sku}
                   onChange={handleChange}
                   placeholder="e.g. SOL-CAD-24B"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  Tagada Variant ID
+                </label>
+                <input
+                  type="text"
+                  name="tagadaVariantId"
+                  value={formData.tagadaVariantId}
+                  onChange={handleChange}
+                  placeholder="e.g. product_1234abcd"
                   className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
                 />
               </div>
