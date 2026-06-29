@@ -30,11 +30,13 @@ export const useTagadaCheckout = () => {
       // 2) Initiate Tagada Checkout Session
       const payRes = await apiService.createTagadaPayment({ orderId });
       const payData = await payRes.json();
-      
+
       if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');
 
       // 3) Redirect to Tagada Hosted Checkout Page
       if (payData.checkoutUrl) {
+        // Save orderId so the success page can retrieve it after redirect
+        localStorage.setItem('solatide_last_order_id', orderId);
         window.location.href = payData.checkoutUrl;
       } else {
         throw new Error('No checkout URL returned from TagadaPay');

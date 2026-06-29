@@ -10,6 +10,7 @@ import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
+import CurrentBatchCard from './CurrentBatchCard';
 
 
 
@@ -349,6 +350,9 @@ const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Current Batch Info */}
+                <CurrentBatchCard batch={product.currentBatch} />
 
                 {/* Product Information Accordions Section */}
                 <ProductInfoSection product={product} />

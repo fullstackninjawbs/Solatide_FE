@@ -33,8 +33,10 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (product, quantity = 1, selectedVariant = null) => {
         setCartItems(prevItems => {
-            const variantSku = selectedVariant?.sku || '';
-            const cartItemId = selectedVariant 
+            // Resolve the variant if it's not explicitly provided but the product has variants
+            const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
+            const variantSku = resolvedVariant?.sku || '';
+            const cartItemId = resolvedVariant 
                 ? `${product._id || product.id || ''}-${variantSku}` 
                 : `${product._id || product.id || ''}`;
 
@@ -49,10 +51,10 @@ export const CartProvider = ({ children }) => {
             return [...prevItems, { 
                 ...product, 
                 quantity, 
-                selectedVariant, 
+                selectedVariant: resolvedVariant, 
                 cartItemId,
-                price: selectedVariant ? selectedVariant.price : product.price,
-                sku: selectedVariant ? selectedVariant.sku : product.sku,
+                price: resolvedVariant ? resolvedVariant.price : product.price,
+                sku: resolvedVariant ? resolvedVariant.sku : product.sku,
                 image: product.imageUrl || product.image
             }];
         });

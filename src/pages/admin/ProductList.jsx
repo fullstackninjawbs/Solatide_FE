@@ -72,6 +72,25 @@ const ProductList = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!window.confirm(`Are you absolutely sure you want to delete ALL products? This action cannot be undone!`)) {
+      return;
+    }
+
+    try {
+      const response = await apiService.deleteAllProducts();
+      if (response.ok || response.status === 200) {
+        setProducts([]);
+        alert('All products deleted successfully.');
+      } else {
+        const errData = await response.json();
+        alert(errData.message || 'Failed to delete all products.');
+      }
+    } catch (err) {
+      alert('Network error deleting products.');
+    }
+  };
+
   return (
     <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
       {/* Top Header Actions */}
@@ -81,6 +100,13 @@ const ProductList = () => {
           <p className="text-slate-500 text-[14px]">Manage your catalog, stock quantities, and research listings.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={handleDeleteAll}
+            className="bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete All
+          </button>
           <button className="bg-white border border-slate-200 text-slate-650 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer">
             Export
           </button>

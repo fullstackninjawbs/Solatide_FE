@@ -26,6 +26,12 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  deleteAllProducts: async () => {
+    return fetch(`${API_URL}/api/products`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   previewProductsImport: async (data) => {
     return fetch(`${API_URL}/api/products/import/preview`, {
       method: 'POST',
@@ -56,6 +62,11 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
+  getOrderById: async (id) => {
+    return fetch(`${API_URL}/api/v1/orders/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
 
   // Admin Settings
   getTagadaSettings: async () => {
@@ -84,6 +95,38 @@ export const apiService = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
+    });
+  },
+
+  // Batches (Admin)
+  getBatches: async () => {
+    return fetch(`${API_URL}/api/admin/batches`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  getBatchById: async (id) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  createBatch: async (data) => {
+    return fetch(`${API_URL}/api/admin/batches`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  updateBatch: async (id, data) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  deleteBatch: async (id) => {
+    return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
     });
   }
 };

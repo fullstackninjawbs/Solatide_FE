@@ -19,19 +19,19 @@ export const countriesList = [
 ];
 
 const fallbackRates = {
-  INR: 1.0,
-  AUD: 1 / 55.0,
-  USD: 1 / 83.5,
-  GBP: 1 / 106.0,
-  CAD: 1 / 61.0,
-  EUR: 1 / 90.0,
-  NZD: 1 / 51.0,
-  ZAR: 1 / 4.5,
-  CHF: 1 / 93.0,
-  CNY: 1 / 11.5,
-  JPY: 1 / 0.52,
-  DKK: 1 / 12.0,
-  SGD: 1 / 61.5,
+  AUD: 1.0,
+  USD: 0.65,
+  GBP: 0.52,
+  EUR: 0.60,
+  CAD: 0.90,
+  NZD: 1.08,
+  INR: 54.0,
+  ZAR: 12.0,
+  CHF: 0.58,
+  CNY: 4.7,
+  JPY: 98.0,
+  DKK: 4.5,
+  SGD: 0.88,
 };
 
 export const CurrencyProvider = ({ children }) => {
@@ -48,8 +48,8 @@ export const CurrencyProvider = ({ children }) => {
   });
 
   const [rates, setRates] = useState(() => {
-    const cached = localStorage.getItem('exchangeRates');
-    const cachedTime = localStorage.getItem('exchangeRates_timestamp');
+    const cached = localStorage.getItem('exchangeRates_AUD');
+    const cachedTime = localStorage.getItem('exchangeRates_timestamp_AUD');
     if (cached && cachedTime) {
       // 24 hour cache duration
       if (Date.now() - parseInt(cachedTime, 10) < 24 * 60 * 60 * 1000) {
@@ -66,7 +66,7 @@ export const CurrencyProvider = ({ children }) => {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const response = await fetch('https://open.er-api.com/v6/latest/INR');
+        const response = await fetch('https://open.er-api.com/v6/latest/AUD');
         const data = await response.json();
         if (data && data.result === 'success' && data.rates) {
           const newRates = { ...fallbackRates };
@@ -76,8 +76,8 @@ export const CurrencyProvider = ({ children }) => {
             }
           });
           setRates(newRates);
-          localStorage.setItem('exchangeRates', JSON.stringify(newRates));
-          localStorage.setItem('exchangeRates_timestamp', Date.now().toString());
+          localStorage.setItem('exchangeRates_AUD', JSON.stringify(newRates));
+          localStorage.setItem('exchangeRates_timestamp_AUD', Date.now().toString());
         }
       } catch (err) {
         console.warn('Could not fetch latest rates from exchange rate API, using cache/fallbacks.', err);
@@ -111,7 +111,7 @@ export const CurrencyProvider = ({ children }) => {
       }
     }
 
-    const rate = rates[selectedCountry.code] || fallbackRates[selectedCountry.code] || (1 / 83.5);
+    const rate = rates[selectedCountry.code] || fallbackRates[selectedCountry.code] || 1.0;
     const converted = numericAmount * rate;
 
     // Use standard Intl.NumberFormat for digit grouping and decimal formatting
