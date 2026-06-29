@@ -4,7 +4,7 @@ const OurStandardsSection = () => {
     return (
         <section className="w-full bg-[#f8fafd] py-16 md:py-24">
             <div className="main-container">
-                
+
                 {/* Header Row (2 Columns) */}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start mb-12">
                     <div className="w-full lg:w-1/2 text-left">
@@ -38,7 +38,7 @@ const OurStandardsSection = () => {
                         <p className="text-[14.5px] text-[#6A6A6A] leading-[1.6] mb-8">
                             Each production batch is subject to post-manufacturing analytical quality control before dispatch for research supply. This creates a release checkpoint after manufacturing, rather than relying only on catalogue-level supplier claims.
                         </p>
-                        <div className="bg-[#f8fafd] border border-slate-200 rounded-[12px] p-5 mt-auto">
+                        <div className="bg-[#f8fafd] border border-slate-200 rounded-[12px] p-5">
                             <p className="text-[13.5px] text-[#4B5563] leading-[1.6]">
                                 <span className="font-bold text-[#1D1D1F]">Release rule:</span> if required QC checks do not meet release criteria, the batch is not released for dispatch.
                             </p>
@@ -49,7 +49,7 @@ const OurStandardsSection = () => {
                     <div className="w-full lg:w-1/2 bg-white rounded-[16px] border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 md:p-10 text-left flex flex-col">
                         <h3 className="text-[20px] font-bold text-[#1a4494] mb-2">Manufacturer QC may include</h3>
                         <p className="text-[13px] text-[#6A6A6A] mb-6">Testing scope may vary by compound, batch, and relevant analytical requirements.</p>
-                        
+
                         <div className="flex flex-col gap-0 divide-y divide-slate-100">
                             {[
                                 {
