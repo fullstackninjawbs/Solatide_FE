@@ -2,31 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import heroImage from '../../assets/images/homePageFirstSection.png'
 import mobileHeroImage from '../../assets/images/Gemini_Generated_Image_m88804m88804m888 1 (1).png'
-import group1Icon from '../../assets/icons/Group (1).png'
-
-
-const HexBadge = ({ children }) => (
-    <span
-        className="relative flex-shrink-0 flex items-center justify-center animate-pulse-subtle"
-        style={{ width: 46, height: 46 }}
-    >
-        <svg
-            viewBox="0 0 46 46"
-            fill="none"
-            className="absolute inset-0 w-full h-full"
-        >
-            <path
-                d="M23 3L42 13.5V32.5L23 43L4 32.5V13.5L23 3Z"
-                fill="none"
-                stroke="#00E5FF"
-                strokeWidth="1.4"
-            />
-        </svg>
-        <span className="relative z-10 flex items-center justify-center text-[#1a4494]">
-            {children}
-        </span>
-    </span>
-)
+import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.png'
+import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.png'
+import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.png'
 
 
 const HeroSection = () => {
@@ -57,9 +35,9 @@ const HeroSection = () => {
             <div className="main-container w-full relative z-10 mt-6 sm:mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
-                    <div className="lg:col-span-8 flex flex-col justify-center text-left">
+                    <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-10">
 
-                        <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-extrabold tracking-tight text-[#1a4494] leading-[1.12] mb-5">
+                        <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-semibold tracking-tight text-[#1a4494] leading-[1.12] mb-5">
                             Your Trusted Source For<br />Research Grade Peptides.
                         </h1>
 
@@ -101,56 +79,44 @@ const HeroSection = () => {
 
                         </div>
 
-                        {/* Features Container (No Box) */}
-                        <div className="mt-6 w-full max-w-[760px]">
-                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-0">
+                        {/* Features Container */}
+                        <div className="mt-8 w-full lg:w-fit max-w-full">
+                            <div className="flex flex-col sm:flex-row items-stretch justify-start gap-2.5 xl:gap-3">
 
                                 {/* Feature 1 */}
-                                <div className="flex items-center gap-3">
-                                    <HexBadge>
-                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                    </HexBadge>
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                    <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
-                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
-                                            <span className="text-[#00ACEE] font-semibold">≥99%</span> Purity Standard
+                                        <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                                            ≥99% Purity Standard
                                         </span>
-                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                        <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
                                             HPLC-UV/LC-MS + Endotoxin
                                         </span>
                                     </div>
                                 </div>
 
-                                {/* Vertical Divider */}
-                                <div className="hidden md:block w-[1.5px] h-10 bg-slate-300/80 self-center"></div>
-
                                 {/* Feature 2 */}
-                                <div className="flex items-center gap-3">
-                                    <HexBadge>
-                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                    </HexBadge>
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                    <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
-                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
-                                            <span className="text-[#00ACEE] font-semibold">Lot-Traceable</span> Vials
+                                        <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                                            Lot-Traceable Vials
                                         </span>
-                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                        <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
                                             Vial-to-COA Verified
                                         </span>
                                     </div>
                                 </div>
 
-                                {/* Vertical Divider */}
-                                <div className="hidden md:block w-[1.5px] h-10 bg-slate-300/80 self-center"></div>
-
                                 {/* Feature 3 */}
-                                <div className="flex items-center gap-3">
-                                    <HexBadge>
-                                        <img src={group1Icon} alt="Shield Icon" className="w-5 h-5 object-contain" />
-                                    </HexBadge>
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                    <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
-                                        <span className="text-[13.5px] sm:text-[14.5px] font-medium text-slate-800 tracking-tight whitespace-nowrap">
-                                            <span className="text-[#00ACEE] font-semibold">Verifiable</span> Reports
+                                        <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                                            Verifiable Reports
                                         </span>
-                                        <span className="text-[11.5px] sm:text-[12px] text-[#64748B] font-medium whitespace-nowrap mt-0.5">
+                                        <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
                                             Third-Party Results
                                         </span>
                                     </div>
@@ -161,7 +127,7 @@ const HeroSection = () => {
 
                     </div>
 
-                    <div className="hidden lg:block lg:col-span-4" aria-hidden="true" />
+                    <div className="hidden lg:block lg:col-span-5 xl:col-span-5" aria-hidden="true" />
 
                 </div>
             </div>
