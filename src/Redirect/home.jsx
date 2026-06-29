@@ -13,6 +13,7 @@ import ExploreProducts from '../pages/home/ExploreProducts';
 import Testimonials from '../pages/home/Testimonials';
 import Faq from '../pages/home/Faq';
 import NeverMissRestock from '../pages/home/NeverMissRestock';
+import TelegramPopup from '../components/TelegramPopup';
 
 const Home = () => {
     return (
@@ -30,6 +31,7 @@ const Home = () => {
             <Testimonials />
             <Faq />
             <NeverMissRestock />
+            <TelegramPopup />
         </>
     );
 };

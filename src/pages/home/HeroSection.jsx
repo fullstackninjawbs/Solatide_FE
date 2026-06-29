@@ -84,7 +84,7 @@ const HeroSection = () => {
                             <div className="flex flex-col sm:flex-row items-stretch justify-start gap-2.5 xl:gap-3">
 
                                 {/* Feature 1 */}
-                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
                                     <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
                                         <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
@@ -97,7 +97,7 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Feature 2 */}
-                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
                                     <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
                                         <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
@@ -110,7 +110,7 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Feature 3 */}
-                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5 transition-transform hover:-translate-y-0.5">
+                                <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
                                     <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
                                     <div className="flex flex-col text-left">
                                         <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
