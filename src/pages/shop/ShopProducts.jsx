@@ -247,7 +247,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 <div
                                     key={product._id || product.id}
                                     onClick={() => navigate(`/product/${product._id || product.id}`)}
-                                    className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col'}`}
+                                    className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col h-full'}`}
                                 >
                                     {/* Product Vial Image */}
                                     <Link 
@@ -287,8 +287,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     </Link>
 
                                     {/* Info */}
-                                    <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
-                                        <h3 className="text-[18px] font-weight-500  font-medium text-[#1E1E1E] tracking-tight leading-snug">
+                                    <div className={`flex flex-col flex-grow justify-between text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
+                                        <h3 className="text-[18px] font-weight-500  font-medium text-[#1E1E1E] tracking-tight leading-snug line-clamp-2">
                                             <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>

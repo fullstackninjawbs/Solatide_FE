@@ -1,16 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const TelegramPopup = () => {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
+    const [isAnimated, setIsAnimated] = useState(false);
+    const exitTimerRef = useRef(null);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (isVisible) {
+            const timer = setTimeout(() => {
+                setIsAnimated(true);
+            }, 50);
+            return () => clearTimeout(timer);
+        }
+    }, [isVisible]);
+
+    useEffect(() => {
+        return () => {
+            if (exitTimerRef.current) {
+                clearTimeout(exitTimerRef.current);
+            }
+        };
+    }, []);
+
+    const handleClose = () => {
+        setIsAnimated(false);
+        exitTimerRef.current = setTimeout(() => {
+            setIsVisible(false);
+        }, 500);
+    };
 
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-6 right-6 z-[60] animate-[fadeInUp_0.5s_ease-out]">
+        <div className={`fixed bottom-6 right-6 z-[60] transition-all duration-500 ease-out transform ${
+            isAnimated ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
+        }`}>
             <div className="relative bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-7 pr-12 w-[420px] max-w-[calc(100vw-32px)] border border-slate-100">
                 {/* Close Button */}
                 <button
-                    onClick={() => setIsVisible(false)}
+                    onClick={handleClose}
                     className="absolute top-4 right-4 w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition-colors"
                     aria-label="Close"
                 >
@@ -45,13 +80,13 @@ const TelegramPopup = () => {
                                 href="https://t.me/solatidebiosciences"
                                 target="_blank"
                                 rel="noreferrer"
-                                onClick={() => setIsVisible(false)}
+                                onClick={handleClose}
                                 className="bg-[#150F3A] text-white px-6 py-2.5 rounded-[99px] text-[12px] font-bold hover:bg-[#20498F] transition-colors whitespace-nowrap"
                             >
                                 Join Community
                             </a>
                             <button
-                                onClick={() => setIsVisible(false)}
+                                onClick={handleClose}
                                 className="text-[13px] font-bold text-[#6A6A6A] hover:text-[#4B5563] transition-colors whitespace-nowrap"
                             >
                                 Not now
