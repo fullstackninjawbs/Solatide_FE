@@ -12,7 +12,7 @@ function Footer() {
             <div className="main-container mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between pb-12 gap-6">
                     <div className="w-full max-w-[340px]">
-                        <form className="flex bg-white rounded-full p-1" onSubmit={(e) => e.preventDefault()}>
+                        <form className="flex bg-white rounded-[12px] p-1" onSubmit={(e) => e.preventDefault()}>
                             <input
                                 type="email"
                                 placeholder="Email address"
@@ -20,7 +20,7 @@ function Footer() {
                             />
                             <button
                                 type="submit"
-                                className="rounded-full bg-[#0ea5e9] px-7 py-2 text-[11px] font-bold tracking-wide text-white uppercase hover:bg-sky-500 transition-colors shrink-0"
+                                className="rounded-[10px] bg-gradient-to-r from-[#017ACE] to-[#01ACEE] px-7 py-2 text-[11px] font-medium tracking-wide text-white uppercase hover:opacity-90 transition-opacity shrink-0"
                             >
                                 SUBSCRIBE
                             </button>
@@ -42,15 +42,15 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12 mt-2 mb-16 pt-10 border-t border-slate-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12 mt-2 mb-16 pt-10 border-t border-slate-400/80">
                     <div className="col-span-1 md:col-span-4 pr-6">
                         <Link to="/" className="flex items-center mb-6">
                             <img src={logo} alt="Solatide Biosciences" className="h-[75px] lg:h-[90px] w-auto object-contain" />
                         </Link>
-                        <p className="text-[14px] text-slate-400/90 leading-[1.6]">
+                        <p className="text-[14px] text-[#969CA4] leading-[1.6]">
                             Solatide Biosciences supplies analytical reference standards and laboratory consumables for in-vitro laboratory research use only.
                         </p>
-                        <div className="mt-5 text-[14px] text-slate-400/90 leading-relaxed">
+                        <div className="mt-5 text-[14px] text-[#969CA4] text-slate-300 leading-relaxed">
                             <p>contact@solatidebiosciences.com.au</p>
                             <p>Melbourne, Victoria, Australia</p>
                         </div>
@@ -58,7 +58,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-2">
                         <h4 className="text-[20px] text-white mb-6">Quick Links</h4>
-                        <ul className="space-y-4 text-[14px] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
                             <li><Link to="/" className="hover:text-white transition-colors duration-200">Home</Link></li>
                             <li><Link to="/shop" className="hover:text-white transition-colors duration-200">Shop Peptides</Link></li>
                             <li><Link to="/about" className="hover:text-white transition-colors duration-200">About Us</Link></li>
@@ -68,7 +68,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-3">
                         <h4 className="text-[20px] text-white mb-6">Resources</h4>
-                        <ul className="space-y-4 text-[14px] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
                             <li><Link to="/resource" className="hover:text-white transition-colors duration-200">Research Resources</Link></li>
                             <li><Link to="/peptides-guide" className="hover:text-white transition-colors duration-200">Research Peptides Guide</Link></li>
                             <li><Link to="/compound-database" className="hover:text-white transition-colors duration-200">Research Compound Database</Link></li>
@@ -79,7 +79,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-3">
                         <h4 className="text-[20px] text-white mb-6">Support & Policies</h4>
-                        <ul className="space-y-4 text-[14px] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
                             <li><Link to="/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Policy</Link></li>
                             <li><Link to="/terms" className="hover:text-white transition-colors duration-200">Terms of Services</Link></li>
                             <li><Link to="/returns" className="hover:text-white transition-colors duration-200">Returns & Refunds</Link></li>
@@ -88,7 +88,7 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-slate-800/80 pt-6 pb-2 text-center text-[13px] text-slate-400">
+                <div className="border-t border-slate-400/80 pt-6 pb-2 text-center text-[13px] text-slate-400">
                     <p>© 2026 Solatide Biosciences. All rights reserved.</p>
                 </div>
             </div>

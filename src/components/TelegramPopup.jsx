@@ -34,7 +34,7 @@ const TelegramPopup = () => {
                         <span className="text-[11px] font-bold text-[#6A6A6A] tracking-[0.05em] uppercase mb-1">
                             Solatide Updates
                         </span>
-                        <h3 className="text-[18px] font-extrabold text-[#0b1426] mb-2.5 leading-tight tracking-tight">
+                        <h3 className="text-[18px] font-bold text-[#150F3A] mb-2.5 leading-tight tracking-tight">
                             Join us on Telegram
                         </h3>
                         <p className="text-[12px] text-[#6A6A6A] mb-5 leading-[1.6]">
@@ -42,10 +42,11 @@ const TelegramPopup = () => {
                         </p>
                         <div className="flex items-center gap-4">
                             <a
-                                href="#"
+                                href="https://t.me/solatidebiosciences"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="bg-[#0b1426] text-white px-6 py-2.5 rounded-[99px] text-[12px] font-bold hover:bg-[#1a2b4c] transition-colors whitespace-nowrap"
+                                onClick={() => setIsVisible(false)}
+                                className="bg-[#150F3A] text-white px-6 py-2.5 rounded-[99px] text-[12px] font-bold hover:bg-[#20498F] transition-colors whitespace-nowrap"
                             >
                                 Join Community
                             </a>
