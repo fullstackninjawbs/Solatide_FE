@@ -108,3 +108,34 @@ body,
 .product-description-content strong {
   font-weight: 700 !important;
 }
+
+/* Jodit Editor premium styling overrides to match Shopify aesthetic */
+.jodit-container {
+  border: none !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.jodit-toolbar__box {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 8px 12px !important;
+}
+
+.jodit-toolbar-button__button {
+  background: transparent !important;
+  border: none !important;
+  color: #4b5563 !important;
+}
+
+.jodit-wysiwyg {
+  padding: 20px 24px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #1e293b !important;
+  min-height: 280px !important;
+}
+
+.jodit-status-bar {
+  display: none !important; /* Hide the footer status bar for a clean shopify look */
+}
+

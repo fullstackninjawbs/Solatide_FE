@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
@@ -51,20 +51,73 @@ const ProductForm = () => {
     'Research Solutions'
   ];
 
-  const joditConfig = {
+  const editorRef = useRef(null);
+  const [initialDescription, setInitialDescription] = useState('');
+
+  const joditConfig = useMemo(() => ({
     readonly: false,
     placeholder: 'Describe the research compound uses, criteria, storage specifications...',
     height: 350,
     hidePoweredByJodit: true,
     buttons: [
-      'bold', 'italic', 'underline', 'strikethrough', '|',
-      'ul', 'ol', '|',
-      'font', 'fontsize', 'brush', 'paragraph', '|',
-      'image', 'video', 'table', 'link', '|',
-      'align', 'undo', 'redo', '|',
-      'hr', 'eraser', 'copyformat', 'fullsize'
-    ]
-  };
+      'aiAssist',
+      'paragraph',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      'brush',
+      '|',
+      'align',
+      '|',
+      'link',
+      'image',
+      'video',
+      'table',
+      '|',
+      'dots',
+      '|',
+      'source'
+    ],
+    controls: {
+      aiAssist: {
+        name: 'aiAssist',
+        tooltip: 'AI Text Assistant',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0079CE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>`,
+        exec: (editor) => {
+          const selectedText = editor.selection.text;
+          const promptText = window.prompt("Ask AI to format or refine description:", selectedText);
+          if (promptText) {
+            editor.selection.insertHTML(`<strong>AI Refined:</strong> ${promptText}`);
+          }
+        }
+      }
+    },
+    askBeforePasteHTML: false,
+    askBeforePasteFromWord: false,
+    defaultActionOnPaste: 'insert_clear_html'
+  }), []);
+
+  const memoizedEditor = useMemo(() => {
+    return (
+      <JoditEditor
+        ref={editorRef}
+        value={initialDescription}
+        config={joditConfig}
+        tabIndex={1}
+        onBlur={newContent => setFormData(prev => ({ ...prev, description: newContent }))}
+        onChange={newContent => {
+          setFormData(prev => {
+            if (prev.description === newContent) return prev;
+            return { ...prev, description: newContent };
+          });
+        }}
+      />
+    );
+  }, [initialDescription, joditConfig]);
+
+
+
 
   // Fetch product details if in edit mode
   useEffect(() => {
@@ -116,6 +169,7 @@ const ProductForm = () => {
             _originalVariants: product.variants || [],
             currentBatch: product.currentBatch || null
           });
+          setInitialDescription(product.description || '');
         } else {
           setError('Product not found.');
         }
@@ -329,12 +383,7 @@ const ProductForm = () => {
                   Description
                 </label>
                 <div className="bg-white rounded-xl overflow-hidden border border-slate-200 focus-within:border-brand-blue focus-within:ring-1 focus-within:ring-brand-blue transition-all">
-                  <JoditEditor
-                    value={formData.description}
-                    config={joditConfig}
-                    tabIndex={1}
-                    onBlur={newContent => setFormData(prev => ({ ...prev, description: newContent }))}
-                  />
+                  {memoizedEditor}
                 </div>
               </div>
             </div>
