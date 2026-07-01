@@ -1108,7 +1108,7 @@ const ProductForm = () => {
                   Technical Specifications Table
                 </label>
                 <span className="text-[11px] text-slate-400 block mb-3">Structured parameter specification table</span>
-                
+
                 <div className="space-y-2.5 mb-3">
                   {(formData.technicalSpecsTable || []).map((row, idx) => (
                     <div key={idx} className="flex gap-3 items-center">
@@ -1147,7 +1147,7 @@ const ProductForm = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={() => {
@@ -1285,8 +1285,8 @@ const ProductForm = () => {
                             value={variant.currentBatchId?._id || variant.currentBatchId || variant.currentBatch?._id || ''}
                             onChange={e => {
                               const updated = [...formData._originalVariants];
-                              updated[idx] = { 
-                                ...updated[idx], 
+                              updated[idx] = {
+                                ...updated[idx],
                                 currentBatchId: e.target.value || null,
                                 currentBatch: e.target.value ? { _id: e.target.value } : null
                               };

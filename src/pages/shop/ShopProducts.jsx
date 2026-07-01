@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -240,24 +240,24 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                         </div>
                     ) : (
                         <div className={viewMode === 'grid'
-                            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+                            ? "grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 w-full"
                             : "flex flex-col gap-4 w-full"
                         }>
                             {productsList.map((product) => (
                                 <div
                                     key={product._id || product.id}
                                     onClick={() => navigate(`/product/${product._id || product.id}`)}
-                                    className={`group bg-white rounded-[24px] border border-slate-100 shadow-sm p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-6 items-center text-left' : 'flex flex-col h-full'}`}
+                                    className={`group bg-white rounded-[16px] sm:rounded-[24px] border border-slate-100 shadow-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-4 sm:gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
-                                    <Link 
-                                        to={`/product/${product.id || product._id}`} 
-                                        className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[120px] h-[120px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[260px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
+                                    <Link
+                                        to={`/product/${product.id || product._id}`}
+                                        className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[14px] sm:rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[150px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
                                     >
                                         <img
                                             src={product.imageUrl || product.image || productVialImage}
                                             className={product.imageUrl || product.image
-                                                ? `object-contain w-full h-full p-3 sm:p-4 md:p-5 select-none transition-transform duration-500 group-hover:scale-105`
+                                                ? `object-contain w-full h-full p-2 sm:p-4 md:p-5 select-none transition-transform duration-500 group-hover:scale-105`
                                                 : `object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`
                                             }
                                             alt={product.name}
@@ -265,45 +265,47 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                                         {/* Badges */}
                                         {product.status === 'In Stock' && (
-                                            <span className="absolute top-3 left-3 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-0.5 text-[9px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm">
+                                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#16a34a] animate-pulse"></div>
                                                 In Stock
                                             </span>
                                         )}
                                         {product.status === 'Sold Out' && (
-                                            <span className="absolute top-3 left-3 inline-flex items-center rounded-md bg-[#fef2f2] px-2.5 py-0.5 text-[9px] font-bold text-red-600 border border-red-200">
+                                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm">
+                                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-pulse"></div>
                                                 Sold Out
                                             </span>
                                         )}
                                         {product.status === 'Sale' && (
-                                            <span className="absolute top-3 left-3 inline-flex items-center rounded-md bg-[#fef3c7] px-2.5 py-0.5 text-[9px] font-bold text-amber-700 border border-amber-200">
+                                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center rounded-md bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-amber-700 border border-amber-200 shadow-sm">
                                                 Sale
                                             </span>
                                         )}
 
-                                        <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-extrabold text-[#d97706] shadow-sm">
-                                            <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                        <span className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm">
+                                            <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
                                             <span>{product.rating}</span>
                                         </span>
                                     </Link>
 
                                     {/* Info */}
-                                    <div className={`flex flex-col flex-grow justify-between text-left ${viewMode === 'list' ? '' : 'mt-4'}`}>
-                                        <h3 className="text-[18px] font-weight-500  font-medium text-[#1E1E1E] tracking-tight leading-snug line-clamp-2">
+                                    <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-3 sm:mt-4'}`}>
+                                        <h3 className="text-[13px] sm:text-[18px] font-weight-500 font-medium text-[#1E1E1E] tracking-tight leading-snug line-clamp-2">
                                             <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
-                                        <div className="flex items-center justify-between mt-2">
-                                            <span className="text-[18px] sm:text-[20px] font-weight-600  font-semibold text-[#00E5FF]">
+                                        <div className="flex items-center justify-between mt-2 sm:mt-auto pt-2">
+                                            <span className="text-[15px] sm:text-[20px] font-weight-600 font-semibold text-[#00E5FF]">
                                                 {formatPrice(product.price)}
                                             </span>
-                                            <button 
+                                            <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
-                                                className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                                <ShoppingCart className="h-5 w-5" />
+                                                className={`h-8 w-8 sm:h-11 sm:w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm shrink-0 ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                                             </button>
                                         </div>
                                     </div>

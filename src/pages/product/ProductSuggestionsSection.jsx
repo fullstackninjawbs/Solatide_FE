@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 import { products } from '../../data/products';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
@@ -112,42 +112,44 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
 
                                 {/* Badges */}
                                 {product.inStock ? (
-                                    <span className="absolute top-3 left-3 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-0.5 text-[9px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                    <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm">
+                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#16a34a] animate-pulse"></div>
                                         In Stock
                                     </span>
                                 ) : (
-                                    <span className="absolute top-3 left-3 inline-flex items-center rounded-md bg-[#fef2f2] px-2.5 py-0.5 text-[9px] font-bold text-red-600 border border-red-200">
+                                    <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm">
+                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-pulse"></div>
                                         Sold Out
                                     </span>
                                 )}
 
-                                <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-extrabold text-[#d97706] shadow-sm">
-                                    <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                <span className="absolute top-2 sm:top-3 right-2 sm:right-3 inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm">
+                                    <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
                                     <span>{product.rating || '5.0'}</span>
                                 </span>
                             </Link>
 
                             {/* Info */}
                             <div className="flex flex-col flex-grow text-left mt-4 justify-between">
-                                 <div>
-                                     <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
-                                         <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
-                                             {product.name}
-                                         </Link>
-                                     </h3>
-                                 </div>
-                                 <div className="flex items-center justify-between mt-4">
-                                     <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
-                                         {formatPrice(product.price)}
-                                     </span>
-                                     <button 
+                                <div>
+                                    <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
+                                        <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
+                                            {product.name}
+                                        </Link>
+                                    </h3>
+                                </div>
+                                <div className="flex items-center justify-between mt-4">
+                                    <span className="text-[18px] sm:text-[20px] font-extrabold text-[#00bfef]">
+                                        {formatPrice(product.price)}
+                                    </span>
+                                    <button
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             e.preventDefault();
                                             addToCart(product, 1);
                                         }}
                                         className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                     >
+                                    >
                                         <ShoppingCart className="h-5 w-5" />
                                     </button>
                                 </div>

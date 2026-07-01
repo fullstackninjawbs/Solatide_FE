@@ -31,9 +31,9 @@ const ProductInfoSection = ({ product }) => {
                 <h3 className="text-[14px] font-bold text-[#214A9E] uppercase tracking-wider mb-5">
                     Specification & Application
                 </h3>
-                <div className="space-y-4">
+                <div className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm flex flex-col">
                     {/* Accordion 1: Product Overview */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Product Overview'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Product Overview'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Product Overview')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Product Overview'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -51,9 +51,9 @@ const ProductInfoSection = ({ product }) => {
                         {openItems['Product Overview'] && (
                             <div className="px-6 pb-6 pt-4 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 {product.overviewHtml ? (
-                                    <div 
-                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3" 
-                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml }} 
+                                    <div
+                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
+                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml }}
                                     />
                                 ) : (
                                     <div className="flex items-start gap-3 mb-4">
@@ -76,7 +76,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 2: Technical Specifications */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Technical Specifications'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Technical Specifications'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Technical Specifications')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Technical Specifications'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -143,7 +143,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 3: Research Applications */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Research Applications'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Research Applications'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Research Applications')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Research Applications'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -161,9 +161,9 @@ const ProductInfoSection = ({ product }) => {
                         {openItems['Research Applications'] && (
                             <div className="px-6 pb-6 pt-4 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 {product.researchApplicationsHtml ? (
-                                    <div 
-                                        className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3" 
-                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml }} 
+                                    <div
+                                        className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
+                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml }}
                                     />
                                 ) : (
                                     <div className="flex items-start gap-3">
@@ -184,9 +184,9 @@ const ProductInfoSection = ({ product }) => {
                 <h3 className="text-[14px] font-bold text-[#214A9E] uppercase tracking-wider mb-5">
                     Trust & Documentation
                 </h3>
-                <div className="space-y-4">
+                <div className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm flex flex-col">
                     {/* Accordion 4: Third-party Batch Verification */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Third-party Batch Verification'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Third-party Batch Verification'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Third-party Batch Verification')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Third-party Batch Verification'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -202,7 +202,7 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Third-party Batch Verification'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                            <div className="px-6 pb-6 pt-1 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 <p className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
@@ -214,7 +214,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 5: Batch Documentation Available */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Batch Documentation Available'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Batch Documentation Available'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Batch Documentation Available')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Batch Documentation Available'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -230,7 +230,7 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Batch Documentation Available'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                            <div className="px-6 pb-6 pt-1 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 <p className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
@@ -242,7 +242,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 6: Fast international dispatch */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Fast international dispatch'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Fast international dispatch'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Fast international dispatch')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Fast international dispatch'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -258,7 +258,7 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Fast international dispatch'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                            <div className="px-6 pb-6 pt-1 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 <p className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
@@ -270,7 +270,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 7: Tracking Provided After Dispatch */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Tracking Provided After Dispatch'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Tracking Provided After Dispatch'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Tracking Provided After Dispatch')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Tracking Provided After Dispatch'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -287,7 +287,7 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Tracking Provided After Dispatch'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                            <div className="px-6 pb-6 pt-1 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 <p className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>
@@ -299,7 +299,7 @@ const ProductInfoSection = ({ product }) => {
                     </div>
 
                     {/* Accordion 8: Support via Telegram and Email */}
-                    <div className={`border rounded-xl bg-white transition-all ${openItems['Support via Telegram and Email'] ? 'border-[#214A9E]/40 shadow-sm' : 'border-[#E8E8E8]'}`}>
+                    <div className={`border-b border-slate-100 bg-white transition-all last:border-0 ${openItems['Support via Telegram and Email'] ? 'bg-slate-50' : ''}`}>
                         <button
                             onClick={() => toggleAccordion('Support via Telegram and Email')}
                             className={`w-full flex items-center justify-between px-6 py-5 font-semibold text-[15px] transition-colors ${openItems['Support via Telegram and Email'] ? 'text-[#214A9E]' : 'text-[#1E1E1E] hover:text-[#214A9E]'}`}
@@ -315,7 +315,7 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Support via Telegram and Email'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                            <div className="px-6 pb-6 pt-1 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
                                 <p className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
                                     <span>

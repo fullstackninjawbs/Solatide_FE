@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
-import productVialImage from '../../assets/images/homePageFirstSection.png'
+import productVialImage from '../../assets/images/homePageFirstSection.webp'
 import { products as localProducts } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';

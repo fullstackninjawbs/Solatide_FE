@@ -68,16 +68,16 @@ const ShippingPolicy = () => {
                     >
                         Shipping Policy
                     </h1>
-                    <p className="text-[15px] sm:text-[16px] font-regular text-[#6A6A6A] leading-[1.75] w-full">
+                    {/* <p className="text-[15px] sm:text-[16px] font-regular text-[#6A6A6A] leading-[1.75] w-full">
                         Curated dispatch protocols, express delivery details, global customs guidelines, and related support documentation for research order management.
-                    </p>
+                    </p> */}
                 </div>
             </section>
 
             {/* Layout Wrapper */}
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-12">
                 <div className="flex flex-col lg:flex-row gap-8 items-start">
-                    
+
                     {/* Left Sticky Sidebar navigation */}
                     <aside className="hidden lg:block w-[320px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 sticky top-[90px] text-left">
                         <h3 className="text-[17px] font-semibold text-[#1E1E1E] mb-4 px-2">On this page</h3>
@@ -86,11 +86,10 @@ const ShippingPolicy = () => {
                                 <button
                                     key={sec.id}
                                     onClick={() => scrollToId(sec.id)}
-                                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-[14.5px] transition-all ${
-                                        activeSection === sec.id
-                                            ? 'bg-[#F0F5FB] text-[#214A9E] font-semibold'
-                                            : 'text-slate-600 hover:text-black hover:bg-slate-50 font-medium'
-                                    }`}
+                                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-[14.5px] transition-all ${activeSection === sec.id
+                                        ? 'bg-[#F0F5FB] text-[#214A9E] font-semibold'
+                                        : 'text-slate-600 hover:text-black hover:bg-slate-50 font-medium'
+                                        }`}
                                 >
                                     <span className={`text-[14px] shrink-0 w-5 ${activeSection === sec.id ? 'text-[#214A9E] font-bold' : 'text-[#94A3B8]'}`}>
                                         {sec.num}
@@ -103,12 +102,12 @@ const ShippingPolicy = () => {
 
                     {/* Right Content Area */}
                     <div className="flex-grow w-full space-y-6 text-left">
-                        
+
                         {/* Section 01: Dispatch & Tracking */}
                         <section id="dispatch-tracking" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Shipping Logistics
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Dispatch & Tracking
                             </h2>
@@ -124,9 +123,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 02: Shipping Overview */}
                         <section id="shipping-overview" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Delivery Rates
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Shipping Overview
                             </h2>
@@ -139,9 +138,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 03: Processing & Dispatch */}
                         <section id="processing-dispatch" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Fulfillment Timeframes
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Processing & Dispatch
                             </h2>
@@ -154,9 +153,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 04: Delivery Timeframes */}
                         <section id="delivery-timeframes" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Transit Duration
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Delivery Timeframes
                             </h2>
@@ -177,9 +176,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 05: Payment Deadline */}
                         <section id="payment-deadline" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Inventory Allocation
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Payment Deadline
                             </h2>
@@ -192,9 +191,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 06: Packaging Standards */}
                         <section id="packaging-standards" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Safe Transit Protocols
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Packaging Standards
                             </h2>
@@ -212,9 +211,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 07: Order Tracking */}
                         <section id="order-tracking" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Shipment Monitoring
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Order Tracking
                             </h2>
@@ -227,14 +226,14 @@ const ShippingPolicy = () => {
 
                         {/* Section 08: Customs & Import Compliance */}
                         <section id="customs-compliance" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Regulatory Guidelines
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Order Customs & Import Compliance
                             </h2>
                             <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]">
-                                <div className="bg-[#fef3c7]/40 border-l-4 border-amber-500 rounded-r-2xl p-6 text-[14.5px] leading-relaxed text-amber-900 mb-2">
+                                <div className="text-[14.5px] leading-relaxed text-amber-900 mb-2">
                                     <span className="font-bold text-amber-950">Important:</span> It is the buyer's responsibility to ensure compliance with all local, state, federal, and international laws regarding import and possession of research compounds.
                                 </div>
                                 <p>
@@ -254,9 +253,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 09: Damaged or Lost Parcels */}
                         <section id="damaged-lost" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Exceptions & Issues
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Damaged or Lost Parcels
                             </h2>
@@ -272,9 +271,9 @@ const ShippingPolicy = () => {
 
                         {/* Section 10: Undeliverable Orders */}
                         <section id="undeliverable" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Return to Sender
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Undeliverable Orders
                             </h2>
@@ -287,14 +286,14 @@ const ShippingPolicy = () => {
 
                         {/* Section 11: Related Support Links */}
                         <section id="support-links" className="scroll-mt-24 py-2">
-                            <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
+                            {/* <span className="text-[#00E5FF] text-[15px] font-medium mb-1 block">
                                 Quick Navigation
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4">
                                 Related Support Links
                             </h2>
-                            <div className="text-[15px] leading-[1.7]">
-                                <ul className="list-disc pl-5 space-y-2 text-[#6A6A6A] font-semibold">
+                            <div className="text-[13px] leading-[1.7]">
+                                <ul className="list-disc pl-5 space-y-2 text-[#6A6A6A] font-medium">
                                     <li>
                                         <Link to="/contact" className="text-[#00E5FF] hover:underline">Contact Us</Link>
                                     </li>

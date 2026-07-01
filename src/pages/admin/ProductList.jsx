@@ -116,7 +116,7 @@ const ProductList = () => {
           <p className="text-slate-500 text-[14px]">Manage your catalog, stock quantities, and research listings.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button 
+          <button
             onClick={handleDeleteAll}
             className="bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer flex items-center gap-2"
           >
@@ -157,11 +157,10 @@ const ProductList = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-4 border-b-2 font-semibold text-[14px] whitespace-nowrap cursor-pointer transition-all ${
-                selectedCategory === cat
-                  ? 'border-brand-navy text-brand-navy font-bold'
-                  : 'border-transparent text-slate-500 hover:text-slate-900'
-              }`}
+              className={`px-5 py-4 border-b-2 font-semibold text-[14px] whitespace-nowrap cursor-pointer transition-all ${selectedCategory === cat
+                ? 'border-brand-navy text-brand-navy font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-900'
+                }`}
             >
               {cat === 'All' ? 'All Products' : cat}
             </button>
@@ -250,7 +249,7 @@ const ProductList = () => {
                             className="h-full w-full object-contain"
                           />
                         </div>
-                        <Link 
+                        <Link
                           to={`/admin/products/edit/${product._id}`}
                           className="hover:text-brand-blue transition-colors line-clamp-1 text-slate-900"
                         >
@@ -259,24 +258,22 @@ const ProductList = () => {
                       </div>
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                        (product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${(product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
                           : (product.publishStatus === 'archived')
-                          ? 'bg-amber-50 text-amber-700 border border-amber-100'
-                          : 'bg-slate-100 text-slate-650 border border-slate-200'
-                      }`}>
+                            ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                            : 'bg-slate-100 text-slate-650 border border-slate-200'
+                        }`}>
                         {product.publishStatus === 'archived' ? 'Archived' : product.publishStatus === 'draft' || product.published === false ? 'Draft' : 'Active'}
                       </span>
                     </td>
                     <td className="py-3.5">
-                      <span className={`font-semibold ${
-                        product.stockQuantity <= 0 
-                          ? 'text-red-500' 
-                          : product.stockQuantity <= product.lowStockThreshold 
-                          ? 'text-amber-600' 
-                          : 'text-slate-650'
-                      }`}>
+                      <span className={`font-semibold ${product.stockQuantity <= 0
+                          ? 'text-red-500'
+                          : product.stockQuantity <= product.lowStockThreshold
+                            ? 'text-amber-600'
+                            : 'text-slate-650'
+                        }`}>
                         {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
                       </span>
                     </td>

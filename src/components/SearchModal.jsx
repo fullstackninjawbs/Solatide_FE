@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, X, Star } from 'lucide-react';
-import productVialImage from '../assets/images/homePageFirstSection.png';
+import productVialImage from '../assets/images/homePageFirstSection.webp';
 import { useCurrency } from '../context/CurrencyContext';
 import { apiService } from '../services/api';
 

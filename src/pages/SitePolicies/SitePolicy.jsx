@@ -112,9 +112,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 01: Personal Information We Collect or Process */}
                         <section id="personal-information" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Gathering
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Personal Information We Collect or Process
                             </h2>
@@ -157,9 +157,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 02: Personal Information Sources */}
                         <section id="information-sources" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Origins
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Personal Information Sources
                             </h2>
@@ -190,9 +190,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 03: How We Use Your Personal Information */}
                         <section id="use-information" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Usage
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 How We Use Your Personal Information
                             </h2>
@@ -227,9 +227,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 04: How We Disclose Personal Information */}
                         <section id="disclose-information" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Disclosure
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 How We Disclose Personal Information
                             </h2>
@@ -264,9 +264,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 06: Third Party Websites and Links */}
                         <section id="third-party-links" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 External Sites
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Third Party Websites and Links
                             </h2>
@@ -279,9 +279,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 07: Children's Data */}
                         <section id="childrens-data" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Age Limitations
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Children's Data
                             </h2>
@@ -294,9 +294,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 08: Security and Retention of Your Information */}
                         <section id="security-retention" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Data Safeguards
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Security and Retention of Your Information
                             </h2>
@@ -312,9 +312,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 09: Your Rights and Choices */}
                         <section id="rights-choices" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Control & Consent
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Your Rights and Choices
                             </h2>
@@ -377,9 +377,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 10: Complaints */}
                         <section id="complaints" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Feedback & Disputes
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Complaints
                             </h2>
@@ -392,9 +392,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 11: International Transfers */}
                         <section id="international-transfers" className="scroll-mt-24 py-2 pb-8">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Cross-Border Data
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 International Transfers
                             </h2>
@@ -410,9 +410,9 @@ const PrivacyPolicy = () => {
 
                         {/* Section 12: Changes to This Privacy Policy */}
                         <section id="policy-changes" className="scroll-mt-24 py-2">
-                            <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
+                            {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Document Updates
-                            </span>
+                            </span> */}
                             <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
                                 Changes to This Privacy Policy
                             </h2>
