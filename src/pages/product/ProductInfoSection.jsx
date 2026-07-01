@@ -49,13 +49,20 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Product Overview'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-3 mb-4">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
-                                    <span>
-                                        {product.name} is a high-grade research compound. Products selected for website presentation meet Solatide Biosciences' ≥99% purity standard based on available third-party documentation. This multi-receptor activation profile makes it a valuable research tool for investigating coordinated metabolic signalling, receptor crosstalk, and integrated pathway regulation in laboratory models.
-                                    </span>
-                                </p>
+                            <div className="px-6 pb-6 pt-4 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                                {product.overviewHtml ? (
+                                    <div 
+                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3" 
+                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml }} 
+                                    />
+                                ) : (
+                                    <div className="flex items-start gap-3 mb-4">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
+                                        <span>
+                                            {product.name} is a high-grade research compound. Products selected for website presentation meet Solatide Biosciences' ≥99% purity standard based on available third-party documentation. This multi-receptor activation profile makes it a valuable research tool for investigating coordinated metabolic signalling, receptor crosstalk, and integrated pathway regulation in laboratory models.
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="text-[13px] font-medium text-slate-400 mt-2 flex flex-wrap gap-2.5 items-center">
                                     <span>Related:</span>
                                     <Link to="/shop" className="text-[#0ea5e9] hover:underline">GLP-1 & Metabolic Peptides</Link>
@@ -85,13 +92,52 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Technical Specifications'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-3">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
-                                    <span>
-                                        Purity standard minimum of 99% verified via independent high-performance liquid chromatography (HPLC) and mass spectrometry analysis. Product is supplied as a sterile lyophilised white powder and must be stored at -20°C for long-term stability.
-                                    </span>
-                                </p>
+                            <div className="px-6 pb-6 pt-4 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                                {product.technicalSpecsTable && product.technicalSpecsTable.length > 0 ? (
+                                    <div className="space-y-4">
+                                        <div className="overflow-hidden border border-slate-200 rounded-2xl bg-white">
+                                            <table className="w-full text-left border-collapse text-[13.5px]">
+                                                <thead>
+                                                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[11px] select-none">
+                                                        <th className="px-5 py-3 w-1/3">Technical Parameter</th>
+                                                        <th className="px-5 py-3">Laboratory Specification</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100 text-slate-700">
+                                                    {product.technicalSpecsTable.map((row, idx) => {
+                                                        const isPurity = row.parameter?.toLowerCase().includes('purity');
+                                                        return (
+                                                            <tr key={idx} className="hover:bg-slate-50/40 transition-colors">
+                                                                <td className="px-5 py-3.5 font-bold text-slate-800 bg-slate-50/20">{row.parameter}</td>
+                                                                <td className="px-5 py-3.5">
+                                                                    {isPurity ? (
+                                                                        <span className="text-[#214A9E] font-bold">{row.specification}</span>
+                                                                    ) : (
+                                                                        row.specification
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p className="text-[12.5px] text-slate-400 leading-relaxed font-medium">
+                                            Batch-specific third-party documentation available. Reports may include testing from independent laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. View our <Link to="/coa" className="text-[#214A9E] hover:underline font-semibold">COA & Lab Testing page</Link> for details.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-start gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
+                                        {product.technicalSpecs?.rawHtml || product.technicalSpecsRawHtml ? (
+                                            <div className="w-full product-specs-content text-[#6A6A6A]" dangerouslySetInnerHTML={{ __html: product.technicalSpecs?.rawHtml || product.technicalSpecsRawHtml }} />
+                                        ) : (
+                                            <span>
+                                                Purity standard minimum of 99% verified via independent high-performance liquid chromatography (HPLC) and mass spectrometry analysis. Product is supplied as a sterile lyophilised white powder and must be stored at -20°C for long-term stability.
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -113,13 +159,20 @@ const ProductInfoSection = ({ product }) => {
                             </svg>
                         </button>
                         {openItems['Research Applications'] && (
-                            <div className="px-6 pb-6 pt-1 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
-                                <p className="flex items-start gap-3">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
-                                    <span>
-                                        For in-vitro research use only. This compound is studied extensively in receptor activation kinetics, signaling pathway dynamics, metabolic pathways, and tissue cellular interactions in lab-controlled models.
-                                    </span>
-                                </p>
+                            <div className="px-6 pb-6 pt-4 border-t border-slate-100/50 text-[14.5px] text-[#6A6A6A] leading-[1.7]">
+                                {product.researchApplicationsHtml ? (
+                                    <div 
+                                        className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3" 
+                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml }} 
+                                    />
+                                ) : (
+                                    <div className="flex items-start gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#214A9E] mt-[9px] shrink-0"></span>
+                                        <span>
+                                            For in-vitro research use only. This compound is studied extensively in receptor activation kinetics, signaling pathway dynamics, metabolic pathways, and tissue cellular interactions in lab-controlled models.
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

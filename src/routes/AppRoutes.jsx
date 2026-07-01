@@ -8,6 +8,8 @@ import ProductForm from '../pages/admin/ProductForm'
 import AdminProductsImportPage from '../pages/admin/AdminProductsImportPage'
 import BatchList from '../pages/admin/products/BatchList'
 import BatchForm from '../pages/admin/products/BatchForm'
+import CollectionList from '../pages/admin/products/CollectionList'
+import CollectionForm from '../pages/admin/products/CollectionForm'
 import Home from '../Redirect/home'
 import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
@@ -44,6 +46,9 @@ const AppRoutes = () => {
                 <Route path="products/new" element={<ProductForm />} />
                 <Route path="products/edit/:id" element={<ProductForm />} />
                 <Route path="products/import" element={<AdminProductsImportPage />} />
+                <Route path="products/collections" element={<CollectionList />} />
+                <Route path="products/collections/new" element={<CollectionForm />} />
+                <Route path="products/collections/edit/:id" element={<CollectionForm />} />
                 <Route path="batches" element={<BatchList />} />
                 <Route path="batches/new" element={<BatchForm />} />
                 <Route path="batches/:id/edit" element={<BatchForm />} />

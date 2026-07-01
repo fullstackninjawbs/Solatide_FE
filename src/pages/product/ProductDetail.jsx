@@ -32,6 +32,42 @@ const ProductDetail = () => {
         window.scrollTo(0, 0);
     }, [id]);
 
+    // Dynamic SEO / Head tags update
+    useEffect(() => {
+        if (product) {
+            const originalTitle = document.title;
+            const metaDescEl = document.querySelector('meta[name="description"]');
+            const originalMetaDesc = metaDescEl ? metaDescEl.getAttribute('content') : '';
+
+            // Set Title
+            document.title = product.seo?.title || `${product.name} | Solatide Biosciences`;
+
+            // Set Description
+            let targetDesc = product.seo?.description || product.summaryHtml || '';
+            // Strip HTML tags if any
+            targetDesc = targetDesc.replace(/<[^>]*>/g, '').trim();
+            if (!targetDesc) {
+                targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
+            }
+
+            if (metaDescEl) {
+                metaDescEl.setAttribute('content', targetDesc);
+            } else {
+                const newMeta = document.createElement('meta');
+                newMeta.setAttribute('name', 'description');
+                newMeta.setAttribute('content', targetDesc);
+                document.head.appendChild(newMeta);
+            }
+
+            return () => {
+                document.title = originalTitle;
+                if (metaDescEl && originalMetaDesc) {
+                    metaDescEl.setAttribute('content', originalMetaDesc);
+                }
+            };
+        }
+    }, [product]);
+
     useEffect(() => {
         if (product && product.variants && product.variants.length > 0) {
             setSelectedVariant(product.variants[0]);
@@ -128,12 +164,38 @@ const ProductDetail = () => {
         ...coaImages
     ];
 
-    const badges = [
-        '≥99% Purity Standard',
-        'Third-Party Documentation',
-        'Endotoxin Tested',
-        'Worldwide Shipping'
-    ];
+    const activeBatch = selectedVariant?.currentBatch || product.currentBatch;
+
+    const badges = [];
+
+    // 1. Purity Verified
+    if (activeBatch?.purity) {
+        badges.push(`${activeBatch.purity} Purity Verified`);
+    } else if (product.chemicalPurity) {
+        badges.push(`${product.chemicalPurity} Purity Verified`);
+    } else {
+        badges.push('≥99% Purity Verified');
+    }
+
+    // 2. Testing Method
+    if (activeBatch?.method) {
+        badges.push(activeBatch.method);
+    } else {
+        badges.push('HPLC-UV & LC-MS Tested');
+    }
+
+    // 3. Endotoxin Tested (dynamic from active batch)
+    if (activeBatch?.hasEndotoxinTest || activeBatch?.includesEndotoxin || activeBatch?.endotoxinIncludedInCoa) {
+        badges.push('Endotoxin Tested');
+    }
+
+    // 4. Sterility Tested (dynamic from active batch)
+    if (activeBatch?.hasSterilityTest || activeBatch?.includesSterility || activeBatch?.sterilityIncludedInCoa) {
+        badges.push('Sterility Tested');
+    }
+
+    // 5. In-Vitro Use Only (static)
+    badges.push('In-Vitro Use Only');
 
     const incrementQty = () => setQuantity(prev => prev + 1);
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
@@ -224,13 +286,13 @@ const ProductDetail = () => {
 
                             {/* Ratings */}
                             <div className="flex items-center gap-2 mb-2">
-                                <div className="flex text-amber-500 text-lg">
+                                <div className="flex text-[#0F8A5F] text-[15px] gap-0.5">
                                     {'★★★★★'.split('').map((char, i) => (
                                         <span key={i}>{char}</span>
                                     ))}
                                 </div>
-                                <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-semibold underline ml-1 hover:text-[#214A9E]">
-                                    {product.reviewsCount || 44} Reviews
+                                <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-medium underline ml-1 hover:text-[#214A9E]">
+                                    {product.reviewsCount || 4} reviews
                                 </a>
                             </div>
 
@@ -252,11 +314,11 @@ const ProductDetail = () => {
                                 )}
                             </div>
 
-                            {/* Product Description */}
+                            {/* Product Summary */}
                             <div 
-                                className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content" 
+                                className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3" 
                                 style={{ fontWeight: 400 }}
-                                dangerouslySetInnerHTML={{ __html: product.description }}
+                                dangerouslySetInnerHTML={{ __html: product.summaryHtml || product.description }}
                             />
 
                             {/* Badges list */}
@@ -270,6 +332,9 @@ const ProductDetail = () => {
                                     </span>
                                 ))}
                             </div>
+
+                            {/* Current Batch Info (moved inline above selector and quantity!) */}
+                            <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} />
 
                             {/* Variant Selector */}
                             {hasVariantsToSelect && (
@@ -318,16 +383,21 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Buttons */}
-                            <div className="flex flex-col gap-4 w-full">
+                            <div className="flex flex-col gap-3.5 w-full mt-4">
                                 <button 
                                     onClick={() => addToCart(product, quantity, selectedVariant)}
                                     disabled={isOutOfStock}
-                                    className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none ${
+                                    className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${
                                         isOutOfStock 
-                                            ? 'bg-slate-300 cursor-not-allowed' 
-                                            : 'bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90'
+                                            ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed' 
+                                            : 'bg-[#0079CD] hover:bg-[#0062a3]'
                                     }`}
                                 >
+                                    {!isOutOfStock && (
+                                        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                          <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                    )}
                                     {isOutOfStock ? 'Sold Out' : 'Add to cart'}
                                 </button>
                                 <button 
@@ -342,7 +412,7 @@ const ProductDetail = () => {
                                     {isCheckingOut ? (
                                         <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
                                     ) : (
-                                        'Buy it Now'
+                                        'Buy it now'
                                     )}
                                 </button>
                                 {checkoutError && <p className="text-[12px] text-red-500 font-medium text-center">{checkoutError}</p>}
@@ -350,9 +420,6 @@ const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* Current Batch Info */}
-                <CurrentBatchCard batch={product.currentBatch} />
 
                 {/* Product Information Accordions Section */}
                 <ProductInfoSection product={product} />

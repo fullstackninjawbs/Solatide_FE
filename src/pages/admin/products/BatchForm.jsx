@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Info, HelpCircle, ExternalLink, Check, Trash2, ArrowLeft } from 'lucide-react';
 import { apiService } from '../../../services/api';
 
 const BatchForm = () => {
@@ -10,12 +11,16 @@ const BatchForm = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [products, setProducts] = useState([]);
-  
+  const [productVariants, setProductVariants] = useState([]);
+
   const [formData, setFormData] = useState({
     batchId: '',
     productId: '',
+    variantId: '',
+    variantSku: '',
     purity: '',
     measuredContent: '',
+    content: '',
     method: 'HPLC / LC-MS Tested',
     coaUrl: '',
     coaStatus: 'pending',
@@ -25,6 +30,8 @@ const BatchForm = () => {
     includesSterility: false,
     hasEndotoxinTest: false,
     hasSterilityTest: false,
+    endotoxinIncludedInCoa: false,
+    sterilityIncludedInCoa: false,
     endotoxinReportUrl: '',
     sterilityReportUrl: '',
     appearance: 'Lyophilised solid white powder',
@@ -53,17 +60,37 @@ const BatchForm = () => {
     }
   };
 
+  const fetchVariantsForProduct = async (productId) => {
+    if (!productId) { setProductVariants([]); return; }
+    try {
+      const res = await apiService.getProductById(productId);
+      const data = await res.json();
+      if (data.success && data.data.product) {
+        setProductVariants(data.data.product.variants || []);
+      }
+    } catch (err) {
+      console.error('Failed to load product variants', err);
+    }
+  };
+
   const fetchBatch = async () => {
     try {
       setInitialLoading(true);
       const res = await apiService.getBatchById(id);
       const data = await res.json();
       if (data.success && data.data.batch) {
+        const batchData = data.data.batch;
+        const mappedProductId = batchData.productId?._id || batchData.productId;
+        
         setFormData({
-          ...data.data.batch,
-          productId: data.data.batch.productId._id || data.data.batch.productId,
-          setAsCurrent: false // Default false on edit unless user checks it
+          ...batchData,
+          productId: mappedProductId,
+          setAsCurrent: false
         });
+        
+        if (mappedProductId) {
+          fetchVariantsForProduct(mappedProductId);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -75,10 +102,13 @@ const BatchForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    const nextVal = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({ ...prev, [name]: nextVal }));
+    
+    if (name === 'productId') {
+      fetchVariantsForProduct(value);
+      setFormData(prev => ({ ...prev, productId: value, variantId: '', variantSku: '' }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -89,14 +119,19 @@ const BatchForm = () => {
       return;
     }
 
+    const payload = {
+      ...formData,
+      variantId: formData.variantId === '' ? null : formData.variantId
+    };
+
     try {
       setLoading(true);
       
       let res;
       if (isEditMode) {
-        res = await apiService.updateBatch(id, formData);
+        res = await apiService.updateBatch(id, payload);
       } else {
-        res = await apiService.createBatch(formData);
+        res = await apiService.createBatch(payload);
       }
       
       const data = await res.json();
@@ -114,136 +149,219 @@ const BatchForm = () => {
     }
   };
 
+  const renderBooleanSelector = (label, name, value) => {
+    return (
+      <div className="border-b border-slate-100 py-4 last:border-b-0">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[13.5px] font-semibold text-slate-700">{label}</span>
+          <button
+            type="button"
+            onClick={() => setFormData(prev => ({ ...prev, [name]: false }))}
+            className="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+          >
+            Clear
+          </button>
+        </div>
+        <div className="flex gap-6 mt-1">
+          <label className="flex items-center gap-2 cursor-pointer text-[13.5px] text-slate-600 select-none">
+            <input
+              type="radio"
+              name={name}
+              checked={value === true}
+              onChange={() => setFormData(prev => ({ ...prev, [name]: true }))}
+              className="w-4 h-4 text-blue-600 border-slate-350 focus:ring-blue-500 cursor-pointer"
+            />
+            True
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer text-[13.5px] text-slate-600 select-none">
+            <input
+              type="radio"
+              name={name}
+              checked={value === false}
+              onChange={() => setFormData(prev => ({ ...prev, [name]: false }))}
+              className="w-4 h-4 text-blue-600 border-slate-350 focus:ring-blue-500 cursor-pointer"
+            />
+            False
+          </label>
+        </div>
+      </div>
+    );
+  };
+
   if (initialLoading) {
-    return <div className="p-8 text-center text-slate-500">Loading batch details...</div>;
+    return (
+      <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-400 font-sans">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-blue"></div>
+        <p className="text-[14px] font-medium">Loading batch details...</p>
+      </div>
+    );
   }
 
+  // Find references info
+  const selectedProduct = products.find(p => p._id === formData.productId);
+  const selectedVariant = productVariants.find(v => v._id === formData.variantId);
+
   return (
-    <div className="p-6 md:p-8 max-w-[900px] mx-auto w-full pb-24">
+    <div className="p-6 md:p-8 max-w-[1400px] mx-auto w-full pb-24 font-sans text-left" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      
+      {/* Header breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 font-medium">
         <Link to="/admin/batches" className="hover:text-blue-600 transition-colors">Batches</Link>
         <span>/</span>
-        <span className="text-slate-800">{isEditMode ? 'Edit Batch' : 'New Batch'}</span>
+        <span className="text-slate-800 font-semibold">{isEditMode ? formData.batchId : 'New Batch'}</span>
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">
-            {isEditMode ? 'Edit Batch Record' : 'Create Batch Record'}
+          <h1 className="text-2xl font-bold text-slate-850 flex items-center gap-2">
+            <span>{isEditMode ? `Edit Batch: ${formData.batchId}` : 'Create Batch Record'}</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-1">Configure batch details and COA documentation</p>
+          <p className="text-sm text-slate-500 mt-1">Configure COA parameters, analytical reports, and associated product references</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Basic Info */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 className="text-[16px] font-semibold text-slate-800 mb-5 pb-3 border-b border-slate-100">Basic Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Batch ID *</label>
-              <input
-                type="text"
-                name="batchId"
-                value={formData.batchId}
-                onChange={handleChange}
-                placeholder="e.g. SOL-WLV-010"
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-                required
-              />
-            </div>
+        {/* Main Column (Left, 8 cols) */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Basic Details Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Basic Details</h2>
             
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Product *</label>
-              <select
-                name="productId"
-                value={formData.productId}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-                required
-              >
-                <option value="">Select a product...</option>
-                {products.map(p => (
-                  <option key={p._id} value={p._id}>{p.name}</option>
-                ))}
-              </select>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Batch ID *</label>
+                <input
+                  type="text"
+                  name="batchId"
+                  value={formData.batchId}
+                  onChange={handleChange}
+                  placeholder="e.g. SOL-RTA-26B"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Purity</label>
-              <input
-                type="text"
-                name="purity"
-                value={formData.purity}
-                onChange={handleChange}
-                placeholder="e.g. 99.20%"
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">DisplayName / Alias</label>
+                <input
+                  type="text"
+                  name="displayName"
+                  value={formData.displayName}
+                  onChange={handleChange}
+                  placeholder="e.g. Batch RTA-26B"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Measured Content</label>
-              <input
-                type="text"
-                name="measuredContent"
-                value={formData.measuredContent}
-                onChange={handleChange}
-                placeholder="e.g. 10.3mg"
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Product *</label>
+                <select
+                  name="productId"
+                  value={formData.productId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                  required
+                >
+                  <option value="">Select a product...</option>
+                  {products.map(p => (
+                    <option key={p._id} value={p._id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Testing Method</label>
-              <input
-                type="text"
-                name="method"
-                value={formData.method}
-                onChange={handleChange}
-                placeholder="e.g. HPLC / LC-MS Tested"
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Variant Selector (optional)</label>
+                <select
+                  name="variantId"
+                  value={formData.variantId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                >
+                  <option value="">All variants (product-level)</option>
+                  {productVariants.map(v => (
+                    <option key={v._id} value={v._id}>
+                      {v.title} — {v.sku}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Appearance</label>
-              <input
-                type="text"
-                name="appearance"
-                value={formData.appearance}
-                onChange={handleChange}
-                placeholder="e.g. Lyophilised solid white powder"
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
-              />
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Purity</label>
+                <input
+                  type="text"
+                  name="purity"
+                  value={formData.purity}
+                  onChange={handleChange}
+                  placeholder="e.g. 99.91%"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Measured Content</label>
+                <input
+                  type="text"
+                  name="measuredContent"
+                  value={formData.measuredContent}
+                  onChange={handleChange}
+                  placeholder="e.g. 10.2mg"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Testing Method</label>
+                <input
+                  type="text"
+                  name="method"
+                  value={formData.method}
+                  onChange={handleChange}
+                  placeholder="HPLC, UV + LC-MS Tested"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Appearance</label>
+                <input
+                  type="text"
+                  name="appearance"
+                  value={formData.appearance}
+                  onChange={handleChange}
+                  placeholder="e.g. White Lyophilised Powder"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* COA Documentation */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 className="text-[16px] font-semibold text-slate-800 mb-5 pb-3 border-b border-slate-100">COA & Documentation</h2>
-          <div className="grid grid-cols-1 gap-6">
+          {/* COA Details Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">COA & Testing Information</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">COA PDF Link</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Link</label>
                 <input
                   type="url"
                   name="coaUrl"
                   value={formData.coaUrl}
                   onChange={handleChange}
                   placeholder="https://..."
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">COA Status</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Status</label>
                 <select
                   name="coaStatus"
                   value={formData.coaStatus}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
                 >
                   <option value="pending">Pending</option>
                   <option value="approved">Approved / Available</option>
@@ -251,181 +369,162 @@ const BatchForm = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-4 border-t border-slate-100">
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="includesPurity"
-                  checked={formData.includesPurity}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">Includes Purity Test</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="includesMeasuredContent"
-                  checked={formData.includesMeasuredContent}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">Includes Measured Content</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="includesEndotoxin"
-                  checked={formData.includesEndotoxin}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">Includes Endotoxin Test in COA</span>
-              </label>
+            {/* Boolean selectors */}
+            <div className="pt-4 border-t border-slate-100 space-y-1">
+              {renderBooleanSelector('Coa Includes Purity', 'includesPurity', formData.includesPurity)}
+              {renderBooleanSelector('Coa Includes Measured Content', 'includesMeasuredContent', formData.includesMeasuredContent)}
+              {renderBooleanSelector('Coa Includes Endotoxin', 'includesEndotoxin', formData.includesEndotoxin)}
+              {renderBooleanSelector('Coa Includes Sterility', 'includesSterility', formData.includesSterility)}
               
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="includesSterility"
-                  checked={formData.includesSterility}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">Includes Sterility Test in COA</span>
-              </label>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Additional Reports */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 className="text-[16px] font-semibold text-slate-800 mb-5 pb-3 border-b border-slate-100">Additional Reports</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <label className="flex items-center gap-3 cursor-pointer group mb-3">
-                <input
-                  type="checkbox"
-                  name="hasEndotoxinTest"
-                  checked={formData.hasEndotoxinTest}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-bold text-slate-700">Has Separate Endotoxin Report</span>
-              </label>
+              {renderBooleanSelector('Has Endotoxin Test', 'hasEndotoxinTest', formData.hasEndotoxinTest)}
+              {renderBooleanSelector('Endotoxin Included in COA', 'endotoxinIncludedInCoa', formData.endotoxinIncludedInCoa)}
+              
               {formData.hasEndotoxinTest && (
-                <div className="pl-7">
+                <div className="py-2.5 pl-6 border-l-2 border-slate-200">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Endotoxin Report URL</label>
                   <input
                     type="url"
                     name="endotoxinReportUrl"
                     value={formData.endotoxinReportUrl}
                     onChange={handleChange}
-                    placeholder="Endotoxin PDF Link..."
-                    className="w-full md:w-1/2 px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-[14px]"
+                    placeholder="https://..."
+                    className="w-full md:w-2/3 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 focus:bg-white"
                   />
                 </div>
               )}
-            </div>
 
-            <div>
-              <label className="flex items-center gap-3 cursor-pointer group mb-3">
-                <input
-                  type="checkbox"
-                  name="hasSterilityTest"
-                  checked={formData.hasSterilityTest}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <span className="text-[14px] font-bold text-slate-700">Has Separate Sterility Report</span>
-              </label>
+              {renderBooleanSelector('Has Sterility Test', 'hasSterilityTest', formData.hasSterilityTest)}
+              {renderBooleanSelector('Sterility Included in COA', 'sterilityIncludedInCoa', formData.sterilityIncludedInCoa)}
+
               {formData.hasSterilityTest && (
-                <div className="pl-7">
+                <div className="py-2.5 pl-6 border-l-2 border-slate-200">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Sterility Report Link</label>
                   <input
                     type="url"
                     name="sterilityReportUrl"
                     value={formData.sterilityReportUrl}
                     onChange={handleChange}
-                    placeholder="Sterility PDF Link..."
-                    className="w-full md:w-1/2 px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-[14px]"
+                    placeholder="https://..."
+                    className="w-full md:w-2/3 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 focus:bg-white"
                   />
                 </div>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Notes & Status */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Internal Notes</label>
+          {/* Notes Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Notes</h2>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Internal Notes</label>
               <textarea
                 name="notes"
                 value={formData.notes}
                 onChange={handleChange}
                 rows={3}
-                placeholder="Private notes about this batch..."
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
+                placeholder="Write private notes about this batch..."
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Sidebar Column (Right, 4 cols) */}
+        <div className="lg:col-span-4 space-y-6">
+          
+          {/* Status & Save Actions Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Publish Details</h2>
             
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Batch Status</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Batch Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-[15px]"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer font-medium"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive / Archived</option>
               </select>
             </div>
-          </div>
-        </div>
 
-        {/* Set as current toggle */}
-        <div className="bg-[#f0f7ff] rounded-xl border border-[#cce3fe] p-5 flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-[#1a4494] text-[15px]">Set as Current Batch</h3>
-            <p className="text-[13px] text-blue-700/80 mt-1">
-              Check this to automatically assign this batch to the product page upon saving.
-            </p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input 
-              type="checkbox" 
-              name="setAsCurrent"
-              checked={formData.setAsCurrent} 
-              onChange={handleChange}
-              className="sr-only peer" 
-            />
-            <div className="w-11 h-6 bg-blue-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
-        </div>
+            <div className="bg-[#f0f7ff]/70 border border-[#214A9E]/10 rounded-xl p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-[#1a4494] text-[13.5px]">Set as Current Batch</h4>
+                  <p className="text-[11.5px] text-[#214A9E]/70 mt-0.5 leading-relaxed">
+                    Automatically link this batch to the selected product page.
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input 
+                    type="checkbox" 
+                    name="setAsCurrent"
+                    checked={formData.setAsCurrent} 
+                    onChange={handleChange}
+                    className="sr-only peer" 
+                  />
+                  <div className="w-10 h-5.5 bg-blue-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-350 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+            </div>
 
-        {/* Actions */}
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 mt-6">
-          <Link
-            to="/admin/batches"
-            className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`bg-[#214A9E] hover:bg-[#1a3a7d] text-white px-8 py-2.5 rounded-lg text-sm font-semibold transition-colors shadow-sm flex items-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {loading ? (
-              <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving...</>
+            {/* Actions */}
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full bg-[#214A9E] hover:bg-[#1a3a7d] text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {loading ? (
+                  <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving...</>
+                ) : (
+                  isEditMode ? 'Save Changes' : 'Create Batch'
+                )}
+              </button>
+              <Link
+                to="/admin/batches"
+                className="w-full text-center px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-sm font-semibold"
+              >
+                Cancel
+              </Link>
+            </div>
+          </div>
+
+          {/* References Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-base font-bold text-slate-850">References</h3>
+                <HelpCircle className="w-4 h-4 text-slate-400 cursor-help" title="Associated product variants using this batch record" />
+              </div>
+            </div>
+            
+            {selectedProduct ? (
+              <div className="space-y-3">
+                <div className="bg-slate-50 border border-slate-150 rounded-xl p-3.5 flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-lg shadow-sm shrink-0 select-none">
+                    🧪
+                  </div>
+                  <div className="text-left min-w-0">
+                    <p className="text-[13px] font-bold text-slate-800 break-words leading-tight">
+                      {selectedProduct.name}
+                    </p>
+                    <p className="text-[11.5px] text-slate-500 font-semibold mt-1 flex items-center gap-1">
+                      <span>{selectedVariant ? selectedVariant.title : 'Default Title'}</span>
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-2.5">
+                      Product variant
+                    </p>
+                  </div>
+                </div>
+              </div>
             ) : (
-              isEditMode ? 'Save Changes' : 'Create Batch'
+              <p className="text-[12.5px] text-slate-400 italic text-left select-none">No associated product variant references.</p>
             )}
-          </button>
+          </div>
+
         </div>
 
       </form>

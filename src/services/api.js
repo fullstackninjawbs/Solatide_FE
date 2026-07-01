@@ -13,6 +13,28 @@ export const apiService = {
   getProductById: async (id, options = {}) => {
     return fetch(`${API_URL}/api/products/${id}`, options);
   },
+  getProductBySlug: async (slug, options = {}) => {
+    return fetch(`${API_URL}/api/products/${slug}`, options);
+  },
+  // Admin-namespaced product endpoints (auth required)
+  getAdminProducts: async (queryParams = '') => {
+    return fetch(`${API_URL}/api/admin/product${queryParams ? `?${queryParams}` : ''}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  saveAdminProduct: async (id, data) => {
+    return fetch(`${API_URL}/api/admin/product${id ? `/${id}` : ''}`, {
+      method: id ? 'PATCH' : 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: data
+    });
+  },
+  deleteAdminProduct: async (id) => {
+    return fetch(`${API_URL}/api/admin/product/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   saveProduct: async (id, data) => {
     return fetch(`${API_URL}/api/products${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',
@@ -125,6 +147,38 @@ export const apiService = {
   },
   deleteBatch: async (id) => {
     return fetch(`${API_URL}/api/admin/batches/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
+  // Collections (Admin)
+  getCollections: async () => {
+    return fetch(`${API_URL}/api/admin/collection`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  getCollectionById: async (id) => {
+    return fetch(`${API_URL}/api/admin/collection/${id}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  createCollection: async (data) => {
+    return fetch(`${API_URL}/api/admin/collection`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  updateCollection: async (id, data) => {
+    return fetch(`${API_URL}/api/admin/collection/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  deleteCollection: async (id) => {
+    return fetch(`${API_URL}/api/admin/collection/${id}`, {
       method: 'DELETE',
       headers: { ...getAuthHeaders() }
     });

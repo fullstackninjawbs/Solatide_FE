@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
@@ -11,6 +11,9 @@ const ProductList = () => {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedCollection, setSelectedCollection] = useState('');
+  const [collectionsList, setCollectionsList] = useState([]);
   const navigate = useNavigate();
   const { formatAUD } = useCurrency();
 
@@ -26,16 +29,15 @@ const ProductList = () => {
     try {
       setLoading(true);
       setError('');
-      
-      let queryParams = 'limit=100';
-      if (searchQuery) {
-        queryParams += `&search=${encodeURIComponent(searchQuery)}`;
-      }
-      if (selectedCategory && selectedCategory !== 'All') {
-        queryParams += `&category=${encodeURIComponent(selectedCategory)}`;
-      }
 
-      const response = await apiService.getProducts(queryParams);
+      const params = new URLSearchParams();
+      params.set('limit', '100');
+      if (searchQuery) params.set('search', searchQuery);
+      if (selectedCategory && selectedCategory !== 'All') params.set('category', selectedCategory);
+      if (selectedStatus && selectedStatus !== 'all') params.set('status', selectedStatus);
+      if (selectedCollection) params.set('collection', selectedCollection);
+
+      const response = await apiService.getProducts(params.toString());
       const result = await response.json();
       if (result.success && result.data && result.data.products) {
         setProducts(result.data.products);
@@ -50,9 +52,23 @@ const ProductList = () => {
     }
   };
 
+  const fetchCollections = async () => {
+    try {
+      const res = await apiService.getCollections();
+      const data = await res.json();
+      if (data.success && data.data) setCollectionsList(data.data);
+    } catch (err) {
+      console.error('Failed to load collections', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
   useEffect(() => {
     fetchProducts();
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, selectedStatus, selectedCollection]);
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete the product "${name}"?`)) {
@@ -152,7 +168,7 @@ const ProductList = () => {
           ))}
         </div>
 
-        {/* Search Bar */}
+        {/* Search + Filter Bar */}
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
           <div className="relative flex-grow">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
@@ -162,14 +178,32 @@ const ProductList = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search and filter products..."
+              placeholder="Search products by name or description..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-450 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
             />
           </div>
-          <button className="flex items-center gap-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer">
-            <SlidersHorizontal className="h-4 w-4" />
-            <span>More Filters</span>
-          </button>
+          {/* Status Filter */}
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:border-brand-blue transition-all cursor-pointer"
+          >
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="archived">Archived</option>
+          </select>
+          {/* Collection Filter */}
+          <select
+            value={selectedCollection}
+            onChange={(e) => setSelectedCollection(e.target.value)}
+            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:border-brand-blue transition-all cursor-pointer"
+          >
+            <option value="">All Collections</option>
+            {collectionsList.map(col => (
+              <option key={col._id} value={col._id}>{col.name}</option>
+            ))}
+          </select>
         </div>
 
         {/* Table list */}
@@ -195,8 +229,9 @@ const ProductList = () => {
                   <th className="py-4">Status</th>
                   <th className="py-4">Inventory</th>
                   <th className="py-4">Category</th>
-                  <th className="py-4">SKU</th>
-                  <th className="py-4">Price (AUD)</th>
+                  <th className="py-4">Channels</th>
+                  <th className="py-4">Product type</th>
+                  <th className="py-4">Vendor</th>
                   <th className="py-4 pr-6 text-right w-24">Actions</th>
                 </tr>
               </thead>
@@ -215,38 +250,42 @@ const ProductList = () => {
                             className="h-full w-full object-contain"
                           />
                         </div>
-                        <span className="hover:text-brand-blue transition-colors line-clamp-1">{product.name}</span>
+                        <Link 
+                          to={`/admin/products/edit/${product._id}`}
+                          className="hover:text-brand-blue transition-colors line-clamp-1 text-slate-900"
+                        >
+                          {product.name}
+                        </Link>
                       </div>
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex items-center text-[11px] font-bold uppercase rounded-full px-2.5 py-0.5 ${
-                        product.inStock 
-                          ? 'bg-emerald-50 text-emerald-600'
-                          : 'bg-red-50 text-red-600'
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        (product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                          : (product.publishStatus === 'archived')
+                          ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                          : 'bg-slate-100 text-slate-650 border border-slate-200'
                       }`}>
-                        {product.inStock ? 'Active' : 'Draft'}
+                        {product.publishStatus === 'archived' ? 'Archived' : product.publishStatus === 'draft' || product.published === false ? 'Draft' : 'Active'}
                       </span>
                     </td>
                     <td className="py-3.5">
                       <span className={`font-semibold ${
-                        product.stockQuantity <= product.lowStockThreshold 
+                        product.stockQuantity <= 0 
+                          ? 'text-red-500' 
+                          : product.stockQuantity <= product.lowStockThreshold 
                           ? 'text-amber-600' 
                           : 'text-slate-650'
                       }`}>
                         {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
                       </span>
-                      {product.stockQuantity <= product.lowStockThreshold && product.stockQuantity > 0 && (
-                        <span className="text-[11px] text-amber-500 font-bold block mt-0.5">Low Stock</span>
-                      )}
-                      {product.stockQuantity === 0 && (
-                        <span className="text-[11px] text-red-500 font-bold block mt-0.5">Out of Stock</span>
-                      )}
                     </td>
-                    <td className="py-3.5 text-slate-500 line-clamp-1 mt-3.5">{product.category}</td>
-                    <td className="py-3.5 text-slate-400 font-mono text-xs">{product.sku || '—'}</td>
-                     <td className="py-3.5 font-bold text-brand-navy">
-                       {formatAUD(product.price)}
-                     </td>
+                    <td className="py-3.5 text-slate-600">
+                      {product.category?.includes(' > ') ? product.category.split(' > ').pop() : (product.category || 'Uncategorized')}
+                    </td>
+                    <td className="py-3.5 font-semibold text-slate-700">2</td>
+                    <td className="py-3.5 text-slate-600">{product.productType || 'Research Peptides'}</td>
+                    <td className="py-3.5 text-slate-500">{product.vendor || 'Solatide Biosciences'}</td>
                     <td className="py-3.5 pr-6 text-right">
                       <div className="flex justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link
