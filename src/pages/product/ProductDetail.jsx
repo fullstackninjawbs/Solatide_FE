@@ -326,123 +326,119 @@ const ProductDetail = () => {
                                 dangerouslySetInnerHTML={{ __html: product.summaryHtml || product.description }}
                             />
 
-                            {/* Features/Badges list */}
-                            <div className="flex flex-col gap-5 mb-8">
-                                <span className="text-[13px] font-bold text-slate-400 uppercase tracking-wider">Product Highlights</span>
-                                <div className="flex flex-wrap gap-2.5">
-                                    {badges.map((badge, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="bg-slate-50 text-slate-700 border border-slate-200/60 rounded-full px-4 py-2 text-[13px] font-medium flex items-center gap-2"
-                                        >
-                                            <svg className="w-4 h-4 text-[#214A9E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            {badge}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Current Batch Info (moved inline above selector and quantity!) */}
-                            <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} />
-
-                            {/* Variant Selector */}
-                            {hasVariantsToSelect && (
-                                <div className="mb-8 border-t border-slate-100 pt-8">
-                                    <span className="text-[14px] font-bold text-slate-800 block mb-3 uppercase tracking-wide">
-                                        Select Option
+                            {/* Badges list */}
+                            <div className="flex flex-wrap gap-2.5 mb-6">
+                                {badges.map((badge, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="bg-[#edf4ff]/50 text-[#214A9E] border border-[#214A9E]/10 rounded-full px-4 py-1.5 text-xs font-semibold"
+                                    >
+                                        {badge}
                                     </span>
-                                    <div className="flex flex-wrap gap-3">
-                                        {product.variants.map((v, index) => (
-                                            <button
-                                                key={v.sku || index}
-                                                onClick={() => setSelectedVariant(v)}
-                                                className={`px-5 py-2.5 rounded-xl text-[14px] font-semibold border-2 transition-all focus:outline-none ${selectedVariant?.sku === v.sku
-                                                    ? 'border-[#214A9E] bg-[#214A9E] text-white shadow-md'
-                                                    : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
-                                                    }`}
-                                            >
-                                                {v.title}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Actions area (Qty & Cart) */}
-                            <div className={`flex flex-col gap-5 w-full ${!hasVariantsToSelect ? 'border-t border-slate-100 pt-8' : ''}`}>
-                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                                    {/* Quantity Selector */}
-                                    <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 h-[56px] shrink-0 w-full sm:w-auto">
-                                        <button
-                                            onClick={decrementQty}
-                                            className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-l-xl transition-colors"
-                                        >
-                                            −
-                                        </button>
-                                        <span className="w-12 text-center font-bold text-[16px] text-slate-800">
-                                            {quantity}
-                                        </span>
-                                        <button
-                                            onClick={incrementQty}
-                                            className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-r-xl transition-colors"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-
-                                    {/* Buttons */}
-                                    <div className="flex flex-col gap-3.5 w-full mt-4">
-                                        <button
-                                            onClick={() => addToCart(product, quantity, selectedVariant)}
-                                            disabled={isOutOfStock}
-                                            className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
-                                                    ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed'
-                                                    : 'bg-[#0079CD] hover:bg-[#0062a3]'
-                                                }`}
-                                        >
-                                            {!isOutOfStock && (
-                                                <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                                </svg>
-                                            )}
-                                            {isOutOfStock ? 'Sold Out' : 'Add to cart'}
-                                        </button>
-                                        <button
-                                            onClick={() => initiateCheckout([{ ...product, quantity, selectedVariant }])}
-                                            disabled={isOutOfStock || isCheckingOut}
-                                            className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none flex items-center justify-center gap-2 ${isOutOfStock || isCheckingOut
-                                                    ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
-                                                    : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
-                                                }`}
-                                        >
-                                            {isCheckingOut ? (
-                                                <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
-                                            ) : (
-                                                'Buy it now'
-                                            )}
-                                        </button>
-                                        {checkoutError && <p className="text-[12px] text-red-500 font-medium text-center">{checkoutError}</p>}
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Product Information Accordions Section */}
-                        <ProductInfoSection product={product} />
+                        {/* Current Batch Info (moved inline above selector and quantity!) */}
+                        <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} />
 
-                        {/* Product Reviews Section */}
-                        <ProductReviewsSection product={product} />
+                        {/* Variant Selector */}
+                        {hasVariantsToSelect && (
+                            <div className="mb-8 border-t border-slate-100 pt-8">
+                                <span className="text-[14px] font-bold text-slate-800 block mb-3 uppercase tracking-wide">
+                                    Select Option
+                                </span>
+                                <div className="flex flex-wrap gap-3">
+                                    {product.variants.map((v, index) => (
+                                        <button
+                                            key={v.sku || index}
+                                            onClick={() => setSelectedVariant(v)}
+                                            className={`px-5 py-2.5 rounded-xl text-[14px] font-semibold border-2 transition-all focus:outline-none ${selectedVariant?.sku === v.sku
+                                                ? 'border-[#214A9E] bg-[#214A9E] text-white shadow-md'
+                                                : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                                                }`}
+                                        >
+                                            {v.title}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
-                        {/* FAQ Section */}
-                        <ProductFaqSection />
+                        {/* Actions area (Qty & Cart) */}
+                        <div className={`flex flex-col gap-5 w-full ${!hasVariantsToSelect ? 'border-t border-slate-100 pt-8' : ''}`}>
+                            <div className="flex sm:flex-col flex-row items-stretch gap-4">
+                                {/* Quantity Selector */}
+                                <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 h-[56px] w-max">
+                                    <button
+                                        onClick={decrementQty}
+                                        className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-l-xl transition-colors"
+                                    >
+                                        −
+                                    </button>
+                                    <span className="w-12 text-center font-bold text-[16px] text-slate-800">
+                                        {quantity}
+                                    </span>
+                                    <button
+                                        onClick={incrementQty}
+                                        className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-r-xl transition-colors"
+                                    >
+                                        +
+                                    </button>
+                                </div>
 
-                        {/* Suggestions Section */}
-                        <ProductSuggestionsSection currentProduct={product} />
+                                {/* Buttons */}
+                                <div className="flex flex-col gap-3.5 w-full mt-4">
+                                    <button
+                                        onClick={() => addToCart(product, quantity, selectedVariant)}
+                                        disabled={isOutOfStock}
+                                        className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
+                                            ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed'
+                                            : 'bg-[#0079CD] hover:bg-[#0062a3]'
+                                            }`}
+                                    >
+                                        {!isOutOfStock && (
+                                            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                            </svg>
+                                        )}
+                                        {isOutOfStock ? 'Sold Out' : 'Add to cart'}
+                                    </button>
+                                    <button
+                                        onClick={() => initiateCheckout([{ ...product, quantity, selectedVariant }])}
+                                        disabled={isOutOfStock || isCheckingOut}
+                                        className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none flex items-center justify-center gap-2 ${isOutOfStock || isCheckingOut
+                                            ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
+                                            : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
+                                            }`}
+                                    >
+                                        {isCheckingOut ? (
+                                            <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
+                                        ) : (
+                                            'Buy it now'
+                                        )}
+                                    </button>
+                                    {checkoutError && <p className="text-[12px] text-red-550 font-medium text-center">{checkoutError}</p>}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                );
+
+                {/* Product Information Accordions Section */}
+                <ProductInfoSection product={product} />
+
+                {/* Product Reviews Section */}
+                <ProductReviewsSection product={product} />
+
+                {/* FAQ Section */}
+                <ProductFaqSection />
+
+                {/* Suggestions Section */}
+                <ProductSuggestionsSection currentProduct={product} />
+            </div>
+        </div>
+    );
 };
 
-                export default ProductDetail;
+export default ProductDetail;
