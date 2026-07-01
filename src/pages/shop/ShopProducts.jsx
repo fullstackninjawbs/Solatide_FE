@@ -250,8 +250,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     className={`group bg-white rounded-[16px] sm:rounded-[24px] border border-slate-100 shadow-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-4 sm:gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
-                                    <Link 
-                                        to={`/product/${product.id || product._id}`} 
+                                    <Link
+                                        to={`/product/${product.id || product._id}`}
                                         className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[14px] sm:rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[150px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
                                     >
                                         <img
@@ -299,7 +299,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                             <span className="text-[15px] sm:text-[20px] font-weight-600 font-semibold text-[#00E5FF]">
                                                 {formatPrice(product.price)}
                                             </span>
-                                            <button 
+                                            <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
