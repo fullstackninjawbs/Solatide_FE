@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload } from 'lucide-react';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
 

@@ -23,6 +23,11 @@ import ViewDocument from '../Redirect/ViewDocument'
 import AffiliatePro from '../Redirect/AffiliatePro'
 import ResearchInsight from '../Redirect/ResearchInsight'
 import Checkout from '../pages/checkout/Checkout'
+import PeptidesGuide from '../pages/peptidesGuide/PeptidesGuide'
+import CompoundDatabase from '../pages/compoundDatabase/CompoundDatabase'
+import CoaReports from '../pages/coaReports/CoaReports'
+import Terms from '../pages/terms/Terms'
+import Returns from '../pages/returns/Returns'
 import CheckoutSuccess from '../pages/checkout/CheckoutSuccess'
 import CheckoutFailure from '../pages/checkout/CheckoutFailure'
 
@@ -31,13 +36,9 @@ const AppRoutes = () => {
         <Routes>
             {/* Admin Auth Route */}
             <Route path="/admin/login" element={<AdminLogin />} />
-
-            {/* Checkout Routes (standalone — no MainLayout header/footer) */}
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/failure" element={<CheckoutFailure />} />
-
-            {/* Admin Panel Dashboard (Protected Layout) */}
             <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="products" element={<ProductList />} />
@@ -75,12 +76,11 @@ const AppRoutes = () => {
                 <Route path="/affiliate-pro" element={<AffiliatePro />} />
 
                 {/* Missing Footer Routes */}
-                <Route path="peptides-guide" element={<div className="min-h-screen pt-32 pb-16 px-4 bg-[#f8fafc] text-center text-2xl font-bold">Research Peptides Guide (Coming Soon)</div>} />
-                <Route path="compound-database" element={<div className="min-h-screen pt-32 pb-16 px-4 bg-[#f8fafc] text-center text-2xl font-bold">Research Compound Database (Coming Soon)</div>} />
-                <Route path="coa-reports" element={<div className="min-h-screen pt-32 pb-16 px-4 bg-[#f8fafc] text-center text-2xl font-bold">COA Reports (Coming Soon)</div>} />
-                <Route path="terms" element={<div className="min-h-screen pt-32 pb-16 px-4 bg-[#f8fafc] text-center text-2xl font-bold">Terms of Services (Coming Soon)</div>} />
-                <Route path="returns" element={<div className="min-h-screen pt-32 pb-16 px-4 bg-[#f8fafc] text-center text-2xl font-bold">Returns & Refunds (Coming Soon)</div>} />
-
+                <Route path="peptides-guide" element={<PeptidesGuide />} />
+                <Route path="compound-database" element={<CompoundDatabase />} />
+                <Route path="coa-reports" element={<CoaReports />} />
+                <Route path="terms" element={<Terms />} />
+                <Route path="returns" element={<Returns />} />
                 <Route path="*" element={<Home />} />
             </Route>
         </Routes>

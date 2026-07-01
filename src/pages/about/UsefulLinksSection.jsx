@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const UsefulLinksSection = () => {
     return (
-        <section className="w-full bg-white py-12 md:py-16">
+        <section className="w-full bg-white pb-10 md:pb-12">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="max-w-[800px] mx-auto w-full border border-[#daeeff] rounded-[12px] p-6 bg-[#f8fbff] shadow-sm text-left">
                     <h3 className="text-[15px] font-bold text-[#214A9E] mb-4">

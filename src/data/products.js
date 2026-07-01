@@ -1,4 +1,4 @@
-import homeVial from '../assets/images/homePageFirstSection.png';
+import homeVial from '../assets/images/homePageFirstSection.webp';
 import retatrutideWhiteVial from '../assets/images/RetatrutideMad.png';
 import retatrutideBlueVial from '../assets/images/retatrutide_vial.png';
 

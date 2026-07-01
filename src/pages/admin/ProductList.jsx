@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag } from 'lucide-react';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
+import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 
@@ -26,7 +26,7 @@ const ProductList = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       let queryParams = 'limit=100';
       if (searchQuery) {
         queryParams += `&search=${encodeURIComponent(searchQuery)}`;
@@ -100,7 +100,7 @@ const ProductList = () => {
           <p className="text-slate-500 text-[14px]">Manage your catalog, stock quantities, and research listings.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button 
+          <button
             onClick={handleDeleteAll}
             className="bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer flex items-center gap-2"
           >
@@ -141,11 +141,10 @@ const ProductList = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-4 border-b-2 font-semibold text-[14px] whitespace-nowrap cursor-pointer transition-all ${
-                selectedCategory === cat
+              className={`px-5 py-4 border-b-2 font-semibold text-[14px] whitespace-nowrap cursor-pointer transition-all ${selectedCategory === cat
                   ? 'border-brand-navy text-brand-navy font-bold'
                   : 'border-transparent text-slate-500 hover:text-slate-900'
-              }`}
+                }`}
             >
               {cat === 'All' ? 'All Products' : cat}
             </button>
@@ -219,20 +218,18 @@ const ProductList = () => {
                       </div>
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex items-center text-[11px] font-bold uppercase rounded-full px-2.5 py-0.5 ${
-                        product.inStock 
+                      <span className={`inline-flex items-center text-[11px] font-bold uppercase rounded-full px-2.5 py-0.5 ${product.inStock
                           ? 'bg-emerald-50 text-emerald-600'
                           : 'bg-red-50 text-red-600'
-                      }`}>
+                        }`}>
                         {product.inStock ? 'Active' : 'Draft'}
                       </span>
                     </td>
                     <td className="py-3.5">
-                      <span className={`font-semibold ${
-                        product.stockQuantity <= product.lowStockThreshold 
-                          ? 'text-amber-600' 
+                      <span className={`font-semibold ${product.stockQuantity <= product.lowStockThreshold
+                          ? 'text-amber-600'
                           : 'text-slate-650'
-                      }`}>
+                        }`}>
                         {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
                       </span>
                       {product.stockQuantity <= product.lowStockThreshold && product.stockQuantity > 0 && (
@@ -244,9 +241,9 @@ const ProductList = () => {
                     </td>
                     <td className="py-3.5 text-slate-500 line-clamp-1 mt-3.5">{product.category}</td>
                     <td className="py-3.5 text-slate-400 font-mono text-xs">{product.sku || '—'}</td>
-                     <td className="py-3.5 font-bold text-brand-navy">
-                       {formatAUD(product.price)}
-                     </td>
+                    <td className="py-3.5 font-bold text-brand-navy">
+                      {formatAUD(product.price)}
+                    </td>
                     <td className="py-3.5 pr-6 text-right">
                       <div className="flex justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link

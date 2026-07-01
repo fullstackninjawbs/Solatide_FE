@@ -160,16 +160,16 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Hero Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start relative">
                     {/* Left Column: Image Galleries */}
-                    <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-5 items-start w-full">
+                    <div className="lg:col-span-6 flex flex-col-reverse md:flex-row gap-4 lg:gap-5 items-start w-full lg:sticky lg:top-28">
                         {/* Thumbnails list */}
-                        <div className="flex flex-row md:flex-col gap-3 shrink-0 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                        <div className="flex flex-row md:flex-col gap-3 shrink-0 overflow-x-auto w-full md:w-[85px] pb-2 md:pb-0 scrollbar-hide">
                             {images.map((img, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setActiveTab(idx)}
-                                    className={`w-[70px] h-[70px] sm:w-[85px] sm:h-[85px] rounded-xl overflow-hidden border-2 flex items-center justify-center p-1.5 transition-all bg-white ${activeTab === idx ? 'border-[#214A9E]' : 'border-slate-200 hover:border-slate-300'
+                                    className={`w-[70px] h-[70px] sm:w-[85px] sm:h-[85px] rounded-xl overflow-hidden border-2 flex items-center justify-center p-1.5 transition-all bg-white shrink-0 ${activeTab === idx ? 'border-[#214A9E] shadow-sm' : 'border-slate-200 hover:border-[#214A9E]/40'
                                         }`}
                                 >
                                     {idx < dbImages.length ? (
@@ -195,21 +195,26 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Main Preview Image */}
-                        <div className="flex-grow bg-white rounded-3xl border border-[#E8E8E8] p-4 flex items-center justify-center overflow-hidden h-[320px] sm:h-[450px] md:h-[580px] w-full">
+                        <div className="flex-grow bg-[#f8fafc] rounded-3xl border border-slate-200/60 p-6 flex items-center justify-center overflow-hidden h-[340px] sm:h-[450px] md:h-[550px] w-full relative group">
                             {images[activeTab] ? (
                                 <img
                                     src={images[activeTab]}
                                     alt="Product Preview"
-                                    className="w-full h-full object-cover rounded-2xl transition-transform duration-300"
+                                    className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                 />
                             ) : (
-                                <div className="text-slate-300 text-sm font-medium">No Image Available</div>
+                                <div className="text-slate-400 text-sm font-medium flex flex-col items-center gap-2">
+                                    <svg className="w-8 h-8 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    No Image Available
+                                </div>
                             )}
                         </div>
                     </div>
 
                     {/* Right Column: Product Specs */}
-                    <div className="lg:col-span-5 text-left flex flex-col gap-6" style={{ fontFamily: 'Poppins' }}>
+                    <div className="lg:col-span-6 text-left flex flex-col gap-6" style={{ fontFamily: 'Poppins' }}>
                         <div>
                             {/* Category Tag */}
 
@@ -222,23 +227,40 @@ const ProductDetail = () => {
                                 {product.name}
                             </h1>
 
-                            {/* Ratings */}
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="flex text-amber-500 text-lg">
-                                    {'★★★★★'.split('').map((char, i) => (
-                                        <span key={i}>{char}</span>
-                                    ))}
-                                </div>
-                                <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-semibold underline ml-1 hover:text-[#214A9E]">
-                                    {product.reviewsCount || 44} Reviews
+                            {/* Trust Indicators: Reviews and Stock Status */}
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6">
+                                {/* Reviews Badge */}
+                                <a href="#reviews" className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#fef3c7]/60 hover:bg-[#fde68a]/60 border border-[#f59e0b]/20 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full transition-colors group cursor-pointer">
+                                    <div className="flex text-[#f59e0b] text-[15px] sm:text-[17px] leading-none">
+                                        {'★★★★★'.split('').map((char, i) => (
+                                            <span key={i}>{char}</span>
+                                        ))}
+                                    </div>
+                                    <span className="text-[13px] sm:text-[14px] text-[#92400e] font-bold ml-1">
+                                        4.9
+                                    </span>
+                                    <span className="text-[12px] sm:text-[13px] text-[#b45309] font-medium underline group-hover:text-[#92400e] decoration-[#b45309]/30 underline-offset-2">
+                                        ({product.reviewsCount || 44} reviews)
+                                    </span>
                                 </a>
+
+                                {/* Stock Status Badge */}
+                                <div className={`inline-flex items-center gap-2 border px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-sm ${!isOutOfStock
+                                        ? 'bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] border-[#16a34a]/20 text-[#16a34a]'
+                                        : 'bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] border-red-600/20 text-red-600'
+                                    }`}>
+                                    <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${!isOutOfStock ? 'bg-[#16a34a]' : 'bg-red-600'} animate-pulse shadow-sm`}></div>
+                                    <span className="text-[13px] sm:text-[14px] font-bold tracking-wide uppercase">
+                                        {!isOutOfStock ? 'In Stock - Ready to Ship' : 'Out of Stock'}
+                                    </span>
+                                </div>
                             </div>
 
-                            {displaySku && (
+                            {/* {displaySku && (
                                 <div className="text-[13px] text-slate-500 mb-4 uppercase tracking-wider">
                                     SKU: <span className="font-semibold text-slate-800">{displaySku}</span>
                                 </div>
-                            )}
+                            )} */}
 
                             {/* Price */}
                             <div className="flex items-baseline gap-3 mb-6">
@@ -253,40 +275,45 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Product Description */}
-                            <div 
-                                className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content" 
+                            <div
+                                className="text-slate-600 text-[15.5px] leading-relaxed mb-8 product-description-content border-b border-slate-100 pb-8"
                                 style={{ fontWeight: 400 }}
                                 dangerouslySetInnerHTML={{ __html: product.description }}
                             />
 
-                            {/* Badges list */}
-                            <div className="flex flex-wrap gap-2.5 mb-6">
-                                {badges.map((badge, idx) => (
-                                    <span
-                                        key={idx}
-                                        className="bg-[#edf4ff]/50 text-[#214A9E] border border-[#214A9E]/10 rounded-full px-4 py-1.5 text-xs font-semibold"
-                                    >
-                                        {badge}
-                                    </span>
-                                ))}
+                            {/* Features/Badges list */}
+                            <div className="flex flex-col gap-5 mb-8">
+                                <span className="text-[13px] font-bold text-slate-400 uppercase tracking-wider">Product Highlights</span>
+                                <div className="flex flex-wrap gap-2.5">
+                                    {badges.map((badge, idx) => (
+                                        <span
+                                            key={idx}
+                                            className="bg-slate-50 text-slate-700 border border-slate-200/60 rounded-full px-4 py-2 text-[13px] font-medium flex items-center gap-2"
+                                        >
+                                            <svg className="w-4 h-4 text-[#214A9E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            {badge}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Variant Selector */}
                             {hasVariantsToSelect && (
-                                <div className="mb-6">
-                                    <span className="text-[15px] font-semibold text-[#1E1E1E] block mb-2.5">
-                                        Options
+                                <div className="mb-8 border-t border-slate-100 pt-8">
+                                    <span className="text-[14px] font-bold text-slate-800 block mb-3 uppercase tracking-wide">
+                                        Select Option
                                     </span>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-3">
                                         {product.variants.map((v, index) => (
                                             <button
                                                 key={v.sku || index}
                                                 onClick={() => setSelectedVariant(v)}
-                                                className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all focus:outline-none ${
-                                                    selectedVariant?.sku === v.sku
-                                                        ? 'border-[#214A9E] bg-[#214A9E] text-white'
-                                                        : 'border-slate-200 bg-white text-[#1E1E1E] hover:border-slate-300'
-                                                }`}
+                                                className={`px-5 py-2.5 rounded-xl text-[14px] font-semibold border-2 transition-all focus:outline-none ${selectedVariant?.sku === v.sku
+                                                    ? 'border-[#214A9E] bg-[#214A9E] text-white shadow-md'
+                                                    : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                                                    }`}
                                             >
                                                 {v.title}
                                             </button>
@@ -295,57 +322,46 @@ const ProductDetail = () => {
                                 </div>
                             )}
 
-                            {/* Quantity Selector */}
-                            <div className="flex items-center gap-5 mb-6">
-                                <span className="text-[15px] font-semibold text-[#1E1E1E]">Quantity</span>
-                                <div className="flex items-center bg-[#f4f7fa] rounded-xl px-3 py-1.5 border border-slate-200">
+                            {/* Actions area (Qty & Cart) */}
+                            <div className={`flex flex-col gap-5 w-full ${!hasVariantsToSelect ? 'border-t border-slate-100 pt-8' : ''}`}>
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                                    {/* Quantity Selector */}
+                                    <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 h-[56px] shrink-0 w-full sm:w-auto">
+                                        <button
+                                            onClick={decrementQty}
+                                            className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-l-xl transition-colors"
+                                        >
+                                            −
+                                        </button>
+                                        <span className="w-12 text-center font-bold text-[16px] text-slate-800">
+                                            {quantity}
+                                        </span>
+                                        <button
+                                            onClick={incrementQty}
+                                            className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-r-xl transition-colors"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+
+                                    {/* Add to Cart Button */}
                                     <button
-                                        onClick={decrementQty}
-                                        className="text-[18px] font-bold text-slate-500 hover:text-slate-800 w-8 h-8 flex items-center justify-center focus:outline-none"
+                                        onClick={() => addToCart(product, quantity, selectedVariant)}
+                                        disabled={isOutOfStock}
+                                        className={`flex-grow h-[56px] flex items-center justify-center gap-2 text-white text-[16px] font-bold rounded-xl transition-all shadow-md focus:outline-none ${isOutOfStock
+                                            ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                                            : 'bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:shadow-lg hover:opacity-90 hover:-translate-y-0.5'
+                                            }`}
                                     >
-                                        −
-                                    </button>
-                                    <span className="w-10 text-center font-semibold text-[15px] text-[#1E1E1E]">
-                                        {quantity}
-                                    </span>
-                                    <button
-                                        onClick={incrementQty}
-                                        className="text-[18px] font-bold text-slate-500 hover:text-slate-800 w-8 h-8 flex items-center justify-center focus:outline-none"
-                                    >
-                                        +
+                                        {!isOutOfStock && (
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                            </svg>
+                                        )}
+                                        {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
                                     </button>
                                 </div>
-                            </div>
-
-                            {/* Buttons */}
-                            <div className="flex flex-col gap-4 w-full">
-                                <button 
-                                    onClick={() => addToCart(product, quantity, selectedVariant)}
-                                    disabled={isOutOfStock}
-                                    className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none ${
-                                        isOutOfStock 
-                                            ? 'bg-slate-300 cursor-not-allowed' 
-                                            : 'bg-gradient-to-r from-[#0079CD] to-[#00ACEE] hover:opacity-90'
-                                    }`}
-                                >
-                                    {isOutOfStock ? 'Sold Out' : 'Add to cart'}
-                                </button>
-                                <button 
-                                    onClick={() => initiateCheckout([{ ...product, quantity, selectedVariant }])}
-                                    disabled={isOutOfStock || isCheckingOut}
-                                    className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none flex items-center justify-center gap-2 ${
-                                        isOutOfStock || isCheckingOut
-                                            ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
-                                            : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
-                                    }`}
-                                >
-                                    {isCheckingOut ? (
-                                        <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
-                                    ) : (
-                                        'Buy it Now'
-                                    )}
-                                </button>
-                                {checkoutError && <p className="text-[12px] text-red-500 font-medium text-center">{checkoutError}</p>}
+                                {checkoutError && <p className="text-[13px] text-red-500 font-medium text-center bg-red-50 py-2 rounded-lg">{checkoutError}</p>}
                             </div>
                         </div>
                     </div>
