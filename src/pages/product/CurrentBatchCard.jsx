@@ -59,6 +59,42 @@ const CurrentBatchCard = ({ batch }) => {
             <ChevronRight className="w-4.5 h-4.5 text-slate-400 group-hover:text-[#214A9E] transition-colors" />
           </div>
         )}
+
+        {/* Endotoxin Report Card */}
+        {batch.endotoxinReportUrl && (
+          <div 
+            onClick={() => window.open(batch.endotoxinReportUrl, '_blank')}
+            className="bg-white border border-slate-200/80 rounded-xl p-3.5 mt-2.5 flex items-center justify-between cursor-pointer hover:bg-slate-50 hover:border-slate-350 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)] group"
+          >
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-[#214A9E] shrink-0" />
+              <div className="text-left">
+                <p className="text-[13.5px] font-bold text-[#214A9E] group-hover:underline">
+                  View endotoxin report
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4.5 h-4.5 text-slate-400 group-hover:text-[#214A9E] transition-colors" />
+          </div>
+        )}
+
+        {/* Sterility Report Card */}
+        {batch.sterilityReportUrl && (
+          <div 
+            onClick={() => window.open(batch.sterilityReportUrl, '_blank')}
+            className="bg-white border border-slate-200/80 rounded-xl p-3.5 mt-2.5 flex items-center justify-between cursor-pointer hover:bg-slate-50 hover:border-slate-350 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)] group"
+          >
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-[#214A9E] shrink-0" />
+              <div className="text-left">
+                <p className="text-[13.5px] font-bold text-[#214A9E] group-hover:underline">
+                  View sterility report
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4.5 h-4.5 text-slate-400 group-hover:text-[#214A9E] transition-colors" />
+          </div>
+        )}
       </div>
     </div>
   );
