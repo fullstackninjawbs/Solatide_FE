@@ -169,8 +169,10 @@ const ProductDetail = () => {
     const badges = [];
 
     // 1. Purity Verified
-    if (activeBatch?.purity) {
-        badges.push(`${activeBatch.purity} Purity Verified`);
+    if (activeBatch) {
+        if (activeBatch.purity) {
+            badges.push(`${activeBatch.purity} Purity Verified`);
+        }
     } else if (product.chemicalPurity) {
         badges.push(`${product.chemicalPurity} Purity Verified`);
     } else {
@@ -178,8 +180,10 @@ const ProductDetail = () => {
     }
 
     // 2. Testing Method
-    if (activeBatch?.method) {
-        badges.push(activeBatch.method);
+    if (activeBatch) {
+        if (activeBatch.method) {
+            badges.push(activeBatch.method);
+        }
     } else {
         badges.push('HPLC-UV & LC-MS Tested');
     }
