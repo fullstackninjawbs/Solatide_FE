@@ -224,7 +224,7 @@ const ProductList = () => {
                   <th className="py-4 pl-6 w-12">
                     <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
                   </th>
-                  <th className="py-4 pl-2">Product</th>
+                  <th className="py-4 pl-2 pr-8">Product</th>
                   <th className="py-4">Status</th>
                   <th className="py-4">Inventory</th>
                   <th className="py-4">Category</th>
@@ -240,7 +240,7 @@ const ProductList = () => {
                     <td className="py-3.5 pl-6">
                       <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
                     </td>
-                    <td className="py-3.5 pl-2 font-semibold text-slate-800">
+                    <td className="py-3.5 pl-2 pr-8 font-semibold text-slate-700 max-w-[300px]">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-slate-50 border border-slate-150 overflow-hidden flex items-center justify-center p-1.5 shrink-0">
                           <img
@@ -251,7 +251,7 @@ const ProductList = () => {
                         </div>
                         <Link
                           to={`/admin/products/edit/${product._id}`}
-                          className="hover:text-brand-blue transition-colors line-clamp-1 text-slate-900"
+                          className="hover:text-brand-blue transition-colors text-slate-700 whitespace-normal break-words line-clamp-2"
                         >
                           {product.name}
                         </Link>
@@ -259,20 +259,20 @@ const ProductList = () => {
                     </td>
                     <td className="py-3.5">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${(product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                          : (product.publishStatus === 'archived')
-                            ? 'bg-amber-50 text-amber-700 border border-amber-100'
-                            : 'bg-slate-100 text-slate-650 border border-slate-200'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                        : (product.publishStatus === 'archived')
+                          ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                          : 'bg-slate-100 text-slate-650 border border-slate-200'
                         }`}>
                         {product.publishStatus === 'archived' ? 'Archived' : product.publishStatus === 'draft' || product.published === false ? 'Draft' : 'Active'}
                       </span>
                     </td>
                     <td className="py-3.5">
                       <span className={`font-semibold ${product.stockQuantity <= 0
-                          ? 'text-red-500'
-                          : product.stockQuantity <= product.lowStockThreshold
-                            ? 'text-amber-600'
-                            : 'text-slate-650'
+                        ? 'text-red-500'
+                        : product.stockQuantity <= product.lowStockThreshold
+                          ? 'text-amber-600'
+                          : 'text-slate-650'
                         }`}>
                         {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
                       </span>

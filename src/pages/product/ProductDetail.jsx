@@ -371,7 +371,7 @@ const ProductDetail = () => {
 
                         {/* Actions area (Qty & Cart) */}
                         <div className={`flex flex-col gap-5 w-full ${!hasVariantsToSelect ? 'border-t border-slate-100 pt-8' : ''}`}>
-                            <div className="flex sm:flex-col flex-row items-stretch gap-4">
+                            <div className="flex flex-row gap-4">
                                 {/* Quantity Selector */}
                                 <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 h-[56px] w-max">
                                     <button
@@ -392,7 +392,7 @@ const ProductDetail = () => {
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex flex-col gap-3.5 w-full mt-4">
+                                <div className="flex flex-col gap-3.5 flex-1">
                                     <button
                                         onClick={() => addToCart(product, quantity, selectedVariant)}
                                         disabled={isOutOfStock}
@@ -407,20 +407,6 @@ const ProductDetail = () => {
                                             </svg>
                                         )}
                                         {isOutOfStock ? 'Sold Out' : 'Add to cart'}
-                                    </button>
-                                    <button
-                                        onClick={() => initiateCheckout([{ ...product, quantity, selectedVariant }])}
-                                        disabled={isOutOfStock || isCheckingOut}
-                                        className={`w-full py-4 rounded-xl border font-bold text-[15px] transition-all focus:outline-none flex items-center justify-center gap-2 ${isOutOfStock || isCheckingOut
-                                            ? 'border-slate-200 bg-white text-slate-400 cursor-not-allowed'
-                                            : 'border-[#1E1E1E] bg-white hover:bg-slate-50 text-[#1E1E1E]'
-                                            }`}
-                                    >
-                                        {isCheckingOut ? (
-                                            <><div className="w-5 h-5 border-2 border-slate-300 border-t-slate-800 rounded-full animate-spin" /> Redirecting...</>
-                                        ) : (
-                                            'Buy it now'
-                                        )}
                                     </button>
                                     {checkoutError && <p className="text-[12px] text-red-550 font-medium text-center">{checkoutError}</p>}
                                 </div>
