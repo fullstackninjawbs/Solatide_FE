@@ -112,19 +112,19 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
 
                                 {/* Badges */}
                                 {product.inStock ? (
-                                    <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm">
-                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#16a34a] animate-pulse"></div>
+                                    <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-[12px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
+                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
                                         In Stock
                                     </span>
                                 ) : (
-                                    <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[12px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm">
-                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-pulse"></div>
+                                    <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-[12px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
+                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-pulse shrink-0"></div>
                                         Sold Out
                                     </span>
                                 )}
 
-                                <span className="absolute top-2 sm:top-3 right-2 sm:right-3 inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm">
-                                    <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
+                                <span className="absolute top-1.5 sm:top-3 right-1.5 sm:right-3 inline-flex items-center gap-0.5 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm whitespace-nowrap">
+                                    <Star className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
                                     <span>{product.rating || '5.0'}</span>
                                 </span>
                             </Link>

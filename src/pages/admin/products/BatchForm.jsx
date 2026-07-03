@@ -92,11 +92,37 @@ const BatchForm = () => {
       if (data.success && data.data.batch) {
         const batchData = data.data.batch;
         const mappedProductId = batchData.productId?._id || batchData.productId;
+
+        // Determine if this batch is currently the active/current batch on the product
+        let isCurrent = false;
+        if (mappedProductId) {
+          try {
+            const prodRes = await apiService.getProductById(mappedProductId);
+            const prodData = await prodRes.json();
+            if (prodData.success && prodData.data.product) {
+              const prod = prodData.data.product;
+              // Check root-level currentBatch
+              const rootBatchId = prod.currentBatch?._id || prod.currentBatchId;
+              if (rootBatchId && rootBatchId.toString() === (batchData._id || id).toString()) {
+                isCurrent = true;
+              }
+              // Check variant-level currentBatch
+              if (!isCurrent && prod.variants) {
+                isCurrent = prod.variants.some(v => {
+                  const vBatchId = v.currentBatch?._id || v.currentBatchId;
+                  return vBatchId && vBatchId.toString() === (batchData._id || id).toString();
+                });
+              }
+            }
+          } catch (e) {
+            console.error('Failed to check current batch status:', e);
+          }
+        }
         
         setFormData({
           ...batchData,
           productId: mappedProductId,
-          setAsCurrent: false,
+          setAsCurrent: isCurrent,
           tests: {
             purityHplc: { performed: false, result: '', ...(batchData.tests?.purityHplc || {}) },
             netPeptideContent: { performed: false, result: '', ...(batchData.tests?.netPeptideContent || {}) },

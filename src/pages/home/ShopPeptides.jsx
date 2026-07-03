@@ -102,28 +102,28 @@ const ShopPeptides = () => {
                                         />
 
                                         {product.status === 'In Stock' && (
-                                            <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            <span className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10 whitespace-nowrap">
                                                 In Stock
                                             </span>
                                         )}
                                         {product.status === 'Sold Out' && (
-                                            <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#fef2f2] px-2.5 py-1 text-[10px] font-bold text-red-600 border border-red-200">
+                                            <span className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 inline-flex items-center rounded-md bg-[#fef2f2] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-red-600 border border-red-200 whitespace-nowrap">
                                                 Sold Out
                                             </span>
                                         )}
                                         {product.status === 'Sale' && (
-                                            <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#fef3c7] px-2.5 py-1 text-[10px] font-bold text-amber-700 border border-amber-200">
+                                            <span className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 inline-flex items-center rounded-md bg-[#fef3c7] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-amber-700 border border-amber-200 whitespace-nowrap">
                                                 Sale
                                             </span>
                                         )}
                                         {!product.status && (
-                                            <span className="absolute top-4 left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-2.5 py-1 text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10">
+                                            <span className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 inline-flex items-center rounded-md bg-[#eaf7ee] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-[#16a34a] border border-[#16a34a]/10 whitespace-nowrap">
                                                 {product.inStock ? 'In Stock' : 'Sold Out'}
                                             </span>
                                         )}
 
-                                        <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-md bg-[#fffbeb] px-2 py-1 text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10">
-                                            <Star className="h-3 w-3 fill-[#d97706] stroke-[#d97706]" />
+                                        <span className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-[#fffbeb] px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-extrabold text-[#d97706] border border-[#d97706]/10 whitespace-nowrap">
+                                            <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-[#d97706] stroke-[#d97706]" />
                                             <span>{product.rating || '5.0'}</span>
                                         </span>
                                     </div>

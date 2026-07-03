@@ -168,24 +168,16 @@ const ProductDetail = () => {
 
     const badges = [];
 
-    // 1. Purity Verified
-    if (activeBatch) {
-        if (activeBatch.purity) {
-            badges.push(`${activeBatch.purity} Purity Verified`);
-        }
+    // 1. Purity Verified — only from batch or product data, no hardcoded fallback
+    if (activeBatch?.purity) {
+        badges.push(`${activeBatch.purity} Purity Verified`);
     } else if (product.chemicalPurity) {
         badges.push(`${product.chemicalPurity} Purity Verified`);
-    } else {
-        badges.push('≥99% Purity Verified');
     }
 
-    // 2. Testing Method
-    if (activeBatch) {
-        if (activeBatch.method) {
-            badges.push(activeBatch.method);
-        }
-    } else {
-        badges.push('HPLC-UV & LC-MS Tested');
+    // 2. Testing Method — only from batch data
+    if (activeBatch?.method) {
+        badges.push(activeBatch.method);
     }
 
     // 3. Endotoxin Tested (dynamic from active batch)
@@ -198,7 +190,7 @@ const ProductDetail = () => {
         badges.push('Sterility Tested');
     }
 
-    // 5. In-Vitro Use Only (static)
+    // 5. In-Vitro Use Only (always shown on all products)
     badges.push('In-Vitro Use Only');
 
     const incrementQty = () => setQuantity(prev => prev + 1);
@@ -206,7 +198,6 @@ const ProductDetail = () => {
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
     const displayCompareAtPrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice;
-    const displaySku = selectedVariant ? selectedVariant.sku : product.sku;
     const isOutOfStock = selectedVariant
         ? selectedVariant.stockQty <= 0
         : product.inStock === false || product.stockQuantity <= 0;
@@ -299,13 +290,6 @@ const ProductDetail = () => {
                                     {product.reviewsCount || 4} reviews
                                 </a>
                             </div>
-
-                            {/* {displaySku && (
-                                <div className="text-[13px] text-slate-500 mb-4 uppercase tracking-wider">
-                                    SKU: <span className="font-semibold text-slate-800">{displaySku}</span>
-                                </div>
-                            )} */}
-
                             {/* Price */}
                             <div className="flex items-baseline gap-3 mb-6">
                                 <span className="text-3xl sm:text-[36px] font-bold text-[#214A9E]">
