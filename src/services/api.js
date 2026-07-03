@@ -181,5 +181,26 @@ export const apiService = {
       method: 'DELETE',
       headers: { ...getAuthHeaders() }
     });
+  },
+
+  // ─── Orders (Admin) ─────────────────────────────────────────────────────────
+  getAdminOrders: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/order${queryString ? \`?${queryString}\` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAdminOrderById: async (id) => {
+    return fetch(`${API_URL}/api/admin/order/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  updateAdminOrderStatus: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/order/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
   }
 };

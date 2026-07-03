@@ -1,7 +1,37 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const ProductInfoSection = ({ product }) => {
+const ProductInfoSection = ({ product, activeBatch }) => {
+    const testLabels = {
+        purityHplc: 'Purity (HPLC)',
+        netPeptideContent: 'Net Peptide Content',
+        identityHplc: 'Identity (HPLC)',
+        fentanylScreen: 'Fentanyl Screen',
+        hplcConformity: 'HPLC Conformity',
+        heavyMetalsIcpMs: 'Heavy Metals (ICP-MS)',
+        sterilityPcr: 'Sterility (PCR)',
+        endotoxinUsp85: 'Endotoxin (USP <85>)'
+    };
+
+    const tests = activeBatch?.tests || {};
+    const standardPerformed = Object.entries(tests)
+        .filter(([key, value]) => value && value.performed)
+        .map(([key, value]) => ({
+            key,
+            label: testLabels[key] || key,
+            result: value.result || 'Conform / Passed'
+        }));
+
+    const customPerformed = (activeBatch?.customTests || [])
+        .filter(test => test && test.name)
+        .map((test, index) => ({
+            key: `custom-${index}`,
+            label: test.name,
+            result: test.result || 'Conform / Passed'
+        }));
+
+    const performedTests = [...standardPerformed, ...customPerformed];
+
     const [openItems, setOpenItems] = useState({
         'Product Overview': true,
         'Technical Specifications': false,
@@ -209,6 +239,48 @@ const ProductInfoSection = ({ product }) => {
                                         Every batch is analyzed independently by third-party testing laboratories. HPLC/MS assays guarantee absolute identity, formulation consistency, and purity values.
                                     </span>
                                 </p>
+                                
+                                {performedTests.length > 0 && (
+                                    <div className="mt-6 border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm max-w-2xl">
+                                        <div className="bg-slate-50/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between select-none">
+                                            <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">COA Analytical Test Panel</span>
+                                            {activeBatch?.batchId && (
+                                                <span className="text-[11px] font-semibold text-slate-400">Batch: {activeBatch.batchId}</span>
+                                            )}
+                                        </div>
+                                        <div className="divide-y divide-slate-100">
+                                            {performedTests.map((test) => {
+                                                const isFentanyl = test.key === 'fentanylScreen';
+                                                return (
+                                                    <div 
+                                                        key={test.key} 
+                                                        className={`px-5 py-3 flex items-center justify-between gap-4 transition-colors hover:bg-slate-50/30 ${
+                                                            isFentanyl ? 'bg-emerald-50/30' : ''
+                                                        }`}
+                                                    >
+                                                        <span className={`text-[13.5px] ${isFentanyl ? 'font-bold text-slate-800' : 'font-medium text-slate-700'}`}>
+                                                            {test.label}
+                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                            {isFentanyl ? (
+                                                                <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200/50 shadow-sm select-none">
+                                                                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                    {test.result || 'Not Detected'}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-[13.5px] font-semibold text-slate-650">
+                                                                    {test.result}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

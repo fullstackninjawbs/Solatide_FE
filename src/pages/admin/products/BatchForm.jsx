@@ -37,7 +37,18 @@ const BatchForm = () => {
     appearance: 'Lyophilised solid white powder',
     notes: '',
     status: 'active',
-    setAsCurrent: true
+    setAsCurrent: true,
+    tests: {
+      purityHplc: { performed: false, result: '' },
+      netPeptideContent: { performed: false, result: '' },
+      identityHplc: { performed: false, result: '' },
+      fentanylScreen: { performed: false, result: '' },
+      hplcConformity: { performed: false, result: '' },
+      heavyMetalsIcpMs: { performed: false, result: '' },
+      sterilityPcr: { performed: false, result: '' },
+      endotoxinUsp85: { performed: false, result: '' }
+    },
+    customTests: []
   });
 
   useEffect(() => {
@@ -85,7 +96,18 @@ const BatchForm = () => {
         setFormData({
           ...batchData,
           productId: mappedProductId,
-          setAsCurrent: false
+          setAsCurrent: false,
+          tests: {
+            purityHplc: { performed: false, result: '', ...(batchData.tests?.purityHplc || {}) },
+            netPeptideContent: { performed: false, result: '', ...(batchData.tests?.netPeptideContent || {}) },
+            identityHplc: { performed: false, result: '', ...(batchData.tests?.identityHplc || {}) },
+            fentanylScreen: { performed: false, result: '', ...(batchData.tests?.fentanylScreen || {}) },
+            hplcConformity: { performed: false, result: '', ...(batchData.tests?.hplcConformity || {}) },
+            heavyMetalsIcpMs: { performed: false, result: '', ...(batchData.tests?.heavyMetalsIcpMs || {}) },
+            sterilityPcr: { performed: false, result: '', ...(batchData.tests?.sterilityPcr || {}) },
+            endotoxinUsp85: { performed: false, result: '', ...(batchData.tests?.endotoxinUsp85 || {}) }
+          },
+          customTests: batchData.customTests || []
         });
         
         if (mappedProductId) {
@@ -98,6 +120,65 @@ const BatchForm = () => {
     } finally {
       setInitialLoading(false);
     }
+  };
+
+  const handleTestToggle = (key) => {
+    setFormData(prev => {
+      const currentTests = prev.tests || {};
+      const currentTest = currentTests[key] || { performed: false, result: '' };
+      return {
+        ...prev,
+        tests: {
+          ...currentTests,
+          [key]: {
+            ...currentTest,
+            performed: !currentTest.performed
+          }
+        }
+      };
+    });
+  };
+
+  const handleTestResultChange = (key, value) => {
+    setFormData(prev => {
+      const currentTests = prev.tests || {};
+      const currentTest = currentTests[key] || { performed: false, result: '' };
+      return {
+        ...prev,
+        tests: {
+          ...currentTests,
+          [key]: {
+            ...currentTest,
+            result: value
+          }
+        }
+      };
+    });
+  };
+
+  const handleAddCustomTest = () => {
+    setFormData(prev => ({
+      ...prev,
+      customTests: [...(prev.customTests || []), { name: '', result: '' }]
+    }));
+  };
+
+  const handleCustomTestChange = (index, field, value) => {
+    setFormData(prev => {
+      const nextCustom = [...(prev.customTests || [])];
+      nextCustom[index] = { ...nextCustom[index], [field]: value };
+      return {
+        ...prev,
+        customTests: nextCustom
+      };
+    });
+  };
+
+  const handleRemoveCustomTest = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      customTests: (prev.customTests || []).filter((_, i) => i !== index)
+    }));
   };
 
   const handleChange = (e) => {
@@ -409,6 +490,126 @@ const BatchForm = () => {
                   />
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* COA Analytical Test Panel */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+            <div>
+              <h2 className="text-base font-bold text-slate-850">COA Analytical Test Panel</h2>
+              <p className="text-xs text-slate-500 mt-1">Specify which tests are included in this batch's COA panel and enter their results.</p>
+            </div>
+            
+            <div className="divide-y divide-slate-100 text-left">
+              {[
+                { key: 'purityHplc', label: 'Purity (HPLC)', placeholder: 'e.g. 99.94%' },
+                { key: 'netPeptideContent', label: 'Net Peptide Content', placeholder: 'e.g. 10.2mg or 98.4%' },
+                { key: 'identityHplc', label: 'Identity (HPLC)', placeholder: 'e.g. Conform or PASS' },
+                { key: 'fentanylScreen', label: 'Fentanyl Screen', placeholder: 'e.g. Not Detected or PASS', highlight: true },
+                { key: 'hplcConformity', label: 'HPLC Conformity', placeholder: 'e.g. Conform' },
+                { key: 'heavyMetalsIcpMs', label: 'Heavy Metals (ICP-MS)', placeholder: 'e.g. PASS or < LOD' },
+                { key: 'sterilityPcr', label: 'Sterility (PCR)', placeholder: 'e.g. Negative' },
+                { key: 'endotoxinUsp85', label: 'Endotoxin (USP <85>)', placeholder: 'e.g. < 0.05 EU/mg' }
+              ].map(({ key, label, placeholder, highlight }) => {
+                const testData = formData.tests?.[key] || { performed: false, result: '' };
+                return (
+                  <div 
+                    key={key} 
+                    className={`py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                      highlight ? 'bg-emerald-50/40 -mx-6 px-6 border-y border-emerald-100 my-1 first:mt-0 last:mb-0' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id={`test-${key}`}
+                        checked={testData.performed}
+                        onChange={() => handleTestToggle(key)}
+                        className="w-4.5 h-4.5 text-blue-600 border-slate-350 rounded focus:ring-blue-500 cursor-pointer"
+                      />
+                      <label 
+                        htmlFor={`test-${key}`} 
+                        className={`text-sm font-semibold cursor-pointer select-none flex items-center gap-2 ${
+                          highlight ? 'text-emerald-900 font-bold' : 'text-slate-700'
+                        }`}
+                      >
+                        {label}
+                        {highlight && (
+                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            Safety Priority
+                          </span>
+                        )}
+                      </label>
+                    </div>
+                    
+                    {testData.performed && (
+                      <div className="flex-1 max-w-md md:pl-4">
+                        <input
+                          type="text"
+                          value={testData.result}
+                          onChange={(e) => handleTestResultChange(key, e.target.value)}
+                          placeholder={placeholder}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Custom Tests Section */}
+            {(formData.customTests && formData.customTests.length > 0) && (
+              <div className="pt-4 mt-4 border-t border-slate-100 space-y-3.5 text-left">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Custom Tests</h3>
+                {(formData.customTests || []).map((test, index) => (
+                  <div key={index} className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 py-2 border-b border-dashed border-slate-100 last:border-b-0">
+                    <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">Test Name *</label>
+                        <input
+                          type="text"
+                          value={test.name}
+                          onChange={(e) => handleCustomTestChange(index, 'name', e.target.value)}
+                          placeholder="e.g. pH Level, Purity (NMR)"
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 font-medium"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">Result</label>
+                        <input
+                          type="text"
+                          value={test.result}
+                          onChange={(e) => handleCustomTestChange(index, 'result', e.target.value)}
+                          placeholder="e.g. 7.4, Conform, 99.8%"
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 font-medium"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-end justify-end md:self-end">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCustomTest(index)}
+                        className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        title="Delete Custom Test"
+                      >
+                        <Trash2 className="w-4.5 h-4.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="pt-4 flex justify-start select-none">
+              <button
+                type="button"
+                onClick={handleAddCustomTest}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#214A9E] bg-blue-50 hover:bg-blue-100 border border-blue-200/50 rounded-xl transition-all hover:shadow-sm cursor-pointer"
+              >
+                + Add Custom Test
+              </button>
             </div>
           </div>
 

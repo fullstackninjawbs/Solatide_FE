@@ -430,7 +430,7 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Product Information Accordions Section */}
-                <ProductInfoSection product={product} />
+                <ProductInfoSection product={product} activeBatch={activeBatch} />
 
                 {/* Product Reviews Section */}
                 <ProductReviewsSection product={product} />

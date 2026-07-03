@@ -87,9 +87,8 @@ const AdminLayout = () => {
     <div className="h-screen bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden">
       {/* Sidebar */}
       <aside
-        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen ${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen ${isSidebarOpen ? 'w-64' : 'w-20'
+          }`}
       >
         {/* Toggle Button */}
         <button
@@ -126,11 +125,10 @@ const AdminLayout = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 group relative ${
-                    isActive
+                  className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 group relative ${isActive
                       ? 'bg-brand-navy text-white font-semibold shadow-sm'
                       : 'text-slate-550 hover:bg-slate-50 hover:text-brand-navy'
-                  }`}
+                    }`}
                 >
                   <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-brand-navy'}`} />
                   {isSidebarOpen ? (
@@ -172,7 +170,7 @@ const AdminLayout = () => {
 
           <div className="flex items-center gap-5">
             {/* Notification Bell */}
-            <button className="text-slate-400 hover:text-brand-navy transition-colors relative cursor-pointer focus:outline-none">
+            <button className="hidden text-slate-400 hover:text-brand-navy transition-colors relative cursor-pointer focus:outline-none">
               <Bell className="h-5 w-5" />
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-brand-cyan ring-2 ring-white" />
             </button>

@@ -32,6 +32,8 @@ import Terms from '../pages/terms/Terms'
 import Returns from '../pages/returns/Returns'
 import CheckoutSuccess from '../pages/checkout/CheckoutSuccess'
 import CheckoutFailure from '../pages/checkout/CheckoutFailure'
+import OrderList from '../pages/admin/OrderList'
+import OrderDetail from '../pages/admin/OrderDetail'
 
 const AppRoutes = () => {
     return (
@@ -54,7 +56,8 @@ const AppRoutes = () => {
                 <Route path="batches/new" element={<BatchForm />} />
                 <Route path="batches/:id/edit" element={<BatchForm />} />
                 <Route path="coas" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">COA Batch Management (Phase 4)</div>} />
-                <Route path="orders" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Orders Management (Phase 4)</div>} />
+                <Route path="orders" element={<OrderList />} />
+                <Route path="orders/:id" element={<OrderDetail />} />
                 <Route path="customers" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Customers Account Profiles (Phase 4)</div>} />
                 <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                 <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
