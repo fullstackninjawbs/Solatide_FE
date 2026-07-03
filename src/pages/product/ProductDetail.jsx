@@ -282,12 +282,14 @@ const ProductDetail = () => {
                             {/* Ratings */}
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="flex text-[#0F8A5F] text-[15px] gap-0.5">
-                                    {'★★★★★'.split('').map((char, i) => (
-                                        <span key={i}>{char}</span>
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <span key={i}>
+                                            {i < Math.round(product.rating ?? 5) ? '★' : '☆'}
+                                        </span>
                                     ))}
                                 </div>
                                 <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-medium underline ml-1 hover:text-[#214A9E]">
-                                    {product.reviewsCount || 4} reviews
+                                    {product.reviewsCount ?? 0} {product.reviewsCount === 1 ? 'review' : 'reviews'}
                                 </a>
                             </div>
                             {/* Price */}
