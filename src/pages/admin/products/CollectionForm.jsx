@@ -201,8 +201,8 @@ const CollectionForm = () => {
   // Filter product catalog by search input
   const filteredSearchProducts = useMemo(() => {
     if (!productSearch) return [];
-    return productsCatalog.filter(p => 
-      p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
+    return productsCatalog.filter(p =>
+      p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
       (p.sku && p.sku.toLowerCase().includes(productSearch.toLowerCase()))
     );
   }, [productSearch, productsCatalog]);
@@ -306,10 +306,10 @@ const CollectionForm = () => {
 
       {/* Main Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* Left Column (Main Form Content) */}
         <div className="lg:col-span-8 space-y-6">
-          
+
           {/* General Properties Card */}
           <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-5">
             <h3 className="text-base font-bold text-brand-navy pb-3 border-b border-slate-100">
@@ -371,12 +371,11 @@ const CollectionForm = () => {
 
             {/* Type Choice */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label 
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${
-                  formData.type === 'manual' 
-                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]' 
+              <label
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${formData.type === 'manual'
+                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
                     : 'border-slate-200 hover:border-slate-350'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <input
@@ -394,12 +393,11 @@ const CollectionForm = () => {
                 </p>
               </label>
 
-              <label 
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${
-                  formData.type === 'automated' 
-                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]' 
+              <label
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${formData.type === 'automated'
+                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
                     : 'border-slate-200 hover:border-slate-350'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <input
@@ -422,7 +420,7 @@ const CollectionForm = () => {
             {formData.type === 'manual' && (
               <div className="space-y-4 pt-4 border-t border-slate-100">
                 <h4 className="text-[14px] font-bold text-slate-800">Add Products</h4>
-                
+
                 {/* Search Bar for products */}
                 <div className="relative">
                   <div className="relative flex items-center">
@@ -441,8 +439,8 @@ const CollectionForm = () => {
                       className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue transition-all text-[14px]"
                     />
                     {productSearch && (
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => setProductSearch('')}
                         className="absolute right-3 p-1 hover:bg-slate-200 rounded-full cursor-pointer text-slate-400 hover:text-slate-600"
                       >
@@ -490,7 +488,7 @@ const CollectionForm = () => {
                   <h5 className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
                     Selected Products ({formData.products.length})
                   </h5>
-                  
+
                   {formData.products.length === 0 ? (
                     <div className="p-6 border border-dashed border-slate-200 rounded-2xl text-center text-slate-400 text-[13px]">
                       No products added yet. Search and select above to add them to this manual collection.
@@ -555,7 +553,7 @@ const CollectionForm = () => {
                   <div className="space-y-3">
                     {formData.rules.map((rule, idx) => (
                       <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors">
-                        
+
                         {/* Field Selection */}
                         <div className="flex-1 min-w-[150px]">
                           <select
@@ -630,7 +628,7 @@ const CollectionForm = () => {
 
         {/* Right Column (Sidebar widgets) */}
         <div className="lg:col-span-4 space-y-6">
-          
+
           {/* Status Widget */}
           <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
             <h3 className="text-[14px] font-bold text-slate-850 uppercase tracking-wider pb-2 border-b border-slate-100">
