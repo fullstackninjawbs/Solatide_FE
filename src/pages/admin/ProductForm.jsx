@@ -651,7 +651,7 @@ const ProductForm = () => {
                   <button
                     type="button"
                     onClick={addImage}
-                    className="px-4 bg-brand-blue text-white rounded-xl text-xs font-bold hover:bg-brand-navy cursor-pointer transition-all"
+                    className="px-4 bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white rounded-xl text-xs font-bold hover:bg-brand-navy cursor-pointer transition-all"
                   >
                     Add
                   </button>
@@ -963,7 +963,7 @@ const ProductForm = () => {
                 <button
                   type="button"
                   onClick={acceptSuggestions}
-                  className="px-4 py-2 bg-brand-blue hover:bg-brand-navy text-white text-[12px] font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap shadow-sm"
+                  className="px-4 py-2 bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-brand-navy text-white text-[12px] font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap shadow-sm"
                 >
                   Accept all
                 </button>

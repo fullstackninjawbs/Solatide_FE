@@ -6,13 +6,16 @@ import Dashboard from '../pages/admin/Dashboard'
 import ProductList from '../pages/admin/ProductList'
 import ProductForm from '../pages/admin/ProductForm'
 import AdminProductsImportPage from '../pages/admin/AdminProductsImportPage'
+import InventoryList from '../pages/admin/products/InventoryList'
 import BatchList from '../pages/admin/products/BatchList'
 import BatchForm from '../pages/admin/products/BatchForm'
 import CollectionList from '../pages/admin/products/CollectionList'
 import CollectionForm from '../pages/admin/products/CollectionForm'
+import ReviewList from '../pages/admin/growth/ReviewList'
 import Home from '../Redirect/home'
 import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
+import ReviewVerification from '../pages/product/ReviewVerification'
 import CoaAndTesting from '../Redirect/CoaAndTesting'
 import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
 import ContactUs from '../Redirect/ContactUs'
@@ -49,6 +52,7 @@ const AppRoutes = () => {
                 <Route path="products/new" element={<ProductForm />} />
                 <Route path="products/edit/:id" element={<ProductForm />} />
                 <Route path="products/import" element={<AdminProductsImportPage />} />
+                <Route path="products/inventory" element={<InventoryList />} />
                 <Route path="products/collections" element={<CollectionList />} />
                 <Route path="products/collections/new" element={<CollectionForm />} />
                 <Route path="products/collections/edit/:id" element={<CollectionForm />} />
@@ -58,7 +62,11 @@ const AppRoutes = () => {
                 <Route path="coas" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">COA Batch Management (Phase 4)</div>} />
                 <Route path="orders" element={<OrderList />} />
                 <Route path="orders/:id" element={<OrderDetail />} />
+                <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />
+                <Route path="orders/shipping-labels" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Shipping Labels (Phase 4)</div>} />
+                <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
                 <Route path="customers" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Customers Account Profiles (Phase 4)</div>} />
+                <Route path="growth/reviews" element={<ReviewList />} />
                 <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                 <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
                 <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
@@ -71,6 +79,7 @@ const AppRoutes = () => {
                 <Route path="shop" element={<Shop />} />
                 <Route path="about" element={<About />} />
                 <Route path="product/:id" element={<ProductDetail />} />
+                <Route path="review/verify/:token" element={<ReviewVerification />} />
                 <Route path="coa" element={<CoaAndTesting />} />
                 <Route path="calculator" element={<ConcentrationCalculator />} />
                 <Route path="contact" element={<ContactUs />} />

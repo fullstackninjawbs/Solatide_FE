@@ -399,14 +399,6 @@ const ProductInfoSection = ({ product, activeBatch }) => {
                     </div>
                 </div>
             </div>
-
-            {/* Bottom Research Compliance Notice */}
-            <div className="mt-12 bg-[#edf4ff]/20 border border-[#214A9E]/10 rounded-xl p-5 text-[13.5px] leading-relaxed text-[#214A9E]/90 flex items-start gap-3">
-                <span className="text-[16px] leading-none select-none">⚠️</span>
-                <p>
-                    <span className="font-bold">RESEARCH COMPLIANCE NOTICE:</span> Customer reviews are independent, user-generated content and do not reflect Solatide Biosciences' analytical research standards. All products are supplied strictly for in-vitro laboratory research only and are not for human or veterinary consumption.
-                </p>
-            </div>
         </div>
     );
 };

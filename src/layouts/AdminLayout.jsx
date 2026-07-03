@@ -54,11 +54,28 @@ const AdminLayout = () => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, roles: ['super_admin', 'operations', 'content_manager', 'support', 'admin'] },
-    { name: 'Orders', path: '/admin/orders', icon: ShoppingCart, roles: ['super_admin', 'operations', 'support', 'admin'] },
-    { name: 'Products', path: '/admin/products', icon: Package, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
-    { name: 'Collections', path: '/admin/products/collections', icon: Layers, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
-    { name: 'Inventory', path: '/admin/products/inventory', icon: Box, roles: ['super_admin', 'operations', 'admin'] },
-    { name: 'Import CSV', path: '/admin/products/import', icon: Upload, roles: ['super_admin', 'operations', 'admin'] },
+    {
+      name: 'Orders',
+      path: '/admin/orders',
+      icon: ShoppingCart,
+      roles: ['super_admin', 'operations', 'support', 'admin'],
+      subItems: [
+        { name: 'Drafts', path: '/admin/orders/drafts', roles: ['super_admin', 'operations', 'support', 'admin'] },
+        { name: 'Shipping labels', path: '/admin/orders/shipping-labels', roles: ['super_admin', 'operations', 'admin'] },
+        { name: 'Abandoned checkouts', path: '/admin/orders/abandoned', roles: ['super_admin', 'operations', 'admin'] }
+      ]
+    },
+    {
+      name: 'Products',
+      path: '/admin/products',
+      icon: Package,
+      roles: ['super_admin', 'operations', 'content_manager', 'admin'],
+      subItems: [
+        { name: 'Collections', path: '/admin/products/collections', roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
+        { name: 'Inventory', path: '/admin/products/inventory', roles: ['super_admin', 'operations', 'admin'] },
+        { name: 'Import CSV', path: '/admin/products/import', roles: ['super_admin', 'operations', 'admin'] }
+      ]
+    },
     { name: 'Batch Records', path: '/admin/batches', icon: FileText, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'COAs & Batches', path: '/admin/coas', icon: FileText, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
@@ -122,23 +139,46 @@ const AdminLayout = () => {
                   : location.pathname.startsWith(item.path);
 
               return (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 group relative ${isActive
-                      ? 'bg-brand-navy text-white font-semibold shadow-sm'
-                      : 'text-slate-550 hover:bg-slate-50 hover:text-brand-navy'
-                    }`}
-                >
-                  <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-brand-navy'}`} />
-                  {isSidebarOpen ? (
-                    <span className="text-[14px]">{item.name}</span>
-                  ) : (
-                    <div className="absolute left-16 bg-white text-slate-800 text-[12px] px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-200">
-                      {item.name}
+                <div key={item.name} className="flex flex-col">
+                  <Link
+                    to={item.path}
+                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 group relative ${isActive
+                        ? 'bg-brand-navy text-white font-semibold shadow-sm'
+                        : 'text-slate-550 hover:bg-slate-50 hover:text-brand-navy'
+                      }`}
+                  >
+                    <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-brand-navy'}`} />
+                    {isSidebarOpen ? (
+                      <span className="text-[14px]">{item.name}</span>
+                    ) : (
+                      <div className="absolute left-16 bg-white text-slate-800 text-[12px] px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-200">
+                        {item.name}
+                      </div>
+                    )}
+                  </Link>
+
+                  {/* Render SubItems if active and sidebar open */}
+                  {isActive && isSidebarOpen && item.subItems && (
+                    <div className="flex flex-col mt-1 mb-2 space-y-1 relative before:absolute before:left-6 before:top-0 before:bottom-3 before:w-px before:bg-slate-200">
+                      {item.subItems.filter(sub => sub.roles.includes(adminUser.role)).map(sub => {
+                        const isSubActive = location.pathname === sub.path || location.pathname.startsWith(sub.path + '/');
+                        return (
+                          <Link
+                            key={sub.name}
+                            to={sub.path}
+                            className={`pl-11 pr-4 py-2.5 rounded-lg transition-colors text-[13.5px] relative group ${isSubActive
+                                ? 'font-semibold text-brand-navy'
+                                : 'text-slate-500 hover:text-brand-navy hover:bg-slate-50'
+                              }`}
+                          >
+                            <span className={`absolute left-6 top-1/2 -mt-[5px] w-2 h-[10px] border-b border-l rounded-bl ${isSubActive ? 'border-brand-navy' : 'border-slate-300 group-hover:border-brand-navy'}`}></span>
+                            {sub.name}
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
-                </Link>
+                </div>
               );
             })}
           </nav>

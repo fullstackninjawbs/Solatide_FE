@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 const getAuthHeaders = () => {
   const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || sessionStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -65,6 +65,45 @@ export const apiService = {
       method: 'POST',
       headers: { ...getAuthHeaders() },
       body: data
+    });
+  },
+
+  // Reviews
+  getProductReviews: async (productId, queryParams = '') => {
+    return fetch(`${API_URL}/api/v1/reviews/product/${productId}${queryParams ? `?${queryParams}` : ''}`);
+  },
+  verifyReviewEmail: async (token) => {
+    return fetch(`${API_URL}/api/v1/reviews/verify/${token}`);
+  },
+  submitReview: async (formData) => {
+    // Note: formData should be FormData object for multipart/form-data
+    return fetch(`${API_URL}/api/v1/reviews`, {
+      method: 'POST',
+      body: formData
+    });
+  },
+  getAdminReviews: async (queryParams = '') => {
+    return fetch(`${API_URL}/api/v1/reviews${queryParams ? `?${queryParams}` : ''}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateAdminReviewStatus: async (id, status) => {
+    return fetch(`${API_URL}/api/v1/reviews/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ status })
+    });
+  },
+  deleteAdminReview: async (id) => {
+    return fetch(`${API_URL}/api/v1/reviews/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  resendVerificationEmail: async (id) => {
+    return fetch(`${API_URL}/api/v1/reviews/${id}/resend-verification`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
     });
   },
 
