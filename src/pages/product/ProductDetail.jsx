@@ -282,11 +282,6 @@ const ProductDetail = () => {
                     {/* Right Column: Product Specs */}
                     <div className="lg:col-span-6 text-left flex flex-col gap-6" style={{ fontFamily: 'Poppins' }}>
                         <div>
-                            {/* Category Tag */}
-
-                            <span className="text-[#00E5FF] text-[14px] sm:text-[15px] font-regular font-weight-400 tracking-wide block mb-3 uppercase">
-                                {product.tag || 'Dual GLP-1/GIP Receptor Agonist'}
-                            </span>
 
                             {/* Product Title */}
                             <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#214A9E] leading-tight mb-4" style={{ fontWeight: 600 }}>

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+const fs = require('fs');
+
+const code = `import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import {
@@ -35,7 +37,7 @@ function fmtDate(dateStr) {
   const options = { month: 'long', day: 'numeric', year: 'numeric' };
   const datePart = d.toLocaleDateString('en-US', options);
   const timePart = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-  return `${datePart} at ${timePart.toLowerCase()}`;
+  return \`\${datePart} at \${timePart.toLowerCase()}\`;
 }
 
 function formatAddress(addr) {
@@ -169,25 +171,25 @@ const OrderDetail = () => {
                 <ArrowLeft size={18} />
               </Link>
               <h1 className="text-3xl font-bold text-brand-navy tracking-tight flex items-center gap-4">
-                {order.orderNumber ?? `#${String(order._id).slice(-8).toUpperCase()}`}
+                {order.orderNumber ?? \`#\${String(order._id).slice(-8).toUpperCase()}\`}
                 
                 <div className="flex items-center gap-2 mt-1">
                   {/* Payment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${
+                  <span className={\`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border \${
                     isPaid 
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                       : 'bg-amber-50 text-amber-700 border-amber-200'
-                  }`}>
+                  }\`}>
                     {isPaid ? <Check size={14} /> : <Clock size={14} />}
                     {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
                   </span>
                   
                   {/* Fulfillment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${
+                  <span className={\`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border \${
                     !isUnfulfilled 
                       ? 'bg-blue-50 text-blue-700 border-blue-200' 
                       : 'bg-slate-100 text-slate-600 border-slate-200'
-                  }`}>
+                  }\`}>
                     <Package size={14} />
                     {order.fulfilmentStatus ? order.fulfilmentStatus.charAt(0).toUpperCase() + order.fulfilmentStatus.slice(1) : 'Unfulfilled'}
                   </span>
@@ -394,7 +396,7 @@ const OrderDetail = () => {
               </h3>
               <p className="text-[14px] text-slate-600 leading-relaxed bg-amber-50/50 p-3 rounded-xl border border-amber-100/50">
                 {order.adminNotes ? order.adminNotes : (
-                  order.tagadaOrderId ? `TagadaPay Order ID: ${order.tagadaOrderId}` : 'No special notes left for this order.'
+                  order.tagadaOrderId ? \`TagadaPay Order ID: \${order.tagadaOrderId}\` : 'No special notes left for this order.'
                 )}
               </p>
             </div>
@@ -422,7 +424,7 @@ const OrderDetail = () => {
                 <div>
                   <h4 className="text-[12px] font-bold tracking-wider uppercase text-slate-400 mb-2.5">Contact info</h4>
                   {customerEmail ? (
-                    <a href={`mailto:${customerEmail}`} className="flex items-center gap-2 text-[14px] font-medium text-brand-blue hover:underline break-all mb-1.5">
+                    <a href={\`mailto:\${customerEmail}\`} className="flex items-center gap-2 text-[14px] font-medium text-brand-blue hover:underline break-all mb-1.5">
                       <Mail size={14} className="text-brand-blue/60" /> {customerEmail}
                     </a>
                   ) : (
@@ -443,7 +445,7 @@ const OrderDetail = () => {
                       <address className="not-italic text-[14px] font-medium text-slate-700 leading-relaxed mb-2">
                         {shippingLines.map((line, i) => <div key={i}>{line}</div>)}
                       </address>
-                      <a href={`https://maps.google.com/?q=${encodeURIComponent(shippingLines.join(', '))}`} target="_blank" rel="noreferrer" className="text-[13px] font-semibold text-brand-blue hover:underline flex items-center gap-1">
+                      <a href={\`https://maps.google.com/?q=\${encodeURIComponent(shippingLines.join(', '))}\`} target="_blank" rel="noreferrer" className="text-[13px] font-semibold text-brand-blue hover:underline flex items-center gap-1">
                         <MapPin size={12} /> View map
                       </a>
                     </div>
@@ -522,3 +524,7 @@ const OrderDetail = () => {
 };
 
 export default OrderDetail;
+`;
+
+fs.writeFileSync('src/pages/admin/OrderDetail.jsx', code);
+console.log('OrderDetail.jsx UI updated to match Solatide aesthetics.');
