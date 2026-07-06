@@ -37,6 +37,7 @@ import CheckoutSuccess from '../pages/checkout/CheckoutSuccess'
 import CheckoutFailure from '../pages/checkout/CheckoutFailure'
 import OrderList from '../pages/admin/OrderList'
 import OrderDetail from '../pages/admin/OrderDetail'
+import OrderStatus from '../pages/checkout/OrderStatus'
 
 const AppRoutes = () => {
     return (
@@ -46,6 +47,7 @@ const AppRoutes = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/failure" element={<CheckoutFailure />} />
+            <Route path="/order/:orderId" element={<OrderStatus />} />
             <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="products" element={<ProductList />} />
