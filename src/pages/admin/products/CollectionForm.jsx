@@ -182,20 +182,10 @@ const CollectionForm = () => {
       const result = await response.json();
 
       if (result.success && result.data?.secure_url) {
-        setFormData(prev => {
-          // Auto-save the image to MongoDB if we are editing an existing collection
-          // This prevents the image from disappearing if the user refreshes without clicking Save
-          if (isEditMode) {
-            apiService.updateCollection(id, { 
-              bannerImage: result.data.secure_url 
-            }).catch(err => console.error("Failed to auto-save image to MongoDB:", err));
-          }
-          
-          return {
-            ...prev,
-            bannerImage: result.data.secure_url
-          };
-        });
+        setFormData(prev => ({
+          ...prev,
+          bannerImage: result.data.secure_url
+        }));
       } else {
         alert('Upload Failed: ' + (result.message || 'Unknown error'));
       }

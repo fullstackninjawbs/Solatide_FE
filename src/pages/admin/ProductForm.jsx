@@ -247,8 +247,8 @@ const ProductForm = () => {
             stockQuantity: product.stockQuantity || 0,
             lowStockThreshold: product.lowStockThreshold || 5,
             imageUrl: product.imageUrl || '',
-            images: (product.images && product.images.length > 0) 
-              ? product.images 
+            images: (product.images && product.images.length > 0)
+              ? product.images
               : (product.imageUrl ? [{ url: product.imageUrl }] : []),
             seo: {
               title: product.seo?.title || '',
@@ -334,10 +334,14 @@ const ProductForm = () => {
   };
 
   const removeImage = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, idx) => idx !== index)
-    }));
+    setFormData(prev => {
+      const newImages = prev.images.filter((_, idx) => idx !== index);
+      return {
+        ...prev,
+        images: newImages,
+        imageUrl: newImages.length > 0 ? newImages[0].url : ''
+      };
+    });
   };
 
   const handleFileUpload = async (e) => {
@@ -355,23 +359,16 @@ const ProductForm = () => {
 
       if (result.success && result.data?.secure_url) {
         const newImage = { url: result.data.secure_url, alt: file.name };
-        
+
         setFormData(prev => {
           const newImages = [...prev.images, newImage];
-          
-          // Auto-save the image to MongoDB if we are editing an existing product
-          // This prevents the image from disappearing if the user refreshes without clicking Save
-          if (isEditMode) {
-            apiService.saveProduct(id, JSON.stringify({ 
-              images: newImages,
-              imageUrl: result.data.secure_url 
-            })).catch(err => console.error("Failed to auto-save image to MongoDB:", err));
-          }
+          // Keep the very first image as the primary imageUrl for shop listings
+          const primaryImageUrl = newImages[0]?.url || result.data.secure_url;
 
           return {
             ...prev,
             images: newImages,
-            imageUrl: result.data.secure_url // main url fallback
+            imageUrl: primaryImageUrl
           };
         });
       } else {
@@ -437,15 +434,10 @@ const ProductForm = () => {
       ? parseFloat(formData.weightGrams) * 1000
       : parseFloat(formData.weightGrams);
 
-    // Images fallback - ensure imageUrl is included even if they didn't click Add
-    let finalImages = [...formData.images];
-    if (formData.imageUrl) {
-      const alreadyExists = finalImages.some(img => img.url === formData.imageUrl);
-      if (!alreadyExists) {
-        // Prepend so it acts as the primary image if it was the only one
-        finalImages.unshift({ url: formData.imageUrl, alt: formData.name + ' image' });
-      }
-    }
+    const finalImages = [...formData.images];
+
+    // Ensure imageUrl is set to the first image if it exists
+    const finalImageUrl = finalImages.length > 0 ? finalImages[0].url : formData.imageUrl;
 
     // Construct variants array matching structure
     let updatedVariants = [...formData._originalVariants];
@@ -495,7 +487,7 @@ const ProductForm = () => {
       stockQuantity: parseInt(formData.stockQuantity, 10),
       lowStockThreshold: parseInt(formData.lowStockThreshold, 10),
       category: formData.category,
-      imageUrl: finalImages[0]?.url || '',
+      imageUrl: finalImageUrl,
       images: finalImages,
       sku: formData.sku,
       tagadaVariantId: formData.tagadaVariantId,
