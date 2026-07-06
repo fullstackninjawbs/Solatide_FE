@@ -168,11 +168,9 @@ const ProductDetail = () => {
 
     const badges = [];
 
-    // 1. Purity Verified — only from batch or product data, no hardcoded fallback
+    // 1. Purity Verified — only from batch
     if (activeBatch?.purity) {
         badges.push(`${activeBatch.purity} Purity Verified`);
-    } else if (product.chemicalPurity) {
-        badges.push(`${product.chemicalPurity} Purity Verified`);
     }
 
     // 2. Testing Method — only from batch data
@@ -282,14 +280,18 @@ const ProductDetail = () => {
                             {/* Ratings */}
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="flex text-[#0F8A5F] text-[15px] gap-0.5">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <span key={i}>
-                                            {i < Math.round(product.rating ?? 5) ? '★' : '☆'}
-                                        </span>
-                                    ))}
+                                    {Array.from({ length: 5 }).map((_, i) => {
+                                        const hasReviews = product.ratingCount > 0 || product.reviewsCount > 0;
+                                        const actualRating = hasReviews ? Math.round(product.rating) : 0;
+                                        return (
+                                            <span key={i}>
+                                                {i < actualRating ? '★' : '☆'}
+                                            </span>
+                                        );
+                                    })}
                                 </div>
                                 <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-medium underline ml-1 hover:text-[#214A9E]">
-                                    {product.reviewsCount ?? 0} {product.reviewsCount === 1 ? 'review' : 'reviews'}
+                                    {product.ratingCount || product.reviewsCount || 0} {(product.ratingCount || product.reviewsCount) === 1 ? 'review' : 'reviews'}
                                 </a>
                             </div>
                             {/* Price */}

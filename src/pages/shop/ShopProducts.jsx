@@ -288,7 +288,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                                         <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 inline-flex items-center gap-0.5 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm z-10">
                                             <Star className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
-                                            <span>{product.rating}</span>
+                                            <span>{(product.ratingCount > 0 || product.reviewsCount > 0) ? product.rating : '0'}</span>
                                         </span>
                                     </Link>
 

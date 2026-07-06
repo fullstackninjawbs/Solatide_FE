@@ -87,7 +87,7 @@ const ShopPeptides = () => {
                     >
                         {products.map((product) => (
                             <SwiperSlide key={product._id || product.id} className="!h-auto">
-                                <div 
+                                <div
                                     onClick={() => navigate(`/product/${product._id || product.id}`)}
                                     className="group flex flex-col h-full bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
                                 >
@@ -124,7 +124,7 @@ const ShopPeptides = () => {
 
                                         <span className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-0.5 sm:gap-1.5 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-[9px] sm:text-[13px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm z-10">
                                             <Star className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 fill-[#f59e0b] stroke-[#f59e0b]" />
-                                            <span>{product.rating || '5.0'}</span>
+                                            <span>{(product.ratingCount > 0 || product.reviewsCount > 0) ? product.rating : '0'}</span>
                                         </span>
                                     </div>
 
