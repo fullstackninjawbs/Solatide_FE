@@ -151,7 +151,7 @@ const ProductDetail = () => {
     }
 
     const dbImages = product.images && product.images.length > 0
-        ? product.images.map(img => img.url)
+        ? product.images.map(img => (typeof img === 'string' ? img : img.url)).filter(Boolean)
         : [product.imageUrl || product.image || retatrutideVial].filter(Boolean);
 
     const coaImages = [

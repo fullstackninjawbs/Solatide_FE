@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   TrendingUp,
@@ -12,9 +12,11 @@ import {
   BookOpen
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
+import CustomDropdown from '../../components/CustomDropdown';
 
 const Dashboard = () => {
   const { formatAUD } = useCurrency();
+  const [timeFilter, setTimeFilter] = useState('Today');
   // Analytics stats matching Solatide theme (raw INR values, displayed as AUD)
   const stats = [
     { name: 'Revenue (MTD)', value: formatAUD(245600), change: '+12.4%', icon: DollarSign, color: 'bg-emerald-50 text-emerald-600' },
@@ -45,12 +47,17 @@ const Dashboard = () => {
           <p className="text-slate-555 text-[14px] mt-1">Here is a summary of your shop activity today.</p>
         </div>
         <div className="flex items-center gap-3">
-          <select className="bg-white border border-slate-200 text-slate-650 text-[14px] rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-blue shadow-sm font-semibold cursor-pointer">
-            <option>Today</option>
-            <option>This Week</option>
-            <option>This Month</option>
-            <option>Year to Date</option>
-          </select>
+          <CustomDropdown
+            value={timeFilter}
+            onChange={setTimeFilter}
+            align="right"
+            options={[
+              { value: 'Today', label: 'Today' },
+              { value: 'This Week', label: 'This Week' },
+              { value: 'This Month', label: 'This Month' },
+              { value: 'Year to Date', label: 'Year to Date' }
+            ]}
+          />
         </div>
       </div>
 

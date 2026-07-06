@@ -12,6 +12,7 @@ const CollectionForm = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEditMode);
   const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const [productsCatalog, setProductsCatalog] = useState([]);
   const [productSearch, setProductSearch] = useState('');
   const [showProductSearchDropdown, setShowProductSearchDropdown] = useState(false);
@@ -166,15 +167,44 @@ const CollectionForm = () => {
     });
   };
 
-  // Simulated File Upload (Cloudinary helper)
-  const handleFileUploadSim = (e) => {
+  // Real File Upload to backend proxy
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const mockCloudinaryUrl = `https://res.cloudinary.com/demo/image/upload/v123456/${file.name.replace(/\s+/g, '_')}`;
-    setFormData(prev => ({
-      ...prev,
-      bannerImage: mockCloudinaryUrl
-    }));
+    
+    setIsUploading(true);
+    // Use our authenticated backend endpoint which handles the Cloudinary upload
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      const response = await apiService.uploadImage(uploadData);
+      const result = await response.json();
+
+      if (result.success && result.data?.secure_url) {
+        setFormData(prev => {
+          // Auto-save the image to MongoDB if we are editing an existing collection
+          // This prevents the image from disappearing if the user refreshes without clicking Save
+          if (isEditMode) {
+            apiService.updateCollection(id, { 
+              bannerImage: result.data.secure_url 
+            }).catch(err => console.error("Failed to auto-save image to MongoDB:", err));
+          }
+          
+          return {
+            ...prev,
+            bannerImage: result.data.secure_url
+          };
+        });
+      } else {
+        alert('Upload Failed: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to connect to the server for upload.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Manual Mode: Products selection helpers
@@ -690,14 +720,19 @@ const CollectionForm = () => {
               </div>
 
               <div className="relative">
-                <div className="flex items-center justify-center border border-slate-200 hover:bg-slate-50 rounded-xl p-2.5 text-[13px] font-semibold text-slate-600 transition-all cursor-pointer">
-                  <Upload className="h-4.5 w-4.5 mr-2 text-slate-450" />
-                  <span>Simulate Image Upload</span>
+                <div className="flex items-center justify-center border border-slate-200 hover:bg-slate-50 rounded-xl p-2.5 text-[13px] font-semibold text-slate-600 transition-all cursor-pointer relative overflow-hidden">
+                  {isUploading ? (
+                    <div className="animate-spin rounded-full h-4.5 w-4.5 border-t-2 border-b-2 border-brand-blue mr-2"></div>
+                  ) : (
+                    <Upload className="h-4.5 w-4.5 mr-2 text-slate-450" />
+                  )}
+                  <span>{isUploading ? 'Uploading...' : 'Upload to Cloudinary'}</span>
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleFileUploadSim}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
                   />
                 </div>
               </div>

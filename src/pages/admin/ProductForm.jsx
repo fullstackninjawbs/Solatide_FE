@@ -13,6 +13,7 @@ const ProductForm = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEditMode);
   const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   // Lists fetched from APIs
   const [collectionsList, setCollectionsList] = useState([]);
@@ -246,7 +247,9 @@ const ProductForm = () => {
             stockQuantity: product.stockQuantity || 0,
             lowStockThreshold: product.lowStockThreshold || 5,
             imageUrl: product.imageUrl || '',
-            images: product.images || [],
+            images: (product.images && product.images.length > 0) 
+              ? product.images 
+              : (product.imageUrl ? [{ url: product.imageUrl }] : []),
             seo: {
               title: product.seo?.title || '',
               description: product.seo?.description || '',
@@ -337,15 +340,49 @@ const ProductForm = () => {
     }));
   };
 
-  const handleFileUploadSim = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const mockCloudinaryUrl = `https://res.cloudinary.com/demo/image/upload/v123456/${file.name.replace(/\s+/g, '_')}`;
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, { url: mockCloudinaryUrl, alt: file.name }],
-      imageUrl: mockCloudinaryUrl // main url fallback
-    }));
+
+    setIsUploading(true);
+    // Use our authenticated backend endpoint which handles the Cloudinary upload
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      const response = await apiService.uploadImage(uploadData);
+      const result = await response.json();
+
+      if (result.success && result.data?.secure_url) {
+        const newImage = { url: result.data.secure_url, alt: file.name };
+        
+        setFormData(prev => {
+          const newImages = [...prev.images, newImage];
+          
+          // Auto-save the image to MongoDB if we are editing an existing product
+          // This prevents the image from disappearing if the user refreshes without clicking Save
+          if (isEditMode) {
+            apiService.saveProduct(id, JSON.stringify({ 
+              images: newImages,
+              imageUrl: result.data.secure_url 
+            })).catch(err => console.error("Failed to auto-save image to MongoDB:", err));
+          }
+
+          return {
+            ...prev,
+            images: newImages,
+            imageUrl: result.data.secure_url // main url fallback
+          };
+        });
+      } else {
+        alert('Upload Failed: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to connect to the server for upload.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Category Metafields suggestions helper
@@ -400,10 +437,15 @@ const ProductForm = () => {
       ? parseFloat(formData.weightGrams) * 1000
       : parseFloat(formData.weightGrams);
 
-    // Images fallback
-    const finalImages = formData.images.length > 0
-      ? formData.images
-      : (formData.imageUrl ? [{ url: formData.imageUrl }] : []);
+    // Images fallback - ensure imageUrl is included even if they didn't click Add
+    let finalImages = [...formData.images];
+    if (formData.imageUrl) {
+      const alreadyExists = finalImages.some(img => img.url === formData.imageUrl);
+      if (!alreadyExists) {
+        // Prepend so it acts as the primary image if it was the only one
+        finalImages.unshift({ url: formData.imageUrl, alt: formData.name + ' image' });
+      }
+    }
 
     // Construct variants array matching structure
     let updatedVariants = [...formData._originalVariants];
@@ -662,11 +704,18 @@ const ProductForm = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleFileUploadSim}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  onChange={handleFileUpload}
+                  disabled={isUploading}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
                 />
-                <Upload className="h-5 w-5 text-slate-400 mb-1" />
-                <span className="text-[12px] font-semibold text-slate-650">Simulate Cloudinary Upload</span>
+                {isUploading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-brand-blue mb-1"></div>
+                ) : (
+                  <Upload className="h-5 w-5 text-slate-400 mb-1" />
+                )}
+                <span className="text-[12px] font-semibold text-slate-650">
+                  {isUploading ? 'Uploading...' : 'Upload to Cloudinary'}
+                </span>
               </div>
             </div>
           </div>

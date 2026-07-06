@@ -28,16 +28,16 @@ const StepRating = ({ product, rating, setRating, onNext }) => {
         {product?.name}
       </h4>
       
-      <div className="scale-125 mb-4">
+      <div className="flex justify-center w-full mb-4">
         <RatingStars 
           rating={rating} 
           interactive={true} 
           onRatingChange={handleRatingChange} 
-          size={36}
+          size={42}
         />
       </div>
       
-      <div className="flex justify-between w-full max-w-[240px] text-xs font-medium text-slate-400 mt-2">
+      <div className="flex justify-between w-full max-w-[240px] mx-auto text-xs font-medium text-slate-400 mt-2">
         <span>Poor</span>
         <span>Great</span>
       </div>

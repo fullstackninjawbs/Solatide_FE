@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+import CustomDropdown from '../../components/CustomDropdown';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -182,27 +183,26 @@ const ProductList = () => {
             />
           </div>
           {/* Status Filter */}
-          <select
+          <CustomDropdown 
             value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:border-brand-blue transition-all cursor-pointer"
-          >
-            <option value="all">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="draft">Draft</option>
-            <option value="archived">Archived</option>
-          </select>
+            onChange={setSelectedStatus}
+            options={[
+              { value: 'all', label: 'All Statuses' },
+              { value: 'active', label: 'Active' },
+              { value: 'draft', label: 'Draft' },
+              { value: 'archived', label: 'Archived' }
+            ]}
+          />
           {/* Collection Filter */}
-          <select
+          <CustomDropdown 
             value={selectedCollection}
-            onChange={(e) => setSelectedCollection(e.target.value)}
-            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:border-brand-blue transition-all cursor-pointer"
-          >
-            <option value="">All Collections</option>
-            {collectionsList.map(col => (
-              <option key={col._id} value={col._id}>{col.name}</option>
-            ))}
-          </select>
+            onChange={setSelectedCollection}
+            placeholder="All Collections"
+            options={[
+              { value: '', label: 'All Collections' },
+              ...collectionsList.map(col => ({ value: col._id, label: col.name }))
+            ]}
+          />
         </div>
 
         {/* Table list */}
