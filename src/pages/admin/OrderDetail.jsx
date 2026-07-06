@@ -150,7 +150,7 @@ const OrderDetail = () => {
   const subtotal = order.subtotal ?? order.totalAmount ?? 0;
   const grandTotal = order.grandTotal ?? order.totalAmount ?? 0;
   const shippingAmt = order.shippingAmount ?? 0;
-  
+
   const paymentStatus = (order.paymentStatus || 'pending').toLowerCase();
   const fulfilStatus = (order.fulfilmentStatus || 'unfulfilled').toLowerCase();
 
@@ -160,7 +160,7 @@ const OrderDetail = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-24 font-sans text-slate-800">
       <div className="max-w-[1140px] mx-auto px-8 pt-8">
-        
+
         {/* ─── Header Section ─── */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
@@ -170,24 +170,22 @@ const OrderDetail = () => {
               </Link>
               <h1 className="text-3xl font-bold text-brand-navy tracking-tight flex items-center gap-4">
                 {order.orderNumber ?? `#${String(order._id).slice(-8).toUpperCase()}`}
-                
+
                 <div className="flex items-center gap-2 mt-1">
                   {/* Payment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${
-                    isPaid 
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${isPaid
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       : 'bg-amber-50 text-amber-700 border-amber-200'
-                  }`}>
+                    }`}>
                     {isPaid ? <Check size={14} /> : <Clock size={14} />}
                     {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
                   </span>
-                  
+
                   {/* Fulfillment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${
-                    !isUnfulfilled 
-                      ? 'bg-blue-50 text-blue-700 border-blue-200' 
+                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${!isUnfulfilled
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
                       : 'bg-slate-100 text-slate-600 border-slate-200'
-                  }`}>
+                    }`}>
                     <Package size={14} />
                     {order.fulfilmentStatus ? order.fulfilmentStatus.charAt(0).toUpperCase() + order.fulfilmentStatus.slice(1) : 'Unfulfilled'}
                   </span>
@@ -195,10 +193,10 @@ const OrderDetail = () => {
               </h1>
             </div>
             <p className="text-[14px] text-slate-500 ml-[52px] font-medium">
-              {fmtDate(order.createdAt)} from Tagadacrm (via import)
+              {fmtDate(order.createdAt)} from Tagadacrm
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <button className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all">
               Refund
@@ -217,10 +215,10 @@ const OrderDetail = () => {
 
         {/* ─── 2-Column Layout ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
-          
+
           {/* ════════════════ LEFT COLUMN ════════════════ */}
           <div className="space-y-8">
-            
+
             {/* Fulfillment Card */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
               <div className="p-7">
@@ -277,9 +275,9 @@ const OrderDetail = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex items-center justify-end gap-3 pt-2">
-                  <button 
+                  <button
                     onClick={handleFulfill}
                     disabled={fulfilling || !isUnfulfilled}
                     className="px-5 py-2.5 text-[14px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -305,7 +303,7 @@ const OrderDetail = () => {
                     <p className="text-[13px] text-slate-500 font-medium">Completed via TagadaPay</p>
                   </div>
                 </div>
-                
+
                 <div className="bg-slate-50/50 rounded-2xl border border-slate-100 p-6 space-y-4">
                   <div className="flex justify-between items-center text-[14.5px]">
                     <span className="text-slate-500 font-medium flex items-center gap-2">Subtotal <span className="text-[12px] px-2 py-0.5 bg-slate-200/50 rounded-md text-slate-600">{totalItems} items</span></span>
@@ -321,7 +319,7 @@ const OrderDetail = () => {
                       <span className="text-slate-700 font-semibold">{fmtAUD(order.taxAmount)}</span>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-between items-center pt-5 mt-3 border-t border-slate-200">
                     <span className="text-[16px] font-bold text-brand-navy">Total</span>
                     <span className="text-[18px] font-black text-brand-navy">{fmtAUD(grandTotal)}</span>
@@ -334,13 +332,13 @@ const OrderDetail = () => {
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
               <div className="p-7">
                 <h2 className="text-lg font-bold text-brand-navy mb-6">Timeline</h2>
-                
+
                 <div className="flex gap-4 mb-8">
                   <div className="w-10 h-10 rounded-full bg-brand-navy text-white font-bold flex items-center justify-center shadow-md flex-shrink-0">
                     SB
                   </div>
                   <div className="flex-1 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-blue/30 focus-within:border-brand-blue transition-all bg-slate-50/50">
-                    <textarea 
+                    <textarea
                       placeholder="Leave a comment..."
                       className="w-full text-[14px] px-4 py-3 outline-none text-slate-700 placeholder-slate-400 bg-transparent resize-none min-h-[80px]"
                     />
@@ -355,7 +353,7 @@ const OrderDetail = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Timeline events */}
                 <div className="ml-5 border-l-2 border-slate-100 pl-8 relative space-y-8 pb-4">
                   <div className="relative">
@@ -385,7 +383,7 @@ const OrderDetail = () => {
 
           {/* ════════════════ RIGHT COLUMN ════════════════ */}
           <div className="space-y-6">
-            
+
             {/* Notes */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 relative group">
               <button className="absolute top-6 right-6 text-slate-300 hover:text-brand-blue transition-colors opacity-0 group-hover:opacity-100"><Edit2 size={16} /></button>
@@ -407,7 +405,7 @@ const OrderDetail = () => {
                 </h3>
                 <button className="text-slate-300 hover:text-brand-blue transition-colors"><MoreHorizontal size={18} /></button>
               </div>
-              
+
               <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
                 <div className="w-12 h-12 rounded-full bg-brand-navy/5 text-brand-navy flex items-center justify-center font-bold text-lg">
                   {customerName !== 'No customer name' ? customerName.charAt(0).toUpperCase() : <User size={20} />}
@@ -475,12 +473,12 @@ const OrderDetail = () => {
             {/* Tags */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 relative group">
               <h3 className="text-[15px] font-bold text-brand-navy mb-4 flex items-center gap-2">
-                 Tags
+                Tags
               </h3>
               <div className="relative">
                 <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="Add a tag..."
                   className="w-full text-[14px] font-medium bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all mb-4"
                 />
@@ -499,7 +497,7 @@ const OrderDetail = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Order Risk */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 flex items-center justify-between group cursor-pointer hover:border-brand-blue/30 transition-colors">
               <div className="flex items-center gap-3">
