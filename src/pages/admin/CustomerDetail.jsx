@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { ArrowLeft, CheckCircle, Ban, Loader2, Mail, MapPin, Tag, Edit2, Copy, AlertCircle, ShoppingBag, Truck, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, Copy, ShoppingBag, ChevronDown, MoreHorizontal, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const CustomerDetail = () => {
@@ -11,6 +11,14 @@ const CustomerDetail = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+
+    // New State for Interactions
+    const [newTag, setNewTag] = useState('');
+    const [commentText, setCommentText] = useState('');
+    const [isEditContactModalOpen, setIsEditContactModalOpen] = useState(false);
+    const [editContactForm, setEditContactForm] = useState({ email: '', phone: '' });
+    const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
+    const [editAddressForm, setEditAddressForm] = useState({ name: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
 
     useEffect(() => {
         fetchCustomerData();
@@ -24,6 +32,13 @@ const CustomerDetail = () => {
             if (res.ok && data.success) {
                 setCustomer(data.data.customer);
                 setOrders(data.data.orders);
+                setEditContactForm({
+                    email: data.data.customer.email || '',
+                    phone: data.data.customer.phone || ''
+                });
+                setEditAddressForm(data.data.customer.defaultAddress || {
+                    name: '', street1: '', street2: '', city: '', state: '', zip: '', country: ''
+                });
             } else {
                 toast.error('Customer not found');
                 navigate('/admin/customers');
@@ -36,21 +51,90 @@ const CustomerDetail = () => {
         }
     };
 
-    const toggleBanStatus = async () => {
-        if (!window.confirm(`Are you sure you want to ${customer.banned ? 'unban' : 'ban'} this customer?`)) return;
+    const handleCommentChange = (e) => {
+        setCommentText(e.target.value);
+    };
+
+    const handleTagChange = (e) => {
+        setNewTag(e.target.value);
+    };
+
+    const updateCustomerField = async (payload, successMessage = 'Customer updated') => {
         try {
             setUpdating(true);
-            const res = await apiService.updateAdminCustomer(id, { banned: !customer.banned });
+            const res = await apiService.updateAdminCustomer(id, payload);
             const data = await res.json();
             if (res.ok && data.success) {
                 setCustomer(data.data.customer);
-                toast.success(`Customer ${customer.banned ? 'unbanned' : 'banned'} successfully`);
+                toast.success(successMessage);
+                return true;
+            } else {
+                toast.error(data.message || 'Update failed');
+                return false;
             }
-        } catch (error) {
-            console.error('Failed to update customer:', error);
-            toast.error('Error updating customer');
+        } catch (err) {
+            console.error(err);
+            toast.error('Network error');
+            return false;
         } finally {
             setUpdating(false);
+        }
+    };
+
+    const toggleBanStatus = async () => {
+        if (!window.confirm(`Are you sure you want to ${customer.banned ? 'unban' : 'ban'} this customer?`)) return;
+        await updateCustomerField({ banned: !customer.banned }, `Customer ${customer.banned ? 'unbanned' : 'banned'} successfully`);
+    };
+
+    const handleAddTag = async (e) => {
+        if (e.key === 'Enter' && newTag.trim()) {
+            e.preventDefault();
+            const tagToAdd = newTag.trim();
+            if (customer.tags?.includes(tagToAdd)) {
+                toast.error('Tag already exists');
+                return;
+            }
+            const updatedTags = [...(customer.tags || []), tagToAdd];
+            const success = await updateCustomerField({ tags: updatedTags }, 'Tag added');
+            if (success) setNewTag('');
+        }
+    };
+
+    const handleRemoveTag = async (tagToRemove) => {
+        const updatedTags = (customer.tags || []).filter(t => t !== tagToRemove);
+        await updateCustomerField({ tags: updatedTags }, 'Tag removed');
+    };
+
+    const handleAddComment = async (e) => {
+        if (e.key === 'Enter' && commentText.trim()) {
+            e.preventDefault();
+            // Don't send Date object directly to avoid timezone shift mismatches if possible, backend will append Date.now
+            const newComment = { text: commentText.trim() };
+            const updatedComments = [...(customer.comments || []), newComment];
+            const success = await updateCustomerField({ comments: updatedComments }, 'Comment added');
+            if (success) setCommentText('');
+        }
+    };
+
+    const handleSaveContact = async () => {
+        if (!editContactForm.email) {
+            toast.error("Email is required");
+            return;
+        }
+        const success = await updateCustomerField({
+            email: editContactForm.email,
+            phone: editContactForm.phone
+        }, 'Contact info updated');
+
+        if (success) {
+            setIsEditContactModalOpen(false);
+        }
+    };
+
+    const handleSaveAddress = async () => {
+        const success = await updateCustomerField({ defaultAddress: editAddressForm }, 'Address updated');
+        if (success) {
+            setIsEditAddressModalOpen(false);
         }
     };
 
@@ -90,11 +174,29 @@ const CustomerDetail = () => {
     if (!customer) return null;
 
     const lastOrder = orders.length > 0 ? orders[0] : null;
-    const address = lastOrder?.shippingAddressObj || lastOrder?.billingAddressObj;
-    const phone = lastOrder?.customer?.phone;
+    const address = customer.defaultAddress || lastOrder?.shippingAddressObj || lastOrder?.billingAddressObj;
+    // Prefer the explicitly saved phone on customer, fallback to order phone
+    const phoneToDisplay = customer.phone || lastOrder?.customer?.phone;
 
-    // A softer shadow matching the Shopify Polaris look
     const cardClass = "bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.03)]";
+
+    // Combine timeline items: orders and comments and account creation
+    const timelineItems = [
+        ...orders.map(order => ({
+            type: 'order',
+            date: new Date(order.createdAt),
+            order
+        })),
+        ...(customer.comments || []).map(comment => ({
+            type: 'comment',
+            date: new Date(comment.createdAt),
+            comment
+        })),
+        {
+            type: 'creation',
+            date: new Date(customer.createdAt)
+        }
+    ].sort((a, b) => b.date - a.date);
 
     return (
         <div className="font-sans w-full min-h-screen text-[#1a1a1a]">
@@ -147,7 +249,7 @@ const CustomerDetail = () => {
             </div>
 
             <div>
-                {/* Top Metrics Bar (Mimicking the 4-column block) */}
+                {/* Top Metrics Bar */}
                 <div className={`${cardClass} mb-6 flex overflow-hidden border border-gray-100`}>
                     <div className="p-4 flex-1 border-r border-gray-100">
                         <p className="text-[13px] text-gray-600 font-semibold mb-1">Amount spent</p>
@@ -161,14 +263,11 @@ const CustomerDetail = () => {
                         <p className="text-[13px] text-gray-600 font-semibold mb-1">Customer since</p>
                         <p className="text-[14px] text-gray-900 mt-1">{getTimeSince(customer.createdAt)}</p>
                     </div>
-                    <div className="p-4 flex-1">
-                        <p className="text-[13px] text-gray-600 font-semibold mb-1">RFM group</p>
-                        <p className="text-[14px] text-gray-900 mt-1">{customer.banned ? 'At Risk' : 'Active'}</p>
-                    </div>
+
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column: Orders & Timeline */}
+                    {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
 
                         {/* Last Order Placed */}
@@ -248,35 +347,67 @@ const CustomerDetail = () => {
                             <div className={cardClass}>
                                 <div className="p-5">
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
                                             {customer.name.charAt(0).toUpperCase()}
                                         </div>
-                                        <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-[13px] text-gray-500 cursor-text hover:bg-white transition-colors">
-                                            Leave a comment...
-                                        </div>
+                                        <input
+                                            type="text"
+                                            value={commentText}
+                                            onChange={handleCommentChange}
+                                            onKeyDown={handleAddComment}
+                                            placeholder="Leave a comment... (Press Enter to post)"
+                                            className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-[13px] text-gray-900 outline-none focus:border-blue-500 focus:bg-white transition-colors"
+                                        />
                                     </div>
 
                                     <div className="relative border-l-2 border-gray-100 ml-4 space-y-8 mt-8">
-                                        {orders.map(order => (
-                                            <div key={order._id} className="relative pl-6">
-                                                <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
-                                                <div className="flex justify-between items-start group">
-                                                    <div>
-                                                        <p className="text-[13px] text-gray-900">
-                                                            This customer placed order <Link to={`/admin/orders/${order._id}`} className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 hover:bg-gray-200">{order.orderNumber}</Link> on Web.
-                                                        </p>
+                                        {timelineItems.map((item, idx) => {
+                                            if (item.type === 'order') {
+                                                return (
+                                                    <div key={`order-${item.order._id}`} className="relative pl-6">
+                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
+                                                        <div className="flex justify-between items-start group">
+                                                            <div>
+                                                                <p className="text-[13px] text-gray-900">
+                                                                    This customer placed order <Link to={`/admin/orders/${item.order._id}`} className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 hover:bg-gray-200">{item.order.orderNumber}</Link> on Web.
+                                                                </p>
+                                                            </div>
+                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(item.date, true)}</span>
+                                                        </div>
                                                     </div>
-                                                    <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(order.createdAt, true)}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                        <div className="relative pl-6">
-                                            <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
-                                            <div className="flex justify-between items-start group">
-                                                <p className="text-[13px] text-gray-900">Web created this customer.</p>
-                                                <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(customer.createdAt, true)}</span>
-                                            </div>
-                                        </div>
+                                                );
+                                            }
+
+                                            if (item.type === 'comment') {
+                                                return (
+                                                    <div key={`comment-${idx}`} className="relative pl-6">
+                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-[3px] border-white"></span>
+                                                        <div className="flex justify-between items-start group">
+                                                            <div>
+                                                                <p className="text-[13px] text-gray-900 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                                                    {item.comment.text}
+                                                                </p>
+                                                            </div>
+                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ml-4">{formatDate(item.date, true)}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+
+                                            if (item.type === 'creation') {
+                                                return (
+                                                    <div key="creation" className="relative pl-6">
+                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
+                                                        <div className="flex justify-between items-start group">
+                                                            <p className="text-[13px] text-gray-900">Web created this customer.</p>
+                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(item.date, true)}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+
+                                            return null;
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -290,7 +421,6 @@ const CustomerDetail = () => {
                         <div className={cardClass}>
                             <div className="p-4 flex justify-between items-center">
                                 <h2 className="text-[15px] font-bold text-gray-900">Customer</h2>
-                                <button className="text-gray-400 hover:text-gray-700"><MoreHorizontal className="w-5 h-5" /></button>
                             </div>
 
                             <div className="px-4 pb-4 space-y-5">
@@ -299,16 +429,16 @@ const CustomerDetail = () => {
                                 <div>
                                     <div className="flex justify-between items-center mb-1">
                                         <h3 className="text-[13px] font-bold text-gray-900">Contact information</h3>
-                                        <button className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
+                                        <button onClick={() => setIsEditContactModalOpen(true)} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
                                     </div>
                                     <a href={`mailto:${customer.email}`} className="text-[13px] text-blue-600 hover:underline">{customer.email}</a>
-                                    {phone && <p className="text-[13px] text-gray-900 mt-1">{phone}</p>}
+                                    {phoneToDisplay && <p className="text-[13px] text-gray-900 mt-1">{phoneToDisplay}</p>}
                                 </div>
 
                                 <div>
                                     <div className="flex justify-between items-center mb-1">
                                         <h3 className="text-[13px] font-bold text-gray-900">Default address</h3>
-                                        <button className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
+                                        <button onClick={() => setIsEditAddressModalOpen(true)} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
                                     </div>
                                     {address ? (
                                         <div className="text-[13px] text-gray-600 leading-relaxed mt-1">
@@ -317,7 +447,6 @@ const CustomerDetail = () => {
                                             {address.street2 && <p>{address.street2}</p>}
                                             <p>{address.city} {address.state} {address.zip}</p>
                                             <p>{address.country}</p>
-                                            {phone && <p className="mt-1">{phone}</p>}
                                         </div>
                                     ) : (
                                         <p className="text-[13px] text-gray-500 italic">No address provided</p>
@@ -354,34 +483,183 @@ const CustomerDetail = () => {
                             </div>
                             <div className="px-4 pb-4">
                                 {customer.tags && customer.tags.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-2 mb-3">
                                         {customer.tags.map((tag, idx) => (
-                                            <span key={idx} className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-[13px] border border-gray-200">
+                                            <span key={idx} className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-[13px] border border-gray-200 flex items-center gap-1.5">
                                                 {tag}
+                                                <button onClick={() => handleRemoveTag(tag)} className="text-gray-400 hover:text-gray-600">
+                                                    <X className="w-3.5 h-3.5" />
+                                                </button>
                                             </span>
                                         ))}
                                     </div>
-                                ) : (
-                                    <div className="w-full h-9 border border-gray-300 rounded-lg flex items-center px-3 cursor-text hover:border-gray-400 transition-colors">
-                                        <span className="text-[13px] text-gray-400">Find or create tags</span>
-                                    </div>
-                                )}
+                                ) : null}
+
+                                <input
+                                    type="text"
+                                    value={newTag}
+                                    onChange={handleTagChange}
+                                    onKeyDown={handleAddTag}
+                                    placeholder="Add a tag and press Enter"
+                                    className="w-full h-9 border border-gray-300 rounded-lg px-3 text-[13px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
                             </div>
                         </div>
 
-                        {/* Notes */}
-                        <div className={cardClass}>
-                            <div className="p-4 flex justify-between items-center">
-                                <h2 className="text-[15px] font-bold text-gray-900">Notes</h2>
-                                <button className="text-gray-400 hover:text-gray-700"><Edit2 className="w-4 h-4" /></button>
-                            </div>
-                            <div className="px-4 pb-4">
-                                <p className="text-[13px] text-gray-500">None</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Edit Contact Modal */}
+            {isEditContactModalOpen && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+                        <div className="flex justify-between items-center mb-5">
+                            <h2 className="text-lg font-bold text-gray-900">Edit contact information</h2>
+                            <button onClick={() => setIsEditContactModalOpen(false)} className="text-gray-400 hover:text-gray-700">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4 mb-6">
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Email address</label>
+                                <input
+                                    type="email"
+                                    value={editContactForm.email}
+                                    onChange={(e) => setEditContactForm(prev => ({ ...prev, email: e.target.value }))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Phone number</label>
+                                <input
+                                    type="text"
+                                    value={editContactForm.phone}
+                                    onChange={(e) => setEditContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsEditContactModalOpen(false)}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveContact}
+                                disabled={updating}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                {updating ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Address Modal */}
+            {isEditAddressModalOpen && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
+                        <div className="flex justify-between items-center mb-5">
+                            <h2 className="text-lg font-bold text-gray-900">Edit address</h2>
+                            <button onClick={() => setIsEditAddressModalOpen(false)} className="text-gray-400 hover:text-gray-700">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4 mb-6 max-h-[60vh] overflow-y-auto px-1">
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.name}
+                                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, name: e.target.value }))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.street1}
+                                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, street1: e.target.value }))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Apartment, suite, etc. / Street 2</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.street2}
+                                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, street2: e.target.value }))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">City</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.city}
+                                        onChange={(e) => setEditAddressForm(prev => ({ ...prev, city: e.target.value }))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">State / Province</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.state}
+                                        onChange={(e) => setEditAddressForm(prev => ({ ...prev, state: e.target.value }))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">ZIP / Postal code</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.zip}
+                                        onChange={(e) => setEditAddressForm(prev => ({ ...prev, zip: e.target.value }))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">Country</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.country}
+                                        onChange={(e) => setEditAddressForm(prev => ({ ...prev, country: e.target.value }))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={() => setIsEditAddressModalOpen(false)}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveAddress}
+                                disabled={updating}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                {updating ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

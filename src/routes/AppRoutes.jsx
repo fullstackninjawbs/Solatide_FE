@@ -40,6 +40,7 @@ import OrderDetail from '../pages/admin/OrderDetail'
 import OrderStatus from '../pages/checkout/OrderStatus'
 import CustomerList from '../pages/admin/CustomerList'
 import CustomerDetail from '../pages/admin/CustomerDetail'
+import StoreSettings from '../pages/admin/settings/StoreSettings'
 
 const AppRoutes = () => {
     return (
@@ -76,6 +77,7 @@ const AppRoutes = () => {
                 <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
                 <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
                 <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
+                <Route path="settings/store" element={<StoreSettings />} />
                 <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
             </Route>
 

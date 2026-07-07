@@ -157,6 +157,27 @@ export const apiService = {
     });
   },
 
+  // Dashboard Analytics
+  getDashboardAnalytics: async (timeFilter = 'Today') => {
+    return fetch(`${API_URL}/api/admin/dashboard?timeFilter=${encodeURIComponent(timeFilter)}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
+  // Settings
+  getStoreSettings: async () => {
+    return fetch(`${API_URL}/api/admin/settings/store`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateStoreSettings: async (data) => {
+    return fetch(`${API_URL}/api/admin/settings/store`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+
   // Auth
   adminLogin: async (data) => {
     return fetch(`${API_URL}/api/v1/auth/login`, {
@@ -249,6 +270,19 @@ export const apiService = {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
+    });
+  },
+  updateAdminOrder: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/order/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  createAdminShipment: async (id) => {
+    return fetch(`${API_URL}/api/admin/order/${id}/shipment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
     });
   },
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   TrendingUp,
@@ -9,34 +9,71 @@ import {
   FileText,
   PlusCircle,
   Upload,
-  BookOpen
+  BookOpen,
+  Loader2
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import CustomDropdown from '../../components/CustomDropdown';
+import { apiService } from '../../services/api';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const { formatAUD } = useCurrency();
   const [timeFilter, setTimeFilter] = useState('Today');
-  // Analytics stats matching Solatide theme (raw INR values, displayed as AUD)
-  const stats = [
-    { name: 'Revenue (MTD)', value: formatAUD(245600), change: '+12.4%', icon: DollarSign, color: 'bg-emerald-50 text-emerald-600' },
-    { name: 'Orders Today', value: '18', change: '+8.2%', icon: ShoppingBag, color: 'bg-brand-blue/10 text-brand-blue' },
-    { name: 'Average Order Value', value: formatAUD(13640), change: '-2.1%', icon: TrendingUp, color: 'bg-brand-cyan/10 text-brand-cyan' },
-    { name: 'New Customers', value: '44', change: '+24.5%', icon: Users, color: 'bg-indigo-50 text-indigo-650' }
-  ];
+  
+  const [stats, setStats] = useState([]);
+  const [tasksList, setTasksList] = useState([]);
+  const [lowStockProducts, setLowStockProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const tasksList = [
-    { id: 1, type: 'order', message: 'Order #1042 awaiting manual PayID confirmation', time: '10 mins ago', severity: 'warning' },
-    { id: 2, type: 'stock', message: 'Retatrutide 10mg is critically low on stock (2 left)', time: '1 hour ago', severity: 'danger' },
-    { id: 3, type: 'coa', message: 'Pending COA review for Bacteriostatic Water batch B-26X', time: '3 hours ago', severity: 'info' },
-    { id: 4, type: 'review', message: '3 new reviews pending approval for Semaglutide 5mg', time: '5 hours ago', severity: 'info' }
-  ];
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      setLoading(true);
+      try {
+        const response = await apiService.getDashboardAnalytics(timeFilter);
+        const result = await response.json();
+        if (result.success) {
+          // Map icons and colors to stats
+          const iconMap = {
+            'revenue': { icon: DollarSign, color: 'bg-emerald-50 text-emerald-600', isCurrency: true },
+            'orders': { icon: ShoppingBag, color: 'bg-brand-blue/10 text-brand-blue', isCurrency: false },
+            'aov': { icon: TrendingUp, color: 'bg-brand-cyan/10 text-brand-cyan', isCurrency: true },
+            'customers': { icon: Users, color: 'bg-indigo-50 text-indigo-650', isCurrency: false }
+          };
 
-  const lowStockProducts = [
-    { name: 'Retatrutide 10mg', sku: 'SOL-RTA-10M', stock: 2, limit: 5 },
-    { name: 'Tirzepatide 10mg', sku: 'SOL-TZP-10M', stock: 4, limit: 5 },
-    { name: 'BPC-157 10mg', sku: 'SOL-BPC-10M', stock: 0, limit: 5 }
-  ];
+          const formattedStats = result.data.stats.map(s => {
+            const mapData = iconMap[s.id] || iconMap['orders'];
+            return {
+              ...s,
+              value: mapData.isCurrency ? formatAUD(Number(s.value)) : s.value,
+              icon: mapData.icon,
+              color: mapData.color
+            };
+          });
+
+          setStats(formattedStats);
+          setTasksList(result.data.tasksList || []);
+          setLowStockProducts(result.data.lowStockProducts || []);
+        } else {
+          toast.error(result.message || 'Failed to fetch dashboard');
+        }
+      } catch (error) {
+        console.error('Dashboard Error:', error);
+        toast.error('Error loading dashboard');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, [timeFilter, formatAUD]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-blue" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 text-left font-sans">
@@ -44,7 +81,7 @@ const Dashboard = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-navy">Overview</h2>
-          <p className="text-slate-555 text-[14px] mt-1">Here is a summary of your shop activity today.</p>
+          <p className="text-slate-555 text-[14px] mt-1">Here is a summary of your shop activity for {timeFilter.toLowerCase()}.</p>
         </div>
         <div className="flex items-center gap-3">
           <CustomDropdown
@@ -106,9 +143,9 @@ const Dashboard = () => {
                       <p className="text-[14px] font-semibold text-slate-700">{task.message}</p>
                       <span className="text-[12px] text-slate-400 mt-1 block">{task.time}</span>
                     </div>
-                    <button className="text-[12px] font-bold text-brand-blue hover:text-brand-cyan self-start sm:self-auto focus:outline-none cursor-pointer">
+                    <Link to={task.link || '#'} className="text-[12px] font-bold text-brand-blue hover:text-brand-cyan self-start sm:self-auto focus:outline-none cursor-pointer">
                       Manage →
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))}

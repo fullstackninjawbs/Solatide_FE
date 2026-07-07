@@ -19,8 +19,10 @@ import {
   User,
   CreditCard,
   Tag,
-  AlertTriangle
+  AlertTriangle,
+  X
 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -60,6 +62,16 @@ const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fulfilling, setFulfilling] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [creatingLabel, setCreatingLabel] = useState(false);
+
+  // New states for interactive fields
+  const [commentText, setCommentText] = useState('');
+  const [newTag, setNewTag] = useState('');
+  
+  const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
+  const [addressTypeToEdit, setAddressTypeToEdit] = useState('shipping');
+  const [editAddressForm, setEditAddressForm] = useState({ name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
 
   // Load Order
   useEffect(() => {
@@ -79,6 +91,91 @@ const OrderDetail = () => {
     };
     load();
   }, [id]);
+
+  const updateOrderField = async (payload, successMessage = 'Order updated') => {
+    try {
+        setUpdating(true);
+        const res = await apiService.updateAdminOrder(id, payload);
+        const data = await res.json();
+        if (res.ok && data.success) {
+            setOrder(data.data.order);
+            toast.success(successMessage);
+            return true;
+        } else {
+            toast.error(data.message || 'Update failed');
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+        toast.error('Network error');
+        return false;
+    } finally {
+        setUpdating(false);
+    }
+  };
+
+  const handleAddComment = async () => {
+      if (!commentText.trim()) return;
+      const newComment = { text: commentText.trim(), createdAt: new Date() };
+      const updatedComments = [...(order.comments || []), newComment];
+      const success = await updateOrderField({ comments: updatedComments }, 'Comment added');
+      if (success) setCommentText('');
+  };
+
+  const handleAddTag = async (e) => {
+      if (e.key === 'Enter' && newTag.trim()) {
+          e.preventDefault();
+          const tagToAdd = newTag.trim();
+          if (order.tags?.includes(tagToAdd)) {
+              toast.error('Tag already exists');
+              return;
+          }
+          const updatedTags = [...(order.tags || []), tagToAdd];
+          const success = await updateOrderField({ tags: updatedTags }, 'Tag added');
+          if (success) setNewTag('');
+      }
+  };
+
+  const handleRemoveTag = async (tagToRemove) => {
+      const updatedTags = (order.tags || []).filter(t => t !== tagToRemove);
+      await updateOrderField({ tags: updatedTags }, 'Tag removed');
+  };
+
+  const openAddressModal = (type) => {
+      setAddressTypeToEdit(type);
+      const addr = type === 'shipping' ? order.shippingAddressObj : order.billingAddressObj;
+      setEditAddressForm(addr || { name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
+      setIsEditAddressModalOpen(true);
+  };
+
+  const handleSaveAddress = async () => {
+      const payload = addressTypeToEdit === 'shipping' 
+          ? { shippingAddressObj: editAddressForm }
+          : { billingAddressObj: editAddressForm };
+      
+      const success = await updateOrderField(payload, 'Address updated');
+      if (success) setIsEditAddressModalOpen(false);
+  };
+
+  const handleCreateLabel = async () => {
+    if (creatingLabel) return;
+    setCreatingLabel(true);
+    try {
+      const res = await apiService.createAdminShipment(id);
+      const data = await res.json();
+      if (data.success) {
+        setOrder(data.data.order);
+        toast.success('Shipping label generated successfully!');
+      } else {
+        toast.error(data.message || 'Failed to create shipping label');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error while creating label');
+    } finally {
+      setCreatingLabel(false);
+    }
+  };
 
   const handleFulfill = async () => {
     if (fulfilling) return;
@@ -277,16 +374,39 @@ const OrderDetail = () => {
                 </div>
 
                 <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    onClick={handleFulfill}
-                    disabled={fulfilling || !isUnfulfilled}
-                    className="px-5 py-2.5 text-[14px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                  </button>
-                  <button disabled={!isUnfulfilled} className="px-5 py-2.5 text-[14px] font-semibold text-white bg-brand-blue rounded-xl shadow-[0_4px_14px_rgba(59,130,246,0.3)] hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    Create shipping label
-                  </button>
+                  {order.easyPostShipmentId ? (
+                    <div className="w-full flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4">
+                      <div>
+                        <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Shipping Label Created</p>
+                        <p className="text-[14.5px] font-bold text-brand-navy">
+                          {order.trackingCarrier} - <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                         <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
+                         <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
+                           {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
+                         </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={handleFulfill}
+                        disabled={fulfilling || !isUnfulfilled}
+                        className="px-5 py-2.5 text-[14px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
+                      </button>
+                      <button 
+                        onClick={handleCreateLabel}
+                        disabled={creatingLabel || !isPaid} 
+                        className="px-5 py-2.5 text-[14px] font-semibold text-white bg-brand-blue rounded-xl shadow-[0_4px_14px_rgba(59,130,246,0.3)] hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {creatingLabel ? 'Generating...' : 'Create shipping label'}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -340,6 +460,8 @@ const OrderDetail = () => {
                   <div className="flex-1 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-blue/30 focus-within:border-brand-blue transition-all bg-slate-50/50">
                     <textarea
                       placeholder="Leave a comment..."
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
                       className="w-full text-[14px] px-4 py-3 outline-none text-slate-700 placeholder-slate-400 bg-transparent resize-none min-h-[80px]"
                     />
                     <div className="bg-white px-3 py-2 border-t border-slate-200 flex justify-between items-center">
@@ -347,8 +469,8 @@ const OrderDetail = () => {
                         <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">@</button>
                         <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">#</button>
                       </div>
-                      <button className="px-5 py-2 bg-brand-navy text-white font-semibold rounded-lg text-[13px] shadow-sm hover:bg-brand-navy/90 transition-all">
-                        Post
+                      <button onClick={handleAddComment} disabled={updating || !commentText.trim()} className="px-5 py-2 bg-brand-navy text-white font-semibold rounded-lg text-[13px] shadow-sm hover:bg-brand-navy/90 transition-all disabled:opacity-50">
+                        {updating ? 'Posting...' : 'Post'}
                       </button>
                     </div>
                   </div>
@@ -356,8 +478,18 @@ const OrderDetail = () => {
 
                 {/* Timeline events */}
                 <div className="ml-5 border-l-2 border-slate-100 pl-8 relative space-y-8 pb-4">
+                  {order.comments?.slice().reverse().map((comment, i) => (
+                    <div key={i} className="relative">
+                      <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-brand-blue ring-4 ring-white shadow-sm" />
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 inline-block min-w-[200px]">
+                        <p className="text-[14.5px] text-slate-700">{comment.text}</p>
+                      </div>
+                      <p className="text-[13px] font-medium text-slate-400 mt-1">{fmtDate(comment.createdAt)}</p>
+                    </div>
+                  ))}
+
                   <div className="relative">
-                    <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-brand-blue ring-4 ring-white shadow-sm" />
+                    <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-slate-300 ring-4 ring-white shadow-sm" />
                     <div>
                       <p className="text-[14.5px] text-slate-700">
                         A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.
@@ -434,7 +566,7 @@ const OrderDetail = () => {
                 <div>
                   <div className="flex items-center justify-between mb-2.5">
                     <h4 className="text-[12px] font-bold tracking-wider uppercase text-slate-400">Shipping address</h4>
-                    <button className="text-slate-300 hover:text-brand-blue transition-colors"><Edit2 size={14} /></button>
+                    <button onClick={() => openAddressModal('shipping')} className="text-slate-300 hover:text-brand-blue transition-colors"><Edit2 size={14} /></button>
                   </div>
                   {shippingLines?.length > 0 ? (
                     <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
@@ -453,7 +585,7 @@ const OrderDetail = () => {
                 <div>
                   <div className="flex items-center justify-between mb-2.5">
                     <h4 className="text-[12px] font-bold tracking-wider uppercase text-slate-400">Billing address</h4>
-                    <button className="text-slate-300 hover:text-brand-blue transition-colors"><Edit2 size={14} /></button>
+                    <button onClick={() => openAddressModal('billing')} className="text-slate-300 hover:text-brand-blue transition-colors"><Edit2 size={14} /></button>
                   </div>
                   {sameAddress ? (
                     <p className="text-[14px] font-medium text-slate-500 flex items-center gap-2">
@@ -479,7 +611,10 @@ const OrderDetail = () => {
                 <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Add a tag..."
+                  placeholder="Add a tag and press Enter"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyDown={handleAddTag}
                   className="w-full text-[14px] font-medium bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all mb-4"
                 />
               </div>
@@ -491,7 +626,7 @@ const OrderDetail = () => {
                       className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-navy/5 text-brand-navy font-semibold text-[13px] rounded-lg border border-brand-navy/10"
                     >
                       {tag}
-                      <button className="text-brand-navy/40 hover:text-brand-navy transition-colors">×</button>
+                      <button onClick={() => handleRemoveTag(tag)} className="text-brand-navy/40 hover:text-brand-navy transition-colors">×</button>
                     </span>
                   ))}
                 </div>
@@ -515,6 +650,115 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
+    
+            {/* Edit Address Modal */}
+            {isEditAddressModalOpen && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
+                        <div className="flex justify-between items-center mb-5">
+                            <h2 className="text-lg font-bold text-gray-900">Edit {addressTypeToEdit} address</h2>
+                            <button onClick={() => setIsEditAddressModalOpen(false)} className="text-gray-400 hover:text-gray-700">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-4 mb-6 max-h-[60vh] overflow-y-auto px-1">
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.name}
+                                    onChange={(e) => setEditAddressForm(prev => ({...prev, name: e.target.value}))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Company</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.company}
+                                    onChange={(e) => setEditAddressForm(prev => ({...prev, company: e.target.value}))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.street1}
+                                    onChange={(e) => setEditAddressForm(prev => ({...prev, street1: e.target.value}))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Apartment, suite, etc. / Street 2</label>
+                                <input
+                                    type="text"
+                                    value={editAddressForm.street2}
+                                    onChange={(e) => setEditAddressForm(prev => ({...prev, street2: e.target.value}))}
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">City</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.city}
+                                        onChange={(e) => setEditAddressForm(prev => ({...prev, city: e.target.value}))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">State / Province</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.state}
+                                        onChange={(e) => setEditAddressForm(prev => ({...prev, state: e.target.value}))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">ZIP / Postal code</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.zip}
+                                        onChange={(e) => setEditAddressForm(prev => ({...prev, zip: e.target.value}))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">Country</label>
+                                    <input
+                                        type="text"
+                                        value={editAddressForm.country}
+                                        onChange={(e) => setEditAddressForm(prev => ({...prev, country: e.target.value}))}
+                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button 
+                                onClick={() => setIsEditAddressModalOpen(false)}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleSaveAddress}
+                                disabled={updating}
+                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                {updating ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
     </div>
   );
 };

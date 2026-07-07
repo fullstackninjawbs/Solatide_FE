@@ -60,9 +60,9 @@ const AdminLayout = () => {
       icon: ShoppingCart,
       roles: ['super_admin', 'operations', 'support', 'admin'],
       subItems: [
-        { name: 'Drafts', path: '/admin/orders/drafts', roles: ['super_admin', 'operations', 'support', 'admin'] },
+        // { name: 'Drafts', path: '/admin/orders/drafts', roles: ['super_admin', 'operations', 'support', 'admin'] },
         { name: 'Shipping labels', path: '/admin/orders/shipping-labels', roles: ['super_admin', 'operations', 'admin'] },
-        { name: 'Abandoned checkouts', path: '/admin/orders/abandoned', roles: ['super_admin', 'operations', 'admin'] }
+        // { name: 'Abandoned checkouts', path: '/admin/orders/abandoned', roles: ['super_admin', 'operations', 'admin'] }
       ]
     },
     {
@@ -143,8 +143,8 @@ const AdminLayout = () => {
                   <Link
                     to={item.path}
                     className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 group relative ${isActive
-                        ? 'bg-brand-navy text-white font-semibold shadow-sm'
-                        : 'text-slate-550 hover:bg-slate-50 hover:text-brand-navy'
+                      ? 'bg-brand-navy text-white font-semibold shadow-sm'
+                      : 'text-slate-550 hover:bg-slate-50 hover:text-brand-navy'
                       }`}
                   >
                     <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-brand-navy'}`} />
@@ -167,8 +167,8 @@ const AdminLayout = () => {
                             key={sub.name}
                             to={sub.path}
                             className={`pl-11 pr-4 py-2.5 rounded-lg transition-colors text-[13.5px] relative group ${isSubActive
-                                ? 'font-semibold text-brand-navy'
-                                : 'text-slate-500 hover:text-brand-navy hover:bg-slate-50'
+                              ? 'font-semibold text-brand-navy'
+                              : 'text-slate-500 hover:text-brand-navy hover:bg-slate-50'
                               }`}
                           >
                             <span className={`absolute left-6 top-1/2 -mt-[5px] w-2 h-[10px] border-b border-l rounded-bl ${isSubActive ? 'border-brand-navy' : 'border-slate-300 group-hover:border-brand-navy'}`}></span>
