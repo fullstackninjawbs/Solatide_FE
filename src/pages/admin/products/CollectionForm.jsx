@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Search, X, Layers, Settings as SettingsIcon } from 'lucide-react';
+import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
 import JoditEditor from 'jodit-react';
 
@@ -553,15 +554,15 @@ const CollectionForm = () => {
                   <h4 className="text-[14px] font-bold text-slate-850">Conditions</h4>
                   <div className="flex items-center gap-3 text-[14px]">
                     <span className="text-slate-500">Products must match:</span>
-                    <select
-                      name="ruleRelation"
+                    <CustomDropdown
                       value={formData.ruleRelation}
-                      onChange={handleChange}
-                      className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-250 text-slate-850 focus:outline-none focus:border-brand-blue text-[13px] font-semibold cursor-pointer"
-                    >
-                      <option value="all">all conditions</option>
-                      <option value="any">any condition</option>
-                    </select>
+                      onChange={(val) => handleChange({ target: { name: 'ruleRelation', value: val } })}
+                      className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-250 text-slate-850 focus:outline-none focus:border-brand-blue text-[13px] font-semibold cursor-pointer min-w-[140px]"
+                      options={[
+                        { value: 'all', label: 'all conditions' },
+                        { value: 'any', label: 'any condition' }
+                      ]}
+                    />
                   </div>
                 </div>
 
@@ -576,36 +577,38 @@ const CollectionForm = () => {
 
                         {/* Field Selection */}
                         <div className="flex-1 min-w-[150px]">
-                          <select
+                          <CustomDropdown
                             value={rule.field}
-                            onChange={(e) => updateRule(idx, 'field', e.target.value)}
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[13.5px] cursor-pointer"
-                          >
-                            <option value="title">Product title</option>
-                            <option value="type">Product category</option>
-                            <option value="tag">Product tag</option>
-                            <option value="vendor">Product vendor</option>
-                            <option value="price">Price</option>
-                            <option value="compareAtPrice">Compare at price</option>
-                          </select>
+                            onChange={(val) => updateRule(idx, 'field', val)}
+                            className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[13.5px] cursor-pointer"
+                            options={[
+                              { value: 'title', label: 'Product title' },
+                              { value: 'type', label: 'Product category' },
+                              { value: 'tag', label: 'Product tag' },
+                              { value: 'vendor', label: 'Product vendor' },
+                              { value: 'price', label: 'Price' },
+                              { value: 'compareAtPrice', label: 'Compare at price' }
+                            ]}
+                          />
                         </div>
 
                         {/* Operator Selection */}
                         <div className="flex-1 min-w-[150px]">
-                          <select
+                          <CustomDropdown
                             value={rule.operator}
-                            onChange={(e) => updateRule(idx, 'operator', e.target.value)}
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[13.5px] cursor-pointer"
-                          >
-                            <option value="is equal to">is equal to</option>
-                            <option value="is not equal to">is not equal to</option>
-                            <option value="is greater than">is greater than</option>
-                            <option value="is less than">is less than</option>
-                            <option value="starts with">starts with</option>
-                            <option value="ends with">ends with</option>
-                            <option value="contains">contains</option>
-                            <option value="does not contain">does not contain</option>
-                          </select>
+                            onChange={(val) => updateRule(idx, 'operator', val)}
+                            className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[13.5px] cursor-pointer"
+                            options={[
+                              { value: 'is equal to', label: 'is equal to' },
+                              { value: 'is not equal to', label: 'is not equal to' },
+                              { value: 'is greater than', label: 'is greater than' },
+                              { value: 'is less than', label: 'is less than' },
+                              { value: 'starts with', label: 'starts with' },
+                              { value: 'ends with', label: 'ends with' },
+                              { value: 'contains', label: 'contains' },
+                              { value: 'does not contain', label: 'does not contain' }
+                            ]}
+                          />
                         </div>
 
                         {/* Rule Value */}
@@ -656,15 +659,15 @@ const CollectionForm = () => {
             </h3>
 
             <div className="space-y-3">
-              <select
-                name="status"
+              <CustomDropdown
                 value={formData.status}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[14px] cursor-pointer font-semibold"
-              >
-                <option value="active">Active (Visible in catalogs)</option>
-                <option value="draft">Draft (Hidden from store)</option>
-              </select>
+                onChange={(val) => handleChange({ target: { name: 'status', value: val } })}
+                className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-[14px] cursor-pointer font-semibold"
+                options={[
+                  { value: 'active', label: 'Active (Visible in catalogs)' },
+                  { value: 'draft', label: 'Draft (Hidden from store)' }
+                ]}
+              />
             </div>
           </div>
 
