@@ -26,6 +26,7 @@ const ProductDetail = () => {
     const { formatPrice } = useCurrency();
     const [selectedVariant, setSelectedVariant] = useState(null);
     const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
+    const [fetchedReviewCount, setFetchedReviewCount] = useState(null);
 
     // Scroll to top on ID change
     useEffect(() => {
@@ -281,8 +282,9 @@ const ProductDetail = () => {
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="flex text-[#0F8A5F] text-[15px] gap-0.5">
                                     {Array.from({ length: 5 }).map((_, i) => {
-                                        const hasReviews = product.ratingCount > 0 || product.reviewsCount > 0;
-                                        const actualRating = hasReviews ? Math.round(product.rating) : 0;
+                                        const displayCount = fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0);
+                                        const hasReviews = displayCount > 0;
+                                        const actualRating = hasReviews ? Math.round(product.rating || 5) : 0;
                                         return (
                                             <span key={i}>
                                                 {i < actualRating ? '★' : '☆'}
@@ -291,7 +293,7 @@ const ProductDetail = () => {
                                     })}
                                 </div>
                                 <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-medium underline ml-1 hover:text-[#214A9E]">
-                                    {product.ratingCount || product.reviewsCount || 0} {(product.ratingCount || product.reviewsCount) === 1 ? 'review' : 'reviews'}
+                                    {fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0)} {(fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0)) === 1 ? 'review' : 'reviews'}
                                 </a>
                             </div>
                             {/* Price */}
@@ -402,7 +404,7 @@ const ProductDetail = () => {
                 <ProductInfoSection product={product} activeBatch={activeBatch} />
 
                 {/* Product Reviews Section */}
-                <ProductReviewsSection product={product} />
+                <ProductReviewsSection product={product} onReviewsFetched={setFetchedReviewCount} />
 
                 {/* FAQ Section */}
                 <ProductFaqSection />

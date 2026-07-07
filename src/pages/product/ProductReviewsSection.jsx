@@ -5,7 +5,7 @@ import ReviewFilter from '../../components/reviews/ReviewFilter';
 import ReviewWizard from '../../components/reviews/ReviewWizard';
 import { apiService } from '../../services/api';
 
-const ProductReviewsSection = ({ product }) => {
+const ProductReviewsSection = ({ product, onReviewsFetched }) => {
     // Initial mock reviews data just in case API fails or is empty
     const initialReviews = [
         {
@@ -116,7 +116,13 @@ const ProductReviewsSection = ({ product }) => {
     const totalReviews = processedReviews.length;
     const averageRating = totalReviews > 0
         ? (processedReviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1)
-        : '0.0';
+        : "0.0";
+
+    useEffect(() => {
+        if (onReviewsFetched) {
+            onReviewsFetched(totalReviews);
+        }
+    }, [totalReviews, onReviewsFetched]);
 
     return (
         <div id="reviews" className="mt-16 max-w-[1440px] mx-auto text-left px-4" style={{ fontFamily: 'Poppins' }}>

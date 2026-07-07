@@ -85,7 +85,7 @@ const BatchList = () => {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto w-full">
+    <div className="w-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Batch Records</h1>
@@ -175,6 +175,9 @@ const BatchList = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {batches.filter(batch => {
+                if (filterStatus && batch.status !== filterStatus) return false;
+                if (filterCoaStatus && batch.coaStatus !== filterCoaStatus) return false;
+                if (filterProductId && batch.productId?._id !== filterProductId && batch.productId !== filterProductId) return false;
                 if (!searchQuery) return true;
                 const query = searchQuery.toLowerCase();
                 const matchBatchId = batch.batchId?.toLowerCase().includes(query);
@@ -189,6 +192,9 @@ const BatchList = () => {
                 </tr>
               ) : (
                 batches.filter(batch => {
+                  if (filterStatus && batch.status !== filterStatus) return false;
+                  if (filterCoaStatus && batch.coaStatus !== filterCoaStatus) return false;
+                  if (filterProductId && batch.productId?._id !== filterProductId && batch.productId !== filterProductId) return false;
                   if (!searchQuery) return true;
                   const query = searchQuery.toLowerCase();
                   const matchBatchId = batch.batchId?.toLowerCase().includes(query);

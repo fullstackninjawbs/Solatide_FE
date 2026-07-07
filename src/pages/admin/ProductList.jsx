@@ -198,6 +198,7 @@ const ProductList = () => {
             value={selectedCollection}
             onChange={setSelectedCollection}
             placeholder="All Collections"
+            align="right"
             options={[
               { value: '', label: 'All Collections' },
               ...collectionsList.map(col => ({ value: col._id, label: col.name }))

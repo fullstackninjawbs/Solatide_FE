@@ -167,8 +167,9 @@ export const apiService = {
   },
 
   // Batches (Admin)
-  getBatches: async () => {
-    return fetch(`${API_URL}/api/admin/batches`, {
+  getBatches: async (params) => {
+    const query = params ? `?${params}` : '';
+    return fetch(`${API_URL}/api/admin/batches${query}`, {
       headers: { ...getAuthHeaders() }
     });
   },
