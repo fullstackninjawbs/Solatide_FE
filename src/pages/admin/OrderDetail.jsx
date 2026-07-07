@@ -101,7 +101,7 @@ const OrderDetail = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6 p-8 max-w-[1200px] mx-auto animate-pulse">
+      <div className="space-y-6 w-full animate-pulse">
         <div className="h-10 bg-slate-200 rounded-xl w-72 mb-8" />
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
           <div className="space-y-6">
@@ -158,8 +158,8 @@ const OrderDetail = () => {
   const isUnfulfilled = fulfilStatus === 'unfulfilled';
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pb-24 font-sans text-slate-800">
-      <div className="max-w-[1140px] mx-auto px-8 pt-8">
+    <div className="space-y-6 font-sans text-slate-800 pb-24">
+      <div className="w-full">
 
         {/* ─── Header Section ─── */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
