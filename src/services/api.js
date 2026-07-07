@@ -250,5 +250,26 @@ export const apiService = {
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
     });
+  },
+
+  // ─── Customers (Admin) ─────────────────────────────────────────────────────────
+  getAdminCustomers: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/customer${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAdminCustomerById: async (id) => {
+    return fetch(`${API_URL}/api/admin/customer/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  updateAdminCustomer: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/customer/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
   }
 };

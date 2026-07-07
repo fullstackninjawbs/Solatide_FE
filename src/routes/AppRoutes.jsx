@@ -38,6 +38,8 @@ import CheckoutFailure from '../pages/checkout/CheckoutFailure'
 import OrderList from '../pages/admin/OrderList'
 import OrderDetail from '../pages/admin/OrderDetail'
 import OrderStatus from '../pages/checkout/OrderStatus'
+import CustomerList from '../pages/admin/CustomerList'
+import CustomerDetail from '../pages/admin/CustomerDetail'
 
 const AppRoutes = () => {
     return (
@@ -67,7 +69,8 @@ const AppRoutes = () => {
                 <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />
                 <Route path="orders/shipping-labels" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Shipping Labels (Phase 4)</div>} />
                 <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
-                <Route path="customers" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Customers Account Profiles (Phase 4)</div>} />
+                <Route path="customers" element={<CustomerList />} />
+                <Route path="customers/:id" element={<CustomerDetail />} />
                 <Route path="growth/reviews" element={<ReviewList />} />
                 <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                 <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
