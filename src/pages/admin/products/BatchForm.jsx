@@ -309,7 +309,7 @@ const BatchForm = () => {
   const selectedVariant = productVariants.find(v => v._id === formData.variantId);
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto w-full pb-24 font-sans text-left" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="p-6 md:p-8 w-full pb-24 font-sans text-left" style={{ fontFamily: 'Poppins, sans-serif' }}>
       
       {/* Header breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 font-medium">

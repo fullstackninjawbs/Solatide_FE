@@ -37,7 +37,7 @@ const CustomerList = () => {
     };
 
     return (
-        <div className="p-8 font-sans">
+        <div className="">
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
@@ -119,7 +119,7 @@ const CustomerList = () => {
                                             )}
                                         </td>
                                         <td className="py-4 px-6 text-right">
-                                            <Link 
+                                            <Link
                                                 to={`/admin/customers/${customer._id}`}
                                                 className="inline-flex items-center justify-center px-4 py-1.5 border border-gray-200 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                             >
