@@ -119,7 +119,7 @@ const BatchForm = () => {
             console.error('Failed to check current batch status:', e);
           }
         }
-        
+
         setFormData({
           ...batchData,
           productId: mappedProductId,
@@ -136,7 +136,7 @@ const BatchForm = () => {
           },
           customTests: batchData.customTests || []
         });
-        
+
         if (mappedProductId) {
           fetchVariantsForProduct(mappedProductId);
         }
@@ -212,7 +212,7 @@ const BatchForm = () => {
     const { name, value, type, checked } = e.target;
     const nextVal = type === 'checkbox' ? checked : value;
     setFormData(prev => ({ ...prev, [name]: nextVal }));
-    
+
     if (name === 'productId') {
       fetchVariantsForProduct(value);
       setFormData(prev => ({ ...prev, productId: value, variantId: '', variantSku: '' }));
@@ -221,7 +221,7 @@ const BatchForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.batchId || !formData.productId) {
       alert('Batch ID and Product are required');
       return;
@@ -234,14 +234,14 @@ const BatchForm = () => {
 
     try {
       setLoading(true);
-      
+
       let res;
       if (isEditMode) {
         res = await apiService.updateBatch(id, payload);
       } else {
         res = await apiService.createBatch(payload);
       }
-      
+
       const data = await res.json();
       if (data.success) {
         alert(`Batch ${isEditMode ? 'updated' : 'created'} successfully`);
@@ -310,12 +310,8 @@ const BatchForm = () => {
   const selectedVariant = productVariants.find(v => v._id === formData.variantId);
 
   return (
-<<<<<<< HEAD
     <div className="w-full pb-24 font-sans text-left" style={{ fontFamily: 'Poppins, sans-serif' }}>
-=======
-    <div className="p-6 md:p-8 w-full pb-24 font-sans text-left" style={{ fontFamily: 'Poppins, sans-serif' }}>
->>>>>>> 5bdff588a251d22684da5cc97d730b23c47c3782
-      
+
       {/* Header breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 font-medium">
         <Link to="/admin/batches" className="hover:text-blue-600 transition-colors">Batches</Link>
@@ -333,14 +329,14 @@ const BatchForm = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
+
         {/* Main Column (Left, 8 cols) */}
         <div className="lg:col-span-8 space-y-6">
-          
+
           {/* Basic Details Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
             <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Basic Details</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Batch ID *</label>
@@ -448,7 +444,7 @@ const BatchForm = () => {
           {/* COA Details Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
             <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">COA & Testing Information</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Link</label>
@@ -482,10 +478,10 @@ const BatchForm = () => {
               {renderBooleanSelector('Coa Includes Measured Content', 'includesMeasuredContent', formData.includesMeasuredContent)}
               {renderBooleanSelector('Coa Includes Endotoxin', 'includesEndotoxin', formData.includesEndotoxin)}
               {renderBooleanSelector('Coa Includes Sterility', 'includesSterility', formData.includesSterility)}
-              
+
               {renderBooleanSelector('Has Endotoxin Test', 'hasEndotoxinTest', formData.hasEndotoxinTest)}
               {renderBooleanSelector('Endotoxin Included in COA', 'endotoxinIncludedInCoa', formData.endotoxinIncludedInCoa)}
-              
+
               {formData.hasEndotoxinTest && (
                 <div className="py-2.5 pl-6 border-l-2 border-slate-200">
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Endotoxin Report URL</label>
@@ -525,7 +521,7 @@ const BatchForm = () => {
               <h2 className="text-base font-bold text-slate-850">COA Analytical Test Panel</h2>
               <p className="text-xs text-slate-500 mt-1">Specify which tests are included in this batch's COA panel and enter their results.</p>
             </div>
-            
+
             <div className="divide-y divide-slate-100 text-left">
               {[
                 { key: 'purityHplc', label: 'Purity (HPLC)', placeholder: 'e.g. 99.94%' },
@@ -539,11 +535,10 @@ const BatchForm = () => {
               ].map(({ key, label, placeholder, highlight }) => {
                 const testData = formData.tests?.[key] || { performed: false, result: '' };
                 return (
-                  <div 
-                    key={key} 
-                    className={`py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                      highlight ? 'bg-emerald-50/40 -mx-6 px-6 border-y border-emerald-100 my-1 first:mt-0 last:mb-0' : ''
-                    }`}
+                  <div
+                    key={key}
+                    className={`py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${highlight ? 'bg-emerald-50/40 -mx-6 px-6 border-y border-emerald-100 my-1 first:mt-0 last:mb-0' : ''
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -553,11 +548,10 @@ const BatchForm = () => {
                         onChange={() => handleTestToggle(key)}
                         className="w-4.5 h-4.5 text-blue-600 border-slate-350 rounded focus:ring-blue-500 cursor-pointer"
                       />
-                      <label 
-                        htmlFor={`test-${key}`} 
-                        className={`text-sm font-semibold cursor-pointer select-none flex items-center gap-2 ${
-                          highlight ? 'text-emerald-900 font-bold' : 'text-slate-700'
-                        }`}
+                      <label
+                        htmlFor={`test-${key}`}
+                        className={`text-sm font-semibold cursor-pointer select-none flex items-center gap-2 ${highlight ? 'text-emerald-900 font-bold' : 'text-slate-700'
+                          }`}
                       >
                         {label}
                         {highlight && (
@@ -567,7 +561,7 @@ const BatchForm = () => {
                         )}
                       </label>
                     </div>
-                    
+
                     {testData.performed && (
                       <div className="flex-1 max-w-md md:pl-4">
                         <input
@@ -658,11 +652,11 @@ const BatchForm = () => {
 
         {/* Sidebar Column (Right, 4 cols) */}
         <div className="lg:col-span-4 space-y-6">
-          
+
           {/* Status & Save Actions Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
             <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Publish Details</h2>
-            
+
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">Batch Status</label>
               <CustomDropdown
@@ -685,12 +679,12 @@ const BatchForm = () => {
                   </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     name="setAsCurrent"
-                    checked={formData.setAsCurrent} 
+                    checked={formData.setAsCurrent}
                     onChange={handleChange}
-                    className="sr-only peer" 
+                    className="sr-only peer"
                   />
                   <div className="w-10 h-5.5 bg-blue-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-350 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
@@ -727,7 +721,7 @@ const BatchForm = () => {
                 <HelpCircle className="w-4 h-4 text-slate-400 cursor-help" title="Associated product variants using this batch record" />
               </div>
             </div>
-            
+
             {selectedProduct ? (
               <div className="space-y-3">
                 <div className="bg-slate-50 border border-slate-150 rounded-xl p-3.5 flex items-start gap-3">
