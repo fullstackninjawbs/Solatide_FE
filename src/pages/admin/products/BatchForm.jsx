@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Info, HelpCircle, ExternalLink, Check, Trash2, ArrowLeft } from 'lucide-react';
+import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
 
 const BatchForm = () => {
@@ -364,35 +365,30 @@ const BatchForm = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Product *</label>
-                <select
-                  name="productId"
+                <CustomDropdown
                   value={formData.productId}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                  required
-                >
-                  <option value="">Select a product...</option>
-                  {products.map(p => (
-                    <option key={p._id} value={p._id}>{p.name}</option>
-                  ))}
-                </select>
+                  onChange={(val) => handleChange({ target: { name: 'productId', value: val } })}
+                  placeholder="Select a product..."
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                  options={[
+                    { value: '', label: 'Select a product...' },
+                    ...products.map(p => ({ value: p._id, label: p.name }))
+                  ]}
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Variant Selector (optional)</label>
-                <select
-                  name="variantId"
+                <CustomDropdown
                   value={formData.variantId}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                >
-                  <option value="">All variants (product-level)</option>
-                  {productVariants.map(v => (
-                    <option key={v._id} value={v._id}>
-                      {v.title} — {v.sku}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => handleChange({ target: { name: 'variantId', value: val } })}
+                  placeholder="All variants (product-level)"
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                  options={[
+                    { value: '', label: 'All variants (product-level)' },
+                    ...productVariants.map(v => ({ value: v._id, label: `${v.title} — ${v.sku}` }))
+                  ]}
+                />
               </div>
 
               <div>
@@ -464,15 +460,15 @@ const BatchForm = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Status</label>
-                <select
-                  name="coaStatus"
+                <CustomDropdown
                   value={formData.coaStatus}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved / Available</option>
-                </select>
+                  onChange={(val) => handleChange({ target: { name: 'coaStatus', value: val } })}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                  options={[
+                    { value: 'pending', label: 'Pending' },
+                    { value: 'approved', label: 'Approved / Available' }
+                  ]}
+                />
               </div>
             </div>
 
@@ -663,15 +659,15 @@ const BatchForm = () => {
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">Batch Status</label>
-              <select
-                name="status"
+              <CustomDropdown
                 value={formData.status}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer font-medium"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive / Archived</option>
-              </select>
+                onChange={(val) => handleChange({ target: { name: 'status', value: val } })}
+                className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer font-medium"
+                options={[
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive / Archived' }
+                ]}
+              />
             </div>
 
             <div className="bg-[#f0f7ff]/70 border border-[#214A9E]/10 rounded-xl p-4 flex flex-col gap-3">
