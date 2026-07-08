@@ -136,6 +136,6 @@ body,
 }
 
 .jodit-status-bar {
-  display: none !important; /* Hide the footer status bar for a clean shopify look */
+  display: none !important;
+  /* Hide the footer status bar for a clean shopify look */
 }
-

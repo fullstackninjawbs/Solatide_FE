@@ -10,8 +10,8 @@ import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_i
 const HeroSection = () => {
     return (
 
-        <section className="relative w-full overflow-hidden bg-white flex flex-col sm:flex-row items-stretch sm:items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-[92px] sm:pt-[100px] md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
-            <div className="absolute inset-0 z-0 hidden lg:block">
+        <section className="relative w-full overflow-hidden bg-white flex flex-col sm:flex-row items-stretch sm:items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-0 md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
+            <div className="absolute inset-0 z-0 hidden sm:block">
                 <img
                     src={heroImageWebp}
                     className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
@@ -22,9 +22,6 @@ const HeroSection = () => {
                 />
 
             </div>
-
-            <div className="lg:hidden absolute inset-0 z-0 bg-white" />
-
             {/* Mobile Hero Image (Zero margins, touches header and side edges, hidden on sm and above) */}
             <div className="sm:hidden w-full overflow-hidden shrink-0 relative z-10">
                 <img

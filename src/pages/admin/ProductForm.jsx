@@ -4,7 +4,7 @@ import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload, X, Layers
 import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
-
+import CustomDropdown from '../../components/CustomDropdown';
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -921,13 +921,15 @@ const ProductForm = () => {
                     <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                       Package Template
                     </label>
-                    <select
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px]"
-                      defaultValue="default"
-                    >
-                      <option value="default">Store default • Padded Mailer - 12 × 18 × 2 cm, 10 g</option>
-                      <option value="box">Cardboard Box - 15 × 15 × 10 cm, 30 g</option>
-                    </select>
+                    <CustomDropdown
+                      options={[
+                        { value: 'default', label: 'Store default • Padded Mailer - 12 × 18 × 2 cm, 10 g' },
+                        { value: 'box', label: 'Cardboard Box - 15 × 15 × 10 cm, 30 g' }
+                      ]}
+                      value={formData.packageTemplate || 'default'}
+                      onChange={(val) => setFormData(prev => ({ ...prev, packageTemplate: val }))}
+                      className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px] cursor-pointer"
+                    />
                   </div>
 
                   <div className="sm:col-span-4">
@@ -941,17 +943,18 @@ const ProductForm = () => {
                         value={formData.weightGrams}
                         onChange={handleChange}
                         step="0.001"
-                        className="w-full px-3 py-2.5 rounded-l-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px]"
+                        className="w-full px-3 py-2.5 rounded-l-xl bg-slate-50 border border-slate-200 border-r-0 text-slate-850 text-[13.5px]"
                       />
-                      <select
-                        name="weightUnit"
-                        value={formData.weightUnit}
-                        onChange={handleChange}
-                        className="px-3 bg-slate-100 border border-slate-200 border-l-0 rounded-r-xl text-[13.5px] cursor-pointer"
-                      >
-                        <option value="kg">kg</option>
-                        <option value="g">g</option>
-                      </select>
+                      <CustomDropdown
+                        options={[
+                          { value: 'kg', label: 'kg' },
+                          { value: 'g', label: 'g' }
+                        ]}
+                        value={formData.weightUnit || 'kg'}
+                        onChange={(val) => setFormData(prev => ({ ...prev, weightUnit: val }))}
+                        className="flex items-center justify-between gap-2 px-3 py-2.5 min-w-[70px] bg-slate-100 border border-slate-200 rounded-r-xl text-[13.5px] cursor-pointer"
+                        align="right"
+                      />
                     </div>
                   </div>
                 </div>
@@ -1439,15 +1442,15 @@ const ProductForm = () => {
               Product Status
             </h3>
 
-            <select
-              name="published"
+            <CustomDropdown
+              options={[
+                { value: 'true', label: 'Active (Visible in Store)' },
+                { value: 'false', label: 'Draft (Hidden in Store)' }
+              ]}
               value={formData.published ? 'true' : 'false'}
-              onChange={(e) => setFormData(prev => ({ ...prev, published: e.target.value === 'true' }))}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px] font-bold cursor-pointer"
-            >
-              <option value="true">Active (Visible in Store)</option>
-              <option value="false">Draft (Hidden in Store)</option>
-            </select>
+              onChange={(val) => setFormData(prev => ({ ...prev, published: val === 'true' }))}
+              className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px] font-bold cursor-pointer focus:outline-none focus:border-brand-blue"
+            />
           </div>
 
 
@@ -1463,18 +1466,18 @@ const ProductForm = () => {
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Product Type
                 </label>
-                <select
-                  name="productType"
+                <CustomDropdown
+                  options={[
+                    { value: 'Research Peptides', label: 'Research Peptides' },
+                    { value: 'Laboratory Supplies', label: 'Laboratory Supplies' },
+                    { value: 'Biochemicals', label: 'Biochemicals' },
+                    { value: 'Reagents & Solvents', label: 'Reagents & Solvents' },
+                    { value: 'Other', label: 'Other' }
+                  ]}
                   value={formData.productType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
-                >
-                  <option value="Research Peptides">Research Peptides</option>
-                  <option value="Laboratory Supplies">Laboratory Supplies</option>
-                  <option value="Biochemicals">Biochemicals</option>
-                  <option value="Reagents & Solvents">Reagents & Solvents</option>
-                  <option value="Other">Other</option>
-                </select>
+                  onChange={(val) => setFormData(prev => ({ ...prev, productType: val }))}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
+                />
               </div>
 
               {/* Collections Dropdown */}
@@ -1482,26 +1485,26 @@ const ProductForm = () => {
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                   Collections
                 </label>
-                <select
+                <CustomDropdown
+                  options={[
+                    { value: '', label: 'Add to collection...' },
+                    ...collectionsList
+                      .filter(col => !formData.collections.includes(col._id))
+                      .map(col => ({
+                        value: col._id,
+                        label: `${col.name}${col.type === 'automated' ? ' (Automated)' : ' (Manual)'}`
+                      }))
+                  ]}
                   value=""
-                  onChange={(e) => {
-                    const colId = e.target.value;
+                  onChange={(val) => {
+                    const colId = val;
                     if (colId && !formData.collections.includes(colId)) {
                       toggleCollection(colId);
                     }
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
-                >
-                  <option value="" disabled>Add to collection...</option>
-                  {collectionsList
-                    .filter(col => !formData.collections.includes(col._id))
-                    .map(col => (
-                      <option key={col._id} value={col._id}>
-                        {col.name}{col.type === 'automated' ? ' (Automated)' : ' (Manual)'}
-                      </option>
-                    ))
-                  }
-                </select>
+                  placeholder="Add to collection..."
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
+                />
 
                 {/* Selected Collections Display */}
                 {formData.collections.length > 0 && (
