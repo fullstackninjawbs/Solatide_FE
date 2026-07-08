@@ -36,6 +36,7 @@ const ProductForm = () => {
     price: '',
     compareAtPrice: '',
     category: 'Metabolic Pathway Research',
+    researchCategory: 'laboratory-support',
     tag: '', // Badge text
     inStock: true,
     sku: '',
@@ -238,11 +239,12 @@ const ProductForm = () => {
             name: product.name || '',
             description: product.description || '',
             price: product.price || '',
+            compareAtPrice: product.compareAtPrice || '',
             category: product.category || 'Metabolic Pathway Research',
+            researchCategory: product.researchCategory || 'laboratory-support',
             tag: product.tag || '',
             inStock: product.inStock !== undefined ? product.inStock : true,
             sku: product.sku || '',
-            compareAtPrice: product.compareAtPrice || '',
             stockQuantity: product.stockQuantity || 0,
             lowStockThreshold: product.lowStockThreshold || 5,
             imageUrl: product.imageUrl || '',
@@ -486,6 +488,7 @@ const ProductForm = () => {
       stockQuantity: parseInt(formData.stockQuantity, 10),
       lowStockThreshold: parseInt(formData.lowStockThreshold, 10),
       category: formData.category,
+      researchCategory: formData.researchCategory,
       imageUrl: finalImageUrl,
       images: finalImages,
       sku: formData.sku,
@@ -1475,6 +1478,24 @@ const ProductForm = () => {
                   ]}
                   value={formData.productType}
                   onChange={(val) => setFormData(prev => ({ ...prev, productType: val }))}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
+                />
+              </div>
+
+              {/* Research Category */}
+              <div>
+                <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  Research Category
+                </label>
+                <CustomDropdown
+                  options={[
+                    { value: 'metabolic-pathway', label: 'Metabolic Pathway Research' },
+                    { value: 'tissue-cellular', label: 'Tissue & Cellular Research' },
+                    { value: 'dermal-pigmentation', label: 'Dermal & Pigmentation Research' },
+                    { value: 'laboratory-support', label: 'Laboratory Support' }
+                  ]}
+                  value={formData.researchCategory || 'laboratory-support'}
+                  onChange={(val) => setFormData(prev => ({ ...prev, researchCategory: val }))}
                   className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue transition-all text-[13.5px] cursor-pointer"
                 />
               </div>

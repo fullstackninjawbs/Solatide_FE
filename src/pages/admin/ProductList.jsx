@@ -228,6 +228,7 @@ const ProductList = () => {
                   <th className="py-4">Status</th>
                   <th className="py-4">Inventory</th>
                   <th className="py-4">Category</th>
+                  <th className="py-4">Research Focus</th>
                   <th className="py-4">Channels</th>
                   <th className="py-4">Product type</th>
                   <th className="py-4">Vendor</th>
@@ -279,6 +280,13 @@ const ProductList = () => {
                     </td>
                     <td className="py-3.5 text-slate-600">
                       {product.category?.includes(' > ') ? product.category.split(' > ').pop() : (product.category || 'Uncategorized')}
+                    </td>
+                    <td className="py-3.5 text-slate-600 font-medium">
+                      {product.researchCategory === 'metabolic-pathway' ? 'Metabolic Pathway' :
+                       product.researchCategory === 'tissue-cellular' ? 'Tissue & Cellular' :
+                       product.researchCategory === 'dermal-pigmentation' ? 'Dermal & Pigmentation' :
+                       product.researchCategory === 'laboratory-support' ? 'Laboratory Support' : 
+                       'None'}
                     </td>
                     <td className="py-3.5 font-semibold text-slate-700">2</td>
                     <td className="py-3.5 text-slate-600">{product.productType || 'Research Peptides'}</td>

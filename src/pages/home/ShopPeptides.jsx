@@ -103,19 +103,19 @@ const ShopPeptides = () => {
 
                                         {/* Badges */}
                                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
-                                            {(product.status === 'In Stock' || (product.inStock && !product.status)) && (
+                                            {product.inStock && product.status !== 'Sale' && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
                                                     <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
                                                     In Stock
                                                 </span>
                                             )}
-                                            {(product.status === 'Sold Out' || (!product.inStock && !product.status)) && (
+                                            {!product.inStock && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></div>
+                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
                                                     Sold Out
                                                 </span>
                                             )}
-                                            {product.status === 'Sale' && (
+                                            {product.inStock && product.status === 'Sale' && (
                                                 <span className="inline-flex items-center rounded-md bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-amber-700 border border-amber-200 shadow-sm whitespace-nowrap">
                                                     Sale
                                                 </span>
@@ -141,8 +141,8 @@ const ShopPeptides = () => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
-                                                className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                disabled={!product.inStock && product.status === 'Sold Out'}
+                                                className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                disabled={!product.inStock}
                                             >
                                                 <ShoppingCart className="h-5 w-5" />
                                             </button>

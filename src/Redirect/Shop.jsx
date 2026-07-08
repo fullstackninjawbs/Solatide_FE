@@ -11,10 +11,10 @@ const Shop = () => {
 
     // Map query to category name
     const queryMap = {
-        'Metabolic': 'Metabolic Pathway Research',
-        'Tissue': 'Tissue & Cellular Research',
-        'Dermal': 'Dermal & Pigmentation Research',
-        'Solutions': 'Research Solutions'
+        'metabolic-pathway': 'Metabolic Pathway Research',
+        'tissue-cellular': 'Tissue & Cellular Research',
+        'dermal-pigmentation': 'Dermal & Pigmentation Research',
+        'laboratory-support': 'Laboratory Support'
     };
 
     const selectedCategory = queryMap[categoryQuery] || 'All Products';
@@ -22,10 +22,10 @@ const Shop = () => {
     const setSelectedCategory = (category) => {
         // Find abbreviation from category name
         const revMap = {
-            'Metabolic Pathway Research': 'Metabolic',
-            'Tissue & Cellular Research': 'Tissue',
-            'Dermal & Pigmentation Research': 'Dermal',
-            'Research Solutions': 'Solutions',
+            'Metabolic Pathway Research': 'metabolic-pathway',
+            'Tissue & Cellular Research': 'tissue-cellular',
+            'Dermal & Pigmentation Research': 'dermal-pigmentation',
+            'Laboratory Support': 'laboratory-support',
             'All Products': null
         };
         const abbr = revMap[category];

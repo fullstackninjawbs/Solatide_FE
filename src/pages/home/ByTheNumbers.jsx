@@ -1,7 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const ByTheNumbers = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    }
+
     return (
         <section className="relative w-full bg-[#f4f7fa] py-12 lg:py-16 overflow-hidden">
             <div className="main-container">
@@ -27,7 +34,7 @@ const ByTheNumbers = () => {
                 {/* Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     {/* Card 1 */}
-                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300">
+                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] cursor-pointer border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300" onClick={() => { handleNavigate('/shop?category=metabolic-pathway') }}>
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
@@ -46,7 +53,7 @@ const ByTheNumbers = () => {
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">Tirzepatide</span>
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">Cagrilintide</span>
                             </div>
-                            <Link to="/shop" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
+                            <Link to="/shop?category=metabolic-pathway" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
                                 Shop
                             </Link>
                         </div>
@@ -55,7 +62,7 @@ const ByTheNumbers = () => {
                     </div>
 
                     {/* Card 2 */}
-                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300">
+                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] cursor-pointer border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300" onClick={() => { handleNavigate('/shop?category=tissue-cellular') }}>
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
@@ -74,7 +81,7 @@ const ByTheNumbers = () => {
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">TB-500</span>
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">SS-31</span>
                             </div>
-                            <Link to="/shop" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
+                            <Link to="/shop?category=tissue-cellular" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
                                 Shop
                             </Link>
                         </div>
@@ -83,7 +90,7 @@ const ByTheNumbers = () => {
                     </div>
 
                     {/* Card 3 */}
-                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300">
+                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] cursor-pointer border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300" onClick={() => { handleNavigate('/shop?category=dermal-pigmentation') }}>
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
@@ -102,7 +109,7 @@ const ByTheNumbers = () => {
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">KPV</span>
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">5-Amino-1MQ</span>
                             </div>
-                            <Link to="/shop" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
+                            <Link to="/shop?category=dermal-pigmentation" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
                                 Shop
                             </Link>
                         </div>
@@ -111,7 +118,7 @@ const ByTheNumbers = () => {
                     </div>
 
                     {/* Card 4 */}
-                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300">
+                    <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] cursor-pointer border border-slate-100 flex flex-col text-left relative overflow-hidden group transition-all duration-300" onClick={() => { handleNavigate('/shop?category=laboratory-support') }}>
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
@@ -130,7 +137,7 @@ const ByTheNumbers = () => {
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">COA Reports</span>
                                 <span className="bg-[#F0F7FF] text-[#1a4494] text-[10.5px] font-bold px-2.5 py-1 rounded-md">Calculator</span>
                             </div>
-                            <Link to="/shop" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
+                            <Link to="/shop?category=laboratory-support" className="inline-flex items-center justify-center bg-[#EAF7FD] text-[#00ADEE] font-bold text-[12px] px-5 py-2.5 rounded-full hover:bg-[#00ADEE] hover:text-white transition-colors self-start shadow-sm">
                                 Shop
                             </Link>
                         </div>

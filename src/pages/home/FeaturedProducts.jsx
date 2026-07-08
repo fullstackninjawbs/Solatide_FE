@@ -146,8 +146,8 @@ const FeaturedProducts = () => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
-                                                className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${(!product.inStock && product.status === 'Sold Out') ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                disabled={!product.inStock && product.status === 'Sold Out'}
+                                                className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                disabled={!product.inStock}
                                             >
                                                 <ShoppingCart className="h-5 w-5" />
                                             </button>

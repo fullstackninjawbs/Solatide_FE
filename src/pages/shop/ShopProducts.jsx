@@ -43,7 +43,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         'Metabolic Pathway Research',
         'Tissue & Cellular Research',
         'Dermal & Pigmentation Research',
-        'Research Solutions'
+        'Laboratory Support'
     ];
 
     const [productsList, setProductsList] = useState([]);
@@ -54,8 +54,16 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
+                const categorySlugMap = {
+                    'Metabolic Pathway Research': 'metabolic-pathway',
+                    'Tissue & Cellular Research': 'tissue-cellular',
+                    'Dermal & Pigmentation Research': 'dermal-pigmentation',
+                    'Laboratory Support': 'laboratory-support',
+                    'All Products': 'All Products'
+                };
+                const mappedCategory = categorySlugMap[selectedCategory] || selectedCategory;
                 const response = await apiService.getProducts(
-                    `category=${encodeURIComponent(selectedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
+                    `category=${encodeURIComponent(mappedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
                 );
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
@@ -164,10 +172,25 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                 <div className="flex-grow w-full">
                     {/* Toolbar */}
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-                        <span className="text-[15px] text-[#1E1E1E]">
-                            <span className="font-semibold">{productsList.length}</span> <span className="text-slate-500 font-normal">items</span>
-                        </span>
-
+                        <div className="flex items-center gap-4">
+                            <span className="text-[15px] text-[#1E1E1E]">
+                                <span className="font-semibold">{productsList.length}</span> <span className="text-slate-500 font-normal">items</span>
+                            </span>
+                            {/* Active Filter Indicator */}
+                            {selectedCategory !== 'All Products' && (
+                                <div className="flex items-center gap-2 bg-[#EAF7FD] border border-[#00ADEE]/30 px-3 py-1.5 rounded-full">
+                                    <span className="text-[13px] font-bold text-[#00ADEE]">{selectedCategory}</span>
+                                    <button
+                                        onClick={() => setSelectedCategory('All Products')}
+                                        className="text-[#00ADEE] hover:text-[#008bc7] transition-colors focus:outline-none"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         <div className="flex items-center gap-3">
                             {/* Sort Dropdown */}
                             <div className="relative" ref={dropdownRef}>
@@ -267,19 +290,19 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         {/* Badges */}
                                         {/* Badges — stacked vertically on mobile to avoid overlap */}
                                         <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
-                                            {product.status === 'In Stock' && (
+                                            {product.inStock && product.status !== 'Sale' && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
                                                     <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
                                                     In Stock
                                                 </span>
                                             )}
-                                            {product.status === 'Sold Out' && (
+                                            {!product.inStock && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></div>
+                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
                                                     Sold Out
                                                 </span>
                                             )}
-                                            {product.status === 'Sale' && (
+                                            {product.inStock && product.status === 'Sale' && (
                                                 <span className="inline-flex items-center rounded-md bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-amber-700 border border-amber-200 shadow-sm whitespace-nowrap">
                                                     Sale
                                                 </span>
