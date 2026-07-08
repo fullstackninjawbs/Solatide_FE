@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
-import mobileHeroImageWebp from '../../assets/images/mobile_products_img.png'
+import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
 import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.png'
 import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.png'
 import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.png'
@@ -17,8 +17,9 @@ const HeroSection = () => {
                     className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
                     alt="Solatide Biosciences – Research Grade Peptides"
                     draggable={false}
+                    loading="eager"
                     fetchPriority="high"
-                    decoding="async"
+                    decoding="sync"
                 />
 
             </div>
@@ -28,8 +29,9 @@ const HeroSection = () => {
                     src={mobileHeroImageWebp}
                     className="w-full h-auto object-cover"
                     alt="Solatide Biosciences – Research Grade Peptides"
+                    loading="eager"
                     fetchPriority="high"
-                    decoding="async"
+                    decoding="sync"
                 />
             </div>
 
