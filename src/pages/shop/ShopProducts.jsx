@@ -83,7 +83,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
             <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Filters Sidebar */}
-                <aside className="w-full lg:w-[340px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 text-left">
+                <aside className="w-full lg:w-[260px] bg-white rounded-3xl p-5 border border-[#E8E8E8] shadow-sm shrink-0 text-left lg:sticky lg:top-28 h-fit">
                     <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
                         <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
                         <button
@@ -99,9 +99,9 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                     {/* Availability Filter */}
                     <div className="mb-8">
-                        <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Availability</h3>
-                        <div className="space-y-2">
-                            <label className={`flex items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                        <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Availability</h3>
+                        <div className="space-y-1.5">
+                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
                                     name="availability"
@@ -109,17 +109,17 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     onChange={() => setAvailability('In Stock')}
                                     className="sr-only"
                                 />
-                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'In Stock'
+                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'In Stock'
                                     ? 'border-2 border-[#214A9E] bg-white'
                                     : 'border border-slate-400 bg-white group-hover:border-slate-600'
                                     }`}>
                                     {availability === 'In Stock' && (
-                                        <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
                                     )}
                                 </div>
                                 <span>In Stock</span>
                             </label>
-                            <label className={`hidden items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                            <label className={`hidden items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
                                     name="availability"
@@ -127,12 +127,12 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     onChange={() => setAvailability('Out of Stock')}
                                     className="sr-only"
                                 />
-                                <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'Out of Stock'
+                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'Out of Stock'
                                     ? 'border-2 border-[#214A9E] bg-white'
                                     : 'border border-slate-400 bg-white group-hover:border-slate-600'
                                     }`}>
                                     {availability === 'Out of Stock' && (
-                                        <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
                                     )}
                                 </div>
                                 <span>Out of Stock</span>
@@ -142,10 +142,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                     {/* Category Filter */}
                     <div>
-                        <h3 className="text-sm font-bold text-[#1E1E1E] mb-4 uppercase tracking-wider">Category</h3>
-                        <div className="space-y-2">
+                        <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Category</h3>
+                        <div className="space-y-1.5">
                             {categories.map(category => (
-                                <label key={category} className={`flex items-center gap-3 cursor-pointer group text-[15px] rounded-xl px-4 py-3 transition-all border ${selectedCategory === category ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                                <label key={category} className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${selectedCategory === category ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                     <input
                                         type="radio"
                                         name="category"
@@ -153,12 +153,12 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         onChange={() => setSelectedCategory(category)}
                                         className="sr-only"
                                     />
-                                    <div className={`h-5 w-5 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category
+                                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category
                                         ? 'border-2 border-[#214A9E] bg-white'
                                         : 'border border-slate-400 bg-white group-hover:border-slate-600'
                                         }`}>
                                         {selectedCategory === category && (
-                                            <div className="h-2.5 w-2.5 rounded-full bg-[#214A9E]" />
+                                            <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
                                         )}
                                     </div>
                                     <span>{category}</span>
