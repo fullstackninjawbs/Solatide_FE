@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -245,7 +244,7 @@ const ProductList = () => {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-slate-50 border border-slate-150 overflow-hidden flex items-center justify-center p-1.5 shrink-0">
                           <img
-                            src={product.images?.[0]?.url || product.imageUrl || productVialImage}
+                            src={product.images?.[0]?.url || product.imageUrl}
                             alt={product.name}
                             className="h-full w-full object-contain"
                           />

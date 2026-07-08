@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload, X, Layers, Globe, Eye, HelpCircle } from 'lucide-react';
-import productVialImage from '../../assets/images/homePageFirstSection.png';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
 import CustomDropdown from '../../components/CustomDropdown';
