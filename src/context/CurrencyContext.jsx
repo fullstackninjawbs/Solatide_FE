@@ -1,22 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Country } from 'country-state-city';
 
 const CurrencyContext = createContext();
 
-export const countriesList = [
-  { name: 'Australia', code: 'AUD', countryCode: 'AU', symbol: '$', locale: 'en-AU' },
-  { name: 'United States', code: 'USD', countryCode: 'US', symbol: '$', locale: 'en-US' },
-  { name: 'United Kingdom', code: 'GBP', countryCode: 'GB', symbol: '£', locale: 'en-GB' },
-  { name: 'Canada', code: 'CAD', countryCode: 'CA', symbol: '$', locale: 'en-CA' },
-  { name: 'Euro Zone', code: 'EUR', countryCode: 'EU', symbol: '€', locale: 'en-IE' },
-  { name: 'New Zealand', code: 'NZD', countryCode: 'NZ', symbol: '$', locale: 'en-NZ' },
-  { name: 'India', code: 'INR', countryCode: 'IN', symbol: 'Rs. ', locale: 'en-IN' },
-  { name: 'South Africa', code: 'ZAR', countryCode: 'ZA', symbol: 'R ', locale: 'en-ZA' },
-  { name: 'Switzerland', code: 'CHF', countryCode: 'CH', symbol: 'CHF ', locale: 'de-CH' },
-  { name: 'China', code: 'CNY', countryCode: 'CN', symbol: '¥', locale: 'zh-CN' },
-  { name: 'Japan', code: 'JPY', countryCode: 'JP', symbol: '¥', locale: 'ja-JP' },
-  { name: 'Denmark', code: 'DKK', countryCode: 'DK', symbol: 'kr. ', locale: 'da-DK' },
-  { name: 'Singapore', code: 'SGD', countryCode: 'SG', symbol: 'S$', locale: 'en-SG' },
-];
+const getSymbol = (currencyCode, locale) => {
+  try {
+    const parts = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currencyCode,
+      currencyDisplay: 'narrowSymbol'
+    }).formatToParts(1);
+    const symbolPart = parts.find(p => p.type === 'currency');
+    return symbolPart ? symbolPart.value : currencyCode;
+  } catch(e) {
+    return currencyCode;
+  }
+}
+
+export const countriesList = Country.getAllCountries()
+  .filter(c => c.currency)
+  .map(c => ({
+    name: c.name,
+    code: c.currency,
+    countryCode: c.isoCode,
+    symbol: getSymbol(c.currency, `en-${c.isoCode}`),
+    locale: `en-${c.isoCode}`,
+  }));
 
 const fallbackRates = {
   AUD: 1.0,
@@ -44,7 +53,7 @@ export const CurrencyProvider = ({ children }) => {
         console.error(e);
       }
     }
-    return countriesList[0]; // Default to Australia (AUD)
+    return countriesList.find(c => c.countryCode === 'AU') || countriesList[0]; // Default to Australia (AUD)
   });
 
   const [rates, setRates] = useState(() => {
