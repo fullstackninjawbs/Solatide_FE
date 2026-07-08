@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
-import mobileHeroImageWebp from '../../assets/images/Gemini_Generated_Image_m88804m88804m888 1 (1).webp'
+import mobileHeroImageWebp from '../../assets/images/mobile_products_img.png'
 import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.png'
 import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.png'
 import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.png'
@@ -11,7 +11,7 @@ const HeroSection = () => {
     return (
 
         <section className="relative w-full overflow-hidden bg-white flex flex-col sm:flex-row items-stretch sm:items-center min-h-[640px] sm:min-h-[700px] lg:min-h-[860px] pt-0 md:pt-[110px] lg:pt-[130px] pb-[60px] sm:pb-[80px]">
-            <div className="absolute inset-0 z-0 hidden sm:block">
+            <div className="absolute inset-0 z-0 hidden lg:block">
                 <img
                     src={heroImageWebp}
                     className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
@@ -23,7 +23,7 @@ const HeroSection = () => {
 
             </div>
             {/* Mobile Hero Image (Zero margins, touches header and side edges, hidden on sm and above) */}
-            <div className="sm:hidden w-full overflow-hidden shrink-0 relative z-10">
+            <div className="lg:hidden w-full overflow-hidden shrink-0 relative z-10">
                 <img
                     src={mobileHeroImageWebp}
                     className="w-full h-auto object-cover"
@@ -38,7 +38,7 @@ const HeroSection = () => {
 
                     <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-10">
 
-                        <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-semibold tracking-tight text-[#1a4494] leading-[1.12] mb-5">
+                        <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-5">
                             Your Trusted Source For<br />Research Grade Peptides.
                         </h1>
 

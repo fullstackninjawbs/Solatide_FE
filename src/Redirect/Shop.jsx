@@ -37,14 +37,14 @@ const Shop = () => {
     };
 
     return (
-        <div className="w-full bg-[#f8fafc] min-h-screen">
+        <div className="w-full min-h-screen">
             <ShopBanner />
-            <ShopProducts 
-                selectedCategory={selectedCategory} 
-                setSelectedCategory={setSelectedCategory} 
+            <ShopProducts
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
             />
-            <ProductCategories 
-                selectedCategory={selectedCategory} 
+            <ProductCategories
+                selectedCategory={selectedCategory}
             />
             <ShopFaq />
         </div>

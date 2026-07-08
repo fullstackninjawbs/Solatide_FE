@@ -9,11 +9,11 @@ const ByTheNumbers = () => {
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-12 text-left">
                     <div className="w-full lg:w-1/2">
                         <div className="flex items-center gap-2 mb-3">
-                            <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
+                            <span className="text-[#00E5FF] text-[14px] font-bold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 Product Categories
                             </span>
                         </div>
-                        <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif]">
+                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif]">
                             Browse by <span className="text-[#1a4494]">Research</span><br />Focus
                         </h2>
                     </div>

@@ -9,11 +9,11 @@ const QualityAssurance = () => {
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-12 text-left">
                     <div className="w-full lg:w-[45%]">
                         <div className="mb-3">
-                            <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
+                            <span className="text-[#00E5FF] text-[14px] font-bold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 Quality Assurance
                             </span>
                         </div>
-                        <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif]">
+                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif]">
                             Manufacturer QC and<br />
                             <span className="text-[#1a4494]">Release Standards</span>
                         </h2>

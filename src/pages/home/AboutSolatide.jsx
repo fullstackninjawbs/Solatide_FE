@@ -23,12 +23,12 @@ export default function AboutSolatide() {
 
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center pt-2">
                         <div className="flex items-center gap-2 mb-3">
-                            <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
+                            <span className="text-[#00E5FF] text-[14px] font-bold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
                                 About Solatide
                             </span>
                         </div>
 
-                        <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif] mb-6">
+                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif] mb-6">
                             Built on Science.<br />
                             <span className="text-[#1a4494]">Driven by Trust.</span>
                         </h2>

@@ -15,7 +15,7 @@ const WhySolatide = () => {
                         </div>
 
 
-                        <h2 className="text-[36px] sm:text-[48px] font-semibold text-[#1E1E1E] leading-tight font-['Anek_Telugu',sans-serif] mb-6">
+                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-tight font-['Anek_Telugu',sans-serif] mb-6">
                             We Do the Testing, So <br />
                             <span className="text-[#1a4494]">You Don't Have To</span>
                         </h2>

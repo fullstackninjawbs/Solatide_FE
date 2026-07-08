@@ -58,10 +58,10 @@ const CoaBanner = () => {
 
     return (
         <>
-            <section className="w-full bg-[#F5F9FF] py-12 text-center border-b border-slate-200/60">
+            <section className="w-full pt-12 text-center">
                 <div className="main-container">
                     <h1
-                        className="text-[48px] font-semibold text-[#214A9E] leading-[1] tracking-[0px] mb-5"
+                        className="text-[48px] font-bold text-[#214A9E] leading-[1] tracking-[0px] mb-5"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                     >
                         COA &amp; Lab Testing
