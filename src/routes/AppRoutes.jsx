@@ -44,6 +44,8 @@ const OrderStatus = lazy(() => import('../pages/checkout/OrderStatus'))
 const CustomerList = lazy(() => import('../pages/admin/CustomerList'))
 const CustomerDetail = lazy(() => import('../pages/admin/CustomerDetail'))
 const StoreSettings = lazy(() => import('../pages/admin/settings/StoreSettings'))
+const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
+const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
 
 const AppRoutes = () => {
     return (
@@ -76,6 +78,9 @@ const AppRoutes = () => {
                     <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
                     <Route path="customers" element={<CustomerList />} />
                     <Route path="customers/:id" element={<CustomerDetail />} />
+                    <Route path="discounts" element={<DiscountList />} />
+                    <Route path="discounts/new" element={<DiscountForm />} />
+                    <Route path="discounts/edit/:id" element={<DiscountForm />} />
                     <Route path="growth/reviews" element={<ReviewList />} />
                     <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                     <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />

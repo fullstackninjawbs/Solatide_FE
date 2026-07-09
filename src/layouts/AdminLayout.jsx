@@ -77,16 +77,10 @@ const AdminLayout = () => {
       ]
     },
     { name: 'Batch Records', path: '/admin/batches', icon: FileText, roles: ['super_admin', 'operations', 'admin'] },
-    { name: 'COAs & Batches', path: '/admin/coas', icon: FileText, roles: ['super_admin', 'operations', 'content_manager', 'admin'] },
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Discounts', path: '/admin/discounts', icon: Tag, roles: ['super_admin', 'operations', 'admin'] },
-    { name: 'Pages', path: '/admin/content/pages', icon: FileText, roles: ['super_admin', 'content_manager', 'admin'] },
-    { name: 'Research Library', path: '/admin/content/research-library', icon: BookOpen, roles: ['super_admin', 'content_manager', 'admin'] },
-    { name: 'Compound Database', path: '/admin/content/compound-database', icon: Database, roles: ['super_admin', 'content_manager', 'admin'] },
-    { name: 'Blog', path: '/admin/content/blog', icon: Edit3, roles: ['super_admin', 'content_manager', 'admin'] },
     { name: 'Reviews', path: '/admin/growth/reviews', icon: MessageSquare, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
-    { name: 'Affiliates', path: '/admin/growth/affiliates', icon: Percent, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart2, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Settings', path: '/admin/settings/store', icon: Settings, roles: ['super_admin', 'admin'] },
     { name: 'Admin Users', path: '/admin/settings/admin-users', icon: UserCog, roles: ['super_admin', 'admin'] }

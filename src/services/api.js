@@ -305,5 +305,32 @@ export const apiService = {
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
     });
+  },
+
+  // ─── Discounts (Admin) ─────────────────────────────────────────────────────────
+  getAdminDiscounts: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/discount${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAdminDiscountById: async (id) => {
+    return fetch(`${API_URL}/api/admin/discount/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  saveAdminDiscount: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/discount${id ? `/${id}` : ''}`, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  deleteAdminDiscount: async (id) => {
+    return fetch(`${API_URL}/api/admin/discount/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
   }
 };
