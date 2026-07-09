@@ -245,8 +245,9 @@ const OrderDetail = () => {
   const totalItems = lineItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   const subtotal = order.subtotal ?? order.totalAmount ?? 0;
-  const grandTotal = order.grandTotal ?? order.totalAmount ?? 0;
   const shippingAmt = order.shippingAmount ?? 0;
+  const discountAmt = order.discountAmount ?? 0;
+  const taxAmt = order.taxAmount ?? 0;
 
   const paymentStatus = (order.paymentStatus || 'pending').toLowerCase();
   const fulfilStatus = (order.fulfilmentStatus || 'unfulfilled').toLowerCase();
@@ -429,11 +430,24 @@ const OrderDetail = () => {
                     <span className="text-slate-500 font-medium flex items-center gap-2">Subtotal <span className="text-[12px] px-2 py-0.5 bg-slate-200/50 rounded-md text-slate-600">{totalItems} items</span></span>
                     <span className="text-slate-700 font-semibold">{fmtAUD(subtotal)}</span>
                   </div>
+                  {discountAmt > 0 && (
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-slate-500 font-medium flex items-center gap-2">
+                        Discount 
+                        {order.couponCode && (
+                          <span className="text-[12px] px-2 py-0.5 bg-brand-blue/10 text-brand-blue rounded-md font-bold uppercase tracking-wider">
+                            {order.couponCode}
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-brand-blue font-semibold">-{fmtAUD(discountAmt)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center text-[14.5px]">
                     <span className="text-slate-500 font-medium">Shipping <span className="text-slate-400 text-[13px] ml-1">({order.shippingMethodName || 'Standard'})</span></span>
                     <span className="text-slate-700 font-semibold">{fmtAUD(shippingAmt)}</span>
                   </div>
-                  {order.taxAmount > 0 && (
+                  {taxAmt > 0 && (
                     <div className="flex justify-between items-center text-[14.5px]">
                       <span className="text-slate-500 font-medium">Tax</span>
                       <span className="text-slate-700 font-semibold">{fmtAUD(order.taxAmount)}</span>

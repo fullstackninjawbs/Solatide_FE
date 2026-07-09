@@ -308,6 +308,12 @@ export const apiService = {
   },
 
   // ─── Discounts (Admin) ─────────────────────────────────────────────────────────
+  syncAdminDiscountsFromTagada: async () => {
+    return fetch(`${API_URL}/api/admin/discount/sync-from-tagada`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+  },
   getAdminDiscounts: async (queryString = '') => {
     return fetch(`${API_URL}/api/admin/discount${queryString ? `?${queryString}` : ''}`, {
       method: 'GET',

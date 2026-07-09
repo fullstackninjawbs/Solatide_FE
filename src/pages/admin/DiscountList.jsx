@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Tag, Package, Truck, Edit2, Trash2 } from 'lucide-react';
+import { Search, Tag, Package, Truck, Edit2, Trash2, RefreshCw } from 'lucide-react';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
 
@@ -57,6 +57,25 @@ const DiscountList = () => {
     }
   };
 
+  const handleSyncFromTagada = async () => {
+    try {
+      setLoading(true);
+      const res = await apiService.syncAdminDiscountsFromTagada();
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+        fetchDiscounts();
+      } else {
+        alert(data.message || 'Failed to sync from Tagada.');
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error connecting to server to sync.');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 text-left font-sans pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -64,12 +83,22 @@ const DiscountList = () => {
           <h2 className="text-2xl font-bold text-brand-navy">Discounts</h2>
           <p className="text-slate-500 text-[14px]">Manage your discount codes and automatic discounts.</p>
         </div>
-        <Link
-          to="/admin/discounts/new"
-          className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm"
-        >
-          Create discount
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSyncFromTagada}
+            disabled={loading}
+            className="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl font-semibold transition-colors shadow-sm disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            Sync from Tagada
+          </button>
+          <Link
+            to="/admin/discounts/new"
+            className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm"
+          >
+            Create discount
+          </Link>
+        </div>
       </div>
 
       {error && (
