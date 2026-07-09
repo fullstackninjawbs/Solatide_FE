@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import {
   ArrowLeft,
   MoreHorizontal,
   ChevronDown,
-  ChevronUp,
   MapPin,
   Truck,
   Image as ImageIcon,
   Edit2,
   Mail,
-  Copy,
   Check,
   ExternalLink,
   Package,
@@ -19,7 +17,6 @@ import {
   User,
   CreditCard,
   Tag,
-  AlertTriangle,
   X
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -68,7 +65,7 @@ const OrderDetail = () => {
   // New states for interactive fields
   const [commentText, setCommentText] = useState('');
   const [newTag, setNewTag] = useState('');
-  
+
   const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
   const [addressTypeToEdit, setAddressTypeToEdit] = useState('shipping');
   const [editAddressForm, setEditAddressForm] = useState({ name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
@@ -94,67 +91,67 @@ const OrderDetail = () => {
 
   const updateOrderField = async (payload, successMessage = 'Order updated') => {
     try {
-        setUpdating(true);
-        const res = await apiService.updateAdminOrder(id, payload);
-        const data = await res.json();
-        if (res.ok && data.success) {
-            setOrder(data.data.order);
-            toast.success(successMessage);
-            return true;
-        } else {
-            toast.error(data.message || 'Update failed');
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
-        toast.error('Network error');
+      setUpdating(true);
+      const res = await apiService.updateAdminOrder(id, payload);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success(successMessage);
+        return true;
+      } else {
+        toast.error(data.message || 'Update failed');
         return false;
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
+      return false;
     } finally {
-        setUpdating(false);
+      setUpdating(false);
     }
   };
 
   const handleAddComment = async () => {
-      if (!commentText.trim()) return;
-      const newComment = { text: commentText.trim(), createdAt: new Date() };
-      const updatedComments = [...(order.comments || []), newComment];
-      const success = await updateOrderField({ comments: updatedComments }, 'Comment added');
-      if (success) setCommentText('');
+    if (!commentText.trim()) return;
+    const newComment = { text: commentText.trim(), createdAt: new Date() };
+    const updatedComments = [...(order.comments || []), newComment];
+    const success = await updateOrderField({ comments: updatedComments }, 'Comment added');
+    if (success) setCommentText('');
   };
 
   const handleAddTag = async (e) => {
-      if (e.key === 'Enter' && newTag.trim()) {
-          e.preventDefault();
-          const tagToAdd = newTag.trim();
-          if (order.tags?.includes(tagToAdd)) {
-              toast.error('Tag already exists');
-              return;
-          }
-          const updatedTags = [...(order.tags || []), tagToAdd];
-          const success = await updateOrderField({ tags: updatedTags }, 'Tag added');
-          if (success) setNewTag('');
+    if (e.key === 'Enter' && newTag.trim()) {
+      e.preventDefault();
+      const tagToAdd = newTag.trim();
+      if (order.tags?.includes(tagToAdd)) {
+        toast.error('Tag already exists');
+        return;
       }
+      const updatedTags = [...(order.tags || []), tagToAdd];
+      const success = await updateOrderField({ tags: updatedTags }, 'Tag added');
+      if (success) setNewTag('');
+    }
   };
 
   const handleRemoveTag = async (tagToRemove) => {
-      const updatedTags = (order.tags || []).filter(t => t !== tagToRemove);
-      await updateOrderField({ tags: updatedTags }, 'Tag removed');
+    const updatedTags = (order.tags || []).filter(t => t !== tagToRemove);
+    await updateOrderField({ tags: updatedTags }, 'Tag removed');
   };
 
   const openAddressModal = (type) => {
-      setAddressTypeToEdit(type);
-      const addr = type === 'shipping' ? order.shippingAddressObj : order.billingAddressObj;
-      setEditAddressForm(addr || { name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
-      setIsEditAddressModalOpen(true);
+    setAddressTypeToEdit(type);
+    const addr = type === 'shipping' ? order.shippingAddressObj : order.billingAddressObj;
+    setEditAddressForm(addr || { name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
+    setIsEditAddressModalOpen(true);
   };
 
   const handleSaveAddress = async () => {
-      const payload = addressTypeToEdit === 'shipping' 
-          ? { shippingAddressObj: editAddressForm }
-          : { billingAddressObj: editAddressForm };
-      
-      const success = await updateOrderField(payload, 'Address updated');
-      if (success) setIsEditAddressModalOpen(false);
+    const payload = addressTypeToEdit === 'shipping'
+      ? { shippingAddressObj: editAddressForm }
+      : { billingAddressObj: editAddressForm };
+
+    const success = await updateOrderField(payload, 'Address updated');
+    if (success) setIsEditAddressModalOpen(false);
   };
 
   const handleCreateLabel = async () => {
@@ -248,6 +245,7 @@ const OrderDetail = () => {
   const shippingAmt = order.shippingAmount ?? 0;
   const discountAmt = order.discountAmount ?? 0;
   const taxAmt = order.taxAmount ?? 0;
+  const grandTotal = order.grandTotal ?? order.totalAmount ?? (subtotal + shippingAmt + taxAmt - discountAmt);
 
   const paymentStatus = (order.paymentStatus || 'pending').toLowerCase();
   const fulfilStatus = (order.fulfilmentStatus || 'unfulfilled').toLowerCase();
@@ -272,8 +270,8 @@ const OrderDetail = () => {
                 <div className="flex items-center gap-2 mt-1">
                   {/* Payment Badge */}
                   <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${isPaid
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-amber-50 text-amber-700 border-amber-200'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
                     }`}>
                     {isPaid ? <Check size={14} /> : <Clock size={14} />}
                     {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
@@ -281,8 +279,8 @@ const OrderDetail = () => {
 
                   {/* Fulfillment Badge */}
                   <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${!isUnfulfilled
-                      ? 'bg-blue-50 text-blue-700 border-blue-200'
-                      : 'bg-slate-100 text-slate-600 border-slate-200'
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : 'bg-slate-100 text-slate-600 border-slate-200'
                     }`}>
                     <Package size={14} />
                     {order.fulfilmentStatus ? order.fulfilmentStatus.charAt(0).toUpperCase() + order.fulfilmentStatus.slice(1) : 'Unfulfilled'}
@@ -384,10 +382,10 @@ const OrderDetail = () => {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                         <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
-                         <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
-                           {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                         </button>
+                        <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
+                        <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
+                          {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
+                        </button>
                       </div>
                     </div>
                   ) : (
@@ -399,9 +397,9 @@ const OrderDetail = () => {
                       >
                         {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
                       </button>
-                      <button 
+                      <button
                         onClick={handleCreateLabel}
-                        disabled={creatingLabel || !isPaid} 
+                        disabled={creatingLabel || !isPaid}
                         className="px-5 py-2.5 text-[14px] font-semibold text-white bg-brand-blue rounded-xl shadow-[0_4px_14px_rgba(59,130,246,0.3)] hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {creatingLabel ? 'Generating...' : 'Create shipping label'}
@@ -433,7 +431,7 @@ const OrderDetail = () => {
                   {discountAmt > 0 && (
                     <div className="flex justify-between items-center py-3">
                       <span className="text-slate-500 font-medium flex items-center gap-2">
-                        Discount 
+                        Discount
                         {order.couponCode && (
                           <span className="text-[12px] px-2 py-0.5 bg-brand-blue/10 text-brand-blue rounded-md font-bold uppercase tracking-wider">
                             {order.couponCode}
@@ -664,115 +662,115 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
-    
-            {/* Edit Address Modal */}
-            {isEditAddressModalOpen && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
-                        <div className="flex justify-between items-center mb-5">
-                            <h2 className="text-lg font-bold text-gray-900">Edit {addressTypeToEdit} address</h2>
-                            <button onClick={() => setIsEditAddressModalOpen(false)} className="text-gray-400 hover:text-gray-700">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        
-                        <div className="space-y-4 mb-6 max-h-[60vh] overflow-y-auto px-1">
-                            <div>
-                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Name</label>
-                                <input
-                                    type="text"
-                                    value={editAddressForm.name}
-                                    onChange={(e) => setEditAddressForm(prev => ({...prev, name: e.target.value}))}
-                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Company</label>
-                                <input
-                                    type="text"
-                                    value={editAddressForm.company}
-                                    onChange={(e) => setEditAddressForm(prev => ({...prev, company: e.target.value}))}
-                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
-                                <input
-                                    type="text"
-                                    value={editAddressForm.street1}
-                                    onChange={(e) => setEditAddressForm(prev => ({...prev, street1: e.target.value}))}
-                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Apartment, suite, etc. / Street 2</label>
-                                <input
-                                    type="text"
-                                    value={editAddressForm.street2}
-                                    onChange={(e) => setEditAddressForm(prev => ({...prev, street2: e.target.value}))}
-                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">City</label>
-                                    <input
-                                        type="text"
-                                        value={editAddressForm.city}
-                                        onChange={(e) => setEditAddressForm(prev => ({...prev, city: e.target.value}))}
-                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">State / Province</label>
-                                    <input
-                                        type="text"
-                                        value={editAddressForm.state}
-                                        onChange={(e) => setEditAddressForm(prev => ({...prev, state: e.target.value}))}
-                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">ZIP / Postal code</label>
-                                    <input
-                                        type="text"
-                                        value={editAddressForm.zip}
-                                        onChange={(e) => setEditAddressForm(prev => ({...prev, zip: e.target.value}))}
-                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[13px] font-semibold text-gray-700 mb-1">Country</label>
-                                    <input
-                                        type="text"
-                                        value={editAddressForm.country}
-                                        onChange={(e) => setEditAddressForm(prev => ({...prev, country: e.target.value}))}
-                                        className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className="flex justify-end gap-3 pt-2">
-                            <button 
-                                onClick={() => setIsEditAddressModalOpen(false)}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                onClick={handleSaveAddress}
-                                disabled={updating}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                            >
-                                {updating ? 'Saving...' : 'Save'}
-                            </button>
-                        </div>
-                    </div>
+
+      {/* Edit Address Modal */}
+      {isEditAddressModalOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-lg font-bold text-gray-900">Edit {addressTypeToEdit} address</h2>
+              <button onClick={() => setIsEditAddressModalOpen(false)} className="text-gray-400 hover:text-gray-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 mb-6 max-h-[60vh] overflow-y-auto px-1">
+              <div>
+                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={editAddressForm.name}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Company</label>
+                <input
+                  type="text"
+                  value={editAddressForm.company}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, company: e.target.value }))}
+                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
+                <input
+                  type="text"
+                  value={editAddressForm.street1}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, street1: e.target.value }))}
+                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Apartment, suite, etc. / Street 2</label>
+                <input
+                  type="text"
+                  value={editAddressForm.street2}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, street2: e.target.value }))}
+                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-1">City</label>
+                  <input
+                    type="text"
+                    value={editAddressForm.city}
+                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, city: e.target.value }))}
+                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
                 </div>
-            )}
+                <div>
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-1">State / Province</label>
+                  <input
+                    type="text"
+                    value={editAddressForm.state}
+                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, state: e.target.value }))}
+                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-1">ZIP / Postal code</label>
+                  <input
+                    type="text"
+                    value={editAddressForm.zip}
+                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, zip: e.target.value }))}
+                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-1">Country</label>
+                  <input
+                    type="text"
+                    value={editAddressForm.country}
+                    onChange={(e) => setEditAddressForm(prev => ({ ...prev, country: e.target.value }))}
+                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => setIsEditAddressModalOpen(false)}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveAddress}
+                disabled={updating}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              >
+                {updating ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
