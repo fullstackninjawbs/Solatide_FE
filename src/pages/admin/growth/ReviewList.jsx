@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { apiService, API_URL } from '../../../services/api';
+import CustomDropdown from '../../../components/CustomDropdown';
 
 const ReviewList = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
+
+  const statusOptions = [
+    { value: 'all', label: 'All Statuses' },
+    { value: 'pending', label: 'Pending Approval' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'rejected', label: 'Rejected' },
+  ];
 
   const fetchReviews = async () => {
     try {
@@ -100,7 +108,7 @@ const ReviewList = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans max-w-[1400px] mx-auto w-full p-6 md:p-8">
+    <div className="space-y-6 text-left font-sans">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-navy">Product Reviews</h2>
@@ -109,16 +117,13 @@ const ReviewList = () => {
         
         {/* Filters */}
         <div className="flex items-center gap-2">
-          <select
+          <CustomDropdown
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-brand-blue"
-          >
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending Approval</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+            options={statusOptions}
+            onChange={setFilterStatus}
+            align="right"
+            className="w-full sm:w-[180px] flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-[14px] font-medium focus:outline-none focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm"
+          />
         </div>
       </div>
       
