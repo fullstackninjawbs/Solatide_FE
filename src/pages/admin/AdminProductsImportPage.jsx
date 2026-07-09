@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, FileSpreadsheet, Play, CheckCircle, AlertTriangle, Eye, RefreshCw, Layers } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+import CustomDropdown from '../../components/CustomDropdown';
 
 const AdminProductsImportPage = () => {
   const [file, setFile] = useState(null);
@@ -17,6 +18,14 @@ const AdminProductsImportPage = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const { formatAUD } = useCurrency();
+
+  const importOptions = [
+    { value: 'createOnly', label: 'Create Only (no updates)' },
+    { value: 'upsertByHandle', label: 'Upsert (create or update)' },
+    { value: 'skipExisting', label: 'Skip Existing handles' }
+  ];
+  
+  const selectedOption = importOptions.find(opt => opt.value === importMode);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -302,15 +311,14 @@ const AdminProductsImportPage = () => {
               <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                 Import Behavior
               </label>
-              <select
-                value={importMode}
-                onChange={(e) => setImportMode(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
-              >
-                <option value="createOnly">Create Only (no updates)</option>
-                <option value="upsertByHandle">Upsert (create or update)</option>
-                <option value="skipExisting">Skip Existing handles</option>
-              </select>
+              <div className="w-full">
+                <CustomDropdown
+                  value={importMode}
+                  options={importOptions}
+                  onChange={(val) => setImportMode(val)}
+                  className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
+                />
+              </div>
             </div>
 
             <div className="flex items-center gap-3 py-1">
