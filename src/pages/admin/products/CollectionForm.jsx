@@ -172,7 +172,7 @@ const CollectionForm = () => {
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     setIsUploading(true);
     // Use our authenticated backend endpoint which handles the Cloudinary upload
     const uploadData = new FormData();
@@ -394,8 +394,8 @@ const CollectionForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label
                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${formData.type === 'manual'
-                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
-                    : 'border-slate-200 hover:border-slate-350'
+                  ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
+                  : 'border-slate-200 hover:border-slate-350'
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -416,8 +416,8 @@ const CollectionForm = () => {
 
               <label
                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${formData.type === 'automated'
-                    ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
-                    : 'border-slate-200 hover:border-slate-350'
+                  ? 'border-brand-blue bg-blue-50/10 shadow-[0_4px_12px_rgba(0,121,206,0.03)]'
+                  : 'border-slate-200 hover:border-slate-350'
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -552,17 +552,30 @@ const CollectionForm = () => {
               <div className="space-y-4 pt-4 border-t border-slate-100">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <h4 className="text-[14px] font-bold text-slate-850">Conditions</h4>
-                  <div className="flex items-center gap-3 text-[14px]">
-                    <span className="text-slate-500">Products must match:</span>
-                    <CustomDropdown
-                      value={formData.ruleRelation}
-                      onChange={(val) => handleChange({ target: { name: 'ruleRelation', value: val } })}
-                      className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-250 text-slate-850 focus:outline-none focus:border-brand-blue text-[13px] font-semibold cursor-pointer min-w-[140px]"
-                      options={[
-                        { value: 'all', label: 'all conditions' },
-                        { value: 'any', label: 'any condition' }
-                      ]}
-                    />
+                  <div className="flex items-center gap-4 text-[14px]">
+                    <span className="text-slate-600">Products must match:</span>
+                    <label className="flex items-center gap-2 cursor-pointer text-slate-700">
+                      <input
+                        type="radio"
+                        name="ruleRelation"
+                        value="all"
+                        checked={formData.ruleRelation === 'all'}
+                        onChange={(e) => handleChange({ target: { name: 'ruleRelation', value: e.target.value } })}
+                        className="w-4 h-4 text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+                      />
+                      all conditions
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer text-slate-700">
+                      <input
+                        type="radio"
+                        name="ruleRelation"
+                        value="any"
+                        checked={formData.ruleRelation === 'any'}
+                        onChange={(e) => handleChange({ target: { name: 'ruleRelation', value: e.target.value } })}
+                        className="w-4 h-4 text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+                      />
+                      any condition
+                    </label>
                   </div>
                 </div>
 
@@ -617,7 +630,7 @@ const CollectionForm = () => {
                             type="text"
                             value={rule.value}
                             onChange={(e) => updateRule(idx, 'value', e.target.value)}
-                            placeholder="Value"
+                            placeholder="$"
                             className="w-full px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-brand-blue text-[13.5px]"
                             required
                           />
@@ -636,10 +649,26 @@ const CollectionForm = () => {
                   </div>
                 )}
 
+                {(() => {
+                  const variantFieldsInUse = formData.rules
+                    .filter(rule => ['price', 'compareAtPrice'].includes(rule.field))
+                    .map(rule => rule.field === 'price' ? 'Price' : 'Compare at price');
+                  const uniqueVariantFields = [...new Set(variantFieldsInUse)];
+                  if (uniqueVariantFields.length > 0) {
+                    return (
+                      <div className="flex items-center gap-2 text-[13px] font-medium text-[#7a5910] mt-3 mb-1">
+                        <AlertCircle className="w-4 h-4" />
+                        <span>This collection will include all products with at least one variant that matches: {uniqueVariantFields.join(', ')}.</span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 <button
                   type="button"
                   onClick={addRule}
-                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm mt-3"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add condition</span>
