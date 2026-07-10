@@ -61,8 +61,8 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
   };
 
   return (
-    <div className="w-full border-t border-slate-300 pt-6">
-      <div className="flex flex-col">
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentReviews.map((review, index) => (
           <ReviewCard key={review.id || review._id} review={review} index={index} />
         ))}
@@ -70,14 +70,14 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8 pb-4 border-t border-slate-100 pt-6">
+        <div className="flex items-center justify-center gap-3 mt-12 mb-4">
           {/* Prev Button */}
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="text-slate-500 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed px-2"
+            className="w-8 h-8 flex items-center justify-center rounded bg-slate-200/60 text-slate-400 hover:bg-slate-200 hover:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -88,10 +88,10 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
-                className={`w-7 h-7 flex items-center justify-center rounded-full text-[13px] font-medium transition-colors ${
+                className={`w-8 h-8 flex items-center justify-center rounded border text-[13px] font-medium transition-colors ${
                   currentPage === page 
-                    ? 'bg-[#008060] text-white' 
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'border-[#0079CD] text-[#0079CD] bg-white' 
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 {page}
@@ -103,7 +103,7 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="text-slate-500 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed px-2"
+            className="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

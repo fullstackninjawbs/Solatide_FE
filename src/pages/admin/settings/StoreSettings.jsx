@@ -134,7 +134,7 @@ const StoreSettings = () => {
     };
 
     return (
-        <div className="p-8 max-w-4xl mx-auto font-sans text-slate-800">
+        <div className="p-8 mx-auto font-sans text-slate-800">
             <h1 className="text-2xl font-bold text-brand-navy mb-8">Settings</h1>
 
             <div className="mb-8">

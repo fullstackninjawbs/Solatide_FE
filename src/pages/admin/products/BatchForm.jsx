@@ -16,6 +16,7 @@ const BatchForm = () => {
 
   const [formData, setFormData] = useState({
     batchId: '',
+    vendorLotNumber: '',
     productId: '',
     variantId: '',
     variantSku: '',
@@ -24,7 +25,14 @@ const BatchForm = () => {
     content: '',
     method: 'HPLC / LC-MS Tested',
     coaUrl: '',
+    coaFile: null,
     coaStatus: 'pending',
+    verificationDetails: {
+      labName: '',
+      coaReportId: '',
+      testDate: '',
+      verificationUrl: ''
+    },
     includesPurity: true,
     includesMeasuredContent: true,
     includesEndotoxin: false,
@@ -124,6 +132,11 @@ const BatchForm = () => {
           ...batchData,
           productId: mappedProductId,
           setAsCurrent: isCurrent,
+          qcLevel: batchData.qcLevel,
+          verificationDetails: {
+            labName: '', coaReportId: '', testDate: '', verificationUrl: '',
+            ...(batchData.verificationDetails || {})
+          },
           tests: {
             purityHplc: { performed: false, result: '', ...(batchData.tests?.purityHplc || {}) },
             netPeptideContent: { performed: false, result: '', ...(batchData.tests?.netPeptideContent || {}) },
@@ -206,6 +219,55 @@ const BatchForm = () => {
       ...prev,
       customTests: (prev.customTests || []).filter((_, i) => i !== index)
     }));
+  };
+
+  const handleVerificationChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      verificationDetails: {
+        ...(prev.verificationDetails || {}),
+        [name]: value
+      }
+    }));
+  };
+
+  const [uploadingCoa, setUploadingCoa] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploadingCoa(true);
+      const fileData = new FormData();
+      fileData.append('coaFile', file);
+      
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || sessionStorage.getItem('token');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      
+      const res = await fetch(`${apiUrl}/api/admin/batches/upload-coa`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fileData
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setFormData(prev => ({
+          ...prev,
+          coaFile: data.data
+        }));
+      } else {
+        alert('Upload failed: ' + data.message);
+      }
+    } catch (err) {
+      console.error('File upload error:', err);
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setUploadingCoa(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -323,6 +385,15 @@ const BatchForm = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-850 flex items-center gap-2">
             <span>{isEditMode ? `Edit Batch: ${formData.batchId}` : 'Create Batch Record'}</span>
+            {isEditMode && formData.qcLevel && (
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                formData.qcLevel === 'full' ? 'bg-emerald-100 text-emerald-800' : 
+                formData.qcLevel === 'partial' ? 'bg-amber-100 text-amber-800' : 
+                'bg-slate-100 text-slate-600'
+              }`}>
+                {formData.qcLevel} QC
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-500 mt-1">Configure COA parameters, analytical reports, and associated product references</p>
         </div>
@@ -348,6 +419,18 @@ const BatchForm = () => {
                   placeholder="e.g. SOL-RTA-26B"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                   required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Vendor Lot Number</label>
+                <input
+                  type="text"
+                  name="vendorLotNumber"
+                  value={formData.vendorLotNumber}
+                  onChange={handleChange}
+                  placeholder="e.g. V-LOT-123"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                 />
               </div>
 
@@ -446,16 +529,88 @@ const BatchForm = () => {
             <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">COA & Testing Information</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Link</label>
-                <input
-                  type="url"
-                  name="coaUrl"
-                  value={formData.coaUrl}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA PDF Upload</label>
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden group hover:border-blue-300 transition-colors">
+                  {formData.coaFile?.url || formData.coaUrl ? (
+                    <div className="flex items-center gap-3 w-full justify-between relative z-10 pointer-events-none">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-red-100 text-red-600 rounded flex items-center justify-center font-bold text-xs">PDF</div>
+                        <div className="text-sm font-medium text-slate-700 truncate max-w-xs">
+                          {formData.coaFile?.filename || 'Existing COA'}
+                        </div>
+                      </div>
+                      <div className="w-10"></div> {/* Spacer for the View button */}
+                    </div>
+                  ) : (
+                    <div className="text-center relative z-10 pointer-events-none">
+                      <p className="text-sm text-slate-500 mb-1">Click to upload the PDF report from the lab</p>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleFileUpload}
+                    disabled={uploadingCoa}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
+                  />
+                  {(formData.coaFile?.url || formData.coaUrl) && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2">
+                      <a href={formData.coaFile?.url || formData.coaUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200">View PDF</a>
+                      <button type="button" onClick={() => setFormData(prev => ({ ...prev, coaFile: null, coaUrl: '' }))} className="text-red-600 hover:bg-red-50 text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 transition-colors">Remove</button>
+                    </div>
+                  )}
+                  {uploadingCoa && <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-40"><div className="animate-spin w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full" /></div>}
+                </div>
+              </div>
+
+              <div className="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
+                <h3 className="text-sm font-bold text-slate-800 mb-4">Verification Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Lab Name</label>
+                    <input
+                      type="text"
+                      name="labName"
+                      value={formData.verificationDetails?.labName || ''}
+                      onChange={handleVerificationChange}
+                      placeholder="e.g. ILS Laboratories"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Report ID</label>
+                    <input
+                      type="text"
+                      name="coaReportId"
+                      value={formData.verificationDetails?.coaReportId || ''}
+                      onChange={handleVerificationChange}
+                      placeholder="e.g. R-23456"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Test Date</label>
+                    <input
+                      type="date"
+                      name="testDate"
+                      value={formData.verificationDetails?.testDate ? new Date(formData.verificationDetails.testDate).toISOString().split('T')[0] : ''}
+                      onChange={handleVerificationChange}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Verification URL</label>
+                    <input
+                      type="url"
+                      name="verificationUrl"
+                      value={formData.verificationDetails?.verificationUrl || ''}
+                      onChange={handleVerificationChange}
+                      placeholder="https://..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>

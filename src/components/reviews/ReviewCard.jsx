@@ -27,46 +27,45 @@ const ReviewCard = ({ review, index }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="py-6 border-b border-slate-300 last:border-0 hover:bg-slate-50/30 transition-colors duration-300 flex flex-col gap-4"
+      className="border border-slate-200 rounded-2xl p-6 bg-white hover:shadow-md transition-shadow duration-300 flex flex-col h-full"
     >
-      {/* Row 1: Stars */}
-      <div className="mb-1">
-        <RatingStars rating={review.rating} size={20} color="#2B7868" />
-      </div>
-
-      {/* Row 2: Avatar + Name + Date */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#f0f4f8] text-slate-700 font-bold text-[13px] flex items-center justify-center uppercase shrink-0">
-          {getInitials(review.displayName || review.name)}
-        </div>
+      {/* Top Row: Avatar and User Info */}
+      <div className="flex items-center gap-3 mb-4">
+        {review.avatar ? (
+          <img src={review.avatar} alt={review.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-[#f0f4f8] text-slate-700 font-bold text-[14px] flex items-center justify-center uppercase shrink-0">
+            {getInitials(review.displayName || review.name)}
+          </div>
+        )}
         <div className="flex flex-col">
-          <h5 className="font-bold text-slate-900 text-[13px] leading-tight flex items-center gap-2">
+          <h5 className="font-bold text-[#1E1E1E] text-[14px] leading-tight">
             {review.displayName || review.name || 'Anonymous'}
-            {(review.verified || review.isVerifiedPurchase) && (
-              <span className="text-[#008060] text-[10px] font-bold uppercase tracking-wider flex items-center gap-0.5">
-                <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                Verified
-              </span>
-            )}
           </h5>
-          <span className="text-slate-400 text-[11px] mt-0.5">
-            {formattedDate}
+          <span className="text-slate-400 text-[12px] mt-0.5">
+            {review.role || 'Biotech Researcher'}
           </span>
         </div>
       </div>
 
-      {/* Row 3 & 4: Review Content */}
-      <div className="text-left mt-1">
-        {review.title && (
-          <h4 className="font-bold text-slate-900 text-[14px] mb-1.5">
+      {/* Middle Row: Stars and Date */}
+      <div className="flex items-center justify-between mb-4">
+        <RatingStars rating={review.rating} size={16} color="#FFB800" />
+        <span className="text-slate-400 text-[12px]">
+          {formattedDate}
+        </span>
+      </div>
+
+      {/* Bottom Row: Review Content */}
+      <div className="text-left flex-grow">
+        {review.title && review.title !== 'good Prodects' && (
+          <h4 className="font-bold text-slate-900 text-[14px] mb-2">
             {review.title}
           </h4>
         )}
 
-        <p className="text-slate-600 text-[13px] leading-relaxed whitespace-pre-wrap">
-          {review.content || review.comment}
+        <p className="text-[#6A6A6A] text-[13px] leading-[1.6] whitespace-pre-wrap font-medium">
+          "{review.content || review.comment}"
         </p>
 
         {/* Attached Images */}

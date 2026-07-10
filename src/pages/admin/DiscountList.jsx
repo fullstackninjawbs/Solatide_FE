@@ -179,10 +179,10 @@ const DiscountList = () => {
                     </td>
                     <td className="py-3.5 px-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-semibold tracking-wide ${discount.status === 'active'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : discount.status === 'expired'
-                            ? 'bg-slate-100 text-slate-600'
-                            : 'bg-red-100 text-red-700'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : discount.status === 'expired'
+                          ? 'bg-slate-100 text-slate-600'
+                          : 'bg-red-100 text-red-700'
                         }`}>
                         {discount.status}
                       </span>
@@ -213,22 +213,20 @@ const DiscountList = () => {
                       {discount.usesSoFar || 0}
                     </td>
                     <td className="py-3.5 pr-6 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link
-                          to={`/admin/discounts/edit/${discount._id}`}
-                          className="p-1.5 text-slate-400 hover:text-brand-blue hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Edit discount"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(discount._id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete discount"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
+                        <div className="flex items-center justify-end gap-3">
+                          <Link
+                            to={`/admin/discounts/edit/${discount._id}`}
+                            className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(discount._id)}
+                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </div>
                     </td>
                   </tr>
                 ))}
@@ -236,6 +234,7 @@ const DiscountList = () => {
             </table>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -127,7 +127,7 @@ const InventoryList = () => {
             <p className="text-[15px] font-semibold text-slate-650">No products found matching criteria</p>
           </div>
         ) : (
-          <div className="overflow-x-auto pb-48">
+          <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">

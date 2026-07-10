@@ -292,20 +292,20 @@ const ProductList = () => {
                     <td className="py-3.5 text-slate-600">{product.productType || 'Research Peptides'}</td>
                     <td className="py-3.5 text-slate-500">{product.vendor || 'Solatide Biosciences'}</td>
                     <td className="py-3.5 pr-6 text-right">
-                      <div className="flex justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link
-                          to={`/admin/products/edit/${product._id}`}
-                          className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-brand-blue hover:border-brand-blue/30 bg-white transition-all shadow-sm cursor-pointer"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(product._id, product.name)}
-                          className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 bg-white transition-all shadow-sm cursor-pointer focus:outline-none"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
+                        <div className="flex justify-end gap-3">
+                          <Link
+                            to={`/admin/products/edit/${product._id}`}
+                            className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(product._id, product.name)}
+                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
+                          >
+                            Delete
+                          </button>
+                        </div>
                     </td>
                   </tr>
                 ))}

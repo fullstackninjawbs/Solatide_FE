@@ -188,6 +188,14 @@ export const apiService = {
   },
 
   // Batches (Admin)
+  uploadBatchCOA: async (formData) => {
+    console.log("Uploading COA...");
+    return fetch(`${API_URL}/api/admin/batches/upload-coa`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }, // Content-Type omitted for formData
+      body: formData
+    });
+  },
   getBatches: async (params) => {
     const query = params ? `?${params}` : '';
     return fetch(`${API_URL}/api/admin/batches${query}`, {

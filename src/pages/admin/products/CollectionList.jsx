@@ -220,22 +220,20 @@ const CollectionList = () => {
                       )}
                     </td>
                     <td className="py-4 pr-6 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                        <Link
-                          to={`/admin/products/collections/edit/${col._id}`}
-                          className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-brand-blue rounded-lg transition-colors"
-                          title="Edit Collection"
-                        >
-                          <Edit2 className="h-4.5 w-4.5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(col._id, col.name)}
-                          className="p-1.5 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Collection"
-                        >
-                          <Trash2 className="h-4.5 w-4.5" />
-                        </button>
-                      </div>
+                        <div className="flex justify-end gap-3">
+                          <Link
+                            to={`/admin/products/collections/edit/${col._id}`}
+                            className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(col._id, col.name)}
+                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
+                          >
+                            Delete
+                          </button>
+                        </div>
                     </td>
                   </tr>
                 ))}
