@@ -242,18 +242,18 @@ const BatchForm = () => {
       setUploadingCoa(true);
       const fileData = new FormData();
       fileData.append('coaFile', file);
-      
+
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || sessionStorage.getItem('token');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      
+
       const res = await fetch(`${apiUrl}/api/admin/batches/upload-coa`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: fileData
       });
-      
+
       const data = await res.json();
-      
+
       if (data.success) {
         setFormData(prev => ({
           ...prev,
@@ -386,11 +386,10 @@ const BatchForm = () => {
           <h1 className="text-2xl font-bold text-slate-850 flex items-center gap-2">
             <span>{isEditMode ? `Edit Batch: ${formData.batchId}` : 'Create Batch Record'}</span>
             {isEditMode && formData.qcLevel && (
-              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                formData.qcLevel === 'full' ? 'bg-emerald-100 text-emerald-800' : 
-                formData.qcLevel === 'partial' ? 'bg-amber-100 text-amber-800' : 
-                'bg-slate-100 text-slate-600'
-              }`}>
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${formData.qcLevel === 'full' ? 'bg-emerald-100 text-emerald-800' :
+                  formData.qcLevel === 'partial' ? 'bg-amber-100 text-amber-800' :
+                    'bg-slate-100 text-slate-600'
+                }`}>
                 {formData.qcLevel} QC
               </span>
             )}

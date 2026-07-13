@@ -32,21 +32,28 @@ const CurrentBatchCard = ({ batch }) => {
     return <div className="text-[12px] font-bold text-[#1a3a7d] my-0.5 leading-snug">{text}</div>;
   };
   
-  // Extract specific tests for the QC panel
-  const purityResult = tests.purityHplc?.performed ? tests.purityHplc.result : null;
-  const identityResult = tests.identityHplc?.performed ? tests.identityHplc.result : null;
-  const fentanylResult = tests.fentanylScreen?.performed ? tests.fentanylScreen.result : null;
-  const endotoxinResult = tests.endotoxinUsp85?.performed ? tests.endotoxinUsp85.result : null;
-  const sterilityResult = tests.sterilityPcr?.performed ? tests.sterilityPcr.result : null;
-  const netContentResult = tests.netPeptideContent?.performed ? tests.netPeptideContent.result : null;
-  const heavyMetalsResult = tests.heavyMetalsIcpMs?.performed ? tests.heavyMetalsIcpMs.result : null;
+  const purityResult = tests.purityHplc?.result || '';
+  const identityResult = tests.identityHplc?.result || '';
+  const fentanylResult = tests.fentanylScreen?.result || '';
+  const endotoxinResult = tests.endotoxinUsp85?.result || '';
+  const sterilityResult = tests.sterilityPcr?.result || '';
+  const netContentResult = tests.netPeptideContent?.result || '';
+  const heavyMetalsResult = tests.heavyMetalsIcpMs?.result || '';
 
-  const hasQcData = purityResult || identityResult || fentanylResult || endotoxinResult || sterilityResult || netContentResult || heavyMetalsResult;
+  const hasPurity = tests.purityHplc?.performed;
+  const hasIdentity = tests.identityHplc?.performed;
+  const hasFentanyl = tests.fentanylScreen?.performed;
+  const hasEndotoxin = tests.endotoxinUsp85?.performed;
+  const hasSterility = tests.sterilityPcr?.performed;
+  const hasNetContent = tests.netPeptideContent?.performed;
+  const hasHeavyMetals = tests.heavyMetalsIcpMs?.performed;
+
+  const hasQcData = hasPurity || hasIdentity || hasFentanyl || hasEndotoxin || hasSterility || hasNetContent || hasHeavyMetals;
 
   // Check if all 5 required tests for "Full QC" are present
-  const isFullQc = purityResult && identityResult && endotoxinResult && heavyMetalsResult && sterilityResult;
+  const isFullQc = hasPurity && hasIdentity && hasEndotoxin && hasHeavyMetals && hasSterility;
   const isPartialQc = hasQcData && !isFullQc;
-  const completedTestsCount = [purityResult, identityResult, fentanylResult, endotoxinResult, sterilityResult, netContentResult, heavyMetalsResult].filter(Boolean).length;
+  const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
   if (!hasQcData) {
     return (
@@ -146,7 +153,7 @@ const CurrentBatchCard = ({ batch }) => {
               
               <div className="flex flex-row overflow-x-auto px-5 py-4 gap-8 bg-white snap-x scrollbar-hide">
                 
-                {purityResult && (
+                {hasPurity && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <BarChart2 className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
                     <div>
@@ -159,7 +166,7 @@ const CurrentBatchCard = ({ batch }) => {
                   </div>
                 )}
 
-                {identityResult && (
+                {hasIdentity && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <ShieldCheck className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
                     <div>
@@ -172,7 +179,7 @@ const CurrentBatchCard = ({ batch }) => {
                   </div>
                 )}
 
-                {fentanylResult && (
+                {hasFentanyl && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <Droplet className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
                     <div>
@@ -185,7 +192,7 @@ const CurrentBatchCard = ({ batch }) => {
                   </div>
                 )}
 
-                {endotoxinResult && (
+                {hasEndotoxin && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <Shield className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                     <div>
@@ -198,7 +205,7 @@ const CurrentBatchCard = ({ batch }) => {
                   </div>
                 )}
 
-                {sterilityResult && (
+                {hasSterility && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <FlaskConical className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
                     <div>
@@ -211,7 +218,7 @@ const CurrentBatchCard = ({ batch }) => {
                   </div>
                 )}
 
-                {netContentResult && (
+                {hasNetContent && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <CheckSquare className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                     <div>
