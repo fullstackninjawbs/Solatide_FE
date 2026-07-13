@@ -346,5 +346,38 @@ export const apiService = {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
+  },
+
+  // ─── Content / FAQs ─────────────────────────────────────────────────────────
+  getPublicFaqs: async () => {
+    return fetch(`${API_URL}/api/v1/content/faqs`, {
+      method: 'GET'
+    });
+  },
+  getAdminFaqs: async () => {
+    return fetch(`${API_URL}/api/admin/content/faqs`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  createAdminFaqSection: async (payload) => {
+    return fetch(`${API_URL}/api/admin/content/faqs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  updateAdminFaqSection: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/content/faqs/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  deleteAdminFaqSection: async (id) => {
+    return fetch(`${API_URL}/api/admin/content/faqs/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
   }
 };

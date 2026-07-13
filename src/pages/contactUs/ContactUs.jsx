@@ -3,77 +3,99 @@ import { Link } from 'react-router-dom'
 
 const ContactUs = () => {
     return (
-        <div className="w-full bg-white min-h-screen">
-            <section className="w-full bg-[#F0F5FB] py-12 text-left">
-                <div className="main-container">
-                    <h1
-                        className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4 text-center"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
-                    >
-                        Contact Us
-                    </h1>
-                    <p className="text-[16px] font-regular font-weight-400 text-[#6A6A6A] leading-[1.75] w-full mx-auto text-left">
-                        Get in touch with our team for inquiries, research support, or product-related questions. We're here to provide accurate information and assist with your research needs.
+        <div className="w-full bg-white min-h-screen text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            <div className="main-container mx-auto pt-12 pb-24 px-4 sm:px-6">
+
+                {/* Title */}
+                <h1 className="text-center text-[36px] sm:text-[42px] font-bold text-[#214A9E] mb-8">
+                    Contact Us
+                </h1>
+
+                {/* Support & Dispatch */}
+                <div className="mb-12">
+                    <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-3 tracking-tight">Support & Dispatch</h2>
+                    <p className="text-[14px] font-bold text-slate-700 mb-4 font-sans">Melbourne, VIC, Australia</p>
+                    <p className="text-[14px] text-slate-500 leading-relaxed max-w-[850px] mb-6 font-sans">
+                        We aim to respond within 24 business hours during business hours, Monday to Friday (AEST). We assist with order support, shipping updates, documentation requests, restock enquiries, and general questions.
+                    </p>
+
+                    <div className="bg-[#f8fafc] border-l-[3px] border-[#00bfef] p-6 rounded-r-lg">
+                        <ul className="space-y-3 text-[14px] font-sans">
+                            <li>
+                                <strong className="text-slate-800 font-bold">Secure Telegram:</strong> <a href="https://t.me/solatidebioscienceschannel" target="_blank" rel="noopener noreferrer" className="text-[#0079CD] hover:underline">@solatidebiosciences (t.me/solatidebioscienceschannel)</a>
+                            </li>
+                            <li>
+                                <strong className="text-slate-800 font-bold">Email:</strong> <a href="mailto:contact@solatidebiosciences.com.au" className="text-[#0079CD] hover:underline">contact@solatidebiosciences.com.au</a>
+                            </li>
+                            <li>
+                                <strong className="text-slate-800 font-bold">Response Time:</strong> <span className="text-slate-600">Typically within 24 hours during business hours (Monday-Friday, AEST)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* What We Can Help With */}
+                <div className="mb-12">
+                    <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-5 tracking-tight">What We Can Help With</h2>
+                    <ul className="list-disc pl-5 space-y-1.5 text-[14px] text-slate-600 font-bold font-sans">
+                        <li>Order support and shipping updates</li>
+                        <li>Product availability and restock enquiries</li>
+                        <li>Batch documentation and COA requests</li>
+                        <li>General questions about the Solatide catalogue</li>
+                        <li>Bulk and general support enquiries</li>
+                    </ul>
+                </div>
+
+                {/* Business Mailing Address */}
+                <div className="mb-12">
+                    <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-5 tracking-tight">Business Mailing Address</h2>
+                    <div className="bg-[#f8fafc] p-6 rounded-lg font-sans text-[14px] text-slate-600 space-y-4">
+                        <p className="leading-relaxed">
+                            <span className="font-semibold text-slate-700">Solatide Biosciences</span><br />
+                            Suite 329/98-100 Elizabeth Street<br />
+                            Melbourne VIC 3000<br />
+                            Australia
+                        </p>
+                        <p>
+                            Online store only. No public storefront, walk-in service, or customer collection is available.
+                        </p>
+                        <p>
+                            Email: <a href="mailto:contact@solatidebiosciences.com.au" className="text-[#0079CD] hover:underline">contact@solatidebiosciences.com.au</a>
+                        </p>
+                    </div>
+                </div>
+
+                {/* Compliance Notice */}
+                <div className="mb-12">
+                    <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-5 tracking-tight">Compliance Notice</h2>
+                    <p className="text-[14px] text-slate-500 mb-4 font-sans">
+                        For strict legal and compliance reasons, we <strong className="text-slate-700">cannot provide:</strong>
+                    </p>
+                    <ul className="list-disc pl-5 space-y-1.5 text-[14px] text-slate-500 mb-6 font-sans">
+                        <li>Dosing instructions or recommendations</li>
+                        <li>Reconstitution protocols or mixing guidance</li>
+                        <li>Administration methods or human-use information</li>
+                        <li>Medical, therapeutic, or clinical advice</li>
+                        <li>Information on use outside legitimate in-vitro research purposes</li>
+                    </ul>
+                    <p className="text-[14px] text-slate-500 font-sans">
+                        All products are supplied strictly for <strong className="text-slate-700">research use only</strong>. For more information, please read our <Link to="/disclaimer" className="text-[#00bfef] hover:underline">Research Use Disclaimer</Link>.
                     </p>
                 </div>
 
-            </section>
-            <section className="w-full bg-white py-12">
-                <div className="main-container mx-auto flex flex-col gap-8">
-                    <div className="flex flex-col">
-                        <p className="text-[14px] font-semibold font-weight-600 uppercase tracking-widest text-[#00E5FF] mb-4">
-                            GETTING STARTED
-                        </p>
-                        <h2 className="text-[24px] font-semibold font-weight-600 md:text-[30px] text-[#214A9E] mb-6">
-                            Compliance Notice
-                        </h2>
-
-                        <p className="text-[14px] text-[#6A6A6A] font-weight-500  mb-4 font-medium">
-                            For strict legal and compliance reasons, we cannot provide
-                        </p>
-
-                        <ul className="list-disc pl-5 mb-6 space-y-2 text-[14px] text-[#6A6A6A] font-weight-500  mb-4 font-medium ">
-                            <li>Dosing instructions or recommendations</li>
-                            <li>Reconstitution protocols or mixing guidance</li>
-                            <li>Administration methods or human-use information</li>
-                            <li>Medical, therapeutic, or clinical advice</li>
-                            <li>Information on use outside legitimate in-vitro research purposes</li>
-                        </ul>
-
-                        <p className="text-[14px] text-[#6A6A6A] font-weight-500  mb-4 font-medium">
-                            All products are supplied strictly for research use only. For more information, please read our{' '}
-                            <Link to="/disclaimer" className="text-[#00E5FF] hover:underline font-medium">
-                                Research Use Disclaimer
-                            </Link>.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col mt-2">
-                        <h2 className="text-[24px] font-semibold font-weight-600 md:text-[30px] text-[#214A9E] mb-6">
-                            Before You Contact Us
-                        </h2>
-
-                        <div className="w-full border border-[#e0f2fe] rounded-[8px] p-6 bg-white shadow-sm">
-                            <h3 className="text-[14px] font-semibold font-weight-600 text-[#1a4494] mb-3">
-                                Read this contact us
-                            </h3>
-                            <p className="text-[14px] font-medium font-weight-500 text-[#6A6A6A]">
-                                Many common questions are answered on our{' '}
-                                <Link to="/faq" className="text-[#00E5FF] hover:underline font-medium">FAQ page</Link>.
-                                You may also find helpful information on our{' '}
-                                <Link to="/coa" className="text-[#00E5FF] hover:underline font-medium">COA & Lab Testing</Link> page or{' '}
-                                <Link to="/shipping-policy" className="text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link> page.
-                            </p>
-                        </div>
-                    </div>
-
+                {/* Useful Links */}
+                <div>
+                    <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-5 tracking-tight">Useful Links</h2>
+                    <ul className="list-disc pl-5 space-y-1.5 text-[14px] font-sans text-[#00bfef]">
+                        <li><Link to="/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
+                        <li><Link to="/coa" className="hover:underline">COA & Lab Testing</Link></li>
+                        <li><Link to="/faq" className="hover:underline">FAQ</Link></li>
+                        <li><Link to="/disclaimer" className="hover:underline">Research Use Disclaimer</Link></li>
+                    </ul>
                 </div>
-            </section>
 
-
+            </div>
         </div>
-
-
     )
 }
 

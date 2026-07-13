@@ -39,6 +39,7 @@ const Shop = () => {
     return (
         <div className="w-full min-h-screen">
             <ShopBanner />
+
             <ShopProducts
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}

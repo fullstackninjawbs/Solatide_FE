@@ -15,6 +15,7 @@ const BatchForm = lazy(() => import('../pages/admin/products/BatchForm'))
 const CollectionList = lazy(() => import('../pages/admin/products/CollectionList'))
 const CollectionForm = lazy(() => import('../pages/admin/products/CollectionForm'))
 const ReviewList = lazy(() => import('../pages/admin/growth/ReviewList'))
+const FaqList = lazy(() => import('../pages/admin/content/FaqList'))
 const Home = lazy(() => import('../Redirect/home'))
 const Shop = lazy(() => import('../Redirect/Shop'))
 const ProductDetail = lazy(() => import('../pages/product/ProductDetail'))
@@ -82,6 +83,7 @@ const AppRoutes = () => {
                     <Route path="discounts/new" element={<DiscountForm />} />
                     <Route path="discounts/edit/:id" element={<DiscountForm />} />
                     <Route path="growth/reviews" element={<ReviewList />} />
+                    <Route path="content/faqs" element={<FaqList />} />
                     <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                     <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
                     <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />

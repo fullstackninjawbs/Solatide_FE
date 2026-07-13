@@ -79,6 +79,15 @@ const AdminLayout = () => {
     { name: 'Batch Records', path: '/admin/batches', icon: FileText, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Discounts', path: '/admin/discounts', icon: Tag, roles: ['super_admin', 'operations', 'admin'] },
+    {
+      name: 'Content',
+      path: '/admin/content/faqs',
+      icon: BookOpen,
+      roles: ['super_admin', 'content_manager', 'admin'],
+      subItems: [
+        { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] }
+      ]
+    },
     { name: 'Reviews', path: '/admin/growth/reviews', icon: MessageSquare, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart2, roles: ['super_admin', 'operations', 'admin'] },

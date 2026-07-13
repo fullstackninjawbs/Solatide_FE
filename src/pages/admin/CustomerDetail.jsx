@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, Copy, ShoppingBag, ChevronDown, MoreHorizontal, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const CustomerDetail = () => {
@@ -20,9 +20,7 @@ const CustomerDetail = () => {
     const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
     const [editAddressForm, setEditAddressForm] = useState({ name: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
 
-    useEffect(() => {
-        fetchCustomerData();
-    }, [id]);
+
 
     const fetchCustomerData = async () => {
         try {
@@ -50,6 +48,12 @@ const CustomerDetail = () => {
             setLoading(false);
         }
     };
+
+
+    useEffect(() => {
+        fetchCustomerData();
+    }, [id]);
+
 
     const handleCommentChange = (e) => {
         setCommentText(e.target.value);
