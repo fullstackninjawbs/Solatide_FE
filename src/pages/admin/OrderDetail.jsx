@@ -373,16 +373,22 @@ const OrderDetail = () => {
                 </div>
 
                 <div className="flex items-center justify-end gap-3 pt-2">
-                  {order.easyPostShipmentId ? (
+                  {order.starshipitOrderId ? (
                     <div className="w-full flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4">
                       <div>
                         <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Shipping Label Created</p>
                         <p className="text-[14.5px] font-bold text-brand-navy">
-                          {order.trackingCarrier} - <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
+                          {order.trackingCarrier} - {order.trackingNumber ? (
+                            <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
+                          ) : (
+                            <span className="text-slate-400 italic font-medium">Pending Dispatch</span>
+                          )}
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
+                        {order.labelUrl && (
+                          <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
+                        )}
                         <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
                           {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
                         </button>
