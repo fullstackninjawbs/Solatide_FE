@@ -125,37 +125,38 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
     }, [totalReviews, onReviewsFetched]);
 
     return (
-        <div id="reviews" className="mt-16 max-w-[1440px] mx-auto text-left px-4" style={{ fontFamily: 'Poppins' }}>
+        <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins']">
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-                <div className="flex flex-col gap-1">
-                    <h2 className="text-[15px] font-medium text-slate-800">
-                        Customer Reviews
-                    </h2>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-[15px] font-bold text-slate-900">{averageRating}</span>
-                        <span className="text-[11px] text-slate-500">{totalReviews} reviews</span>
+            <div className="mb-8">
+                <h3 className="text-[14px] font-bold text-[#0079CD] mb-2">Reviews</h3>
+                <h2 className="text-3xl font-bold text-[#1E1E1E]">
+                    Customer Reviews
+                </h2>
+            </div>
+
+            {/* Summary Card */}
+            <div className="w-full flex flex-col md:flex-row md:items-center justify-between border border-slate-200 rounded-2xl p-6 md:p-8 bg-white mb-10 shadow-sm">
+                <div className="flex items-center gap-6 mb-6 md:mb-0">
+                    <span className="text-[44px] font-bold text-[#1E1E1E] leading-none">{averageRating}</span>
+                    <div className="flex flex-col gap-1.5">
+                        <div className="flex text-[#FFB800] text-[20px] gap-1">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i}>
+                                    {i < Math.round(Number(averageRating)) ? '★' : '☆'}
+                                </span>
+                            ))}
+                        </div>
+                        <span className="text-[13px] text-slate-400 font-medium">Based on {totalReviews} verified reviews</span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 self-end sm:self-center">
-                    <button
-                        onClick={handleOpenModal}
-                        className="bg-[#2B7868] hover:bg-[#006e52] text-white text-[13px] font-medium py-1.5 px-6 rounded transition-colors focus:outline-none"
-                    >
-                        Write a review
-                    </button>
-                    <ReviewFilter
-                        filterRating={filterRating}
-                        setFilterRating={setFilterRating}
-                        sortBy={sortBy}
-                        setSortBy={setSortBy}
-                    />
-                </div>
+                <button
+                    onClick={handleOpenModal}
+                    className="bg-[#0079CD] hover:bg-[#0062a3] text-white text-[14.5px] font-semibold py-3 px-8 rounded-lg transition-colors focus:outline-none w-full md:w-auto text-center"
+                >
+                    Write a Review
+                </button>
             </div>
-
-            {/* Summary Section */}
-            <ReviewSummary reviews={reviews} />
 
             {/* Reviews List */}
             <ReviewList

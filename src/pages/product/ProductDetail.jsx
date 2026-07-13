@@ -218,9 +218,28 @@ const ProductDetail = () => {
                 {/* Hero Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start relative">
                     {/* Left Column: Image Galleries */}
-                    <div className="lg:col-span-6 flex flex-col-reverse md:flex-row gap-4 lg:gap-5 items-start w-full lg:sticky lg:top-28">
+                    <div className="lg:col-span-6 flex flex-col gap-4 w-full lg:sticky lg:top-28">
+
+                        {/* Main Preview Image */}
+                        <div className="bg-[#f8fafc] rounded-3xl border border-slate-200/60 p-6 flex items-center justify-center overflow-hidden h-[340px] sm:h-[450px] md:h-[550px] w-full relative group">
+                            {images[activeTab] ? (
+                                <img
+                                    src={images[activeTab]}
+                                    alt="Product Preview"
+                                    className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="text-slate-400 text-sm font-medium flex flex-col items-center gap-2">
+                                    <svg className="w-8 h-8 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    No Image Available
+                                </div>
+                            )}
+                        </div>
+
                         {/* Thumbnails list */}
-                        <div className="flex flex-row md:flex-col gap-3 shrink-0 overflow-x-auto w-full md:w-[85px] pb-2 md:pb-0 scrollbar-hide">
+                        <div className="flex flex-row gap-3 overflow-x-auto w-full pb-2 scrollbar-hide">
                             {images.map((img, idx) => (
                                 <button
                                     key={idx}
@@ -250,22 +269,9 @@ const ProductDetail = () => {
                             ))}
                         </div>
 
-                        {/* Main Preview Image */}
-                        <div className="flex-grow bg-[#f8fafc] rounded-3xl border border-slate-200/60 p-6 flex items-center justify-center overflow-hidden h-[340px] sm:h-[450px] md:h-[550px] w-full relative group">
-                            {images[activeTab] ? (
-                                <img
-                                    src={images[activeTab]}
-                                    alt="Product Preview"
-                                    className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
-                                />
-                            ) : (
-                                <div className="text-slate-400 text-sm font-medium flex flex-col items-center gap-2">
-                                    <svg className="w-8 h-8 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    No Image Available
-                                </div>
-                            )}
+                        {/* Illustration Note */}
+                        <div className="text-left w-full pl-2">
+                            <p className="text-[12px] text-[#214A9E] font-medium">Images are for illustration purpose only</p>
                         </div>
                     </div>
 
@@ -279,8 +285,8 @@ const ProductDetail = () => {
                             </h1>
 
                             {/* Ratings */}
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="flex text-[#0F8A5F] text-[15px] gap-0.5">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="flex text-[#FFB800] text-[16px] gap-0.5">
                                     {Array.from({ length: 5 }).map((_, i) => {
                                         const displayCount = fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0);
                                         const hasReviews = displayCount > 0;
@@ -292,21 +298,12 @@ const ProductDetail = () => {
                                         );
                                     })}
                                 </div>
-                                <a href="#reviews" className="text-[14px] text-[#1E1E1E] font-medium underline ml-1 hover:text-[#214A9E]">
-                                    {fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0)} {(fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0)) === 1 ? 'review' : 'reviews'}
+                                <a href="#reviews" className="text-[13px] text-[#1E1E1E] font-bold hover:text-[#214A9E]">
+                                    {fetchedReviewCount !== null ? fetchedReviewCount : (product.ratingCount || product.reviewsCount || 0)} Reviews
                                 </a>
                             </div>
                             {/* Price */}
-                            <div className="flex items-baseline gap-3 mb-6">
-                                <span className="text-3xl sm:text-[36px] font-bold text-[#214A9E]">
-                                    {displayPrice}
-                                </span>
-                                {displayCompareAtPrice && (
-                                    <span className="text-xl text-slate-400 line-through">
-                                        {formatPrice(displayCompareAtPrice)}
-                                    </span>
-                                )}
-                            </div>
+                            {/* Price is moved down next to Add to Cart in the new design, but we'll leave it here if variants exist or handle it below */}
 
                             {/* Product Summary */}
                             <div
@@ -314,18 +311,6 @@ const ProductDetail = () => {
                                 style={{ fontWeight: 400 }}
                                 dangerouslySetInnerHTML={{ __html: product.summaryHtml || product.description }}
                             />
-
-                            {/* Badges list */}
-                            <div className="flex flex-wrap gap-2.5 mb-6">
-                                {badges.map((badge, idx) => (
-                                    <span
-                                        key={idx}
-                                        className="bg-[#edf4ff]/50 text-[#214A9E] border border-[#214A9E]/10 rounded-full px-4 py-1.5 text-xs font-semibold"
-                                    >
-                                        {badge}
-                                    </span>
-                                ))}
-                            </div>
                         </div>
 
                         {/* Current Batch Info (moved inline above selector and quantity!) */}
@@ -354,43 +339,51 @@ const ProductDetail = () => {
                             </div>
                         )}
 
-                        {/* Actions area (Qty & Cart) */}
-                        <div className={`flex flex-col gap-5 w-full ${!hasVariantsToSelect ? 'border-t border-slate-100 pt-8' : ''}`}>
-                            <div className="flex flex-row gap-4">
-                                {/* Quantity Selector */}
-                                <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 h-[56px] w-max">
+                        {/* Actions area (Price, Qty & Cart) */}
+                        <div className="border border-slate-200 rounded-2xl bg-white p-5 shadow-[0_2px_4px_rgba(0,0,0,0.02)] mt-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5 w-full">
+                            {/* Price (Moved to row) */}
+                            <div className="flex items-baseline gap-3 shrink-0">
+                                <span className="text-2xl sm:text-[28px] font-bold text-[#214A9E]">
+                                    {displayPrice}
+                                </span>
+                                {displayCompareAtPrice && (
+                                    <span className="text-lg text-slate-400 line-through">
+                                        {formatPrice(displayCompareAtPrice)}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="flex flex-row items-center gap-4 flex-wrap xl:flex-nowrap">
+                                <span className="text-[13px] font-semibold text-slate-700">Quantity</span>
+                                {/* Quantity Selector - Pill style */}
+                                <div className="flex items-center bg-[#EBF4FA] rounded-full h-[46px] px-2 w-max border border-transparent">
                                     <button
                                         onClick={decrementQty}
-                                        className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-l-xl transition-colors"
+                                        className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
                                     >
                                         −
                                     </button>
-                                    <span className="w-12 text-center font-bold text-[16px] text-slate-800">
+                                    <span className="w-8 text-center font-bold text-[15px] text-[#214A9E]">
                                         {quantity}
                                     </span>
                                     <button
                                         onClick={incrementQty}
-                                        className="text-[20px] font-medium text-slate-500 hover:text-[#214A9E] hover:bg-slate-100 w-14 h-full flex items-center justify-center focus:outline-none rounded-r-xl transition-colors"
+                                        className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
                                     >
                                         +
                                     </button>
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex flex-col gap-3.5 flex-1">
+                                <div className="flex flex-col gap-1 w-full sm:w-auto">
                                     <button
                                         onClick={() => addToCart(product, quantity, selectedVariant)}
                                         disabled={isOutOfStock}
-                                        className={`w-full text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
+                                        className={`w-full sm:w-[200px] text-white text-[15px] font-bold h-[48px] rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
                                             ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed'
                                             : 'bg-[#0079CD] hover:bg-[#0062a3]'
                                             }`}
                                     >
-                                        {!isOutOfStock && (
-                                            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                            </svg>
-                                        )}
                                         {isOutOfStock ? 'Sold Out' : 'Add to cart'}
                                     </button>
                                     {checkoutError && <p className="text-[12px] text-red-550 font-medium text-center">{checkoutError}</p>}
@@ -399,10 +392,14 @@ const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Product Information Accordions Section */}
+            {/* Product Information Section (Full Width Background) */}
+            <div className="w-full">
                 <ProductInfoSection product={product} activeBatch={activeBatch} />
+            </div>
 
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Product Reviews Section */}
                 <ProductReviewsSection product={product} onReviewsFetched={setFetchedReviewCount} />
 
