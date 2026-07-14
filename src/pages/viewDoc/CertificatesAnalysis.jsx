@@ -1,65 +1,50 @@
-import React, { useState } from 'react'
-import { Eye, X, CheckCircle2, ShieldCheck } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Eye, X, CheckCircle2, ShieldCheck, ZoomIn, ZoomOut } from 'lucide-react'
 
 const CertificatesAnalysis = () => {
     const [activeTab, setActiveTab] = useState('All');
     const [selectedCoa, setSelectedCoa] = useState(null);
+    const [coaData, setCoaData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [zoom, setZoom] = useState(1);
 
-    const coaData = [
-        {
-            id: 1,
-            title: 'Retatrutide 5mg',
-            purity: '99.94%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_5mg_SOL_RTA_26C_2605210107_1790b1cf-8acd-4785-acf3-01b06adfffb5.png?v=1781301675&width=900',
-            status: 'All'
-        },
-        {
-            id: 2,
-            title: 'Retatrutide 5mg',
-            purity: '99.94%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_5mg_SOL_RTA_26C_2605210107_1790b1cf-8acd-4785-acf3-01b06adfffb5.png?v=1781301675&width=900',
-            status: 'All'
-        },
-        {
-            id: 3,
-            title: 'Retatrutide 5mg',
-            purity: '99.94%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_5mg_SOL_RTA_26C_2605210107_1790b1cf-8acd-4785-acf3-01b06adfffb5.png?v=1781301675&width=900',
-            status: 'All'
-        },
+    useEffect(() => {
+        const fetchCoas = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+                const res = await fetch(`${API_URL}/api/v1/coas`);
+                const data = await res.json();
+                if (data.success) {
+                    const mappedCoas = data.data.batches.map((batch, index) => ({
+                        id: batch._id || index,
+                        title: batch.productId?.name || batch.displayName || batch.batchId || 'Unknown Product',
+                        purity: batch.purity || 'N/A',
+                        endotoxin: batch.hasEndotoxinTest || batch.includesEndotoxin || batch.endotoxinIncludedInCoa ? '<1 EU/mg (Pass)' : '',
+                        imageUrl: batch.coaFile?.url || batch.coaUrl || '',
+                        status: 'All'
+                    }));
+                    setCoaData(mappedCoas);
+                }
+            } catch (error) {
+                console.error('Error fetching COAs:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCoas();
+    }, []);
 
-        {
-            id: 4,
-            title: 'Semaglutide 5mg',
-            purity: '99.9%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/semaglutide-5mg-freedom-diagnostics-certificate-of-analysis-coa_187eeac4-707d-4b88-8819-30ac968f7b50.jpg?v=1781301682&width=900',
-            status: 'All'
-        },
-        {
-            id: 5,
-            title: 'Semaglutide 10mg',
-            purity: '99.88%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/semaglutide-10mg-chromate-certificate-of-analysis-coa_ea84de7c-84f1-4549-b20e-1f6f3573c764.jpg?v=1781299572&width=900',
-            status: 'All'
-        },
-        {
-            id: 6,
-            title: 'Cagrilintide 5mg',
-            purity: '99.81%',
-            endotoxin: '<1 EU/mg (Pass)',
-            imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/cagrilintide-5mg-chromate-certificate-of-analysis-coa_c1702f8f-8370-40d3-8eed-a377f83048ce_1.jpg?v=1781299575&width=900',
-            status: 'All'
-        }
-    ];
+    if (loading) {
+        return (
+            <div className="w-full bg-white min-h-[60vh] flex items-center justify-center">
+                <div className="text-slate-500 font-medium">Loading COA documents...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full bg-white min-h-screen">
-            <section className="w-full bg-[#F0F5FB] py-12 text-center">
+            <section className="w-full py-12 text-center">
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
@@ -73,7 +58,7 @@ const CertificatesAnalysis = () => {
                 </div>
             </section>
 
-            <section className="py-12 lg:py-16">
+            <section className="py-6 lg:py-8">
                 <div className="main-container">
 
                     <div className="flex flex-wrap items-center gap-3 mb-10">
@@ -98,7 +83,11 @@ const CertificatesAnalysis = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {coaData.map((coa) => (
+                        {coaData.length === 0 ? (
+                            <div className="col-span-full py-12 text-center text-slate-500">
+                                No Certificate of Analysis documents found.
+                            </div>
+                        ) : coaData.map((coa) => (
                             <div key={coa.id} className="group bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.12)] hover:border-slate-200 transition-all duration-300 ease-out">
 
                                 <div className="w-full relative flex items-center justify-center bg-slate-50/80 px-8 pt-10 pb-6 border-b border-slate-100/60 overflow-hidden">
@@ -140,7 +129,10 @@ const CertificatesAnalysis = () => {
                                     </div>
 
                                     <button
-                                        onClick={() => setSelectedCoa(coa)}
+                                        onClick={() => {
+                                            setSelectedCoa(coa);
+                                            setZoom(1);
+                                        }}
                                         className="w-full mt-auto bg-white border-2 border-slate-100 rounded-[12px] py-3 text-[14px] font-medium text-slate-700 flex items-center justify-center gap-2.5 group-hover:border-[#214A9E]/20 group-hover:bg-[#214A9E]/5 group-hover:text-[#214A9E] transition-all duration-300 ease-out"
                                     >
                                         <Eye size={18} className="text-slate-400 group-hover:text-[#214A9E] transition-colors duration-300" />
@@ -171,21 +163,47 @@ const CertificatesAnalysis = () => {
                                     {selectedCoa.title}
                                 </h2>
                             </div>
-                            <button
-                                onClick={() => setSelectedCoa(null)}
-                                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
+                            <div className="flex items-center gap-3">
+                                <div className="hidden sm:flex items-center gap-1 bg-gray-100 rounded-lg p-1 mr-2">
+                                    <button
+                                        onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}
+                                        className="p-1.5 text-gray-500 hover:bg-white hover:text-gray-900 rounded-md transition-all shadow-sm"
+                                        title="Zoom Out"
+                                    >
+                                        <ZoomOut size={18} />
+                                    </button>
+                                    <span className="text-[13px] font-medium text-gray-600 min-w-[3ch] text-center">
+                                        {Math.round(zoom * 100)}%
+                                    </span>
+                                    <button
+                                        onClick={() => setZoom(z => Math.min(3, z + 0.25))}
+                                        className="p-1.5 text-gray-500 hover:bg-white hover:text-gray-900 rounded-md transition-all shadow-sm"
+                                        title="Zoom In"
+                                    >
+                                        <ZoomIn size={18} />
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedCoa(null)}
+                                    className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Document Scroll Area */}
-                        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-gray-50/50 flex justify-center">
-                            <img
-                                src={selectedCoa.imageUrl}
-                                alt={`Certificate of Analysis for ${selectedCoa.title}`}
-                                className="max-w-full h-auto object-contain shadow-sm border border-gray-200 rounded-[8px] bg-white"
-                            />
+                        <div className="flex-1 overflow-auto p-4 sm:p-8 bg-gray-50/50 flex justify-center items-start">
+                            <div
+                                className="transition-transform duration-200 origin-top flex justify-center"
+                                style={{ transform: `scale(${zoom})` }}
+                            >
+                                <img
+                                    src={selectedCoa.imageUrl}
+                                    alt={`Certificate of Analysis for ${selectedCoa.title}`}
+                                    className="max-w-full h-auto object-contain shadow-sm border border-gray-200 rounded-[8px] bg-white"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

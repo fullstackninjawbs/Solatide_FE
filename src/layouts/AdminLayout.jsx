@@ -76,7 +76,16 @@ const AdminLayout = () => {
         { name: 'Import CSV', path: '/admin/products/import', roles: ['super_admin', 'operations', 'admin'] }
       ]
     },
-    { name: 'Batch Records', path: '/admin/batches', icon: FileText, roles: ['super_admin', 'operations', 'admin'] },
+    {
+      name: 'Batch Records',
+      path: '/admin/batches',
+      icon: FileText,
+      roles: ['super_admin', 'operations', 'admin'],
+      subItems: [
+        { name: 'All Batches', path: '/admin/batches', roles: ['super_admin', 'operations', 'admin'] },
+        { name: 'COAs', path: '/admin/coas', roles: ['super_admin', 'operations', 'admin'] }
+      ]
+    },
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
     { name: 'Discounts', path: '/admin/discounts', icon: Tag, roles: ['super_admin', 'operations', 'admin'] },
     {
@@ -89,7 +98,7 @@ const AdminLayout = () => {
       ]
     },
     { name: 'Reviews', path: '/admin/growth/reviews', icon: MessageSquare, roles: ['super_admin', 'operations', 'support', 'admin'] },
-    { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
+    // { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart2, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Settings', path: '/admin/settings/store', icon: Settings, roles: ['super_admin', 'admin'] },
     { name: 'Admin Users', path: '/admin/settings/admin-users', icon: UserCog, roles: ['super_admin', 'admin'] }
@@ -139,7 +148,8 @@ const AdminLayout = () => {
               const isActive =
                 item.path === '/admin'
                   ? location.pathname === '/admin'
-                  : location.pathname.startsWith(item.path);
+                  : location.pathname.startsWith(item.path) ||
+                  (item.subItems && item.subItems.some(sub => location.pathname.startsWith(sub.path)));
 
               return (
                 <div key={item.name} className="flex flex-col">
@@ -164,7 +174,7 @@ const AdminLayout = () => {
                   {isActive && isSidebarOpen && item.subItems && (
                     <div className="flex flex-col mt-1 mb-2 space-y-1 relative before:absolute before:left-6 before:top-0 before:bottom-3 before:w-px before:bg-slate-200">
                       {item.subItems.filter(sub => sub.roles.includes(adminUser.role)).map(sub => {
-                        const isSubActive = location.pathname === sub.path || location.pathname.startsWith(sub.path + '/');
+                        const isSubActive = location.pathname?.toLowerCase() === sub.path || location.pathname?.toLowerCase().startsWith(sub.path + '/');
                         return (
                           <Link
                             key={sub.name}

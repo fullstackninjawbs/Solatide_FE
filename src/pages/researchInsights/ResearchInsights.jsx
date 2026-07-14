@@ -36,7 +36,7 @@ const articles = [
 const ResearchInsights = () => {
     return (
         <div className="w-full bg-white min-h-screen flex flex-col">
-            <section className="w-full bg-[#F0F5FB] py-12 text-center">
+            <section className="w-full py-12 text-center">
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4 text-center"

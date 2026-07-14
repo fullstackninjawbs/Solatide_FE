@@ -157,7 +157,39 @@ export const apiService = {
     });
   },
 
-  // Dashboard Analytics
+  // ─── Analytics (Admin) ────────────────────────────────────────────────────────
+  getAnalyticsSummary: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/orders/summary${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAnalyticsOrdersByDay: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/orders/by-day${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAnalyticsOrdersByStatus: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/orders/by-status${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAnalyticsRevenueByProduct: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/revenue/by-product${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAnalyticsTopCustomers: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/customers/top${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+
+  // Dashboard Analytics (Legacy)
   getDashboardAnalytics: async (timeFilter = 'Today') => {
     return fetch(`${API_URL}/api/admin/dashboard?timeFilter=${encodeURIComponent(timeFilter)}`, {
       headers: { ...getAuthHeaders() }

@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
@@ -12,10 +12,12 @@ const AdminProductsImportPage = lazy(() => import('../pages/admin/AdminProductsI
 const InventoryList = lazy(() => import('../pages/admin/products/InventoryList'))
 const BatchList = lazy(() => import('../pages/admin/products/BatchList'))
 const BatchForm = lazy(() => import('../pages/admin/products/BatchForm'))
+const CoaList = lazy(() => import('../pages/admin/products/CoaList'))
 const CollectionList = lazy(() => import('../pages/admin/products/CollectionList'))
 const CollectionForm = lazy(() => import('../pages/admin/products/CollectionForm'))
 const ReviewList = lazy(() => import('../pages/admin/growth/ReviewList'))
 const FaqList = lazy(() => import('../pages/admin/content/FaqList'))
+const AnalyticsDashboard = lazy(() => import('../pages/admin/analytics/AnalyticsDashboard'))
 const Home = lazy(() => import('../Redirect/home'))
 const Shop = lazy(() => import('../Redirect/Shop'))
 const ProductDetail = lazy(() => import('../pages/product/ProductDetail'))
@@ -71,7 +73,18 @@ const AppRoutes = () => {
                     <Route path="batches" element={<BatchList />} />
                     <Route path="batches/new" element={<BatchForm />} />
                     <Route path="batches/:id/edit" element={<BatchForm />} />
-                    <Route path="coas" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">COA Batch Management (Phase 4)</div>} />
+                    <Route path="coas" element={<CoaList />} />
+
+                    <Route path="analytics" element={
+                        <React.Suspense fallback={
+                            <div className="flex h-screen items-center justify-center">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div>
+                            </div>
+                        }>
+                            <AnalyticsDashboard />
+                        </React.Suspense>
+                    } />
+
                     <Route path="orders" element={<OrderList />} />
                     <Route path="orders/:id" element={<OrderDetail />} />
                     <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />

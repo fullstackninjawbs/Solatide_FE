@@ -59,9 +59,7 @@ const ProductInfoSection = ({ product }) => {
                                         <li>Analytical concentration studies (0.1 nM to 100 nM range)</li>
                                     </ul>
                                 )}
-                                <p className="font-bold text-slate-800 mt-4">
-                                    For in-vitro laboratory research use only.
-                                </p>
+
                             </div>
                         </div>
 
