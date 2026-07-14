@@ -3,8 +3,9 @@ import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarCha
 
 const CurrentBatchCard = ({ batch }) => {
   const handleOpenCoa = () => {
-    if (batch?.coaUrl) {
-      window.open(batch.coaUrl, '_blank');
+    const url = batch?.coaFile?.url || batch?.coaUrl;
+    if (url) {
+      window.open(url, '_blank');
     }
   };
 
@@ -102,7 +103,7 @@ const CurrentBatchCard = ({ batch }) => {
               </span>
             )}
           </div>
-          {batch.coaUrl && (
+          {(batch.coaFile?.url || batch.coaUrl) && (
             <button 
               onClick={handleOpenCoa}
               className="bg-[#0079CD] hover:bg-[#0062a3] text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"

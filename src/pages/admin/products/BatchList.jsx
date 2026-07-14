@@ -232,9 +232,9 @@ const BatchList = () => {
                         }`}>
                         {batch.coaStatus === 'approved' ? '✓ Approved' : '⏳ Pending'}
                       </span>
-                      {batch.coaUrl && (
+                      {(batch.coaFile?.url || batch.coaUrl) && (
                         <a
-                          href={batch.coaUrl}
+                          href={batch.coaFile?.url || batch.coaUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="block text-[11px] text-blue-500 hover:underline mt-0.5"
