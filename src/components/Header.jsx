@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ShoppingCart, Search } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { ShoppingCart, Search, ChevronDown, ShieldCheck, FileText, BookOpen, Book, FlaskConical, Calculator, HelpCircle, Folder, User, Users, Truck, RotateCcw } from 'lucide-react'
 import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
 import { useCurrency, countriesList } from '../context/CurrencyContext'
@@ -17,6 +18,7 @@ const Header = () => {
     const { selectedCountry, changeCountry } = useCurrency()
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [mobileOpenDropdown, setMobileOpenDropdown] = useState(null)
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
@@ -84,13 +86,53 @@ const Header = () => {
 
     const isHome = location.pathname === '/'
 
-    const navLinks = [
-        { name: 'Home', path: '/' },
-        { name: 'Shop', path: '/shop' },
-        { name: 'COA & Testing', path: '/coa' },
-        { name: 'Calculator', path: '/calculator' },
-        { name: "FAQ's", path: '/faq' },
-        { name: 'Affiliate Program', path: '/affiliate-pro' },
+        const navData = [
+        { name: 'Shop', path: '/shop', direct: true },
+        { 
+            name: 'COA & Testing',
+            mega: [
+                { 
+                    title: 'COA & Testing',
+                    icon: ShieldCheck,
+                    links: [
+                        { name: 'COA & Third-Party Testing', desc: 'Learn about our testing process, quality standards and batch documentation.', path: '/coa', icon: FileText },
+                        { name: 'COA Library', desc: 'View available Certificates of Analysis, batch reports and documentation.', path: '/coa-reports', icon: FileText }
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'Resources',
+            mega: [
+                {
+                    title: 'Resources',
+                    icon: BookOpen,
+                    links: [
+                        { name: 'Peptide Guide', desc: 'Educational guide to research peptides, categories, handling and terminology.', path: '/peptides-guide', icon: Book },
+                        { name: 'Compound Index', desc: 'Browse compounds by category and research pathway.', path: '/compound-database', icon: FlaskConical },
+                        { name: 'Research Calculator', desc: 'Laboratory calculator for concentration and dosing calculations.', path: '/calculator', icon: Calculator },
+                        { name: 'FAQ', desc: 'Answers to common questions about orders, shipping, testing and more.', path: '/faq', icon: HelpCircle },
+                        { name: 'All Resources', desc: 'Access all research articles, guides, references and tools.', path: '/research-resource', icon: Folder }
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'About',
+            mega: [
+                {
+                    title: 'About',
+                    icon: User,
+                    links: [
+                        { name: 'About Us', path: '/about', icon: User },
+                        { name: 'Affiliate Program', path: '/affiliate-pro', icon: Users },
+                        { name: 'Shipping Policy', path: '/shipping-policy', icon: Truck },
+                        { name: 'Returns & Refunds', path: '/returns', icon: RotateCcw }
+                    ]
+                }
+            ]
+        },
+        { name: 'Contact Us', path: '/contact', direct: true },
     ]
 
     const isActive = (path) => location.pathname === path
@@ -123,17 +165,66 @@ const Header = () => {
 
 
                     <nav className="hidden xl:flex items-center gap-1">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                className={`px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${isActive(link.path)
-                                    ? 'bg-[#e0eaf5] text-[#1a4494] shadow-sm'
-                                    : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
-                                    }`}
-                            >
-                                {link.name}
-                            </Link>
+                        {navData.map((item) => (
+                            <div key={item.name} className="relative group">
+                                {item.direct ? (
+                                    <Link
+                                        to={item.path}
+                                        className={`flex items-center px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full ${isActive(item.path)
+                                            ? 'text-[#1a4494] bg-[#e0eaf5] shadow-sm'
+                                            : 'text-[#374151] hover:text-[#1a4494] hover:bg-slate-100/80'
+                                            }`}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <button
+                                            className={`flex items-center gap-1 px-4 py-[7px] text-[13.5px] font-semibold transition-all duration-200 whitespace-nowrap rounded-full text-[#374151] group-hover:text-[#1a4494] group-hover:bg-slate-100/80`}
+                                        >
+                                            {item.name}
+                                            <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
+                                        </button>
+                                        
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
+                                            {/* Caret */}
+                                            <div className="absolute top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-t border-l border-slate-100 rotate-45 z-10"></div>
+                                            
+                                            <div className="relative bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-w-[320px] z-20">
+                                                {item.mega.map((section, idx) => (
+                                                    <div key={idx} className="flex flex-col gap-5">
+                                                        <div className="flex items-center gap-3 pb-3 border-b-2 border-slate-100">
+                                                            <div className="flex items-center justify-center text-[#1a4494]">
+                                                                <section.icon className="w-6 h-6" strokeWidth={1.5} />
+                                                            </div>
+                                                            <span className="text-[15px] font-bold text-[#1a4494]">{section.title}</span>
+                                                        </div>
+                                                        <div className="flex flex-col gap-6">
+                                                            {section.links.map((link, lIdx) => (
+                                                                <Link 
+                                                                    key={lIdx}
+                                                                    to={link.path}
+                                                                    className="flex items-start gap-4 p-3 -mx-3 rounded-xl hover:bg-slate-50 transition-colors group/link"
+                                                                >
+                                                                    <div className="flex items-center justify-center pt-0.5 shrink-0 text-[#1a4494]">
+                                                                        <link.icon className="w-5 h-5" strokeWidth={1.5} />
+                                                                    </div>
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[14px] font-bold text-[#102a5c] leading-tight group-hover/link:text-[#1a4494]">{link.name}</span>
+                                                                        {link.desc && (
+                                                                            <span className="text-[13px] font-medium text-slate-500 mt-1.5 leading-snug">{link.desc}</span>
+                                                                        )}
+                                                                    </div>
+                                                                </Link>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         ))}
                     </nav>
 
@@ -210,12 +301,7 @@ const Header = () => {
                             )}
                         </div>
 
-                        <Link
-                            to="/contact"
-                            className="inline-flex items-center justify-center rounded-full bg-[#1a4494] px-5 py-[7px] text-[13px] font-bold text-white hover:bg-[#153a7a] transition-colors whitespace-nowrap shrink-0"
-                        >
-                            Contact Us
-                        </Link>
+
 
                         <button
                             onClick={() => setIsCartOpen(true)}
@@ -267,18 +353,51 @@ const Header = () => {
 
                 {isMobileMenuOpen && (
                     <div className="xl:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 shadow-lg rounded-b-xl absolute left-0 w-full z-[999] max-h-[80vh] overflow-y-auto">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className={`block px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${isActive(link.path)
-                                    ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
-                                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
-                                    }`}
-                            >
-                                {link.name}
-                            </Link>
+                        {navData.map((item) => (
+                            <div key={item.name}>
+                                {item.direct ? (
+                                    <Link
+                                        to={item.path}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className={`block px-4 py-2.5 text-sm font-semibold rounded-[12px] transition-colors ${isActive(item.path)
+                                            ? 'bg-[#EBF3FF] text-[#1a4494] border border-[#C7DDF7]'
+                                            : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                                            }`}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <button 
+                                            onClick={() => setMobileOpenDropdown(mobileOpenDropdown === item.name ? null : item.name)}
+                                            className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] text-slate-700 hover:bg-slate-50 transition-colors"
+                                        >
+                                            <span>{item.name}</span>
+                                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileOpenDropdown === item.name ? 'rotate-180 text-[#1a4494]' : 'text-slate-400'}`} />
+                                        </button>
+                                        
+                                        {mobileOpenDropdown === item.name && (
+                                            <div className="flex flex-col gap-1 px-4 py-2 bg-slate-50/50 rounded-xl mt-1">
+                                                {item.mega.map((section, idx) => (
+                                                    <div key={idx} className="flex flex-col gap-1">
+                                                        {section.links.map((link, lIdx) => (
+                                                            <Link
+                                                                key={lIdx}
+                                                                to={link.path}
+                                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                                className="flex items-center gap-2 px-3 py-2 text-[13px] font-semibold text-slate-600 hover:text-[#1a4494] hover:bg-white rounded-lg transition-colors"
+                                                            >
+                                                                <link.icon className="w-3.5 h-3.5 opacity-70" />
+                                                                {link.name}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         ))}
 
                         <div className="pt-4 border-t border-slate-100 mt-2 flex flex-col gap-3">
@@ -336,13 +455,7 @@ const Header = () => {
                                     </div>
                                 )}
                             </div>
-                            <Link
-                                to="/contact"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex w-full items-center justify-center rounded-xl bg-[#1a4494] py-3 text-sm font-bold text-white hover:bg-[#153a7a] transition-colors"
-                            >
-                                Contact Us
-                            </Link>
+
                         </div>
                     </div>
                 )}

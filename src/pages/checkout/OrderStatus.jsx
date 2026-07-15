@@ -86,14 +86,44 @@ const OrderStatus = () => {
                 {/* Status Card */}
                 <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm flex items-start gap-5">
                     <div className="mt-0.5 bg-[#f0f9ff] p-2.5 rounded-full">
-                        <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#0ea5e9] fill-current">
-                            <path d="M12 0a12 12 0 1 0 12 12A12.014 12.014 0 0 0 12 0zm6.927 8.2l-6.845 9.289a1.011 1.011 0 0 1-1.43.188L5.764 13.77a1 1 0 1 1 1.286-1.54l3.935 3.284 5.36-7.27a1 1 0 0 1 1.582 1.156z" />
-                        </svg>
+                        {order.trackingNumber ? (
+                            <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#0ea5e9] fill-current" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                            </svg>
+                        ) : (
+                            <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#0ea5e9] fill-current">
+                                <path d="M12 0a12 12 0 1 0 12 12A12.014 12.014 0 0 0 12 0zm6.927 8.2l-6.845 9.289a1.011 1.011 0 0 1-1.43.188L5.764 13.77a1 1 0 1 1 1.286-1.54l3.935 3.284 5.36-7.27a1 1 0 0 1 1.582 1.156z" />
+                            </svg>
+                        )}
                     </div>
-                    <div>
-                        <h2 className="text-[18px] font-bold text-[#102a5c]">Confirmed</h2>
-                        <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
-                        <p className="text-[13px] text-gray-400 mt-1">{orderDate}</p>
+                    <div className="w-full">
+                        <h2 className="text-[18px] font-bold text-[#102a5c]">
+                            {order.trackingNumber ? "Shipped" : "Confirmed"}
+                        </h2>
+                        {order.trackingNumber ? (
+                            <>
+                                <p className="text-[14px] text-gray-600 mt-1">
+                                    Your order is on the way! It is being shipped via <span className="font-semibold">{order.trackingCarrier || 'your carrier'}</span>.
+                                </p>
+                                <div className="mt-3 flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                    <div>
+                                        <p className="text-[12px] text-gray-500 uppercase tracking-wider font-semibold">Tracking Number</p>
+                                        <p className="text-[15px] font-bold text-gray-900 mt-0.5">{order.trackingNumber}</p>
+                                    </div>
+                                    <a
+                                        href={order.trackingUrl || `https://www.google.com/search?q=${order.trackingNumber}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-[13px] font-semibold py-2 px-4 rounded-md transition-colors shadow-sm"
+                                    >
+                                        Track Shipment
+                                    </a>
+                                </div>
+                            </>
+                        ) : (
+                            <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
+                        )}
+                        <p className="text-[13px] text-gray-400 mt-2">{orderDate}</p>
                     </div>
                 </div>
 

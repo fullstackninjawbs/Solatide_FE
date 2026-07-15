@@ -376,12 +376,14 @@ const OrderDetail = () => {
                   {order.starshipitOrderId ? (
                     <div className="w-full flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4">
                       <div>
-                        <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Shipping Label Created</p>
+                        <p className="text-[13px] font-semibold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                          <Check size={14} /> Shipment Created {order.shipmentStatus ? `(${order.shipmentStatus})` : ''}
+                        </p>
                         <p className="text-[14.5px] font-bold text-brand-navy">
                           {order.trackingCarrier} - {order.trackingNumber ? (
-                            <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
+                            <a href={order.trackingUrl || `https://www.google.com/search?q=${order.trackingNumber}`} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
                           ) : (
-                            <span className="text-slate-400 italic font-medium">Pending Dispatch</span>
+                            <span className="text-slate-400 italic font-medium">Generating Label...</span>
                           )}
                         </p>
                       </div>
