@@ -209,6 +209,32 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
+  // Admin Users
+  getAdminUsers: async () => {
+    return fetch(`${API_URL}/api/admin/users`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  createAdminUser: async (data) => {
+    return fetch(`${API_URL}/api/admin/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  updateAdminUser: async (id, data) => {
+    return fetch(`${API_URL}/api/admin/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  deleteAdminUser: async (id) => {
+    return fetch(`${API_URL}/api/admin/users/${id}`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+  },
 
   // Auth
   adminLogin: async (data) => {
@@ -313,10 +339,16 @@ export const apiService = {
     });
   },
   updateAdminOrder: async (id, payload) => {
-    return fetch(`${API_URL}/api/admin/order/${id}`, {
+    return fetch(`${API_URL}/api/admin/orders/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
+    });
+  },
+  refundAdminOrder: async (id) => {
+    return fetch(`${API_URL}/api/admin/orders/${id}/refund`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
     });
   },
   createAdminShipment: async (id) => {

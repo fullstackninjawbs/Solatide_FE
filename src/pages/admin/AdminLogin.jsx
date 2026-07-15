@@ -21,15 +21,15 @@ const AdminLogin = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       const response = await apiService.adminLogin({ email, password });
 
       const result = await response.json();
-      
+
       if (result.success && result.token) {
         const user = result.data?.user;
         const role = user?.role;
-        
+
         // Exclude standard users
         if (role === 'user') {
           setError('Access denied. You do not have admin permissions.');
@@ -136,10 +136,7 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-xs text-slate-400 border-t border-slate-100 pt-6">
-          Default credentials for testing: <br />
-          <span className="font-semibold text-slate-500">admin@solatide.com</span> / <span className="font-semibold text-slate-500">adminpassword123</span>
-        </div>
+
       </div>
     </div>
   );

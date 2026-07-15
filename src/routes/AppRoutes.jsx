@@ -49,6 +49,7 @@ const CustomerDetail = lazy(() => import('../pages/admin/CustomerDetail'))
 const StoreSettings = lazy(() => import('../pages/admin/settings/StoreSettings'))
 const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
+const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
 
 const AppRoutes = () => {
     return (
@@ -102,6 +103,7 @@ const AppRoutes = () => {
                     <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
                     <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
                     <Route path="settings/store" element={<StoreSettings />} />
+                    <Route path="settings/admin-users" element={<AdminUsers />} />
                     <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
                 </Route>
 
