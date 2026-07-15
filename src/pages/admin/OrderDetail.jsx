@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import {
   ArrowLeft,
   MoreHorizontal,
-  ChevronDown,
   MapPin,
   Truck,
   Image as ImageIcon,
@@ -17,7 +16,8 @@ import {
   User,
   CreditCard,
   Tag,
-  X
+  X,
+  Printer
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -54,13 +54,13 @@ function formatAddress(addr) {
 
 const OrderDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fulfilling, setFulfilling] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [creatingLabel, setCreatingLabel] = useState(false);
+  const [refunding, setRefunding] = useState(false);
 
   // New states for interactive fields
   const [commentText, setCommentText] = useState('');
@@ -193,6 +193,32 @@ const OrderDetail = () => {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleRefund = async () => {
+    if (refunding || !isPaid) return;
+    if (!window.confirm("Are you sure you want to refund this order? This action cannot be undone.")) return;
+
+    setRefunding(true);
+    try {
+      const res = await apiService.refundAdminOrder(id);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success('Order refunded successfully');
+      } else {
+        toast.error(data.message || 'Failed to refund order');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error during refund');
+    } finally {
+      setRefunding(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6 w-full animate-pulse">
@@ -293,18 +319,21 @@ const OrderDetail = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all">
-              Refund
-            </button>
-            <button className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all">
-              Edit
-            </button>
-            <button className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2">
-              Print <ChevronDown size={14} className="text-slate-400" />
-            </button>
-            <button className="px-4 py-2.5 text-[13.5px] font-semibold text-white bg-brand-navy border border-brand-navy rounded-xl shadow-[0_4px_14px_rgba(15,23,42,0.2)] hover:bg-brand-navy/90 transition-all flex items-center gap-2">
-              More actions <ChevronDown size={14} className="text-white/70" />
+          <div className=" items-center gap-3 print:hidden">
+            {isPaid && (
+              <button
+                onClick={handleRefund}
+                disabled={refunding}
+                className="hidden px-4 py-2.5 text-[13.5px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-red-100 transition-all disabled:opacity-50"
+              >
+                {refunding ? 'Processing...' : 'Refund'}
+              </button>
+            )}
+            <button
+              onClick={handlePrint}
+              className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2"
+            >
+              Print <Printer size={14} className="text-slate-400" />
             </button>
           </div>
         </div>

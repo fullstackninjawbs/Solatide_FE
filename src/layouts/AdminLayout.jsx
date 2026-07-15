@@ -113,10 +113,10 @@ const AdminLayout = () => {
   const filteredMenuItems = menuItems.filter(item => item.roles.includes(adminUser.role));
 
   return (
-    <div className="h-screen bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden">
+    <div className="h-screen print:h-auto bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden print:overflow-visible">
       {/* Sidebar */}
       <aside
-        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen ${isSidebarOpen ? 'w-64' : 'w-20'
+        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen print:hidden ${isSidebarOpen ? 'w-64' : 'w-20'
           }`}
       >
         {/* Toggle Button */}
@@ -210,9 +210,9 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Workspace */}
-      <div className="flex-grow flex flex-col min-w-0 h-screen overflow-hidden">
+      <div className="flex-grow flex flex-col min-w-0 h-screen print:h-auto overflow-hidden print:overflow-visible">
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-40 shrink-0">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-40 shrink-0 print:hidden">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-bold text-brand-navy capitalize">
               {location.pathname === '/admin'
@@ -244,7 +244,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Content Outlet */}
-        <main className="flex-grow p-6 sm:p-8 overflow-y-auto bg-[#f8fafc]">
+        <main className="flex-grow p-6 sm:p-8 overflow-y-auto print:overflow-visible bg-[#f8fafc] print:bg-white">
           <Outlet />
         </main>
       </div>

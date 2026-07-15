@@ -23,11 +23,6 @@ const AnalyticsDashboard = () => {
   const [revenueByProduct, setRevenueByProduct] = useState([]);
   const [topCustomers, setTopCustomers] = useState([]);
 
-  // Fetch data
-  useEffect(() => {
-    fetchAnalytics();
-  }, [dateRange, paymentMethod]);
-
   const fetchAnalytics = async () => {
     setLoading(true);
     setError(null);
@@ -83,6 +78,11 @@ const AnalyticsDashboard = () => {
       setLoading(false);
     }
   };
+
+  // Fetch data
+  useEffect(() => {
+    fetchAnalytics();
+  }, [dateRange, paymentMethod]);
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
