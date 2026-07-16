@@ -7,10 +7,10 @@ const WhatMakesUsDifferentSection = () => {
         <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-                    
+
                     {/* Left Column */}
                     <div className="w-full lg:w-[45%] flex flex-col text-left">
-                        <span className="text-[16px] font-bold text-[#1a4494] mb-3 block">Why Researchers Choose Solatide</span>
+                        <span className="text-[16px] font-bold text-[#499cec] mb-3 block">Why Researchers Choose Solatide</span>
                         <h2 className="text-[36px] md:text-[48px] lg:text-[54px] font-bold text-[#1D1D1F] mb-6 font-anek leading-[1.15] tracking-[0px]">
                             What We Actually Do
                             <br />
@@ -19,7 +19,7 @@ const WhatMakesUsDifferentSection = () => {
                         <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-8">
                             Most research peptide suppliers make purity claims that cannot be independently verified. Solatide operates differently — we source exclusively from GMP-certified, ISO 9001:2015 accredited manufacturers, subject selected batches to independent third-party analytical verification at laboratories including Janoshik and Chromate, and publish documentation directly on product pages. Batch records are organised by compound identity, strength, format, and batch reference — so researchers can review what they're working with before it arrives.
                         </p>
-                        
+
                         <div className="bg-white p-6 md:p-8 rounded-[16px] shadow-sm border border-slate-100 flex flex-col">
                             <h4 className="font-bold text-[#1D1D1F] text-[16px] mb-3">Batch documentation should be easy to verify.</h4>
                             <p className="text-[14.5px] text-[#4B5563] leading-[1.6] mb-6">
@@ -41,7 +41,7 @@ const WhatMakesUsDifferentSection = () => {
                             <p className="text-[14.5px] text-[#6A6A6A] leading-[1.6] mb-8">
                                 A transparent research supply process starts with batch information researchers can review — not unsupported claims or supplier statements that cannot be verified.
                             </p>
-                            
+
                             <ul className="space-y-6 flex flex-col mb-8">
                                 <li className="flex items-start gap-4">
                                     <svg className="w-[20px] h-[20px] text-[#0ea5e9] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">

@@ -71,7 +71,7 @@ function Footer() {
                         <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
                             <li><Link to="/resource" className="hover:text-white transition-colors duration-200">Research Resources</Link></li>
                             <li><Link to="/peptides-guide" className="hover:text-white transition-colors duration-200">Research Peptides Guide</Link></li>
-                            <li><Link to="/compound-database" className="hover:text-white transition-colors duration-200">Research Compound Database</Link></li>
+                            <li><Link to="/compound-database" className="hover:text-white transition-colors duration-200">Compound Index</Link></li>
                             <li><Link to="/coa" className="hover:text-white transition-colors duration-200">COA & Lab Testing</Link></li>
                             <li><Link to="/coa-reports" className="hover:text-white transition-colors duration-200">COA Reports</Link></li>
                         </ul>

@@ -5,19 +5,19 @@ import pipetteImage from '../../assets/images/Rectangle 42463.png'
 
 const ResearchUsePositioningSection = () => {
     return (
-        <section className="w-full bg-white py-12 md:py-16">
+        <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
-                    
+
                     {/* Left content */}
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center order-2 lg:order-1">
-                        <span className="text-[16px] font-bold text-[#1a4494] mb-3 block">About Solatide</span>
+                        <span className="text-[16px] font-bold text-[#499cec] mb-3 block">About Solatide</span>
                         <h2 className="text-[32px] md:text-[54px] font-bold text-[#1D1D1F] mb-4 font-anek leading-[1.15] tracking-[0px]">
                             Built on Science.
                             <br />
                             <span className="text-[#1a4494]">Research-Use Positioning</span>
                         </h2>
-                        
+
                         <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-4">
                             All products sold by Solatide Biosciences are supplied strictly for in-vitro laboratory and analytical research purposes only. We make no therapeutic, diagnostic, or clinical claims, and we do not provide information for human or veterinary use.
                         </p>

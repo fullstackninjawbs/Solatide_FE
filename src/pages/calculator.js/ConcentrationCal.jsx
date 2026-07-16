@@ -1,17 +1,9 @@
 import React, { useState } from 'react'
 
-const steps = [
-    { number: '01', text: 'Enter the mass of compound shown on the vial label (e.g., 5 mg or 10 mg).' },
-    { number: '02', text: 'Enter the volume of diluent you added to the vial (e.g., 2 mL).' },
-    { number: '03', text: 'Enter the target mass you wish to achieve for your laboratory work.' },
-    { number: '04', text: 'The calculator displays the required volume in millilitres (mL).' },
-]
-
 const ConcentrationCal = () => {
     const [s1Mass, setS1Mass] = useState('5')
-    const [s1Diluent, setS1Diluent] = useState('5')
-    const [s2Target, setS2Target] = useState('5')
-    const [s2Diluent, setS2Diluent] = useState('5')
+    const [s1Diluent, setS1Diluent] = useState('2')
+    const [s2Target, setS2Target] = useState('0.25')
 
     const resultingConc =
         s1Mass && s1Diluent && parseFloat(s1Diluent) !== 0
@@ -24,196 +16,174 @@ const ConcentrationCal = () => {
             : null
 
     return (
-        <div className="w-full bg-white min-h-screen">
-
-            <section className="w-full pt-12 text-center">
-                <div className="main-container">
-                    <h1
-                        className="text-[48px] font-bold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
-                    >
+        <div className="w-full bg-white min-h-screen pb-20 font-sans">
+            <section className="w-full pt-16 pb-8 text-center">
+                <div className="main-container mx-auto">
+                    <h1 className="text-[32px] md:text-[38px] font-bold text-[#214A9E] mb-8">
                         Concentration Calculator
                     </h1>
-                    <p className="text-[16px] font-regular font-weight-400 text-[#6A6A6A] leading-[1.75] w-full mx-auto">
-                        This calculator is provided for educational and mathematical reference only for laboratory applications. It does not provide medical advice, treatment recommendations, or administration instructions. All values must be independently verified. Products sold on this website are for research use only.
-                    </p>
+
+                    <div className="bg-[#FEF9C3] border-l-[3px] border-[#EAB308] p-5 rounded-[4px] text-left">
+                        <h4 className="text-[14px] font-bold text-[#854D0E] flex items-center gap-2 mb-2">
+                            <span>⚠️</span> Laboratory Mathematical Reference Tool
+                        </h4>
+                        <p className="text-[13px] text-[#854D0E] leading-relaxed">
+                            This calculator is provided for educational and mathematical reference only for laboratory applications. It does not provide medical advice, treatment recommendations, or administration instructions. All values must be independently verified. Products sold on this website are for research use only.
+                        </p>
+                    </div>
                 </div>
             </section>
-            <section className="w-full bg-white py-12">
-                <div className="main-container mx-auto flex flex-col gap-8">
 
+            <section className="w-full bg-white">
+                <div className="main-container  mx-auto flex flex-col gap-10">
 
-                    <div className="border-l-4 border-[#F59E0B] bg-[#FFFBEB] px-5 py-4">
-                        <p className="text-[13px] text-[#92400E] leading-[1.7]">
-                            <span className="font-bold text-[#D97706]">Disclaimer: </span>
-                            These calculators are provided as a convenience tool for laboratory researchers. Results are for research planning purposes only and should always be verified against your own analytical data. AnalytiCore accepts no liability for errors arising from incorrect input values.
+                    {/* How to Use This Calculator */}
+                    <div>
+                        <h2 className="text-[18px] font-bold text-[#214A9E] mb-5">
+                            How to Use This Calculator
+                        </h2>
+                        <div className="space-y-3">
+                            <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-4 rounded-[4px]">
+                                <p className="text-[13.5px] text-slate-700">
+                                    <strong className="text-[#150F3A]">Step 1:</strong> Enter the mass of compound shown on the vial label (e.g., 5 mg or 10 mg).
+                                </p>
+                            </div>
+                            <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-4 rounded-[4px]">
+                                <p className="text-[13.5px] text-slate-700">
+                                    <strong className="text-[#150F3A]">Step 2:</strong> Enter the volume of diluent you added to the vial (e.g., 2 mL).
+                                </p>
+                            </div>
+                            <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-4 rounded-[4px]">
+                                <p className="text-[13.5px] text-slate-700">
+                                    <strong className="text-[#150F3A]">Step 3:</strong> Enter the target mass you wish to achieve for your laboratory work.
+                                </p>
+                            </div>
+                            <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-4 rounded-[4px]">
+                                <p className="text-[13.5px] text-slate-700">
+                                    <strong className="text-[#150F3A]">Step 4:</strong> The calculator displays the required volume in millilitres (mL).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Example Calculation */}
+                    <div>
+                        <h2 className="text-[18px] font-bold text-[#214A9E] mb-5">
+                            Example Calculation
+                        </h2>
+                        <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-6 rounded-[4px] space-y-4">
+                            <p className="text-[13.5px] text-slate-700">
+                                <strong className="text-[#150F3A]">Scenario:</strong> You have a vial containing <strong className="text-[#150F3A]">10 mg</strong> of compound and you add <strong className="text-[#150F3A]">2 mL</strong> of bacteriostatic water. You want to transfer a mass of <strong className="text-[#150F3A]">1 mg</strong>.
+                            </p>
+                            <p className="text-[13.5px] text-slate-700">
+                                <strong className="text-[#150F3A]">Final Concentration:</strong> This yields a working solution of 5 mg/mL (10 mg ÷ 2 mL).
+                            </p>
+                            <p className="text-[13.5px] text-slate-700">
+                                <strong className="text-[#150F3A]">Result:</strong> The calculator shows the required volume is <strong className="text-[#150F3A]">0.20 mL</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Critical Warning */}
+                    <div className="bg-[#FEF2F2] border-l-[3px] border-[#DC2626] p-5 rounded-[4px]">
+                        <p className="text-[13.5px] text-[#991B1B] leading-relaxed">
+                            <strong className="text-[#991B1B]">CRITICAL WARNING:</strong> Always verify the vial label, units, and total liquid volume before relying on any calculation. This tool is a mathematical reference only and must not replace strict laboratory protocols or independent scientific verification. <strong className="text-[#991B1B]">Products sold on this website are strictly for research purposes and are not for human consumption.</strong>
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <span className="text-[14px] font-semibold font-weight-600 uppercase tracking-[0.14em] text-[#00E5FF] mb-2 block">
-                                GETTING STARTED
-                            </span>
-                            <h2
-                                className="text-[24px] font-semibold font-weight-600 text-[#214A9E] leading-snug mb-3"
-                                style={{ fontFamily: 'Poppins, sans-serif' }}
-                            >
-                                How To Use These Calculators
-                            </h2>
-                            <p className="text-[14px] text-[#6A6A6A] font-weight-400 font-regular leading-[1.75]">
-                                A Certificate of Analysis (COA) is an official document issued by an accredited analytical laboratory that confirms a compound's identity, purity, and compliance with defined specifications. Every batch of research material we supply is accompanied by a fully traceable COA, providing researchers with the confidence needed for reproducible, reliable science.
-                            </p>
-                        </div>
-
-                        <div className="border border-slate-200 rounded-lg overflow-hidden">
-                            {steps.map((step, index) => (
-                                <div
-                                    key={step.number}
-                                    className={`flex items-center gap-4 px-5 py-4 bg-white ${index < steps.length - 1 ? 'border-b border-slate-200' : ''}`}
-                                >
-                                    <span className="shrink-0 w-8 h-8 rounded-full bg-[#1D1D1F] flex items-center justify-center text-white text-[12px] font-bold leading-none">
-                                        {step.number}
-                                    </span>
-                                    <p className="text-[14px] font-weight-400 font-regular text-[#6A6A6A] leading-[1.6]">{step.text}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="border border-slate-200 rounded-lg px-5 py-5 bg-white flex flex-col gap-2">
-                            <p className="text-[13.5px] text-[#4B5563] leading-[1.7]">
-                                <span className="font-bold text-[#1D1D1F]">Scenario : </span>
-                                You have a vial containing 10 mg of compound and you add 2 mL of bacteriostatic water. You want to transfer a mass of 1 mg.
-                            </p>
-                            <p className="text-[13.5px] text-[#4B5563] leading-[1.7]">
-                                <span className="font-bold text-[#1D1D1F]">Final Concentration: </span>
-                                This yields a working solution of 5 mg/mL (10 mg ÷ 2 mL).
-                            </p>
-                            <p className="text-[13.5px] text-[#4B5563] leading-[1.7]">
-                                <span className="font-bold text-[#1D1D1F]">Result: </span>
-                                The calculator shows the required volume is 0.20 mL.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="border-l-4 border-red-400 bg-[#FEF2F2] px-5 py-4">
-                        <p className="text-[13px] text-[#991B1B] leading-[1.7]">
-                            <span className="font-bold">CRITICAL WARNING: </span>
-                            Always verify the vial label, units, and total liquid volume before relying on any calculation.{' '}
-                            <span className="text-[#DC2626]">
-                                This tool is a mathematical reference only and must not replace strict laboratory protocols or independent scientific verification.
-                            </span>{' '}
-                            <span className="font-bold">
-                                Products sold on this website are strictly for research purposes and are not for human consumption.
-                            </span>
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col gap-6">
-                        <div>
-                            <span className="text-[14px] font-semibold font-weight-600 tracking-[0.14em] text-[#00E5FF] mb-2 block">
-                                Measurements
-                            </span>
-                            <h2
-                                className="text-[24px] font-semibold font-weight-600 text-[#214A9E] leading-snug mb-3"
-                                style={{ fontFamily: 'Poppins, sans-serif' }}
-                            >
+                    {/* The Calculator UI */}
+                    <div className="border border-slate-200 w-full max-w-[768px] mx-auto rounded-lg overflow-hidden mt-4 shadow-sm">
+                        
+                        {/* Legend */}
+                        <div className="bg-[#F8FAFC] p-6 sm:px-10 border-b border-slate-200">
+                            <h3 className="text-[16px] font-bold text-[#150F3A] mb-4">
                                 Laboratory Volume Measurements
-                            </h2>
-                            <div className="flex flex-col gap-0.5">
-                                <p className="text-[13px] font-medium font-weight-500 text-[#6A6A6A]">mg = milligrams (mass)</p>
-                                <p className="text-[13px] font-medium font-weight-500 text-[#6A6A6A]">mL = millilitres (volume)</p>
+                            </h3>
+                            <div className="flex flex-col sm:flex-row sm:gap-20 gap-4 mb-5 text-[13.5px] text-slate-700 font-bold">
+                                <p>mg = milligrams (mass)</p>
+                                <p>mL = millilitres (volume)</p>
                             </div>
+                            <p className="text-[13.5px] text-[#150F3A] font-bold">
+                                Use calibrated micropipettes or volumetric syringes for accurate liquid handling
+                            </p>
                         </div>
 
+                        {/* Step 1 */}
+                        <div className="p-6 sm:px-10 border-b border-slate-200 bg-white">
+                            <h3 className="text-[18px] font-bold text-[#150F3A] mb-6">
+                                Step 1: Solution Preparation
+                            </h3>
 
-                        <div className="border border-slate-200 rounded-lg overflow-hidden">
-                            <div className="px-5 py-4 border-b border-slate-200">
-                                <h3 className="text-[16px] font-semibold text-[#214A9E]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                                    Step 1: Solution Preparation
-                                </h3>
-                            </div>
-
-                            <div className="px-5 pt-4 pb-1 border-b border-slate-100">
-                                <label className="text-[13px] font-medium font-weight-500 text-[#1E1E1E] block mb-2">
+                            <div className="mb-6">
+                                <label className="text-[13px] font-bold text-[#150F3A] block mb-2">
                                     Mass of compound in vial (mg)
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
+                                    step="0.1"
                                     value={s1Mass}
                                     onChange={(e) => setS1Mass(e.target.value)}
-                                    className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#214A9E]/20 focus:border-[#214A9E] transition-all mb-1.5"
+                                    className="w-full border border-slate-300 rounded-[4px] px-4 py-2.5 text-[14px] text-slate-800 focus:outline-none focus:border-[#3390ec] transition-colors mb-2"
                                 />
-                                <p className="text-[13px] font-regular font-weight-400 text-[#6A6A6A] pb-3">This is the mass written on your vial label (e.g., 5 mg or 10 mg)</p>
+                                <p className="text-[12px] text-slate-500">This is the mass written on your vial label (e.g., 5 mg or 10 mg)</p>
                             </div>
 
-                            <div className="px-5 pt-4 pb-1">
-                                <label className="text-[13px] font-medium font-weight-500 text-[#1E1E1E] block mb-2">
+                            <div className="mb-6">
+                                <label className="text-[13px] font-bold text-[#150F3A] block mb-2">
                                     Diluent volume added (mL)
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
+                                    step="0.1"
                                     value={s1Diluent}
                                     onChange={(e) => setS1Diluent(e.target.value)}
-                                    className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#214A9E]/20 focus:border-[#214A9E] transition-all mb-1.5"
+                                    className="w-full border border-slate-300 rounded-[4px] px-4 py-2.5 text-[14px] text-slate-800 focus:outline-none focus:border-[#3390ec] transition-colors mb-2"
                                 />
-                                <p className="text-[13px] font-regular font-weight-400 text-[#6A6A6A] pb-3">Volume of bacteriostatic water or laboratory buffer added</p>
+                                <p className="text-[12px] text-slate-500">Volume of bacteriostatic water or laboratory buffer added</p>
                             </div>
 
                             {resultingConc !== null && (
-                                <div className="mx-4 mb-4 bg-[#EBF3FF] rounded-lg px-5 py-3">
-                                    <p className="text-[14px] font-medium font-weight-500 text-[#214A9E] mb-0.5">Resulting Concentration:</p>
-                                    <p className="text-[14px] font-regular font-weight-400 text-[#214A9E]">{resultingConc.toFixed(2)} mg per 1 mL</p>
+                                <div className="bg-[#F0F5FB] border-l-[3px] border-[#3390ec] rounded-[4px] p-5 mt-2">
+                                    <p className="text-[12px] font-bold text-[#1a4494] mb-1">Resulting Concentration:</p>
+                                    <p className="text-[20px] font-bold text-[#150F3A]">{resultingConc.toFixed(2)} mg per 1 mL</p>
                                 </div>
                             )}
                         </div>
 
-                        <div className="border border-slate-200 rounded-lg overflow-hidden">
-                            <div className="px-5 py-4 border-b border-slate-200">
-                                <h3 className="text-[24px] font-weight-500 font-medium text-[#214A9E]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                                    Step 2: Target Volume Calculation
-                                </h3>
-                            </div>
+                        {/* Step 2 */}
+                        <div className="p-6 sm:px-10 bg-white">
+                            <h3 className="text-[18px] font-bold text-[#150F3A] mb-6">
+                                Step 2: Target Volume Calculation
+                            </h3>
 
-                            <div className="px-5 pt-4 pb-1 border-b border-slate-100">
-                                <label className="text-[13px] font-medium font-weight-500 text-[#1E1E1E] block mb-2">
+                            <div className="mb-6">
+                                <label className="text-[13px] font-bold text-[#150F3A] block mb-2">
                                     Target mass (mg)
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
+                                    step="0.01"
                                     value={s2Target}
                                     onChange={(e) => setS2Target(e.target.value)}
-                                    className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#214A9E]/20 focus:border-[#214A9E] transition-all mb-1.5"
+                                    className="w-full border border-slate-300 rounded-[4px] px-4 py-2.5 text-[14px] text-slate-800 focus:outline-none focus:border-[#3390ec] transition-colors mb-2"
                                 />
-                                <p className="text-[13px] font-regular font-weight-400 text-[#6A6A6A] pb-3">The exact mass you wish to transfer for your experiment</p>
+                                <p className="text-[12px] text-slate-500">The exact mass you wish to transfer for your experiment</p>
                             </div>
 
-                            <div className="px-5 pt-4 pb-1">
-                                <label className="text-[13px] font-medium font-weight-500 text-[#1E1E1E] block mb-2">
-                                    Diluent volume added (mL)
-                                </label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    value={s2Diluent}
-                                    onChange={(e) => setS2Diluent(e.target.value)}
-                                    className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#214A9E]/20 focus:border-[#214A9E] transition-all mb-1.5"
-                                />
-                                <p className="text-[13px] font-regular font-weight-400 text-[#6A6A6A] pb-3">Volume of bacteriostatic water or laboratory buffer added</p>
-                            </div>
                             {requiredVol !== null && (
-                                <div className="mx-4 mb-4 bg-[#F0FDF4] border border-green-200 rounded-lg px-5 py-3">
-                                    <p className="text-[14px] font-medium font-weight-500 text-[#219E25] mb-0.5">Required volume:</p>
-                                    <p className="text-[14px] font-regular font-weight-400 text-[#219E25]">{requiredVol.toFixed(2)} mL</p>
+                                <div className="bg-[#F0FDF4] border-l-[3px] border-[#16A34A] rounded-[4px] p-5 mt-2">
+                                    <p className="text-[12px] font-bold text-[#166534] mb-2">Required volume:</p>
+                                    <div className="bg-white border border-[#16A34A] rounded-[4px] inline-block px-6 py-3">
+                                        <p className="text-[24px] font-bold text-[#150F3A]">{requiredVol.toFixed(2)} mL</p>
+                                    </div>
                                 </div>
                             )}
                         </div>
 
                     </div>
-
                 </div>
             </section>
         </div>

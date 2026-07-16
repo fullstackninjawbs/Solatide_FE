@@ -38,6 +38,7 @@ const PeptidesGuide = lazy(() => import('../pages/peptidesGuide/PeptidesGuide'))
 const CompoundDatabase = lazy(() => import('../pages/compoundDatabase/CompoundDatabase'))
 const CoaReports = lazy(() => import('../pages/coaReports/CoaReports'))
 const Terms = lazy(() => import('../pages/terms/Terms'))
+const ResearchUseDisclaimer = lazy(() => import('../pages/researchUse/ResearchUseDisclaimer'))
 const Returns = lazy(() => import('../pages/returns/Returns'))
 const CheckoutSuccess = lazy(() => import('../pages/checkout/CheckoutSuccess'))
 const CheckoutFailure = lazy(() => import('../pages/checkout/CheckoutFailure'))
@@ -131,6 +132,7 @@ const AppRoutes = () => {
                     <Route path="compound-database" element={<CompoundDatabase />} />
                     <Route path="coa-reports" element={<CoaReports />} />
                     <Route path="terms" element={<Terms />} />
+                    <Route path="research-use" element={<ResearchUseDisclaimer />} />
                     <Route path="returns" element={<Returns />} />
                     <Route path="*" element={<Home />} />
                 </Route>

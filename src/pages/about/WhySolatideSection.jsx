@@ -28,7 +28,7 @@ const WhySolatideSection = () => {
 
                     {/* Right content */}
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center order-2 lg:order-2">
-                        <span className="text-[16px] font-bold text-[#1a4494] mb-3 block">Our Commitment</span>
+                        <span className="text-[16px] font-bold text-[#499cec] mb-3 block">Our Commitment</span>
                         <h2 className="text-[32px] md:text-[54px] font-anek font-bold text-[#1D1D1F] leading-[1.15] tracking-[0px]">
                             No Shortcuts.
                             <br />
