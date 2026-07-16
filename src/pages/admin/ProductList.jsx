@@ -14,6 +14,9 @@ const ProductList = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedCollection, setSelectedCollection] = useState('');
   const [collectionsList, setCollectionsList] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isSelectionDropdownOpen, setIsSelectionDropdownOpen] = useState(false);
+  const selectionDropdownRef = useRef(null);
   const navigate = useNavigate();
   const { formatAUD } = useCurrency();
 
@@ -67,8 +70,35 @@ const ProductList = () => {
   }, []);
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectionDropdownRef.current && !selectionDropdownRef.current.contains(event.target)) {
+        setIsSelectionDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     fetchProducts();
+    setSelectedProducts([]);
   }, [searchQuery, selectedCategory, selectedStatus, selectedCollection]);
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedProducts(products.map(p => p._id));
+    } else {
+      setSelectedProducts([]);
+    }
+  };
+
+  const handleSelectProduct = (id) => {
+    setSelectedProducts(prev => 
+      prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+    );
+  };
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete the product "${name}"?`)) {
@@ -151,21 +181,7 @@ const ProductList = () => {
 
       {/* Filter and Table Container */}
       <div className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-        {/* Category Tabs */}
-        <div className="flex border-b border-slate-100 overflow-x-auto scrollbar-none">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-4 border-b-2 font-semibold text-[14px] whitespace-nowrap cursor-pointer transition-all ${selectedCategory === cat
-                ? 'border-brand-navy text-brand-navy font-bold'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
-                }`}
-            >
-              {cat === 'All' ? 'All Products' : cat}
-            </button>
-          ))}
-        </div>
+
 
         {/* Search + Filter Bar */}
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
@@ -220,26 +236,79 @@ const ProductList = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
-                  <th className="py-4 pl-6 w-12">
-                    <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
-                  </th>
-                  <th className="py-4 pl-2 pr-8">Product</th>
-                  <th className="py-4">Status</th>
-                  <th className="py-4">Inventory</th>
-                  <th className="py-4">Category</th>
-                  <th className="py-4">Research Focus</th>
-                  <th className="py-4">Channels</th>
-                  <th className="py-4">Product type</th>
-                  <th className="py-4">Vendor</th>
-                  <th className="py-4 pr-6 text-right w-24">Actions</th>
-                </tr>
+                {selectedProducts.length > 0 ? (
+                  <tr className="border-b border-slate-200 bg-white shadow-sm text-[14px]">
+                    <th className="py-3 pl-6 w-12">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedProducts.length === products.length && products.length > 0} 
+                        onChange={handleSelectAll} 
+                        className="rounded border-slate-700 bg-slate-700 text-white cursor-pointer accent-slate-800 h-4 w-4" 
+                      />
+                    </th>
+                    <th colSpan="9" className="py-3 pl-2 pr-6 font-normal">
+                      <div className="flex items-center gap-3">
+                        <div className="relative" ref={selectionDropdownRef}>
+                          <button 
+                            onClick={() => setIsSelectionDropdownOpen(!isSelectionDropdownOpen)}
+                            className="font-semibold text-slate-800 flex items-center gap-1 hover:bg-slate-100 px-2 py-1 rounded-md transition-colors cursor-pointer"
+                          >
+                            {selectedProducts.length} selected 
+                            <ChevronDown className="h-4 w-4 ml-1 text-slate-500" />
+                          </button>
+                          {isSelectionDropdownOpen && (
+                            <div className="absolute top-full mt-1 left-0 bg-white border border-slate-200 rounded-xl shadow-lg py-1.5 w-40 z-20 overflow-hidden">
+                              <button 
+                                onClick={() => {
+                                  setSelectedProducts([]);
+                                  setIsSelectionDropdownOpen(false);
+                                }}
+                                className="w-full text-left px-4 py-2 text-[14px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer"
+                              >
+                                Unselect all
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button className="bg-white border border-slate-300 text-slate-700 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold hover:bg-slate-50 shadow-sm transition-colors">Set as active</button>
+                          <button className="bg-white border border-slate-300 text-slate-700 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold hover:bg-slate-50 shadow-sm transition-colors">Set as draft</button>
+                        </div>
+                      </div>
+                    </th>
+                  </tr>
+                ) : (
+                  <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
+                    <th className="py-4 pl-6 w-12">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedProducts.length === products.length && products.length > 0}
+                        onChange={handleSelectAll}
+                        className="rounded border-slate-350 cursor-pointer h-4 w-4" 
+                      />
+                    </th>
+                    <th className="py-4 pl-2 pr-8">Product</th>
+                    <th className="py-4">Status</th>
+                    <th className="py-4">Inventory</th>
+                    <th className="py-4">Category</th>
+                    <th className="py-4">Research Focus</th>
+                    <th className="py-4">Channels</th>
+                    <th className="py-4">Product type</th>
+                    <th className="py-4">Vendor</th>
+                    <th className="py-4 pr-6 text-right w-24">Actions</th>
+                  </tr>
+                )}
               </thead>
               <tbody className="divide-y divide-slate-100 text-[14px]">
                 {products.map((product) => (
                   <tr key={product._id} className="hover:bg-slate-50/60 transition-colors group">
                     <td className="py-3.5 pl-6">
-                      <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
+                      <input 
+                        type="checkbox" 
+                        checked={selectedProducts.includes(product._id)}
+                        onChange={() => handleSelectProduct(product._id)}
+                        className={`rounded cursor-pointer h-4 w-4 ${selectedProducts.includes(product._id) ? 'accent-slate-800' : 'border-slate-350'}`} 
+                      />
                     </td>
                     <td className="py-3.5 pl-2 pr-8 font-semibold text-slate-700 max-w-[300px]">
                       <div className="flex items-center gap-3">
