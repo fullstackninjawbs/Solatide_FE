@@ -7,7 +7,7 @@ const ContactUs = () => {
             <div className="main-container mx-auto pt-12 pb-24 px-4 sm:px-6">
 
                 {/* Title */}
-                <h1 className="text-center text-[36px] sm:text-[42px] font-bold text-[#214A9E] mb-8">
+                <h1 className="text-center text-[36px] sm:text-[42px] font-bold text-[#214A9E] pb-6 mb-8 border-b border-slate-200">
                     Contact Us
                 </h1>
 
