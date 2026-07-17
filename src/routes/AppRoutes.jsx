@@ -43,6 +43,7 @@ const CheckoutSuccess = lazy(() => import('../pages/checkout/CheckoutSuccess'))
 const CheckoutFailure = lazy(() => import('../pages/checkout/CheckoutFailure'))
 const OrderList = lazy(() => import('../pages/admin/OrderList'))
 const OrderDetail = lazy(() => import('../pages/admin/OrderDetail'))
+const ShippingLabels = lazy(() => import('../pages/admin/ShippingLabels'))
 const OrderStatus = lazy(() => import('../pages/checkout/OrderStatus'))
 const CustomerList = lazy(() => import('../pages/admin/CustomerList'))
 const CustomerDetail = lazy(() => import('../pages/admin/CustomerDetail'))
@@ -89,7 +90,7 @@ const AppRoutes = () => {
                     <Route path="orders" element={<OrderList />} />
                     <Route path="orders/:id" element={<OrderDetail />} />
                     <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />
-                    <Route path="orders/shipping-labels" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Shipping Labels (Phase 4)</div>} />
+                    <Route path="orders/shipping-labels" element={<ShippingLabels />} />
                     <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
                     <Route path="customers" element={<CustomerList />} />
                     <Route path="customers/:id" element={<CustomerDetail />} />

@@ -348,13 +348,13 @@ export const apiService = {
   refundAdminOrder: async (id) => {
     return fetch(`${API_URL}/api/admin/orders/${id}/refund`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: { ...getAuthHeaders() }
     });
   },
   createAdminShipment: async (id) => {
     return fetch(`${API_URL}/api/admin/order/${id}/shipment`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: { ...getAuthHeaders() }
     });
   },
 
