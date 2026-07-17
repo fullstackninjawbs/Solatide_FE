@@ -14,6 +14,8 @@ const CertificatesAnalysis = () => {
                 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
                 const res = await fetch(`${API_URL}/api/v1/coas`);
                 const data = await res.json();
+                console.log(data, "data---->");
+
                 if (data.success) {
                     const mappedCoas = data.data.batches.map((batch, index) => ({
                         id: batch._id || index,
@@ -21,7 +23,7 @@ const CertificatesAnalysis = () => {
                         purity: batch.purity || 'N/A',
                         endotoxin: batch.hasEndotoxinTest || batch.includesEndotoxin || batch.endotoxinIncludedInCoa ? '<1 EU/mg (Pass)' : '',
                         imageUrl: batch.coaFile?.url || batch.coaUrl || '',
-                        status: 'All'
+                        status: batch.coaStatus === 'approved' ? 'Verified' : 'Pending'
                     }));
                     setCoaData(mappedCoas);
                 }
@@ -42,6 +44,12 @@ const CertificatesAnalysis = () => {
         );
     }
 
+    const allCount = coaData.length;
+    const verifiedCount = coaData.filter(coa => coa.status === 'Verified').length;
+    const pendingCount = coaData.filter(coa => coa.status === 'Pending').length;
+
+    const filteredCoas = coaData.filter(coa => activeTab === 'All' || coa.status === activeTab);
+
     return (
         <div className="w-full bg-white min-h-screen">
             <section className="w-full py-12 text-center">
@@ -61,83 +69,111 @@ const CertificatesAnalysis = () => {
             <section className="py-6 lg:py-8">
                 <div className="main-container">
 
-                    <div className="flex flex-wrap items-center gap-3 mb-10">
+                    <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
                         <button
                             onClick={() => setActiveTab('All')}
                             className={`px-5 py-2.5 rounded-full text-[13.5px] transition-all border shadow-sm flex items-center justify-center gap-1.5 ${activeTab === 'All' ? 'bg-[#1a4494] text-white border-[#1a4494]' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'}`}
                         >
-                            All <span className={`text-[12px] ${activeTab === 'All' ? 'text-white' : 'text-slate-500'}`}>13</span>
+                            All <span className={`text-[12px] ${activeTab === 'All' ? 'text-white' : 'text-slate-500'}`}>{allCount}</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('Verified')}
                             className={`px-5 py-2.5 rounded-full text-[13.5px] transition-all border shadow-sm flex items-center justify-center gap-1.5 ${activeTab === 'Verified' ? 'bg-[#1a4494] text-white border-[#1a4494]' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'}`}
                         >
-                            Verified <span className={`text-[12px] ${activeTab === 'Verified' ? 'text-white' : 'text-slate-500'}`}>13</span>
+                            Verified <span className={`text-[12px] ${activeTab === 'Verified' ? 'text-white' : 'text-slate-500'}`}>{verifiedCount}</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('Pending')}
                             className={`px-5 py-2.5 rounded-full text-[13.5px] transition-all border shadow-sm flex items-center justify-center gap-1.5 ${activeTab === 'Pending' ? 'bg-[#1a4494] text-white border-[#1a4494]' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'}`}
                         >
-                            Pending <span className={`text-[12px] ${activeTab === 'Pending' ? 'text-white' : 'text-slate-500'}`}>0</span>
+                            Pending <span className={`text-[12px] ${activeTab === 'Pending' ? 'text-white' : 'text-slate-500'}`}>{pendingCount}</span>
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {coaData.length === 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredCoas.length === 0 ? (
                             <div className="col-span-full py-12 text-center text-slate-500">
                                 No Certificate of Analysis documents found.
                             </div>
-                        ) : coaData.map((coa) => (
-                            <div key={coa.id} className="group bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.12)] hover:border-slate-200 transition-all duration-300 ease-out">
+                        ) : filteredCoas.map((coa) => (
+                            <div key={coa.id} className="bg-white rounded-[14px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
+                                {/* Image Container */}
+                                <div className="p-4 pb-0 relative">
+                                    <div className="h-[150px] w-full bg-white border border-slate-200 rounded-[10px] overflow-hidden relative">
+                                        {coa.imageUrl ? (
+                                            <img
+                                                src={coa.imageUrl}
+                                                alt={`Certificate of Analysis for ${coa.title}`}
+                                                className="w-full h-full object-cover object-top"
+                                            />
+                                        ) : (
+                                            <>
+                                                {/* Simulated Document */}
+                                                <div className={`w-full h-full bg-white shadow-sm p-3 flex flex-col gap-2 ${coa.status === 'Pending' ? 'opacity-30 blur-[1px]' : 'opacity-80'}`}>
+                                                    <div className="h-1.5 w-1/3 bg-[#ff9999] rounded"></div>
+                                                    <div className="h-1 w-1/4 bg-slate-200 rounded"></div>
+                                                    <div className="w-full h-px bg-slate-100 my-1"></div>
+                                                    <div className="flex gap-2 mb-2">
+                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                                    </div>
+                                                    <div className="h-12 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm mt-auto"></div>
+                                                </div>
+                                            </>
+                                        )}
+                                        {/* Watermark */}
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] transform -rotate-[25deg] pointer-events-none">
+                                            <span className="text-4xl font-black tracking-widest text-slate-900">PUBLIC COPY</span>
+                                        </div>
+                                    </div>
 
-                                <div className="w-full relative flex items-center justify-center bg-slate-50/80 px-8 pt-10 pb-6 border-b border-slate-100/60 overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent z-0"></div>
-                                    <img
-                                        src={coa.imageUrl}
-                                        alt={coa.title}
-                                        className="relative z-10 w-full h-auto object-contain object-center opacity-95 mix-blend-darken transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                                    />
-
-                                    <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-md border border-emerald-100/80 shadow-sm text-emerald-600 text-[11.5px] font-bold px-3.5 py-1.5 rounded-full z-20 tracking-wide flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
-                                        {coa.purity}
+                                    {/* Status Tag overlay */}
+                                    <div className="absolute top-1.5 right-1.5 z-10">
+                                        {coa.status === 'Verified' ? (
+                                            <span className="bg-[#ebfbf3] text-[#1bb05e] border border-[#a6ebd4] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
+                                                {coa.purity}
+                                            </span>
+                                        ) : (
+                                            <span className="bg-[#fff7ed] text-[#f97316] border border-[#ffedd5] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
+                                                Pending
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="p-7 pt-6 flex flex-col flex-grow text-left">
-                                    <div className="flex items-center mb-3">
-                                        <span className="bg-blue-50 text-[#214A9E] text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-md">
-                                            COA Document
-                                        </span>
+                                {/* Card Content */}
+                                <div className="p-5 flex flex-col flex-1">
+                                    <div className="mb-4">
+                                        <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
+                                        <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{coa.title}</h3>
                                     </div>
 
-                                    <h3 className="text-[22px] sm:text-[24px] font-semibold text-slate-900 mb-6 tracking-tight group-hover:text-[#214A9E] transition-colors duration-300" style={{ fontFamily: 'Anek Telugu, sans-serif' }}>
-                                        {coa.title}
-                                    </h3>
-
-                                    <div className="flex flex-col gap-3.5 mb-8 min-h-[64px]">
-                                        <div className="flex items-center gap-2.5 text-[14px] text-slate-600">
-                                            <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
-                                            <span className="font-medium text-slate-700">Purity:</span> {coa.purity}
-                                        </div>
+                                    <div className="mt-auto mb-5 space-y-1.5">
+                                        <p className="text-[13px] font-semibold text-slate-600">
+                                            Purity: {coa.purity ? coa.purity : <span className="font-normal text-slate-400">TBD</span>}
+                                        </p>
                                         {coa.endotoxin && (
-                                            <div className="flex items-center gap-2.5 text-[14px] text-slate-600">
-                                                <ShieldCheck size={16} className="text-blue-500 shrink-0" />
-                                                <span className="font-medium text-slate-700">Endotoxin:</span> {coa.endotoxin}
-                                            </div>
+                                            <p className="text-[12px] text-slate-500 font-medium">
+                                                Endotoxin: {coa.endotoxin}
+                                            </p>
                                         )}
                                     </div>
 
-                                    <button
-                                        onClick={() => {
-                                            setSelectedCoa(coa);
-                                            setZoom(1);
-                                        }}
-                                        className="w-full mt-auto bg-white border-2 border-slate-100 rounded-[12px] py-3 text-[14px] font-medium text-slate-700 flex items-center justify-center gap-2.5 group-hover:border-[#214A9E]/20 group-hover:bg-[#214A9E]/5 group-hover:text-[#214A9E] transition-all duration-300 ease-out"
-                                    >
-                                        <Eye size={18} className="text-slate-400 group-hover:text-[#214A9E] transition-colors duration-300" />
-                                        <span>View COA</span>
-                                    </button>
+                                    {coa.status === 'Verified' ? (
+                                        <button
+                                            onClick={() => {
+                                                setSelectedCoa(coa);
+                                                setZoom(1);
+                                            }}
+                                            className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white hover:bg-[#0165ab] shadow-sm"
+                                        >
+                                            View COA
+                                        </button>
+                                    ) : (
+                                        <button className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold transition-colors border border-slate-200 bg-[#f8fafc] text-slate-400 cursor-not-allowed">
+                                            View COA
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}
