@@ -8,7 +8,7 @@ import { ArrowLeft, Lock } from 'lucide-react';
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotalPrice } = useCart();
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -36,7 +36,7 @@ const Checkout = () => {
       setError('Your cart is empty.');
       return;
     }
-    
+
     setLoading(true);
     setError('');
 
@@ -57,7 +57,7 @@ const Checkout = () => {
       // 2) Initiate Tagada Checkout Session
       const payRes = await apiService.createTagadaPayment({ orderId });
       const payData = await payRes.json();
-      
+
       if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');
 
       // 3) Redirect to Tagada Hosted Checkout Page
@@ -90,7 +90,7 @@ const Checkout = () => {
       {/* ── MAIN CONTENT ── */}
       <div style={{ maxWidth: '600px', margin: '40px auto', padding: '0 20px' }}>
         <div style={{ background: '#fff', borderRadius: '16px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
-          
+
           <div style={{ padding: '32px 40px', borderBottom: '1px solid #f1f1f1' }}>
             <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#102a5c', margin: '0 0 8px', textAlign: 'center' }}>Checkout Summary</h1>
             <p style={{ fontSize: '14px', color: '#666', textAlign: 'center', margin: 0 }}>Review your items before proceeding to secure payment.</p>
@@ -204,7 +204,7 @@ const Checkout = () => {
               <Lock size={14} />
               You will be redirected to TagadaPay's secure checkout page to enter your shipping and payment details.
             </div>
-            
+
           </div>
         </div>
       </div>

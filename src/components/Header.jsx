@@ -86,17 +86,17 @@ const Header = () => {
 
     const isHome = location.pathname === '/'
 
-        const navData = [
+    const navData = [
         { name: 'Shop', path: '/shop', direct: true },
-        { 
+        {
             name: 'COA & Testing',
             mega: [
-                { 
+                {
                     title: 'COA & Testing',
                     icon: ShieldCheck,
                     links: [
                         { name: 'COA & Third-Party Testing', desc: 'Learn about our testing process, quality standards and batch documentation.', path: '/coa', icon: FileText },
-                        { name: 'COA Library', desc: 'View available Certificates of Analysis, batch reports and documentation.', path: '/coa-reports', icon: FileText }
+                        { name: 'COA Library', desc: 'View available Certificates of Analysis, batch reports and documentation.', path: '/view-document', icon: FileText }
                     ]
                 }
             ]
@@ -185,11 +185,11 @@ const Header = () => {
                                             {item.name}
                                             <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
                                         </button>
-                                        
+
                                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
                                             {/* Caret */}
                                             <div className="absolute top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-t border-l border-slate-100 rotate-45 z-10"></div>
-                                            
+
                                             <div className="relative bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-w-[320px] z-20">
                                                 {item.mega.map((section, idx) => (
                                                     <div key={idx} className="flex flex-col gap-5">
@@ -201,7 +201,7 @@ const Header = () => {
                                                         </div>
                                                         <div className="flex flex-col gap-6">
                                                             {section.links.map((link, lIdx) => (
-                                                                <Link 
+                                                                <Link
                                                                     key={lIdx}
                                                                     to={link.path}
                                                                     className="flex items-start gap-4 p-3 -mx-3 rounded-xl hover:bg-slate-50 transition-colors group/link"
@@ -368,14 +368,14 @@ const Header = () => {
                                     </Link>
                                 ) : (
                                     <div className="flex flex-col">
-                                        <button 
+                                        <button
                                             onClick={() => setMobileOpenDropdown(mobileOpenDropdown === item.name ? null : item.name)}
                                             className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold rounded-[12px] text-slate-700 hover:bg-slate-50 transition-colors"
                                         >
                                             <span>{item.name}</span>
                                             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileOpenDropdown === item.name ? 'rotate-180 text-[#1a4494]' : 'text-slate-400'}`} />
                                         </button>
-                                        
+
                                         {mobileOpenDropdown === item.name && (
                                             <div className="flex flex-col gap-1 px-4 py-2 bg-slate-50/50 rounded-xl mt-1">
                                                 {item.mega.map((section, idx) => (
