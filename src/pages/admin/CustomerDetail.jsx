@@ -227,16 +227,10 @@ const CustomerDetail = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="px-4 py-1.5 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm">
-                            Edit
-                        </button>
-                        <button className="px-4 py-1.5 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm flex items-center gap-2">
-                            Contact <ChevronDown className="w-4 h-4 text-gray-500" />
-                        </button>
                         <button
                             onClick={toggleBanStatus}
                             disabled={updating}
-                            className={`px-4 py-1.5 rounded-lg text-[13px] font-semibold shadow-sm transition-colors ${customer.banned
+                            className={`hidden px-4  py-1.5 rounded-lg text-[13px] font-semibold shadow-sm transition-colors ${customer.banned
                                 ? 'bg-[#1a1a1a] text-white hover:bg-black'
                                 : 'bg-[#1a1a1a] text-white hover:bg-black'
                                 }`}
@@ -331,7 +325,7 @@ const CustomerDetail = () => {
                                             <Link to="/admin/orders" className="px-4 py-1.5 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm">
                                                 View all orders
                                             </Link>
-                                            <button className="px-4 py-1.5 rounded-lg text-[13px] font-semibold text-white bg-[#1a1a1a] hover:bg-black shadow-sm">
+                                            <button className="hidden px-4 py-1.5 rounded-lg text-[13px] font-semibold text-white bg-[#1a1a1a] hover:bg-black shadow-sm">
                                                 Create order
                                             </button>
                                         </div>
@@ -433,7 +427,13 @@ const CustomerDetail = () => {
                                 <div>
                                     <div className="flex justify-between items-center mb-1">
                                         <h3 className="text-[13px] font-bold text-gray-900">Contact information</h3>
-                                        <button onClick={() => setIsEditContactModalOpen(true)} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
+                                        <button onClick={() => {
+                                            setEditContactForm({
+                                                email: customer?.email || '',
+                                                phone: phoneToDisplay || ''
+                                            });
+                                            setIsEditContactModalOpen(true);
+                                        }} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
                                     </div>
                                     <a href={`mailto:${customer.email}`} className="text-[13px] text-blue-600 hover:underline">{customer.email}</a>
                                     {phoneToDisplay && <p className="text-[13px] text-gray-900 mt-1">{phoneToDisplay}</p>}
@@ -442,7 +442,18 @@ const CustomerDetail = () => {
                                 <div>
                                     <div className="flex justify-between items-center mb-1">
                                         <h3 className="text-[13px] font-bold text-gray-900">Default address</h3>
-                                        <button onClick={() => setIsEditAddressModalOpen(true)} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
+                                        <button onClick={() => {
+                                            setEditAddressForm({
+                                                name: address?.name || '',
+                                                street1: address?.street1 || '',
+                                                street2: address?.street2 || '',
+                                                city: address?.city || '',
+                                                state: address?.state || '',
+                                                zip: address?.zip || '',
+                                                country: address?.country || ''
+                                            });
+                                            setIsEditAddressModalOpen(true);
+                                        }} className="text-gray-400 hover:text-gray-700"><Edit2 className="w-3.5 h-3.5" /></button>
                                     </div>
                                     {address ? (
                                         <div className="text-[13px] text-gray-600 leading-relaxed mt-1">
@@ -531,8 +542,9 @@ const CustomerDetail = () => {
                                 <input
                                     type="email"
                                     value={editContactForm.email}
-                                    onChange={(e) => setEditContactForm(prev => ({ ...prev, email: e.target.value }))}
-                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    disabled
+                                    readOnly
+                                    className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] bg-gray-50 text-gray-500 cursor-not-allowed focus:outline-none"
                                 />
                             </div>
                             <div>

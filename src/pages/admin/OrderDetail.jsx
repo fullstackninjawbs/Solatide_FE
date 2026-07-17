@@ -141,7 +141,16 @@ const OrderDetail = () => {
   const openAddressModal = (type) => {
     setAddressTypeToEdit(type);
     const addr = type === 'shipping' ? order.shippingAddressObj : order.billingAddressObj;
-    setEditAddressForm(addr || { name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
+    setEditAddressForm({
+      name: addr?.name || '',
+      company: addr?.company || '',
+      street1: addr?.street1 || '',
+      street2: addr?.street2 || '',
+      city: addr?.city || '',
+      state: addr?.state || '',
+      zip: addr?.zip || '',
+      country: addr?.country || ''
+    });
     setIsEditAddressModalOpen(true);
   };
 
