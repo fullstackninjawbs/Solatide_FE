@@ -35,23 +35,23 @@ function fmtAUD(amount) {
 
 // ─── Status badge components ──────────────────────────────────────────────────
 const PAYMENT_BADGE = {
-  paid:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
-  pending:  'bg-amber-100 text-amber-700 border border-amber-200',
-  failed:   'bg-red-100 text-red-700 border border-red-200',
+  paid: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  pending: 'bg-amber-100 text-amber-700 border border-amber-200',
+  failed: 'bg-red-100 text-red-700 border border-red-200',
   refunded: 'bg-slate-100 text-slate-600 border border-slate-200',
 };
 
 const FULFIL_BADGE = {
   unfulfilled: 'bg-amber-50 text-amber-700 border border-amber-200',
-  fulfilled:   'bg-emerald-100 text-emerald-700 border border-emerald-200',
-  partial:     'bg-blue-100 text-blue-700 border border-blue-200',
+  fulfilled: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  partial: 'bg-blue-100 text-blue-700 border border-blue-200',
 };
 
 const DELIVERY_BADGE = {
-  pending:       'bg-slate-100 text-slate-500 border border-slate-200',
-  tracking_added:'bg-blue-100 text-blue-700 border border-blue-200',
-  in_transit:    'bg-indigo-100 text-indigo-700 border border-indigo-200',
-  delivered:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  pending: 'bg-slate-100 text-slate-500 border border-slate-200',
+  tracking_added: 'bg-blue-100 text-blue-700 border border-blue-200',
+  in_transit: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
+  delivered: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
 };
 
 function Badge({ text, styleMap, fallback = 'bg-slate-100 text-slate-500 border border-slate-200' }) {
@@ -69,7 +69,7 @@ const TABS = [
   { label: 'All', filter: {} },
   { label: 'Unfulfilled', filter: { fulfilmentStatus: 'unfulfilled' } },
   { label: 'Paid', filter: { paymentStatus: 'paid' } },
-  { label: 'Refunded', filter: { paymentStatus: 'refunded' } },
+  // { label: 'Refunded', filter: { paymentStatus: 'refunded' } },
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -185,11 +185,10 @@ const OrderList = () => {
               <button
                 key={tab.label}
                 onClick={() => handleTabChange(idx)}
-                className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 ${
-                  activeTab === idx
+                className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 ${activeTab === idx
                     ? 'border-brand-navy text-brand-navy bg-slate-50'
                     : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
