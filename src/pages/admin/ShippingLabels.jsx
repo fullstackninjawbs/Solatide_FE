@@ -179,7 +179,16 @@ export default function ShippingLabels() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/50">
-
+                <th className="px-5 py-4 w-12 text-center">
+                  <div className="flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-slate-300 text-brand-cyan focus:ring-brand-cyan w-4 h-4"
+                      checked={orders.length > 0 && selectedOrders.size === orders.length}
+                      onChange={handleSelectAll}
+                    />
+                  </div>
+                </th>
                 <th className="px-5 py-4 text-slate-500 font-semibold text-[13px] uppercase tracking-wider">Order</th>
                 <th className="px-5 py-4 text-slate-500 font-semibold text-[13px] uppercase tracking-wider">Date</th>
                 <th className="px-5 py-4 text-slate-500 font-semibold text-[13px] uppercase tracking-wider">Customer</th>
@@ -217,7 +226,17 @@ export default function ShippingLabels() {
                       key={order._id}
                       className={`hover:bg-slate-50/80 transition-colors ${selectedOrders.has(order._id) ? 'bg-slate-50' : ''}`}
                     >
-
+                      <td className="px-5 py-4">
+                        <div className="flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            className="rounded border-slate-300 text-brand-cyan focus:ring-brand-cyan w-4 h-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                            checked={selectedOrders.has(order._id)}
+                            onChange={() => handleSelectOne(order._id)}
+                            disabled={isProcessed}
+                          />
+                        </div>
+                      </td>
                       <td className="px-5 py-4">
                         <Link to={`/admin/orders/${order._id}`} className="text-brand-navy hover:text-brand-cyan font-bold transition-colors">
                           {order.orderNumber || order._id.substring(0, 8)}
