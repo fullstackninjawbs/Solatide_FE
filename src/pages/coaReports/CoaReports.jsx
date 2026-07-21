@@ -44,7 +44,7 @@ const CoaReports = () => {
 
     return (
         <div className="w-full bg-white min-h-screen">
-            <section className="w-full pt-12 text-center">
+            <section className="w-full py-8 text-center border-b border-slate-100">
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"

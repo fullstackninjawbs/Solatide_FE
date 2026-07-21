@@ -7,7 +7,7 @@ const HowOrdersHandledSection = () => {
         <section className="w-full bg-white py-12 md:py-16">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
-                    
+
                     {/* Left image */}
                     <div className="w-full lg:w-[45%] shrink-0">
                         <div className="rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 bg-white">
@@ -20,7 +20,7 @@ const HowOrdersHandledSection = () => {
                         <h2 className="text-[28px] md:text-[34px] font-bold text-[#1a4494] mb-4 font-anek leading-tight">
                             How Orders Are Handled
                         </h2>
-                        
+
                         <p className="text-[15px] text-[#4B5563] leading-[1.6] mb-4">
                             Orders are processed and dispatched from our dispatch facility. Tracking information is provided after dispatch is confirmed, and support is available via Telegram or email for order updates, documentation requests, and general enquiries.
                         </p>

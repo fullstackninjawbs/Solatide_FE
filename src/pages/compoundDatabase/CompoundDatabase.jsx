@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 
 const CompoundDatabase = () => {
     return (
-        <div className="min-h-screen bg-white pt-24 pb-16 font-sans">
-            <div className="main-container">
-                <h1 className="text-3xl md:text-[38px] font-bold text-center text-[#214A9E] mb-10 tracking-tight">
-                    Compound Index
-                </h1>
-
+        <div className="min-h-screen bg-white font-sans">
+            <section className="w-full py-8 text-center border-b border-slate-100 mb-10">
+                <div className="main-container">
+                    <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">
+                        Compound Index
+                    </h1>
+                </div>
+            </section>
+            
+            <div className="main-container pb-16">
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-14 rounded-[4px]">
                     <p className="text-[13.5px] text-slate-700 leading-relaxed">
                         <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds listed in this index are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>

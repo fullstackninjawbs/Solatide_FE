@@ -5,12 +5,17 @@ import CommonButton from '../../components/CommonBtn'
 
 const AboutUs = () => {
     return (
-        <div className="w-full bg-white min-h-screen">
-            <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
+        <div className="w-full bg-[#F5F8FC]">
+            <section className="w-full py-8">
                 <div className="main-container">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
                         <div className="w-full lg:w-[45%] flex flex-col text-left justify-center order-2 lg:order-1">
-                            <span className="text-[16px] font-bold text-[#499cec] mb-3 block">Who We Are</span>
+                            <span className="flex items-center gap-2 text-[16px] font-bold text-[#00adee] mb-3">
+                                <div className="w-5 h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-[#00adee]" />
+                                </div>
+                                Who We Are
+                            </span>
 
                             <h2 className="text-[32px] md:text-[54px] font-anek font-bold text-[#1D1D1F] leading-[1.15] tracking-[0px]">
                                 Built for Researchers.

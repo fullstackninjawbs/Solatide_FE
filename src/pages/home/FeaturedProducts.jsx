@@ -112,13 +112,13 @@ const FeaturedProducts = () => {
                                         {/* Badges */}
                                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
                                             {product.inStock && (
-                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
+                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
                                                     <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
                                                     In Stock
                                                 </span>
                                             )}
                                             {!product.inStock && (
-                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
+                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
                                                     <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></div>
                                                     Sold Out
                                                 </span>

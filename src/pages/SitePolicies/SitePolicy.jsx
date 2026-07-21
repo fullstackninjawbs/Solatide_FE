@@ -59,7 +59,7 @@ const PrivacyPolicy = () => {
     return (
         <div className="w-full bg-[#f8fafc] min-h-screen pb-20">
             {/* Header Banner */}
-            <section className="w-full bg-[#F0F5FB] py-16 text-center border-b border-slate-100">
+            <section className="w-full py-8 text-center border-b border-slate-100">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <h1
                         className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight mb-6"

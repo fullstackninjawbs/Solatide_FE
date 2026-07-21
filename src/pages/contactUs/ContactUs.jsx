@@ -4,12 +4,16 @@ import { Link } from 'react-router-dom'
 const ContactUs = () => {
     return (
         <div className="w-full bg-white min-h-screen text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            <div className="main-container mx-auto pt-12 pb-24 px-4 sm:px-6">
+            {/* Header Banner */}
+            <section className="w-full py-8 text-center border-b border-slate-100">
+                <div className="main-container">
+                    <h1 className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight">
+                        Contact Us
+                    </h1>
+                </div>
+            </section>
 
-                {/* Title */}
-                <h1 className="text-center text-[36px] sm:text-[42px] font-bold text-[#214A9E] pb-6 mb-8 border-b border-slate-200">
-                    Contact Us
-                </h1>
+            <div className="main-container mx-auto pt-12 pb-24 px-4 sm:px-6">
 
                 {/* Support & Dispatch */}
                 <div className="mb-12">

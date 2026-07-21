@@ -60,7 +60,7 @@ const ShippingPolicy = () => {
     return (
         <div className="w-full min-h-screen pb-20">
             {/* Header Banner */}
-            <section className="w-full bg-[#F0F5FB] py-16 text-center border-b border-slate-100">
+            <section className="w-full py-8 text-center border-b border-slate-100">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <h1
                         className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight mb-4"
@@ -68,9 +68,6 @@ const ShippingPolicy = () => {
                     >
                         Shipping Policy
                     </h1>
-                    {/* <p className="text-[15px] sm:text-[16px] font-regular text-[#6A6A6A] leading-[1.75] w-full">
-                        Curated dispatch protocols, express delivery details, global customs guidelines, and related support documentation for research order management.
-                    </p> */}
                 </div>
             </section>
 

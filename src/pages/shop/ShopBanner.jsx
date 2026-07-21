@@ -2,7 +2,7 @@ import React from 'react';
 
 const ShopBanner = () => {
     return (
-        <div className="w-full pt-12 text-center">
+        <section className="w-full py-8 text-center border-b border-slate-100">
             <div className="max-w-4xl mx-auto px-4 flex flex-col items-center justify-center gap-4">
                 <h1 className="text-[48px] font-bold text-[#214A9E] leading-[100%] tracking-normal text-center capitalize">
                     Shop All Products
@@ -16,13 +16,9 @@ const ShopBanner = () => {
                         Research Peptides Guide
                     </a>
                 </p>
-
-
-
-
             </div>
 
-        </div>
+        </section>
     );
 };
 

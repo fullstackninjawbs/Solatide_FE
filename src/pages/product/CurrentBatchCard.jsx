@@ -32,7 +32,7 @@ const CurrentBatchCard = ({ batch }) => {
     }
     return <div className="text-[12px] font-bold text-[#1a3a7d] my-0.5 leading-snug">{text}</div>;
   };
-  
+
   const purityResult = tests.purityHplc?.result || '';
   const identityResult = tests.identityHplc?.result || '';
   const fentanylResult = tests.fentanylScreen?.result || '';
@@ -65,12 +65,12 @@ const CurrentBatchCard = ({ batch }) => {
           </div>
           <div className="flex flex-col gap-3.5">
             <h4 className="text-[22px] font-bold text-[#F97316] tracking-tight">Pending Results</h4>
-            
+
             <div className="flex flex-col gap-1.5 mt-1">
               <p className="text-[14px] text-[#214A9E] font-medium leading-relaxed">Additional Third Party testing is currently in progress for this batch.</p>
               <p className="text-[14px] text-[#214A9E] font-medium leading-relaxed">Results will be published here once available.</p>
             </div>
-            
+
             <div className="flex flex-col gap-1 mt-3">
               <p className="text-[13px] text-slate-500 font-medium">We are committed to full transparency.</p>
               <p className="text-[13px] text-slate-500 font-medium">Thank you for your patience.</p>
@@ -88,7 +88,7 @@ const CurrentBatchCard = ({ batch }) => {
       </div>
 
       <div className="flex flex-col gap-3">
-        
+
         {/* Box 1: Batch Header & COA Button */}
         <div className="flex items-center justify-between border border-slate-200 rounded-xl px-4 py-3 bg-white">
           <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ const CurrentBatchCard = ({ batch }) => {
             )}
           </div>
           {(batch.coaFile?.url || batch.coaUrl) && (
-            <button 
+            <button
               onClick={handleOpenCoa}
               className="bg-[#0079CD] hover:bg-[#0062a3] text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
             >
@@ -123,7 +123,7 @@ const CurrentBatchCard = ({ batch }) => {
                 <ShieldCheck className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-[15px] font-bold text-[#137333]">This Batch Passed a Full QC Panel</h4>
-                  <p className="text-[12px] text-slate-500 mt-0.5">Every Test. Every Batch. Verified by Third-Party Labs.</p>
+                  {/* <p className="text-[12px] text-slate-500 mt-0.5">Every Test. Every Batch. Verified by Third-Party Labs.</p> */}
                 </div>
               </div>
               <span className="bg-[#E6F4EA] text-[#137333] text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 uppercase tracking-wide">
@@ -151,9 +151,9 @@ const CurrentBatchCard = ({ batch }) => {
               <div className="px-5 py-3 border-b border-slate-100">
                 <h5 className="text-[12px] font-bold text-[#1a3a7d] mb-0">Test Summary</h5>
               </div>
-              
+
               <div className="flex flex-row overflow-x-auto px-5 py-4 gap-8 bg-white snap-x scrollbar-hide">
-                
+
                 {hasPurity && (
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <BarChart2 className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
@@ -264,7 +264,7 @@ const CurrentBatchCard = ({ batch }) => {
                   <p className="text-[12px] text-slate-500 leading-relaxed max-w-[280px]">
                     Verify this COA directly with {batch.verificationDetails?.labName || 'the lab'}. Scan the QR Code or enter the access code on the portal.
                   </p>
-                  
+
                   <div className="flex items-center gap-3 mt-3">
                     <span className="text-[11px] font-bold text-[#214A9E] uppercase tracking-wider">Access Code:</span>
                     <div className="flex items-center gap-2 bg-white border border-[#214A9E]/20 rounded-md px-2.5 py-1">
@@ -280,7 +280,7 @@ const CurrentBatchCard = ({ batch }) => {
               </div>
 
               {batch.verificationDetails?.verificationUrl && (
-                <button 
+                <button
                   onClick={() => window.open(batch.verificationDetails.verificationUrl, '_blank')}
                   className="w-full md:w-auto px-5 py-2.5 rounded-lg border-2 border-[#214A9E]/20 text-[#214A9E] text-[13px] font-bold hover:bg-[#214A9E] hover:text-white transition-all focus:outline-none flex items-center justify-center gap-2 shrink-0 bg-white shadow-sm"
                 >

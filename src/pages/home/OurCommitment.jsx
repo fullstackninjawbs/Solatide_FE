@@ -8,7 +8,7 @@ const OurCommitment = () => {
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
-                    
+
                     {/* Left Image */}
                     <div className="w-full lg:w-[45%] shrink-0 relative order-1">
                         <div className="rounded-[20px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.1] lg:aspect-[1.05]">

@@ -156,9 +156,10 @@ const ProductDetail = () => {
         : [product.imageUrl || product.image || retatrutideVial].filter(Boolean);
 
     const coaImages = [
-        product.coaImage1 || null,
-        product.coaImage2 || null
-    ];
+        product.coaImage1,
+        product.coaImage2
+    ].filter(Boolean);
+
 
     const images = [
         ...dbImages,

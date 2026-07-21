@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 
 const ResearchUseDisclaimer = () => {
     return (
-        <div className="min-h-screen bg-white pt-24 pb-16 font-sans">
-            <div className="main-container">
-                <h1 className="text-3xl md:text-[38px] font-bold text-center text-[#214A9E] mb-10 tracking-tight">
-                    Research Use Disclaimer
-                </h1>
-
+        <div className="min-h-screen bg-white font-sans">
+            <section className="w-full py-8 text-center border-b border-slate-100 mb-10">
+                <div className="main-container">
+                    <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">
+                        Research Use Disclaimer
+                    </h1>
+                </div>
+            </section>
+            
+            <div className="main-container pb-16">
                 <div className="bg-[#FFF8E6] border-l-[3px] border-[#D97706] p-5 mb-8 rounded-[4px]">
                     <p className="text-[13.5px] text-[#92400E] leading-relaxed">
                         <strong className="font-bold">Important:</strong> All compounds, lyophilised peptides, and related products sold by Solatide Biosciences are supplied strictly for in-vitro laboratory research purposes only. These products are not intended for human use, human consumption, veterinary use, clinical use, diagnostic use, therapeutic use, or any other non-research purpose.

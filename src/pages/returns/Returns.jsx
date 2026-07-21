@@ -52,15 +52,17 @@ const Returns = () => {
     return (
         <div className="w-full bg-white min-h-screen">
             {/* Header section */}
-            <section className="w-full py-12 text-center">
+            <section className="w-full py-8 text-center border-b border-slate-100">
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
                         style={{ fontFamily: 'Poppins, sans-serif' }}
                     >
-                        Returns & Refunds
+                        Refunds & Returns Policy
                     </h1>
-
+                    <p className="text-[16px] font-regular font-weight-400 text-[#6A6A6A] leading-[1.75] w-full mx-auto">
+                        Clear guidelines on order cancellations, returns, and remedies for research products.
+                    </p>
                 </div>
             </section>
 

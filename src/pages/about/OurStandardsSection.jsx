@@ -2,16 +2,19 @@ import React from 'react'
 
 const OurStandardsSection = () => {
     return (
-        <section className="w-full bg-[#f8fafd] py-16 md:py-24">
+        <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
             <div className="main-container">
 
                 {/* Header Row (2 Columns) */}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start mb-12">
                     <div className="w-full lg:w-1/2 text-left">
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#0ea5e9]"></div>
-                            <span className="text-[14px] font-bold text-[#0ea5e9] tracking-wider uppercase">Quality Assurance</span>
-                        </div>
+                        <span className="flex items-center gap-2 text-[16px] font-bold text-[#00adee] mb-3">
+                            <div className="w-5 h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
+                                <div className="w-2.5 h-2.5 rounded-full bg-[#00adee]" />
+                            </div>
+                            Quality Assurance
+                        </span>
+
                         <h2 className="text-[32px] md:text-[48px] font-bold text-[#1D1D1F] font-anek leading-[1.1] tracking-[0px]">
                             Manufacturer QC and
                             <br />
