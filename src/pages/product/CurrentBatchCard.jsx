@@ -58,8 +58,11 @@ const CurrentBatchCard = ({ batch, product }) => {
 
   const hasQcData = hasPurity || hasIdentity || hasFentanyl || hasEndotoxin || hasSterility || hasNetContent || hasHeavyMetals;
 
-  // Check if all 5 required tests for "Full QC" are present
-  const isFullQc = hasPurity && hasIdentity && hasEndotoxin && hasHeavyMetals && hasSterility;
+  // Check if all required tests for "Full QC" are present (supporting both variants)
+  const isFullQcVariant1 = hasPurity && hasIdentity && hasEndotoxin && hasHeavyMetals && hasSterility;
+  const isFullQcVariant2 = hasPurity && hasIdentity && hasFentanyl && hasEndotoxin && hasSterility && hasNetContent;
+  const isFullQc = isFullQcVariant1 || isFullQcVariant2;
+
   const isPartialQc = hasQcData && !isFullQc;
   const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
@@ -147,8 +150,8 @@ const CurrentBatchCard = ({ batch, product }) => {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-[15px] font-bold text-[#137333]">This Batch Has Third-Party Test Results</h4>
-                  {/* <p className="text-[12px] text-slate-500 mt-0.5">Every Test. Every Batch. Verified by Third-Party Labs.</p> */}
+                  <h4 className="text-[15px] font-bold text-[#137333]">This Batch Passed a Full QC Panel</h4>
+                  <p className="text-[12px] text-slate-500 mt-0.5">Every test. Every batch. Verified by third-party labs.</p>
                 </div>
               </div>
               <span className="bg-[#E6F4EA] text-[#137333] text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 uppercase tracking-wide">
@@ -250,6 +253,19 @@ const CurrentBatchCard = ({ batch, product }) => {
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Net Content</p>
                       {renderResultText(netContentResult)}
+                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {hasHeavyMetals && (
+                  <div className="flex gap-3 shrink-0 min-w-[140px]">
+                    <Hourglass className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[11px] font-bold text-[#1a3a7d]">Heavy Metals (ICP-MS)</p>
+                      {renderResultText(heavyMetalsResult)}
                       <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Pass
                       </p>

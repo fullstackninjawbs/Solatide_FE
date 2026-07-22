@@ -746,21 +746,7 @@ const BatchForm = () => {
             </div>
           </div>
 
-          {/* Notes Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">Notes</h2>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Internal Notes</label>
-              <textarea
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Write private notes about this batch..."
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-              />
-            </div>
-          </div>
+
         </div>
 
         {/* Sidebar Column (Right, 4 cols) */}

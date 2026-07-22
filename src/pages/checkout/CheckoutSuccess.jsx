@@ -160,18 +160,18 @@ const CheckoutSuccess = () => {
                       <div style={{ width: '120px', flexShrink: 0, fontSize: '13px', color: '#64748b', fontWeight: '500' }}>Contact</div>
                       <div style={{ fontSize: '14px', color: '#0f172a' }}>{order.customerEmail || order.customer?.email}</div>
                     </div>
-                    
+
                     <div style={{ display: 'flex', padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
                       <div style={{ width: '120px', flexShrink: 0, fontSize: '13px', color: '#64748b', fontWeight: '500', paddingTop: '2px' }}>Ship to</div>
                       <div style={{ fontSize: '14px', color: '#0f172a', lineHeight: '1.6' }}>
-                          {order.shippingAddressObj?.name || order.customer?.firstName + ' ' + order.customer?.lastName}<br />
-                          {order.shippingAddressObj?.street1 || ''}<br />
-                          {order.shippingAddressObj?.street2 ? <>{order.shippingAddressObj.street2}<br /></> : null}
-                          {order.shippingAddressObj?.city || ''}, {order.shippingAddressObj?.state || ''} {order.shippingAddressObj?.zip || ''}<br />
-                          {order.shippingAddressObj?.country || ''}
+                        {order.shippingAddressObj?.name || order.customer?.firstName + ' ' + order.customer?.lastName}<br />
+                        {order.shippingAddressObj?.street1 || ''}<br />
+                        {order.shippingAddressObj?.street2 ? <>{order.shippingAddressObj.street2}<br /></> : null}
+                        {order.shippingAddressObj?.city || ''}, {order.shippingAddressObj?.state || ''} {order.shippingAddressObj?.zip || ''}<br />
+                        {order.shippingAddressObj?.country || ''}
                       </div>
                     </div>
-                    
+
                     <div style={{ display: 'flex', padding: '16px 20px' }}>
                       <div style={{ width: '120px', flexShrink: 0, fontSize: '13px', color: '#64748b', fontWeight: '500' }}>Method</div>
                       <div style={{ fontSize: '14px', color: '#0f172a' }}>{order.shippingMethodName || 'Standard Shipping'}</div>
@@ -227,4 +227,4 @@ const CheckoutSuccess = () => {
   );
 };
 
-export default CheckoutSuccess;
+export default ;

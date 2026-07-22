@@ -9,6 +9,9 @@ export const apiService = {
   getProducts: async (queryParams = '') => {
     return fetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`);
   },
+  getPublicCollections: async () => {
+    return fetch(`${API_URL}/api/products/collections`);
+  },
   getProductById: async (id, options = {}) => {
     return fetch(`${API_URL}/api/products/${id}`, options);
   },

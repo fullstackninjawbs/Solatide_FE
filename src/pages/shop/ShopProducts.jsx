@@ -38,13 +38,28 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const categories = [
-        'All Products',
-        'Metabolic Pathway Research',
-        'Tissue & Cellular Research',
-        'Dermal & Pigmentation Research',
-        'Laboratory Support'
-    ];
+    const [categories, setCategories] = useState([
+        { name: 'All Products', slug: 'all-products' }
+    ]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await apiService.getPublicCollections();
+                const result = await response.json();
+                if (result.success && result.data) {
+                    const dynamicCats = result.data.map(c => ({ name: c.name, slug: c.slug }));
+                    setCategories([
+                        { name: 'All Products', slug: 'all-products' },
+                        ...dynamicCats
+                    ]);
+                }
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const [productsList, setProductsList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -54,17 +69,11 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const categorySlugMap = {
-                    'Metabolic Pathway Research': 'metabolic-pathway',
-                    'Tissue & Cellular Research': 'tissue-cellular',
-                    'Dermal & Pigmentation Research': 'dermal-pigmentation',
-                    'Laboratory Support': 'laboratory-support',
-                    'All Products': 'All Products'
-                };
-                const mappedCategory = categorySlugMap[selectedCategory] || selectedCategory;
-                const response = await apiService.getProducts(
-                    `category=${encodeURIComponent(mappedCategory)}&availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`
-                );
+                let queryStr = `availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`;
+                if (selectedCategory && selectedCategory !== 'all-products') {
+                    queryStr += `&collection=${encodeURIComponent(selectedCategory)}`;
+                }
+                const response = await apiService.getProducts(queryStr);
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
                     setProductsList(result.data.products);
@@ -88,7 +97,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                         <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
                         <button
                             onClick={() => {
-                                setSelectedCategory('All Products');
+                                setSelectedCategory('all-products');
                                 setAvailability('In Stock');
                             }}
                             className="text-xs font-bold text-[#0ea5e9] hover:text-[#008bc7] transition-colors"
@@ -145,23 +154,23 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                         <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Category</h3>
                         <div className="space-y-1.5">
                             {categories.map(category => (
-                                <label key={category} className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${selectedCategory === category ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                                <label key={category.slug} className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${selectedCategory === category.slug ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                     <input
                                         type="radio"
                                         name="category"
-                                        checked={selectedCategory === category}
-                                        onChange={() => setSelectedCategory(category)}
+                                        checked={selectedCategory === category.slug}
+                                        onChange={() => setSelectedCategory(category.slug)}
                                         className="sr-only"
                                     />
-                                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category
+                                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category.slug
                                         ? 'border-2 border-[#214A9E] bg-white'
                                         : 'border border-slate-400 bg-white group-hover:border-slate-600'
                                         }`}>
-                                        {selectedCategory === category && (
+                                        {selectedCategory === category.slug && (
                                             <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
                                         )}
                                     </div>
-                                    <span>{category}</span>
+                                    <span>{category.name}</span>
                                 </label>
                             ))}
                         </div>
@@ -177,11 +186,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 <span className="font-semibold">{productsList.length}</span> <span className="text-slate-500 font-normal">items</span>
                             </span>
                             {/* Active Filter Indicator */}
-                            {selectedCategory !== 'All Products' && (
+                            {selectedCategory !== 'all-products' && (
                                 <div className="flex items-center gap-2 bg-[#EAF7FD] border border-[#00ADEE]/30 px-3 py-1.5 rounded-full">
-                                    <span className="text-[13px] font-bold text-[#00ADEE]">{selectedCategory}</span>
+                                    <span className="text-[13px] font-bold text-[#00ADEE]">
+                                        {categories.find(c => c.slug === selectedCategory)?.name || selectedCategory}
+                                    </span>
                                     <button
-                                        onClick={() => setSelectedCategory('All Products')}
+                                        onClick={() => setSelectedCategory('all-products')}
                                         className="text-[#00ADEE] hover:text-[#008bc7] transition-colors focus:outline-none"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

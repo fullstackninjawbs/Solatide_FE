@@ -178,7 +178,10 @@ const CustomerDetail = () => {
     if (!customer) return null;
 
     const lastOrder = orders.length > 0 ? orders[0] : null;
-    const address = customer.defaultAddress || lastOrder?.shippingAddressObj || lastOrder?.billingAddressObj;
+    const hasAddressData = (addr) => addr && (addr.street1 || addr.city || addr.country);
+    const address = hasAddressData(customer.defaultAddress)
+        ? customer.defaultAddress
+        : (hasAddressData(lastOrder?.shippingAddressObj) ? lastOrder?.shippingAddressObj : lastOrder?.billingAddressObj);
     // Prefer the explicitly saved phone on customer, fallback to order phone
     const phoneToDisplay = customer.phone || lastOrder?.customer?.phone;
 
