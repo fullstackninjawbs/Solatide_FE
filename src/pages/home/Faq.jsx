@@ -7,27 +7,27 @@ const Faq = () => {
     const faqs = [
         {
             question: "Are these products for human consumption?",
-            answer: "No. Solatide products are supplied strictly for in-vitro laboratory research use only. They are not for human consumption, veterinary use, therapeutic use, diagnostic use, cosmetic use, injection, or dosing."
+            answer: "No. Products sold by Solatide Biosciences are supplied strictly for in-vitro laboratory and analytical research purposes only. They are not supplied for human consumption, clinical use, therapeutic use, cosmetic use, veterinary use, or any form of administration."
         },
         {
-            question: "What are my responsibilities as a buyer?",
-            answer: "Researchers and purchasers are responsible for ensuring products are handled, stored, and used only in lawful in-vitro laboratory research settings. Products must not be used for human or veterinary consumption."
+            question: "Do you provide preparation, dosing, or application guidance?",
+            answer: "No. We do not provide preparation, dosing, administration, application, or usage guidance. Our product information is limited to research-use positioning, product identification, storage, documentation, and quality-related information."
         },
         {
-            question: "Where Can I Learn More About Specific Peptides?",
-            answer: "Product pages, research category pages, and available analytical documentation provide compound-specific information where available. Solatide does not provide human-use, dosing, therapeutic, or medical guidance."
+            question: "Are Certificates of Analysis available?",
+            answer: "Yes. Certificates of Analysis are made available where applicable through our COA and documentation system. Some products may show pending documentation while updated batch records or third-party testing documentation are being processed."
         },
         {
-            question: "What does \"lyophilised\" mean?",
-            answer: "Lyophilised means the material has been freeze-dried into a dry powder form. This is commonly used to support stability and handling for laboratory research materials."
+            question: "Do your products undergo quality control?",
+            answer: "Yes. Every batch undergoes a full internal quality-control panel before release. Only batches that meet our internal release criteria are made available for sale. This internal release process is separate from third-party analytical testing. Internal QC records are not publicly released. Where available, third-party testing documentation and Certificates of Analysis can be accessed through the relevant product page or COA library."
         },
         {
-            question: "Do you sell bacteriostatic water or diluents?",
-            answer: "Yes. Solatide may supply laboratory support materials such as bacteriostatic water or diluents where available. These materials are supplied for research-use workflows only."
+            question: "How should lyophilised products be stored?",
+            answer: "Lyophilised products should be stored as directed on the product label and supporting documentation. Unless otherwise stated, products should be kept sealed, protected from light, and stored under appropriate cold-chain or refrigerated conditions after receipt."
         },
         {
-            question: "Where are orders dispatched from?",
-            answer: "Orders are dispatched from Melbourne, Australia, with tracking where available. Dispatch timeframes may vary depending on payment confirmation, stock availability, and operational cut-off times."
+            question: "When will my order be dispatched?",
+            answer: "Orders are generally processed as quickly as possible after payment is received. Once your order has been dispatched, tracking information will be sent to the email address provided at checkout."
         }
     ];
 

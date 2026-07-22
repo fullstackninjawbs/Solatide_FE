@@ -122,7 +122,7 @@ const CurrentBatchCard = ({ batch }) => {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-[15px] font-bold text-[#137333]">This Batch Passed a Full QC Panel</h4>
+                  <h4 className="text-[15px] font-bold text-[#137333]">This Batch Has Third-Party Test Results</h4>
                   {/* <p className="text-[12px] text-slate-500 mt-0.5">Every Test. Every Batch. Verified by Third-Party Labs.</p> */}
                 </div>
               </div>
