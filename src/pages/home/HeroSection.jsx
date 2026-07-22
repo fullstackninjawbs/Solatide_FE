@@ -74,7 +74,7 @@ const HeroSection = () => {
                 </div>
 
                 {/* White Content Section */}
-                <div className="col-start-1 row-start-1 md:hidden lg:flex flex-col justify-end self-end w-full relative z-20 pb-2 sm:pb-12 lg:pb-0">
+                <div className="col-start-1 row-start-1 md:hidden lg:flex flex-col justify-end self-end w-full relative z-20 pb-2 sm:pb-12 lg:pb-0 pt-[115vw] min-[400px]:pt-[100vw] min-[480px]:pt-[80vw] lg:pt-0">
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 

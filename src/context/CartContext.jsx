@@ -36,8 +36,8 @@ export const CartProvider = ({ children }) => {
             // Resolve the variant if it's not explicitly provided but the product has variants
             const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
             const variantSku = resolvedVariant?.sku || '';
-            const cartItemId = resolvedVariant 
-                ? `${product._id || product.id || ''}-${variantSku}` 
+            const cartItemId = resolvedVariant
+                ? `${product._id || product.id || ''}-${variantSku}`
                 : `${product._id || product.id || ''}`;
 
             const existingItem = prevItems.find(item => item.cartItemId === cartItemId);
@@ -48,10 +48,10 @@ export const CartProvider = ({ children }) => {
                         : item
                 );
             }
-            return [...prevItems, { 
-                ...product, 
-                quantity, 
-                selectedVariant: resolvedVariant, 
+            return [...prevItems, {
+                ...product,
+                quantity,
+                selectedVariant: resolvedVariant,
                 cartItemId,
                 price: resolvedVariant ? resolvedVariant.price : product.price,
                 sku: resolvedVariant ? resolvedVariant.sku : product.sku,
@@ -62,7 +62,7 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeFromCart = (cartItemId) => {
-        setCartItems(prevItems => prevItems.filter(item => 
+        setCartItems(prevItems => prevItems.filter(item =>
             item.cartItemId !== cartItemId && item.id !== cartItemId && item._id !== cartItemId
         ));
     };
@@ -90,6 +90,10 @@ export const CartProvider = ({ children }) => {
         return total + ((parseFloat(numericPrice) || 0) * item.quantity);
     }, 0);
 
+    const clearCart = () => {
+        setCartItems([]);
+    };
+
     return (
         <CartContext.Provider value={{
             cartItems,
@@ -99,7 +103,8 @@ export const CartProvider = ({ children }) => {
             removeFromCart,
             updateQuantity,
             cartTotalCount,
-            cartTotalPrice
+            cartTotalPrice,
+            clearCart
         }}>
             {children}
         </CartContext.Provider>

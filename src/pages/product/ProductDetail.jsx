@@ -315,7 +315,7 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Current Batch Info (moved inline above selector and quantity!) */}
-                        <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} />
+                        <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} product={product} />
 
                         {/* Variant Selector */}
                         {hasVariantsToSelect && (

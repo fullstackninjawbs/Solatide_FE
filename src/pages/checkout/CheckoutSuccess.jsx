@@ -3,12 +3,14 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Package, ArrowRight, Loader2 } from 'lucide-react';
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
+import { useCart } from '../../context/CartContext';
 
 const CheckoutSuccess = () => {
   const [searchParams] = useSearchParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { clearCart } = useCart();
 
   // Try to get orderId from URL params or localStorage
   const orderId = searchParams.get('orderId') || searchParams.get('reference') || localStorage.getItem('solatide_last_order_id');
@@ -41,8 +43,7 @@ const CheckoutSuccess = () => {
     // Clear cart after successful checkout
     try {
       localStorage.removeItem('solatie_cart');
-      // Dispatch a storage event so CartContext picks up the change
-      window.dispatchEvent(new Event('storage'));
+      if (clearCart) clearCart();
     } catch (e) {
       // Non-critical
     }

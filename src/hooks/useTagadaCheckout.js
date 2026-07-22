@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { apiService } from '../services/api';
+import { useCart } from '../context/CartContext';
 
 export const useTagadaCheckout = () => {
+  const { clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
 

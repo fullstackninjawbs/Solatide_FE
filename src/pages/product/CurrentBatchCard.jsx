@@ -1,7 +1,8 @@
 import React from 'react';
-import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass } from 'lucide-react';
+import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
-const CurrentBatchCard = ({ batch }) => {
+const CurrentBatchCard = ({ batch, product }) => {
   const handleOpenCoa = () => {
     const url = batch?.coaFile?.url || batch?.coaUrl;
     if (url) {
@@ -18,6 +19,12 @@ const CurrentBatchCard = ({ batch }) => {
 
   const isMissingOrInactive = !batch || batch?.status === 'inactive';
   const tests = isMissingOrInactive ? {} : (batch.tests || {});
+
+  const isAccessory = product && (
+    product.title?.toLowerCase().includes('water') ||
+    product.title?.toLowerCase().includes('syringe') ||
+    product.category?.toLowerCase() === 'accessories'
+  );
 
   const renderResultText = (text) => {
     if (!text) return null;
@@ -57,26 +64,44 @@ const CurrentBatchCard = ({ batch }) => {
   const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
   if (!hasQcData) {
+    if (isAccessory) return null;
+
     return (
-      <div className="border border-[#FDE6D5] rounded-3xl bg-[#FFF9F2] p-6 shadow-[0_2px_8px_rgba(249,115,22,0.05)] mb-2 mt-2 font-['Poppins']">
-        <div className="flex gap-4">
-          <div className="shrink-0 mt-0.5">
-            <Hourglass className="w-[34px] h-[34px] text-[#F97316]" strokeWidth={1.5} />
-          </div>
-          <div className="flex flex-col gap-3.5">
-            <h4 className="text-[22px] font-bold text-[#F97316] tracking-tight">Pending Results</h4>
+      <div className="flex flex-col gap-3 mb-4 mt-2 font-['Poppins']">
 
-            <div className="flex flex-col gap-1.5 mt-1">
-              <p className="text-[14px] text-[#214A9E] font-medium leading-relaxed">Additional Third Party testing is currently in progress for this batch.</p>
-              <p className="text-[14px] text-[#214A9E] font-medium leading-relaxed">Results will be published here once available.</p>
+        {/* Manufacturer QC Card */}
+        <div className="border border-[#E7F3EB] rounded-lg bg-[#F8FCF9] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+          <div className="flex gap-4">
+            <div className="shrink-0 mt-0.5">
+              <ShieldCheck className="w-[30px] h-[30px] text-[#137333]" strokeWidth={1.8} />
             </div>
-
-            <div className="flex flex-col gap-1 mt-3">
-              <p className="text-[13px] text-slate-500 font-medium">We are committed to full transparency.</p>
-              <p className="text-[13px] text-slate-500 font-medium">Thank you for your patience.</p>
+            <div className="flex flex-col gap-2.5">
+              <h4 className="text-[17px] font-bold text-[#137333] tracking-tight">Full manufacturer QC panel completed</h4>
+              <div className="flex flex-col gap-1.5 mt-0.5">
+                <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Each batch undergoes a full manufacturer QC panel prior to release.</p>
+                <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Manufacturer QC confirms batch release against internal quality specifications.</p>
+                <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Detailed manufacturer QC results are not publicly displayed.</p>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Third-Party Testing Card */}
+        <div className="border border-[#FDEAE0] rounded-lg bg-[#FFF9F2] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+          <div className="flex gap-4">
+            <div className="shrink-0 mt-0.5">
+              <Hourglass className="w-[30px] h-[30px] text-[#F97316]" strokeWidth={1.8} />
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <h4 className="text-[17px] font-bold text-[#F97316] tracking-tight">Third-party testing in progress</h4>
+              <div className="flex flex-col gap-1.5 mt-0.5">
+                <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Additional third-party testing is currently in progress for this batch.</p>
+                <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Verified third-party results will be published here once available.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     );
   }
@@ -135,7 +160,7 @@ const CurrentBatchCard = ({ batch }) => {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="w-6 h-6 text-[#C05621] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-[15px] font-bold text-[#C05621]">This Batch Passed Partial QC Testing</h4>
+                  <h4 className="text-[15px] font-bold text-[#C05621]">This batch has third party test results</h4>
                   <p className="text-[12px] text-slate-500 mt-0.5">Some tests verified by Third-Party Labs. Awaiting full panel.</p>
                 </div>
               </div>
@@ -247,47 +272,58 @@ const CurrentBatchCard = ({ batch }) => {
         </div>
 
         {/* Box 3: COA Verification */}
-        {batch.verificationDetails?.coaReportId && (
-          <div className="border border-slate-200 rounded-2xl bg-[#f8fbff] p-5 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-            <div className="flex flex-col md:flex-row gap-5 items-start md:items-center justify-between">
-              <div className="flex gap-4">
-                <div className="w-16 h-16 bg-white border border-slate-200 rounded-lg shrink-0 flex items-center justify-center overflow-hidden p-1 shadow-sm">
-                  {/* Generic QR code pattern using SVG */}
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-slate-800" fill="currentColor">
-                    <path d="M10,10 h25 v25 h-25 z M15,15 h15 v15 h-15 z M65,10 h25 v25 h-25 z M70,15 h15 v15 h-15 z M10,65 h25 v25 h-25 z M15,70 h15 v15 h-15 z M45,10 h10 v10 h-10 z M45,25 h10 v10 h-10 z M10,45 h10 v10 h-10 z M25,45 h10 v10 h-10 z M45,45 h10 v10 h-10 z M45,65 h10 v10 h-10 z M65,45 h10 v10 h-10 z M80,45 h10 v10 h-10 z M65,65 h10 v10 h-10 z M80,65 h10 v10 h-10 z M65,80 h10 v10 h-10 z M80,80 h10 v10 h-10 z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="text-[14px] font-bold text-[#214A9E] flex items-center gap-1.5 mb-1">
-                    <HelpCircle className="w-4 h-4" /> COA Verification
-                  </h4>
-                  <p className="text-[12px] text-slate-500 leading-relaxed max-w-[280px]">
-                    Verify this COA directly with {batch.verificationDetails?.labName || 'the lab'}. Scan the QR Code or enter the access code on the portal.
-                  </p>
+        {batch.verificationDetails?.verificationUrl && (
+          <div className="border border-slate-100 rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
 
-                  <div className="flex items-center gap-3 mt-3">
-                    <span className="text-[11px] font-bold text-[#214A9E] uppercase tracking-wider">Access Code:</span>
-                    <div className="flex items-center gap-2 bg-white border border-[#214A9E]/20 rounded-md px-2.5 py-1">
-                      <span className="text-[11px] font-bold text-slate-700 font-mono tracking-wider">
-                        {batch.verificationDetails.coaReportId}
-                      </span>
-                      <button onClick={handleCopyAccessCode} className="text-[#214A9E] hover:text-blue-800 focus:outline-none" title="Copy code">
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+              <div className="flex flex-col">
+                <h4 className="text-[13.5px] font-bold text-[#1a3a7d] flex items-center gap-1.5 mb-3">
+                  <HelpCircle className="w-4 h-4 text-[#1a3a7d]" /> COA Verification
+                </h4>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-[78px] h-[78px] bg-white border border-slate-200 rounded-lg shrink-0 flex items-center justify-center p-1.5 shadow-sm">
+                    <QRCodeSVG
+                      value={batch.verificationDetails.verificationUrl}
+                      size={66}
+                      level="L"
+                      includeMargin={false}
+                      fgColor="#1e293b"
+                    />
+                  </div>
+
+                  <div className="flex flex-col justify-center mt-0.5">
+                    <p className="text-[12px] text-slate-500 leading-snug max-w-[280px]">
+                      Verify this COA directly with {batch.verificationDetails?.labName || 'the lab'}.<br />
+                      Scan the QR code{batch.verificationDetails?.coaReportId ? ' or enter the access code' : ''}<br />
+                      on the {batch.verificationDetails?.labName || 'lab'} portal to verify this COA.
+                    </p>
+
+                    {batch.verificationDetails?.coaReportId && (
+                      <div className="flex items-center gap-2 mt-2.5">
+                        <span className="text-[11.5px] font-bold text-[#214A9E]">Access Code:</span>
+                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-0.5">
+                          <span className="text-[11px] font-bold text-slate-800 tracking-wide font-mono">
+                            {batch.verificationDetails.coaReportId}
+                          </span>
+                          <button onClick={handleCopyAccessCode} className="text-slate-500 hover:text-slate-800 focus:outline-none transition-colors" title="Copy code">
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {batch.verificationDetails?.verificationUrl && (
-                <button
-                  onClick={() => window.open(batch.verificationDetails.verificationUrl, '_blank')}
-                  className="w-full md:w-auto px-5 py-2.5 rounded-lg border-2 border-[#214A9E]/20 text-[#214A9E] text-[13px] font-bold hover:bg-[#214A9E] hover:text-white transition-all focus:outline-none flex items-center justify-center gap-2 shrink-0 bg-white shadow-sm"
-                >
-                  Verify on Portal
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
-              )}
+              <button
+                onClick={() => window.open(batch.verificationDetails.verificationUrl, '_blank')}
+                className="w-full md:w-auto px-6 py-2.5 rounded-xl border border-blue-600 text-blue-600 text-[13px] font-bold hover:bg-blue-50 transition-all focus:outline-none flex items-center justify-center gap-2 shrink-0 bg-white shadow-sm"
+              >
+                Verify on {batch.verificationDetails.labName || 'Portal'}
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+
             </div>
           </div>
         )}
@@ -297,11 +333,6 @@ const CurrentBatchCard = ({ batch }) => {
   );
 };
 
-// Simple HelpCircle icon for the Verification box title
-const HelpCircle = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
+
 
 export default CurrentBatchCard;

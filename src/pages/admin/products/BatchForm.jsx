@@ -387,8 +387,8 @@ const BatchForm = () => {
             <span>{isEditMode ? `Edit Batch: ${formData.batchId}` : 'Create Batch Record'}</span>
             {isEditMode && formData.qcLevel && (
               <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${formData.qcLevel === 'full' ? 'bg-emerald-100 text-emerald-800' :
-                  formData.qcLevel === 'partial' ? 'bg-amber-100 text-amber-800' :
-                    'bg-slate-100 text-slate-600'
+                formData.qcLevel === 'partial' ? 'bg-amber-100 text-amber-800' :
+                  'bg-slate-100 text-slate-600'
                 }`}>
                 {formData.qcLevel} QC
               </span>
@@ -523,44 +523,60 @@ const BatchForm = () => {
             </div>
           </div>
 
-          {/* COA Details Card */}
+          {/* COA Analytical Test Panel */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
-            <h2 className="text-base font-bold text-slate-850 pb-3 border-b border-slate-100">COA & Testing Information</h2>
+            <div>
+              <h2 className="text-base font-bold text-slate-850">COA Analytical Test Panel</h2>
+              <p className="text-xs text-slate-500 mt-1">Upload the COA image, verification details, and specify test results.</p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* COA Upload & Verification Details Moved Here */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA PDF Upload</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Upload</label>
                 <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden group hover:border-blue-300 transition-colors">
                   {formData.coaFile?.url || formData.coaUrl ? (
                     <div className="flex items-center gap-3 w-full justify-between relative z-10 pointer-events-none">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-red-100 text-red-600 rounded flex items-center justify-center font-bold text-xs">PDF</div>
+                        <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded flex items-center justify-center font-bold text-[10px]">IMG</div>
                         <div className="text-sm font-medium text-slate-700 truncate max-w-xs">
                           {formData.coaFile?.filename || 'Existing COA'}
                         </div>
                       </div>
-                      <div className="w-10"></div> {/* Spacer for the View button */}
+                      <div className="w-10"></div>
                     </div>
                   ) : (
                     <div className="text-center relative z-10 pointer-events-none">
-                      <p className="text-sm text-slate-500 mb-1">Click to upload the PDF report from the lab</p>
+                      <p className="text-sm text-slate-500 mb-1">Click to upload the image report from the lab</p>
                     </div>
                   )}
                   <input
                     type="file"
-                    accept="application/pdf"
+                    accept="image/*"
                     onChange={handleFileUpload}
                     disabled={uploadingCoa}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
                   />
                   {(formData.coaFile?.url || formData.coaUrl) && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2">
-                      <a href={formData.coaFile?.url || formData.coaUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200">View PDF</a>
+                      <a href={formData.coaFile?.url || formData.coaUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200">View File</a>
                       <button type="button" onClick={() => setFormData(prev => ({ ...prev, coaFile: null, coaUrl: '' }))} className="text-red-600 hover:bg-red-50 text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 transition-colors">Remove</button>
                     </div>
                   )}
                   {uploadingCoa && <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-40"><div className="animate-spin w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full" /></div>}
                 </div>
+              </div>
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Status</label>
+                <CustomDropdown
+                  value={formData.coaStatus}
+                  onChange={(val) => handleChange({ target: { name: 'coaStatus', value: val } })}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+                  options={[
+                    { value: 'pending', label: 'Pending' },
+                    { value: 'approved', label: 'Approved / Available' }
+                  ]}
+                />
               </div>
 
               <div className="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
@@ -612,68 +628,11 @@ const BatchForm = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">COA Status</label>
-                <CustomDropdown
-                  value={formData.coaStatus}
-                  onChange={(val) => handleChange({ target: { name: 'coaStatus', value: val } })}
-                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                  options={[
-                    { value: 'pending', label: 'Pending' },
-                    { value: 'approved', label: 'Approved / Available' }
-                  ]}
-                />
-              </div>
+
             </div>
 
-            {/* Boolean selectors */}
-            <div className="pt-4 border-t border-slate-100 space-y-1">
-              {renderBooleanSelector('Coa Includes Purity', 'includesPurity', formData.includesPurity)}
-              {renderBooleanSelector('Coa Includes Measured Content', 'includesMeasuredContent', formData.includesMeasuredContent)}
-              {renderBooleanSelector('Coa Includes Endotoxin', 'includesEndotoxin', formData.includesEndotoxin)}
-              {renderBooleanSelector('Coa Includes Sterility', 'includesSterility', formData.includesSterility)}
-
-              {renderBooleanSelector('Has Endotoxin Test', 'hasEndotoxinTest', formData.hasEndotoxinTest)}
-              {renderBooleanSelector('Endotoxin Included in COA', 'endotoxinIncludedInCoa', formData.endotoxinIncludedInCoa)}
-
-              {formData.hasEndotoxinTest && (
-                <div className="py-2.5 pl-6 border-l-2 border-slate-200">
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Endotoxin Report URL</label>
-                  <input
-                    type="url"
-                    name="endotoxinReportUrl"
-                    value={formData.endotoxinReportUrl}
-                    onChange={handleChange}
-                    placeholder="https://..."
-                    className="w-full md:w-2/3 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 focus:bg-white"
-                  />
-                </div>
-              )}
-
-              {renderBooleanSelector('Has Sterility Test', 'hasSterilityTest', formData.hasSterilityTest)}
-              {renderBooleanSelector('Sterility Included in COA', 'sterilityIncludedInCoa', formData.sterilityIncludedInCoa)}
-
-              {formData.hasSterilityTest && (
-                <div className="py-2.5 pl-6 border-l-2 border-slate-200">
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Sterility Report Link</label>
-                  <input
-                    type="url"
-                    name="sterilityReportUrl"
-                    value={formData.sterilityReportUrl}
-                    onChange={handleChange}
-                    placeholder="https://..."
-                    className="w-full md:w-2/3 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 focus:bg-white"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* COA Analytical Test Panel */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
-            <div>
-              <h2 className="text-base font-bold text-slate-850">COA Analytical Test Panel</h2>
-              <p className="text-xs text-slate-500 mt-1">Specify which tests are included in this batch's COA panel and enter their results.</p>
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="text-sm font-bold text-slate-800 mb-3">Analytical Tests</h3>
             </div>
 
             <div className="divide-y divide-slate-100 text-left">
