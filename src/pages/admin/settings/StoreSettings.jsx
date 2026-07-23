@@ -4,6 +4,8 @@ import { Store, MapPin, ChevronRight, X } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { Country, State } from 'country-state-city';
 import toast from 'react-hot-toast';
+import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 
 const countryOptions = Country.getAllCountries().map(country => ({
     value: country.name,
@@ -227,19 +229,17 @@ const StoreSettings = () => {
                         </div>
 
                         <div className="flex justify-end gap-3 pt-2">
-                            <button
+                            <AdminSecondaryButton
                                 onClick={() => setIsContactModalOpen(false)}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </AdminSecondaryButton>
+                            <AdminPrimaryButton
                                 onClick={handleSaveContact}
                                 disabled={saving}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-brand-navy hover:bg-brand-navy/90 disabled:opacity-50"
                             >
                                 {saving ? 'Saving...' : 'Save'}
-                            </button>
+                            </AdminPrimaryButton>
                         </div>
                     </div>
                 </div>
@@ -354,19 +354,17 @@ const StoreSettings = () => {
                         </div>
 
                         <div className="flex justify-end gap-3 pt-2">
-                            <button
+                            <AdminSecondaryButton
                                 onClick={() => setIsAddressModalOpen(false)}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </AdminSecondaryButton>
+                            <AdminPrimaryButton
                                 onClick={handleSaveAddress}
                                 disabled={saving}
-                                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-brand-navy hover:bg-brand-navy/90 disabled:opacity-50"
                             >
                                 {saving ? 'Saving...' : 'Save'}
-                            </button>
+                            </AdminPrimaryButton>
                         </div>
                     </div>
                 </div>

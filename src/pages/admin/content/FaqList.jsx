@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../../../services/api';
 import toast from 'react-hot-toast';
+import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 
 const FaqList = () => {
   const [sections, setSections] = useState([]);
@@ -111,13 +113,11 @@ const FaqList = () => {
           <h2 className="text-2xl font-bold text-slate-800">FAQs</h2>
           <p className="text-slate-500 text-[14px]">Manage your frequently asked questions.</p>
         </div>
-        <button
+        <AdminPrimaryButton
           onClick={() => setIsAddingSection(true)}
-          className="bg-brand-navy text-white px-4 py-2 rounded-lg text-[14px] font-medium hover:bg-opacity-90"
-          style={{ backgroundColor: '#1E1E1E' }}
         >
           Add New Section
-        </button>
+        </AdminPrimaryButton>
       </div>
 
       {isAddingSection && (
@@ -129,12 +129,12 @@ const FaqList = () => {
             placeholder="e.g. Shipping & Returns"
             className="flex-1 border border-slate-300 rounded-lg px-4 py-2 text-[14px] focus:ring-1 focus:ring-brand-navy outline-none"
           />
-          <button onClick={handleCreateSection} className="bg-[#0079CD] text-white px-4 py-2 rounded-lg text-[14px] font-medium hover:bg-[#0062a3]">
+          <AdminPrimaryButton onClick={handleCreateSection}>
             Save Section
-          </button>
-          <button onClick={() => setIsAddingSection(false)} className="text-slate-500 hover:text-slate-700 text-[14px] font-medium">
+          </AdminPrimaryButton>
+          <AdminSecondaryButton onClick={() => setIsAddingSection(false)}>
             Cancel
-          </button>
+          </AdminSecondaryButton>
         </div>
       )}
 

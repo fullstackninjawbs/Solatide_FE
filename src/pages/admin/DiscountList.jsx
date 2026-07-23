@@ -4,6 +4,8 @@ import { Search, Tag, Package, Truck, Edit2, Trash2, RefreshCw } from 'lucide-re
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
 import Pagination from '../../components/Pagination';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 
 const DiscountList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -130,20 +132,16 @@ const DiscountList = () => {
           <p className="text-slate-500 text-[14px]">Manage your discount codes and automatic discounts.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button
+          <AdminSecondaryButton
             onClick={handleSyncFromTagada}
             disabled={loading}
-            className="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl font-semibold transition-colors shadow-sm disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Sync from Tagada
-          </button>
-          <Link
-            to="/admin/discounts/new"
-            className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm"
-          >
+          </AdminSecondaryButton>
+          <AdminPrimaryButton to="/admin/discounts/new">
             Create discount
-          </Link>
+          </AdminPrimaryButton>
         </div>
       </div>
 

@@ -4,6 +4,8 @@ import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Layers } from 'luci
 import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
 import JoditEditor from 'jodit-react';
+import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 
 const CollectionForm = () => {
   const { id } = useParams();
@@ -278,19 +280,15 @@ const CollectionForm = () => {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <Link
-            to="/admin/products/collections"
-            className="px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-[13.5px] font-medium transition-colors"
-          >
+          <AdminSecondaryButton to="/admin/products/collections">
             Cancel
-          </Link>
-          <button
+          </AdminSecondaryButton>
+          <AdminPrimaryButton
             type="submit"
             disabled={loading}
-            className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2 rounded-lg text-[13.5px] font-medium shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? 'Saving...' : 'Save'}
-          </button>
+          </AdminPrimaryButton>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Copy, Tag, Clock } from 'lucide-react';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 
 const DiscountForm = () => {
   const { id } = useParams();
@@ -198,14 +199,13 @@ const DiscountForm = () => {
               { value: 'expired', label: 'Expired' }
             ]}
           />
-          <button
+          <AdminPrimaryButton
             onClick={handleSubmit}
             disabled={saving}
-            className="flex items-center gap-2 bg-brand-navy hover:bg-brand-blue text-white px-6 py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-50 shadow-sm"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save'}
-          </button>
+          </AdminPrimaryButton>
         </div>
       </div>
 
@@ -283,7 +283,6 @@ const DiscountForm = () => {
               onChange={(val) => setFormData(prev => ({ ...prev, appliesTo: val }))}
               options={[
                 { value: 'all', label: 'All customers' },
-                { value: 'products', label: 'Specific customer segments (Coming Soon)' }
               ]}
             />
           </div>

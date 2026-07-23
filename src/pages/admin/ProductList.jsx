@@ -5,6 +5,8 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
 import Pagination from '../../components/Pagination';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 
 const ProductList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -204,22 +206,16 @@ const ProductList = () => {
             <Trash2 className="h-4 w-4" />
             Delete All
           </button>
-          <button className="bg-white border border-slate-200 text-slate-650 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer">
+          <AdminSecondaryButton>
             Export
-          </button>
-          <Link
-            to="/admin/products/import"
-            className="bg-white border border-slate-200 text-slate-650 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer inline-flex items-center"
-          >
+          </AdminSecondaryButton>
+          <AdminSecondaryButton to="/admin/products/import">
             Import
-          </Link>
-          <Link
-            to="/admin/products/new"
-            className="bg-cta-gradient hover:bg-cta-gradient-hover text-white px-5 py-2.5 rounded-xl text-[14px] font-bold shadow-cta hover:shadow-cta-hover flex items-center gap-2 transition-all cursor-pointer"
-          >
+          </AdminSecondaryButton>
+          <AdminPrimaryButton to="/admin/products/new">
             <Plus className="h-4 w-4" />
             <span>Add product</span>
-          </Link>
+          </AdminPrimaryButton>
         </div>
       </div>
 
@@ -322,8 +318,8 @@ const ProductList = () => {
                           )}
                         </div>
                         <div className="flex items-center gap-2">
-                          <button className="bg-white border border-slate-300 text-slate-700 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold hover:bg-slate-50 shadow-sm transition-colors">Set as active</button>
-                          <button className="bg-white border border-slate-300 text-slate-700 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold hover:bg-slate-50 shadow-sm transition-colors">Set as draft</button>
+                          <AdminSecondaryButton className="!py-1.5 !px-3.5 !text-[13px]">Set as active</AdminSecondaryButton>
+                          <AdminSecondaryButton className="!py-1.5 !px-3.5 !text-[13px]">Set as draft</AdminSecondaryButton>
                         </div>
                       </div>
                     </th>

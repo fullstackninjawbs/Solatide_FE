@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, Layers } from 'lucide-react';
 import { apiService } from '../../../services/api';
+import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 
 const CollectionList = () => {
   const [collections, setCollections] = useState([]);
@@ -102,13 +103,10 @@ const CollectionList = () => {
           <p className="text-slate-500 text-[14px]">Group your research products into manual or automated categories.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            to="/admin/products/collections/new"
-            className="bg-cta-gradient hover:bg-cta-gradient-hover text-white px-5 py-2.5 rounded-xl text-[14px] font-bold shadow-cta hover:shadow-cta-hover flex items-center gap-2 transition-all cursor-pointer"
-          >
+          <AdminPrimaryButton to="/admin/products/collections/new">
             <Plus className="h-4 w-4" />
             <span>Add collection</span>
-          </Link>
+          </AdminPrimaryButton>
         </div>
       </div>
 

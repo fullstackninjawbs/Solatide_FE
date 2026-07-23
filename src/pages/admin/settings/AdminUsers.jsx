@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '../../../services/api';
 import { toast } from 'react-hot-toast';
+import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 import {
   Search,
   UserPlus,
@@ -164,18 +166,14 @@ const AdminUsers = () => {
             <Users size={16} className="text-brand-cyan" />
             {users.length} / {maxAllowed} Users
           </div>
-          <button
+          <AdminPrimaryButton
             onClick={() => handleOpenModal()}
             disabled={!canAddMore}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all shadow-sm ${canAddMore
-                ? 'bg-brand-navy text-white hover:bg-brand-navy/90 hover:shadow-md'
-                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              }`}
             title={!canAddMore ? `Maximum of ${maxAllowed} admins reached` : 'Add new admin'}
           >
             <UserPlus size={16} />
             Add Admin
-          </button>
+          </AdminPrimaryButton>
         </div>
       </div>
 
@@ -389,21 +387,18 @@ const AdminUsers = () => {
               </div>
 
               <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button
-                  type="button"
+                <AdminSecondaryButton
                   onClick={handleCloseModal}
-                  className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </AdminSecondaryButton>
+                <AdminPrimaryButton
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-brand-navy hover:bg-brand-navy/90 rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
                   {editingUser ? 'Save Changes' : 'Create Admin'}
-                </button>
+                </AdminPrimaryButton>
               </div>
             </form>
           </div>

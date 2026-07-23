@@ -4,6 +4,8 @@ import { ArrowLeft, Upload, FileSpreadsheet, Play, CheckCircle, AlertTriangle, E
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 
 const AdminProductsImportPage = () => {
   const [file, setFile] = useState(null);
@@ -337,23 +339,23 @@ const AdminProductsImportPage = () => {
 
           {/* Action Trigger Card */}
           <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.015)] space-y-3">
-            <button
+            <AdminSecondaryButton
               onClick={handlePreview}
               disabled={loading || !file}
-              className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+              className="w-full !py-3.5"
             >
               <RefreshCw className={`h-4 w-4 ${loading && !previewData ? 'animate-spin' : ''}`} />
               <span>Preview CSV Data</span>
-            </button>
+            </AdminSecondaryButton>
 
-            <button
+            <AdminPrimaryButton
               onClick={handleCommit}
               disabled={loading || !file || !previewData}
-              className="w-full bg-cta-gradient hover:bg-cta-gradient-hover text-white py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 shadow-cta hover:shadow-cta-hover cursor-pointer focus:outline-none transition-all disabled:opacity-50"
+              className="w-full !py-3.5"
             >
               <Play className="h-4 w-4" />
               <span>{loading && previewData ? 'Running Import...' : 'Run Import Now'}</span>
-            </button>
+            </AdminPrimaryButton>
           </div>
         </div>
       </div>

@@ -163,7 +163,7 @@ const BatchList = () => {
         </div>
         <Link
           to="/admin/batches/new"
-          className="bg-[#214A9E] hover:bg-[#1a3a7d] text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm"
+          className="bg-cta-gradient hover:bg-cta-gradient-hover text-white px-5 py-2.5 rounded-xl text-[14px] font-bold shadow-cta hover:shadow-cta-hover flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -337,7 +337,7 @@ const BatchList = () => {
           />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

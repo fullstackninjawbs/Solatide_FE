@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 
 const CustomerDetail = () => {
     const { id } = useParams();
@@ -325,12 +327,12 @@ const CustomerDetail = () => {
                                         </div>
 
                                         <div className="mt-6 pt-5 border-t border-gray-100 flex justify-end gap-3">
-                                            <Link to="/admin/orders" className="px-4 py-1.5 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm">
+                                            <AdminSecondaryButton to="/admin/orders" className="!py-1.5 !px-4 !text-[13px]">
                                                 View all orders
-                                            </Link>
-                                            <button className="hidden px-4 py-1.5 rounded-lg text-[13px] font-semibold text-white bg-[#1a1a1a] hover:bg-black shadow-sm">
+                                            </AdminSecondaryButton>
+                                            <AdminPrimaryButton className="hidden !py-1.5 !px-4 !text-[13px]">
                                                 Create order
-                                            </button>
+                                            </AdminPrimaryButton>
                                         </div>
                                     </>
                                 ) : (

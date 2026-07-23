@@ -16,9 +16,9 @@ import {
   User,
   CreditCard,
   Tag,
-  X,
-  Printer
 } from 'lucide-react';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { toast } from 'react-hot-toast';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -328,7 +328,7 @@ const OrderDetail = () => {
             </p>
           </div>
 
-          <div className=" items-center gap-3 print:hidden">
+          <div className=" items-center gap-3 print:hidden flex">
             {isPaid && (
               <button
                 onClick={handleRefund}
@@ -338,12 +338,9 @@ const OrderDetail = () => {
                 {refunding ? 'Processing...' : 'Refund'}
               </button>
             )}
-            <button
-              onClick={handlePrint}
-              className="px-4 py-2.5 text-[13.5px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2"
-            >
+            <AdminSecondaryButton onClick={handlePrint} className="!text-[13.5px] px-4 !py-2.5 shadow-sm">
               Print <Printer size={14} className="text-slate-400" />
-            </button>
+            </AdminSecondaryButton>
           </div>
         </div>
 
@@ -427,7 +424,9 @@ const OrderDetail = () => {
                       </div>
                       <div className="flex gap-2">
                         {order.labelUrl && (
-                          <a href={order.labelUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-[13.5px] font-semibold text-brand-navy bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Download Label</a>
+                          <AdminSecondaryButton href={order.labelUrl} className="!text-[13.5px] px-4 !py-2">
+                            Download Label
+                          </AdminSecondaryButton>
                         )}
                         <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
                           {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
@@ -436,20 +435,19 @@ const OrderDetail = () => {
                     </div>
                   ) : (
                     <>
-                      <button
+                      <AdminSecondaryButton
                         onClick={handleFulfill}
                         disabled={fulfilling || !isUnfulfilled}
-                        className="px-5 py-2.5 text-[14px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="shadow-sm"
                       >
                         {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                      </button>
-                      <button
+                      </AdminSecondaryButton>
+                      <AdminPrimaryButton
                         onClick={handleCreateLabel}
                         disabled={creatingLabel || !isPaid}
-                        className="px-5 py-2.5 text-[14px] font-semibold text-white bg-brand-blue rounded-xl shadow-[0_4px_14px_rgba(59,130,246,0.3)] hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {creatingLabel ? 'Generating...' : 'Create shipping label'}
-                      </button>
+                      </AdminPrimaryButton>
                     </>
                   )}
                 </div>
@@ -527,9 +525,9 @@ const OrderDetail = () => {
                         <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">@</button>
                         <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">#</button>
                       </div>
-                      <button onClick={handleAddComment} disabled={updating || !commentText.trim()} className="px-5 py-2 bg-brand-navy text-white font-semibold rounded-lg text-[13px] shadow-sm hover:bg-brand-navy/90 transition-all disabled:opacity-50">
+                      <AdminPrimaryButton onClick={handleAddComment} disabled={updating || !commentText.trim()} className="!py-1.5 !px-4 !text-[13px]">
                         {updating ? 'Posting...' : 'Post'}
-                      </button>
+                      </AdminPrimaryButton>
                     </div>
                   </div>
                 </div>

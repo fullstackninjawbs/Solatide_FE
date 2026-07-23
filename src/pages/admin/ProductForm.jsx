@@ -4,6 +4,8 @@ import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload, X, Layers
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
 import CustomDropdown from '../../components/CustomDropdown';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -574,20 +576,13 @@ const ProductForm = () => {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <Link
-            to="/admin/products"
-            className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-650 hover:bg-slate-50 text-[14px] font-semibold transition-all cursor-pointer text-center"
-          >
+          <AdminSecondaryButton to="/admin/products">
             Cancel
-          </Link>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="bg-cta-gradient hover:bg-cta-gradient-hover text-white px-6 py-2.5 rounded-xl text-[14px] font-bold shadow-cta hover:shadow-cta-hover flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
-          >
+          </AdminSecondaryButton>
+          <AdminPrimaryButton onClick={handleSubmit} disabled={loading}>
             <Save className="h-4 w-4" />
             <span>{loading ? 'Saving...' : 'Save'}</span>
-          </button>
+          </AdminPrimaryButton>
         </div>
       </div>
 
@@ -684,13 +679,13 @@ const ProductForm = () => {
                     placeholder="https://res.cloudinary.com/..."
                     className="flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13px] placeholder-slate-400"
                   />
-                  <button
+                  <AdminPrimaryButton
                     type="button"
                     onClick={addImage}
-                    className="px-4 bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white rounded-xl text-xs font-bold hover:bg-brand-navy cursor-pointer transition-all"
+                    className="!px-4 !py-0 h-[38px] !text-xs"
                   >
                     Add
-                  </button>
+                  </AdminPrimaryButton>
                 </div>
               </div>
 
@@ -1006,13 +1001,13 @@ const ProductForm = () => {
                   </div>
                   <p className="text-[12px] text-slate-500">Auto-fill category specifications based on typical biochemical standards.</p>
                 </div>
-                <button
+                <AdminPrimaryButton
                   type="button"
                   onClick={acceptSuggestions}
-                  className="px-4 py-2 bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-brand-navy text-white text-[12px] font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap shadow-sm"
+                  className="!px-4 !py-1.5 !text-[12px]"
                 >
                   Accept all
-                </button>
+                </AdminPrimaryButton>
               </div>
             )}
 
@@ -1596,21 +1591,13 @@ const ProductForm = () => {
 
           {/* Save Action Block */}
           <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex gap-3">
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-grow bg-cta-gradient hover:bg-cta-gradient-hover text-white py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 shadow-cta hover:shadow-cta-hover cursor-pointer"
-            >
+            <AdminPrimaryButton onClick={handleSubmit} disabled={loading} className="flex-grow !py-3.5">
               <Save className="h-4.5 w-4.5" />
               <span>{loading ? 'Saving...' : 'Save'}</span>
-            </button>
-            <Link
-              to="/admin/products"
-              className="px-5 border border-slate-250 hover:bg-slate-50 text-slate-650 rounded-xl text-[14px] font-semibold flex items-center justify-center cursor-pointer text-center"
-            >
+            </AdminPrimaryButton>
+            <AdminSecondaryButton to="/admin/products" className="!py-3.5 px-6">
               Cancel
-            </Link>
+            </AdminSecondaryButton>
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { apiService } from '../../services/api';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -127,13 +128,13 @@ const AdminLogin = () => {
           </div>
 
           {/* Submit Button using theme gradients */}
-          <button
+          <AdminPrimaryButton
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-cta-gradient hover:bg-cta-gradient-hover text-white font-bold py-3.5 rounded-xl transition-all shadow-cta hover:shadow-cta-hover focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-[15px]"
+            className="w-full mt-6 !py-3.5"
           >
             {loading ? 'Signing in...' : 'Sign In'}
-          </button>
+          </AdminPrimaryButton>
         </form>
 
 

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { Search, Users, MoreVertical, Ban, CheckCircle } from 'lucide-react';
 import Pagination from '../../components/Pagination';
+import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 
 const CustomerList = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -115,9 +116,9 @@ const CustomerList = () => {
                             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
                         />
                     </div>
-                    <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <AdminPrimaryButton type="submit" className="!px-6 !py-2 !rounded-lg !h-10">
                         Search
-                    </button>
+                    </AdminPrimaryButton>
                 </form>
             </div>
 
