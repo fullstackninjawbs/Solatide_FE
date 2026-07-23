@@ -20,11 +20,7 @@ const CurrentBatchCard = ({ batch, product }) => {
   const isMissingOrInactive = !batch || batch?.status === 'inactive';
   const tests = isMissingOrInactive ? {} : (batch.tests || {});
 
-  const isAccessory = product && (
-    product.title?.toLowerCase().includes('water') ||
-    product.title?.toLowerCase().includes('syringe') ||
-    product.category?.toLowerCase() === 'accessories'
-  );
+
 
   const renderResultText = (text) => {
     if (!text) return null;
@@ -67,7 +63,6 @@ const CurrentBatchCard = ({ batch, product }) => {
   const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
   if (!hasQcData) {
-    if (isAccessory) return null;
 
     return (
       <div className="flex flex-col gap-3 mb-4 mt-2 font-['Poppins']">
@@ -132,7 +127,7 @@ const CurrentBatchCard = ({ batch, product }) => {
               </span>
             )}
           </div>
-          
+
           {/* Links */}
           <div className="flex flex-col">
             {(batch.coaFile?.url || batch.coaUrl) && (
@@ -149,7 +144,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                 <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
               </button>
             )}
-            
+
             {batch.endotoxinReportUrl && (
               <a href={batch.endotoxinReportUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-5 py-4 border-t border-slate-100 hover:bg-slate-50 transition-colors text-left group">
                 <div className="flex items-center gap-4">
@@ -248,7 +243,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                   <div className="flex gap-3 shrink-0 min-w-[140px]">
                     <Shield className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin (LAL)</p>
+                      <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin</p>
                       {renderResultText(endotoxinResult)}
                       <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Pass
