@@ -1,29 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
+import Pagination from '../../../components/Pagination';
 
 const BatchList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const filterStatus = searchParams.get('status') || '';
+  const filterCoaStatus = searchParams.get('coaStatus') || '';
+  const filterProductId = searchParams.get('productId') || '';
+  const urlQ = searchParams.get('q') || '';
+
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-
-  // Filter state
-  const [filterStatus, setFilterStatus] = useState('');
-  const [filterCoaStatus, setFilterCoaStatus] = useState('');
-  const [filterProductId, setFilterProductId] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(urlQ);
 
   const navigate = useNavigate();
+  const debounceRef = useRef(null);
 
+  // Sync search input with browser URL changes
   useEffect(() => {
-    fetchProducts();
-    fetchBatches();
-  }, []);
+    setSearchQuery(urlQ);
+  }, [urlQ]);
 
+  // Debounce search input and update URL query parameters
   useEffect(() => {
-    fetchBatches();
-  }, [filterStatus, filterCoaStatus, filterProductId]);
+    const currentQ = searchParams.get('q') || '';
+    if (searchQuery === currentQ) return;
+
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchQuery.trim()) {
+        nextParams.set('q', searchQuery.trim());
+      } else {
+        nextParams.delete('q');
+      }
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery, searchParams, setSearchParams]);
 
   const fetchProducts = async () => {
     try {
@@ -39,20 +61,68 @@ const BatchList = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', String(limit));
       if (filterStatus) params.set('status', filterStatus);
       if (filterCoaStatus) params.set('coaStatus', filterCoaStatus);
       if (filterProductId) params.set('productId', filterProductId);
+      if (urlQ) params.set('search', urlQ);
 
       const res = await apiService.getBatches(params.toString());
       const data = await res.json();
       if (data.success) {
         setBatches(data.data.batches);
+        setTotal(data.total ?? data.data.pagination?.total ?? 0);
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    fetchBatches();
+  }, [page, limit, filterStatus, filterCoaStatus, filterProductId, urlQ]);
+
+  const handleStatusChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('status', val);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleCoaStatusChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('coaStatus', val);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleProductChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (val) {
+      nextParams.set('productId', val);
+    } else {
+      nextParams.delete('productId');
+    }
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
+
+  const handleClearFilters = () => {
+    setSearchParams({});
   };
 
   const handleDelete = async (id) => {
@@ -118,7 +188,7 @@ const BatchList = () => {
         </div>
         <CustomDropdown
           value={filterStatus}
-          onChange={(val) => setFilterStatus(val)}
+          onChange={handleStatusChange}
           options={[
             { label: 'All Statuses', value: '' },
             { label: 'Active', value: 'active' },
@@ -128,7 +198,7 @@ const BatchList = () => {
         />
         <CustomDropdown
           value={filterCoaStatus}
-          onChange={(val) => setFilterCoaStatus(val)}
+          onChange={handleCoaStatusChange}
           options={[
             { label: 'All COA Statuses', value: '' },
             { label: 'COA Pending', value: 'pending' },
@@ -139,7 +209,7 @@ const BatchList = () => {
         <div className="flex-1 min-w-[200px]">
           <CustomDropdown
             value={filterProductId}
-            onChange={(val) => setFilterProductId(val)}
+            onChange={handleProductChange}
             options={[
               { label: 'All Products', value: '' },
               ...products.map(p => ({ label: p.name, value: p._id }))
@@ -149,7 +219,7 @@ const BatchList = () => {
         </div>
         {(filterStatus || filterCoaStatus || filterProductId || searchQuery) && (
           <button
-            onClick={() => { setFilterStatus(''); setFilterCoaStatus(''); setFilterProductId(''); setSearchQuery(''); }}
+            onClick={handleClearFilters}
             className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-red-500 text-[13px] font-semibold hover:bg-red-100 transition-all cursor-pointer"
           >
             Clear filters
@@ -174,34 +244,14 @@ const BatchList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {batches.filter(batch => {
-                if (filterStatus && batch.status !== filterStatus) return false;
-                if (filterCoaStatus && batch.coaStatus !== filterCoaStatus) return false;
-                if (filterProductId && batch.productId?._id !== filterProductId && batch.productId !== filterProductId) return false;
-                if (!searchQuery) return true;
-                const query = searchQuery.toLowerCase();
-                const matchBatchId = batch.batchId?.toLowerCase().includes(query);
-                const matchProductName = batch.productId?.name?.toLowerCase().includes(query);
-                const matchDisplayName = batch.displayName?.toLowerCase().includes(query);
-                return matchBatchId || matchProductName || matchDisplayName;
-              }).length === 0 ? (
+              {batches.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="px-5 py-10 text-center text-slate-400 italic">
                     No batch records found.
                   </td>
                 </tr>
               ) : (
-                batches.filter(batch => {
-                  if (filterStatus && batch.status !== filterStatus) return false;
-                  if (filterCoaStatus && batch.coaStatus !== filterCoaStatus) return false;
-                  if (filterProductId && batch.productId?._id !== filterProductId && batch.productId !== filterProductId) return false;
-                  if (!searchQuery) return true;
-                  const query = searchQuery.toLowerCase();
-                  const matchBatchId = batch.batchId?.toLowerCase().includes(query);
-                  const matchProductName = batch.productId?.name?.toLowerCase().includes(query);
-                  const matchDisplayName = batch.displayName?.toLowerCase().includes(query);
-                  return matchBatchId || matchProductName || matchDisplayName;
-                }).map((batch) => (
+                batches.map((batch) => (
                   <tr key={batch._id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3.5 font-bold text-slate-800 whitespace-nowrap">
                       {batch.batchId}
@@ -276,6 +326,16 @@ const BatchList = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {!loading && batches.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

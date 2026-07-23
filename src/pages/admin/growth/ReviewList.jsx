@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { apiService, API_URL } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
+import Pagination from '../../../components/Pagination';
 
 const ReviewList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const filterStatus = searchParams.get('status') || 'all';
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [total, setTotal] = useState(0);
 
   const statusOptions = [
     { value: 'all', label: 'All Statuses' },
@@ -18,16 +26,17 @@ const ReviewList = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', String(limit));
       if (filterStatus !== 'all') {
         params.set('status', filterStatus);
       }
-      // Also might want to paginate, but we'll fetch limit=100 for now
-      params.set('limit', '100');
 
       const res = await apiService.getAdminReviews(params.toString());
       const data = await res.json();
       if (data.success) {
         setReviews(data.data.reviews);
+        setTotal(data.data.total ?? 0);
       }
     } catch (err) {
       console.error('Failed to fetch reviews:', err);
@@ -38,7 +47,21 @@ const ReviewList = () => {
 
   useEffect(() => {
     fetchReviews();
-  }, [filterStatus]);
+  }, [page, limit, filterStatus]);
+
+  const handleStatusChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('status', val);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const handleUpdateStatus = async (id, status) => {
     try {
@@ -120,7 +143,7 @@ const ReviewList = () => {
           <CustomDropdown
             value={filterStatus}
             options={statusOptions}
-            onChange={setFilterStatus}
+            onChange={handleStatusChange}
             align="right"
             className="w-full sm:w-[180px] flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-[14px] font-medium focus:outline-none focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm"
           />
@@ -249,9 +272,19 @@ const ReviewList = () => {
                 ))
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          {!loading && reviews.length > 0 && (
+            <Pagination
+              page={page}
+              limit={limit}
+              total={total}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
-      </div>
     </div>
   );
 };

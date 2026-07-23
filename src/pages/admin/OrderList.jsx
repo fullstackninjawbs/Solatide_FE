@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
+import Pagination from '../../components/Pagination';
 import {
   Search,
   ChevronLeft,
@@ -74,59 +75,84 @@ const TABS = [
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const OrderList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const activeTab = parseInt(searchParams.get('tab') || '0', 10);
+  const urlQ = searchParams.get('q') || '';
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [pages, setPages] = useState(1);
-  const LIMIT = 50;
-
-  const [activeTab, setActiveTab] = useState(0);
-  const [searchValue, setSearchValue] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [searchValue, setSearchValue] = useState(urlQ);
   const debounceRef = useRef(null);
 
-  // Debounce search input
+  // Sync search input with browser back/forward URL changes
   useEffect(() => {
+    setSearchValue(urlQ);
+  }, [urlQ]);
+
+  // Debounce search input and update URL query parameters
+  useEffect(() => {
+    const currentQ = searchParams.get('q') || '';
+    if (searchValue === currentQ) return;
+
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      setDebouncedSearch(searchValue);
-      setPage(1);
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchValue.trim()) {
+        nextParams.set('q', searchValue.trim());
+      } else {
+        nextParams.delete('q');
+      }
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
     }, 400);
     return () => clearTimeout(debounceRef.current);
-  }, [searchValue]);
+  }, [searchValue, searchParams, setSearchParams]);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      const tabFilter = TABS[activeTab].filter;
+      const tabFilter = TABS[activeTab]?.filter || {};
       Object.entries(tabFilter).forEach(([k, v]) => params.set(k, v));
-      if (debouncedSearch) params.set('q', debouncedSearch);
+      
+      const q = searchParams.get('q');
+      if (q) params.set('q', q);
       params.set('page', String(page));
-      params.set('limit', String(LIMIT));
+      params.set('limit', String(limit));
 
       const res = await apiService.getAdminOrders(params.toString());
       const data = await res.json();
       if (data.success) {
         setOrders(data.data.orders);
         setTotal(data.total ?? 0);
-        setPages(data.pages ?? 1);
       }
     } catch (err) {
       console.error('Failed to fetch orders', err);
     } finally {
       setLoading(false);
     }
-  }, [activeTab, debouncedSearch, page]);
+  }, [activeTab, page, limit, searchParams]);
 
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
 
   const handleTabChange = (idx) => {
-    setActiveTab(idx);
-    setPage(1);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('tab', String(idx));
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
   };
 
   const customerName = (o) => {
@@ -322,30 +348,12 @@ const OrderList = () => {
 
         {/* ── Pagination ──────────────────────────────────────────────────── */}
         {!loading && orders.length > 0 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50/40">
-            <p className="text-[12px] text-slate-500">
-              {((page - 1) * LIMIT) + 1}–{Math.min(page * LIMIT, total)} of {total.toLocaleString()} orders
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page <= 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronLeft size={14} /> Previous
-              </button>
-              <span className="text-[12px] text-slate-500 font-medium">
-                {page} / {pages}
-              </span>
-              <button
-                onClick={() => setPage((p) => Math.min(pages, p + 1))}
-                disabled={page >= pages}
-                className="flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Next <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
         )}
       </div>
     </div>

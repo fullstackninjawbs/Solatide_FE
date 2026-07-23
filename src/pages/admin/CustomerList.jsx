@@ -1,24 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { Search, Users, MoreVertical, Ban, CheckCircle } from 'lucide-react';
+import Pagination from '../../components/Pagination';
 
 const CustomerList = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '25', 10);
+    const urlQ = searchParams.get('q') || '';
+
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [total, setTotal] = useState(0);
+    const [searchQuery, setSearchQuery] = useState(urlQ);
+    const debounceRef = useRef(null);
 
+    // Sync input box when browser back/forward changes URL query
     useEffect(() => {
-        fetchCustomers();
-    }, []);
+        setSearchQuery(urlQ);
+    }, [urlQ]);
 
-    const fetchCustomers = async (search = '') => {
+    // Debounce search query and update URL query parameters
+    useEffect(() => {
+        const currentQ = searchParams.get('q') || '';
+        if (searchQuery === currentQ) return;
+
+        clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            const nextParams = new URLSearchParams(searchParams);
+            if (searchQuery.trim()) {
+                nextParams.set('q', searchQuery.trim());
+            } else {
+                nextParams.delete('q');
+            }
+            nextParams.set('page', '1');
+            setSearchParams(nextParams);
+        }, 400);
+        return () => clearTimeout(debounceRef.current);
+    }, [searchQuery, searchParams, setSearchParams]);
+
+    const fetchCustomers = async () => {
         try {
             setLoading(true);
-            const res = await apiService.getAdminCustomers(search ? `search=${search}` : '');
+            const params = new URLSearchParams();
+            params.set('page', String(page));
+            params.set('limit', String(limit));
+            if (urlQ) params.set('search', urlQ);
+
+            const res = await apiService.getAdminCustomers(params.toString());
             const data = await res.json();
             if (res.ok && data.success) {
                 setCustomers(data.data.customers);
+                setTotal(data.total ?? data.data.pagination?.total ?? 0);
             }
         } catch (error) {
             console.error('Failed to fetch customers:', error);
@@ -27,9 +62,28 @@ const CustomerList = () => {
         }
     };
 
+    useEffect(() => {
+        fetchCustomers();
+    }, [page, limit, urlQ]);
+
     const handleSearch = (e) => {
         e.preventDefault();
-        fetchCustomers(searchQuery);
+        // Trigger immediate sync
+        const nextParams = new URLSearchParams(searchParams);
+        if (searchQuery.trim()) {
+            nextParams.set('q', searchQuery.trim());
+        } else {
+            nextParams.delete('q');
+        }
+        nextParams.set('page', '1');
+        setSearchParams(nextParams);
+    };
+
+    const handlePageChange = (newPage, newLimit) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set('page', String(newPage));
+        nextParams.set('limit', String(newLimit));
+        setSearchParams(nextParams);
     };
 
     const formatCurrency = (amount) => {
@@ -132,6 +186,14 @@ const CustomerList = () => {
                         </tbody>
                     </table>
                 </div>
+                {!loading && customers.length > 0 && (
+                    <Pagination
+                        page={page}
+                        limit={limit}
+                        total={total}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
         </div>
     );

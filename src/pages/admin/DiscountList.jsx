@@ -1,29 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Tag, Package, Truck, Edit2, Trash2, RefreshCw } from 'lucide-react';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
+import Pagination from '../../components/Pagination';
 
 const DiscountList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const selectedStatus = searchParams.get('status') || 'all';
+  const urlQ = searchParams.get('q') || '';
+
   const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(urlQ);
   const navigate = useNavigate();
+  const debounceRef = useRef(null);
+
+  // Sync search input with browser URL changes
+  useEffect(() => {
+    setSearchQuery(urlQ);
+  }, [urlQ]);
+
+  // Debounce search input and sync with URL query
+  useEffect(() => {
+    const currentQ = searchParams.get('q') || '';
+    if (searchQuery === currentQ) return;
+
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchQuery.trim()) {
+        nextParams.set('q', searchQuery.trim());
+      } else {
+        nextParams.delete('q');
+      }
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery, searchParams, setSearchParams]);
 
   const fetchDiscounts = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      params.set('limit', '100');
-      if (searchQuery) params.set('search', searchQuery);
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (urlQ) params.set('search', urlQ);
       if (selectedStatus && selectedStatus !== 'all') params.set('status', selectedStatus);
 
       const res = await apiService.getAdminDiscounts(params.toString());
       const data = await res.json();
       if (data.success && data.data) {
         setDiscounts(data.data.discounts);
+        setTotal(data.total ?? data.data.pagination?.total ?? 0);
       } else {
         setError('Failed to fetch discounts.');
       }
@@ -36,11 +71,22 @@ const DiscountList = () => {
   };
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      fetchDiscounts();
-    }, 400);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, selectedStatus]);
+    fetchDiscounts();
+  }, [page, limit, selectedStatus, urlQ]);
+
+  const handleStatusChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('status', val);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this discount?')) return;
@@ -124,7 +170,7 @@ const DiscountList = () => {
           </div>
           <CustomDropdown
             value={selectedStatus}
-            onChange={setSelectedStatus}
+            onChange={handleStatusChange}
             options={[
               { value: 'all', label: 'All Statuses' },
               { value: 'active', label: 'Active' },
@@ -235,6 +281,15 @@ const DiscountList = () => {
           </div>
         )}
 
+        {/* Pagination */}
+        {!loading && discounts.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

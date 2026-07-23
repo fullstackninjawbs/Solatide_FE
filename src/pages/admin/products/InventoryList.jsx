@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, ShoppingBag, Check, Save } from 'lucide-react';
 import { apiService } from '../../../services/api';
+import Pagination from '../../../components/Pagination';
 
 const InventoryList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const urlQ = searchParams.get('q') || '';
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(urlQ);
 
   // Inline editing state
   const [editingProductId, setEditingProductId] = useState(null);
@@ -15,19 +23,46 @@ const InventoryList = () => {
   const [editAction, setEditAction] = useState('Set to');
 
   const navigate = useNavigate();
+  const debounceRef = useRef(null);
+
+  // Sync search input with browser URL changes
+  useEffect(() => {
+    setSearchQuery(urlQ);
+  }, [urlQ]);
+
+  // Debounce search input and update URL query parameters
+  useEffect(() => {
+    const currentQ = searchParams.get('q') || '';
+    if (searchQuery === currentQ) return;
+
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchQuery.trim()) {
+        nextParams.set('q', searchQuery.trim());
+      } else {
+        nextParams.delete('q');
+      }
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery, searchParams, setSearchParams]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError('');
       const params = new URLSearchParams();
-      params.set('limit', '100');
-      if (searchQuery) params.set('search', searchQuery);
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (urlQ) params.set('search', urlQ);
 
       const response = await apiService.getProducts(params.toString());
       const result = await response.json();
       if (result.success && result.data && result.data.products) {
         setProducts(result.data.products);
+        setTotal(result.total ?? result.data.pagination?.total ?? 0);
       } else {
         setError('Failed to fetch inventory.');
       }
@@ -40,11 +75,15 @@ const InventoryList = () => {
   };
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      fetchProducts();
-    }, 400);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
+    fetchProducts();
+  }, [page, limit, urlQ]);
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const handleEditClick = (product) => {
     setEditingProductId(product._id);
@@ -232,6 +271,16 @@ const InventoryList = () => {
               </tbody>
             </table>
           </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && products.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
         )}
       </div>
     </div>

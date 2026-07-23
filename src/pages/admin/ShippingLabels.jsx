@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../../services/api';
 import { Package, Truck, Printer, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import Pagination from '../../components/Pagination';
 
 function formatOrderDate(dateStr) {
   if (!dateStr) return '—';
@@ -19,8 +20,14 @@ function formatOrderDate(dateStr) {
 }
 
 export default function ShippingLabels() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, successes: 0, failures: 0 });
@@ -33,12 +40,14 @@ export default function ShippingLabels() {
       const params = new URLSearchParams({
         status: 'processing',
         fulfilmentStatus: 'unfulfilled',
-        limit: '100'
+        page: String(page),
+        limit: String(limit)
       });
       const res = await apiService.getAdminOrders(params.toString());
       if (res.ok) {
         const data = await res.json();
         setOrders(data.data.orders || []);
+        setTotal(data.total ?? data.data.pagination?.total ?? 0);
       }
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -49,7 +58,14 @@ export default function ShippingLabels() {
 
   useEffect(() => {
     fetchReadyOrders();
-  }, []);
+  }, [page, limit]);
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -290,6 +306,16 @@ export default function ShippingLabels() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {!loading && orders.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

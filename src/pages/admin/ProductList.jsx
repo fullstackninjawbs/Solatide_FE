@@ -1,32 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
+import Pagination from '../../components/Pagination';
 
 const ProductList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const selectedStatus = searchParams.get('status') || 'all';
+  const selectedCollection = searchParams.get('collection') || '';
+  const urlQ = searchParams.get('q') || '';
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedCollection, setSelectedCollection] = useState('');
+  const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(urlQ);
+
   const [collectionsList, setCollectionsList] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [isSelectionDropdownOpen, setIsSelectionDropdownOpen] = useState(false);
   const selectionDropdownRef = useRef(null);
   const navigate = useNavigate();
   const { formatAUD } = useCurrency();
+  const debounceRef = useRef(null);
 
-  const categories = [
-    'All',
-    'Metabolic Pathway Research',
-    'Tissue & Cellular Research',
-    'Dermal & Pigmentation Research',
-    'Research Solutions'
-  ];
+  // Sync search input with URL changes (back/forward)
+  useEffect(() => {
+    setSearchQuery(urlQ);
+  }, [urlQ]);
+
+  // Debounce search query and sync with URL
+  useEffect(() => {
+    const currentQ = searchParams.get('q') || '';
+    if (searchQuery === currentQ) return;
+
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchQuery.trim()) {
+        nextParams.set('q', searchQuery.trim());
+      } else {
+        nextParams.delete('q');
+      }
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery, searchParams, setSearchParams]);
 
   const fetchProducts = async () => {
     try {
@@ -34,9 +59,9 @@ const ProductList = () => {
       setError('');
 
       const params = new URLSearchParams();
-      params.set('limit', '100');
-      if (searchQuery) params.set('search', searchQuery);
-      if (selectedCategory && selectedCategory !== 'All') params.set('category', selectedCategory);
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (urlQ) params.set('search', urlQ);
       if (selectedStatus && selectedStatus !== 'all') params.set('status', selectedStatus);
       if (selectedCollection) params.set('collection', selectedCollection);
 
@@ -44,6 +69,7 @@ const ProductList = () => {
       const result = await response.json();
       if (result.success && result.data && result.data.products) {
         setProducts(result.data.products);
+        setTotal(result.total ?? result.data.pagination?.total ?? 0);
       } else {
         setError('Failed to parse catalog products.');
       }
@@ -84,7 +110,32 @@ const ProductList = () => {
   useEffect(() => {
     fetchProducts();
     setSelectedProducts([]);
-  }, [searchQuery, selectedCategory, selectedStatus, selectedCollection]);
+  }, [page, limit, selectedStatus, selectedCollection, urlQ]);
+
+  const handleStatusChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('status', val);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleCollectionChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (val) {
+      nextParams.set('collection', val);
+    } else {
+      nextParams.delete('collection');
+    }
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -200,7 +251,7 @@ const ProductList = () => {
           {/* Status Filter */}
           <CustomDropdown
             value={selectedStatus}
-            onChange={setSelectedStatus}
+            onChange={handleStatusChange}
             options={[
               { value: 'all', label: 'All Statuses' },
               { value: 'active', label: 'Active' },
@@ -211,7 +262,7 @@ const ProductList = () => {
           {/* Collection Filter */}
           <CustomDropdown
             value={selectedCollection}
-            onChange={setSelectedCollection}
+            onChange={handleCollectionChange}
             placeholder="All Collections"
             align="right"
             options={[
@@ -381,6 +432,16 @@ const ProductList = () => {
               </tbody>
             </table>
           </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && products.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
         )}
       </div>
     </div>
