@@ -676,7 +676,7 @@ const BatchForm = () => {
                     </div>
 
                     {testData.performed && (
-                      <div className="flex-1 max-w-md md:pl-4">
+                      <div className="flex-1 max-w-md md:pl-4 flex flex-col gap-2">
                         <input
                           type="text"
                           value={testData.result}
@@ -684,6 +684,15 @@ const BatchForm = () => {
                           placeholder={placeholder}
                           className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
                         />
+                        {key === 'endotoxinUsp85' && (
+                          <input
+                            type="url"
+                            value={formData.endotoxinReportUrl || ''}
+                            onChange={(e) => setFormData(prev => ({ ...prev, endotoxinReportUrl: e.target.value }))}
+                            placeholder="Link to Endotoxin Report (e.g. https://...)"
+                            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
+                          />
+                        )}
                       </div>
                     )}
                   </div>

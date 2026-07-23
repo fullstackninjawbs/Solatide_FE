@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle } from 'lucide-react';
+import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle, ChevronRight } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const CurrentBatchCard = ({ batch, product }) => {
@@ -117,12 +117,13 @@ const CurrentBatchCard = ({ batch, product }) => {
 
       <div className="flex flex-col gap-3">
 
-        {/* Box 1: Batch Header & COA Button */}
-        <div className="flex items-center justify-between border border-slate-200 rounded-xl px-4 py-3 bg-white">
-          <div className="flex items-center gap-3">
-            <span className="text-[15px] font-bold text-slate-800">{batch.batchId || 'N/A'}</span>
+        {/* Box 1: Batch Header & Links */}
+        <div className="border border-slate-200 rounded-2xl bg-white overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+          {/* Header */}
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
+            <span className="text-[16px] font-bold text-slate-900">{batch.batchId || 'N/A'}</span>
             {batch.coaStatus === 'approved' ? (
-              <span className="bg-[#EBF4FA] text-[#214A9E] text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
+              <span className="bg-[#E6F4EA] text-[#137333] text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
                 Now Shipping
               </span>
             ) : (
@@ -131,15 +132,39 @@ const CurrentBatchCard = ({ batch, product }) => {
               </span>
             )}
           </div>
-          {(batch.coaFile?.url || batch.coaUrl) && (
-            <button
-              onClick={handleOpenCoa}
-              className="bg-[#0079CD] hover:bg-[#0062a3] text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              View COA
-            </button>
-          )}
+          
+          {/* Links */}
+          <div className="flex flex-col">
+            {(batch.coaFile?.url || batch.coaUrl) && (
+              <button onClick={handleOpenCoa} className="flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors text-left group">
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[15px] font-bold text-brand-navy group-hover:text-blue-600 transition-colors">View current batch COA</h5>
+                    <p className="text-[13px] text-slate-500 mt-0.5">Includes: HPLC Purity · Net content</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+              </button>
+            )}
+            
+            {batch.endotoxinReportUrl && (
+              <a href={batch.endotoxinReportUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-5 py-4 border-t border-slate-100 hover:bg-slate-50 transition-colors text-left group">
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                    <FlaskConical className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[15px] font-bold text-brand-navy group-hover:text-blue-600 transition-colors">View endotoxin report</h5>
+                    <p className="text-[13px] text-slate-500 mt-0.5">Batch-specific endotoxin analysis report</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Box 2: QC Panel */}
