@@ -39,7 +39,7 @@ const TelegramPopup = () => {
     if (!isVisible) return null;
 
     return (
-        <div className={`fixed bottom-6 right-6 z-[60] transition-all duration-500 ease-out transform ${isAnimated ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
+        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-[60] transition-all duration-500 ease-out transform ${isAnimated ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95 pointer-events-none'
             }`}>
             <div className="relative bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] lg:p-7 p-3 lg:pr-12 pr-3 w-[420px] max-w-[calc(100vw-32px)] border border-slate-100">
                 {/* Close Button */}

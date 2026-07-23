@@ -227,4 +227,4 @@ const CheckoutSuccess = () => {
   );
 };
 
-export default ;
+export default CheckoutSuccess;

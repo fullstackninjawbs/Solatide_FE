@@ -151,7 +151,6 @@ const CurrentBatchCard = ({ batch, product }) => {
                 <ShieldCheck className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-[15px] font-bold text-[#137333]">This Batch Passed a Full QC Panel</h4>
-                  <p className="text-[12px] text-slate-500 mt-0.5">Every test. Every batch. Verified by third-party labs.</p>
                 </div>
               </div>
               <span className="bg-[#E6F4EA] text-[#137333] text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 uppercase tracking-wide">
@@ -164,7 +163,6 @@ const CurrentBatchCard = ({ batch, product }) => {
                 <ShieldCheck className="w-6 h-6 text-[#C05621] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-[15px] font-bold text-[#C05621]">This batch has third party test results</h4>
-                  <p className="text-[12px] text-slate-500 mt-0.5">Some tests verified by Third-Party Labs. Awaiting full panel.</p>
                 </div>
               </div>
               <span className="bg-[#FFF3E0] text-[#C05621] text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 uppercase tracking-wide">

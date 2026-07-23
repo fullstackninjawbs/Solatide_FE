@@ -43,9 +43,9 @@ const HeroSection = () => {
                 <div className="hidden md:grid lg:hidden grid-cols-1 w-full relative z-10 flex-1">
                     {/* Tablet Specific Background Image */}
                     <div className="col-start-1 row-start-1 w-full relative z-10">
-                        <img 
-                            src={tabHeroImagePng} 
-                            className="w-full h-auto object-contain select-none pointer-events-none" 
+                        <img
+                            src={tabHeroImagePng}
+                            className="w-full h-auto object-contain select-none pointer-events-none"
                             alt="Solatide Biosciences"
                             loading="eager"
                             fetchPriority="high"
@@ -74,28 +74,27 @@ const HeroSection = () => {
                 </div>
 
                 {/* White Content Section */}
-                <div className="col-start-1 row-start-1 md:hidden lg:flex flex-col justify-end self-end w-full relative z-20 pb-2 sm:pb-12 lg:pb-0 pt-[115vw] min-[400px]:pt-[100vw] min-[480px]:pt-[80vw] lg:pt-0">
+                <div className="col-start-1 row-start-1 md:hidden lg:flex flex-col justify-end self-end w-full relative z-20 pb-1 min-[360px]:pb-2 sm:pb-12 lg:pb-0 pt-[118vw] min-[360px]:pt-[115vw] min-[400px]:pt-[100vw] min-[480px]:pt-[80vw] lg:pt-0">
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
                             <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20">
 
-                                <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-5">
+                                <h1 className="text-[24px] min-[360px]:text-[28px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-3 sm:mb-5">
                                     Your Trusted Source For<br />Research Grade Peptides.
                                 </h1>
 
-                                <p className="text-[14px] lg:text-[16px] text-[#475569] font-medium leading-relaxed mb-4 w-[90%]">
+                                <p className="text-[12px] min-[360px]:text-[13px] sm:text-[14px] lg:text-[16px] text-[#475569] font-medium leading-relaxed mb-3 sm:mb-4 w-[95%] sm:w-[90%]">
                                     Solatide Biosciences delivers research grade peptides and
                                     laboratory solutions for researchers who demand purity,
                                     consistency, and results.
                                 </p>
-                                <div className="flex flex-col sm:flex-row items-start gap-3.5 mb-2 lg:mb-8">
+                                <div className="flex flex-col sm:flex-row items-start gap-2 min-[360px]:gap-2.5 sm:gap-3.5 mb-2 lg:mb-8">
 
                                     <Link
                                         to="/shop"
-                                        className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
+                                        className="h-[40px] min-[360px]:h-[46px] inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
                                         style={{
-                                            height: '46px',
                                             borderRadius: '9999px',
                                             fontSize: '14px',
                                             flexShrink: 0,
@@ -108,9 +107,8 @@ const HeroSection = () => {
 
                                     <Link
                                         to="/view-document"
-                                        className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 active:bg-slate-100 transition-all duration-200 whitespace-nowrap border w-full sm:w-[210px]"
+                                        className="h-[40px] min-[360px]:h-[46px] inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 active:bg-slate-100 transition-all duration-200 whitespace-nowrap border w-full sm:w-[210px]"
                                         style={{
-                                            height: '46px',
                                             borderRadius: '9999px',
                                             fontSize: '14px',
                                             borderColor: '#007DD0',
