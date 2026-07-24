@@ -1369,7 +1369,7 @@ const ProductForm = () => {
           </div>
 
           {/* Search Engine Listing Preview */}
-          <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
+          <div className="bg-white hidden  border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="text-base font-bold text-brand-navy">
                 Search engine listing
