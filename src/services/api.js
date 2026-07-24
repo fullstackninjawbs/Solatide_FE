@@ -342,18 +342,26 @@ export const apiService = {
     });
   },
   updateAdminOrder: async (id, payload) => {
-    return fetch(`${API_URL}/api/admin/orders/${id}`, {
+    return fetch(`${API_URL}/api/admin/order/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
     });
   },
-  refundAdminOrder: async (id) => {
-    return fetch(`${API_URL}/api/admin/orders/${id}/refund`, {
+  refundAdminOrder: async (id, payload) => {
+    return fetch(`${API_URL}/api/admin/order/${id}/refund`, {
       method: 'POST',
-      headers: { ...getAuthHeaders() }
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
     });
   },
+  getAdminOrderRefunds: async (id) => {
+    return fetch(`${API_URL}/api/admin/order/${id}/refunds`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+
   createAdminShipment: async (id) => {
     return fetch(`${API_URL}/api/admin/order/${id}/shipment`, {
       method: 'POST',
