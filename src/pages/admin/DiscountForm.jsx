@@ -173,7 +173,7 @@ const DiscountForm = () => {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto space-y-6 text-left font-sans pb-12">
+    <div className="space-y-6 text-left font-sans pb-12">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">

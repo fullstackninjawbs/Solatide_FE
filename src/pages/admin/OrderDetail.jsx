@@ -16,6 +16,7 @@ import {
   User,
   CreditCard,
   Tag,
+  Printer
 } from 'lucide-react';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
