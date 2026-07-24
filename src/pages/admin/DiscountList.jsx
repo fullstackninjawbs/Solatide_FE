@@ -139,9 +139,11 @@ const DiscountList = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Sync from Tagada
           </AdminSecondaryButton>
-          <AdminPrimaryButton to="/admin/discounts/new">
-            Create discount
-          </AdminPrimaryButton>
+          <div title="Order mgmt will happen in Tagada">
+            <AdminPrimaryButton href="https://app.tagadapay.com/dashboard" target="_blank">
+              Create discount
+            </AdminPrimaryButton>
+          </div>
         </div>
       </div>
 
@@ -258,18 +260,15 @@ const DiscountList = () => {
                     </td>
                     <td className="py-3.5 pr-6 text-right">
                         <div className="flex items-center justify-end gap-3">
-                          <Link
-                            to={`/admin/discounts/edit/${discount._id}`}
+                          <a
+                            href="https://app.tagadapay.com/dashboard"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
+                            title="Order mgmt will happen in Tagada"
                           >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={() => handleDelete(discount._id)}
-                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer"
-                          >
-                            Delete
-                          </button>
+                            Manage in Tagada
+                          </a>
                         </div>
                     </td>
                   </tr>
