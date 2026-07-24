@@ -139,7 +139,7 @@ const DiscountList = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Sync from Tagada
           </AdminSecondaryButton>
-          <div title="Order mgmt will happen in Tagada">
+          <div className='hidden' title="Order mgmt will happen in Tagada">
             <AdminPrimaryButton href="https://app.tagadapay.com/dashboard" target="_blank">
               Create discount
             </AdminPrimaryButton>
@@ -259,17 +259,17 @@ const DiscountList = () => {
                       {discount.usesSoFar || 0}
                     </td>
                     <td className="py-3.5 pr-6 text-right">
-                        <div className="flex items-center justify-end gap-3">
-                          <a
-                            href="https://app.tagadapay.com/dashboard"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
-                            title="Order mgmt will happen in Tagada"
-                          >
-                            Manage in Tagada
-                          </a>
-                        </div>
+                      <div className="flex items-center justify-end gap-3">
+                        <a
+                          href="https://app.tagadapay.com/dashboard"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
+                          title="Order mgmt will happen in Tagada"
+                        >
+                          Manage in Tagada
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 ))}
