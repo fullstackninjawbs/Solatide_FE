@@ -186,7 +186,7 @@ const CartDrawer = () => {
                             className="w-full bg-[#008fe2] hover:bg-[#007cc5] text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none mt-2 flex items-center justify-center gap-2"
                         >
                             {isCheckingOut ? (
-                                <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Redirecting...</>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 'Check out'
                             )}

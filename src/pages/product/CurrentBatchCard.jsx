@@ -74,7 +74,7 @@ const CurrentBatchCard = ({ batch, product }) => {
               <ShieldCheck className="w-[30px] h-[30px] text-[#137333]" strokeWidth={1.8} />
             </div>
             <div className="flex flex-col gap-2.5">
-              <h4 className="text-[17px] font-bold text-[#137333] tracking-tight">Full manufacturer QC panel completed</h4>
+              <h4 className="text-[17px] font-bold text-[#137333] tracking-tight">Full Manufacturer QC Panel Passed</h4>
               <div className="flex flex-col gap-1.5 mt-0.5">
                 <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Each batch undergoes a full manufacturer QC panel prior to release.</p>
                 <p className="text-[13.5px] text-[#2F3A4B] font-medium leading-relaxed">Manufacturer QC confirms batch release against internal quality specifications.</p>
@@ -122,7 +122,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                 Now Shipping
               </span>
             ) : (
-              <span className="bg-[#FFF3E0] text-[#C05621] text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
+              <span className="bg-[#FFF3E0] text-[#137333] text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
                 Pending Documentation
               </span>
             )}
@@ -180,13 +180,13 @@ const CurrentBatchCard = ({ batch, product }) => {
           ) : isPartialQc ? (
             <div className="px-5 py-4 flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <ShieldCheck className="w-6 h-6 text-[#C05621] shrink-0 mt-0.5" />
+                <ShieldCheck className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-[15px] font-bold text-[#C05621]">This batch has third party test results</h4>
+                  <h4 className="text-[15px] font-bold text-[#137333]">This batch has third party test results</h4>
                 </div>
               </div>
-              <span className="bg-[#FFF3E0] text-[#C05621] text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 uppercase tracking-wide">
-                {completedTestsCount} Test{completedTestsCount !== 1 ? 's' : ''} Completed
+              <span className="bg-[#FFF3E0] text-[#137333] text-[10px] font-bold px-2.5 py-1 ml-2 rounded-md shrink-0 tracking-wide">
+                {completedTestsCount} Test{completedTestsCount !== 1 ? 's' : ''} Available
               </span>
             </div>
           ) : null}

@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import drImage from '../../assets/images/drImage.webp'
+import lab from '../../assets/images/SB_lab.webp'
+
 import CommonButton from '../../components/CommonBtn'
+
+
 
 export default function AboutSolatide() {
     return (
@@ -11,7 +14,7 @@ export default function AboutSolatide() {
 
                     <div className="w-full lg:w-[45%] shrink-0 relative">
                         <div className="rounded-[24px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.1] lg:aspect-[1.05]">
-                            <img src={'https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Biosciences_Lab_photo_2.4.6.5.webp?v=1781299510&width=1200'} alt="Laboratory machine setup" className="w-full h-full object-cover select-none" />
+                            <img src={lab} className="w-full h-full object-cover select-none" />
                         </div>
                         <div className="absolute bottom-6 left-6 bg-white rounded-full px-4 py-2.5 shadow-md flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-[#00ADEE]"></div>
