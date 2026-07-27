@@ -402,7 +402,7 @@ const CustomerDetail = () => {
                                                     <div key="creation" className="relative pl-6">
                                                         <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
                                                         <div className="flex justify-between items-start group">
-                                                            <p className="text-[13px] text-gray-900">Web created this customer.</p>
+                                                            <p className="text-[13px] text-gray-900">Customer Place order through Tagada Webcheckout!</p>
                                                             <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(item.date, true)}</span>
                                                         </div>
                                                     </div>
@@ -473,27 +473,12 @@ const CustomerDetail = () => {
                                     )}
                                 </div>
 
-                                <div>
-                                    <h3 className="text-[13px] font-bold text-gray-900 mb-2">Marketing</h3>
-                                    <div className="flex gap-2">
-                                        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-[12px] font-medium border border-gray-200">Email</span>
-                                        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-[12px] font-medium border border-gray-200">SMS</span>
-                                    </div>
-                                </div>
+
 
                             </div>
                         </div>
 
-                        {/* Store Credit */}
-                        <div className={cardClass}>
-                            <div className="p-4 flex justify-between items-center">
-                                <h2 className="text-[15px] font-bold text-gray-900">Store credit</h2>
-                                <button className="text-gray-400 hover:text-gray-700"><Edit2 className="w-4 h-4" /></button>
-                            </div>
-                            <div className="px-4 pb-4">
-                                <p className="text-[13px] text-gray-500">None</p>
-                            </div>
-                        </div>
+
 
                         {/* Tags */}
                         <div className={cardClass}>

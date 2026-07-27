@@ -25,7 +25,7 @@ const ProductForm = () => {
   const [tagsList, setTagsList] = useState([]);
 
   // Category metafields suggestions state
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Search Engine Listing preview editing toggle
   const [editSeo, setEditSeo] = useState(false);

@@ -16,7 +16,8 @@ import {
   User,
   CreditCard,
   Tag,
-  Printer
+  Printer,
+  X
 } from 'lucide-react';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
@@ -75,7 +76,6 @@ const OrderDetail = () => {
   // Refund modal states
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [refundType, setRefundType] = useState('full'); // 'full' | 'partial'
-  const [refundAmount, setRefundAmount] = useState('');
   const [refundReason, setRefundReason] = useState('');
 
   // Load Order
@@ -225,23 +225,19 @@ const OrderDetail = () => {
     setRefunding(true);
     try {
       const payload = {
-        type: refundType,
+        type: 'full',
         reason: refundReason || 'Admin initiated refund'
       };
-      if (refundType === 'partial' && refundAmount) {
-        payload.amount = parseFloat(refundAmount);
-      }
-      
+
       const res = await apiService.refundAdminOrder(id, payload);
       const data = await res.json();
-      
+
       if (data.success) {
         setOrder(data.data.order);
         if (data.data.refund) {
           setRefunds([data.data.refund, ...refunds]);
         }
         setIsRefundModalOpen(false);
-        setRefundAmount('');
         setRefundReason('');
         toast.success(data.message || 'Refund initiated successfully');
       } else {
@@ -538,7 +534,7 @@ const OrderDetail = () => {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/><path d="M12 3v6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" /><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9" /><path d="M12 3v6" /></svg>
                       </div>
                       <div>
                         <h2 className="text-lg font-bold text-brand-navy">Refunds</h2>
@@ -562,7 +558,7 @@ const OrderDetail = () => {
                         <div key={i} className="flex justify-between items-center bg-slate-50 border border-slate-100 p-4 rounded-xl">
                           <div>
                             <p className="text-[14px] font-bold text-brand-navy">
-                              {refund.type === 'full' ? 'Full Refund' : 'Partial Refund'} 
+                              {refund.type === 'full' ? 'Full Refund' : 'Partial Refund'}
                               <span className="ml-2 text-[12px] font-medium text-slate-400 capitalize">({refund.status})</span>
                             </p>
                             <p className="text-[13px] text-slate-500 mt-0.5">{refund.reason}</p>
@@ -578,16 +574,7 @@ const OrderDetail = () => {
 
                   {order.refundStatus !== 'refunded' && (
                     <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
-                      <AdminSecondaryButton 
-                        onClick={() => {
-                          setRefundType('partial');
-                          setIsRefundModalOpen(true);
-                        }}
-                        disabled={order.tagadaEnv && order.tagadaEnv !== 'sandbox'}
-                      >
-                        Partial Refund
-                      </AdminSecondaryButton>
-                      <AdminPrimaryButton 
+                      <AdminPrimaryButton
                         onClick={() => {
                           setRefundType('full');
                           setIsRefundModalOpen(true);
@@ -795,7 +782,7 @@ const OrderDetail = () => {
             </div>
 
             {/* Order Risk */}
-            <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 flex items-center justify-between group cursor-pointer hover:border-brand-blue/30 transition-colors">
+            <div className="hidden bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 flex items-center justify-between group cursor-pointer hover:border-brand-blue/30 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <Check size={16} />
@@ -926,12 +913,12 @@ const OrderDetail = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
           <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden p-7 animate-in fade-in zoom-in duration-200">
             <h3 className="text-xl font-bold text-brand-navy mb-2">
-              {refundType === 'full' ? 'Refund Full Amount' : 'Partial Refund'}
+              Refund Full Amount
             </h3>
-            
+
             <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
               <p className="text-sm font-semibold text-orange-800 mb-1 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
                 TEST MODE WARNING
               </p>
               <p className="text-xs text-orange-700">
@@ -940,24 +927,6 @@ const OrderDetail = () => {
             </div>
 
             <div className="space-y-4 mb-8">
-              {refundType === 'partial' && (
-                <div>
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Amount to Refund (Max: {fmtAUD(order.grandTotal - (order.refundedAmount || 0))})</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
-                    <input
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      max={order.grandTotal - (order.refundedAmount || 0)}
-                      value={refundAmount}
-                      onChange={(e) => setRefundAmount(e.target.value)}
-                      className="w-full text-[14px] px-8 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-              )}
               <div>
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Reason (optional)</label>
                 <input
@@ -974,9 +943,9 @@ const OrderDetail = () => {
               <AdminSecondaryButton onClick={() => setIsRefundModalOpen(false)}>
                 Cancel
               </AdminSecondaryButton>
-              <AdminPrimaryButton 
-                onClick={handleRefund} 
-                disabled={refunding || (refundType === 'partial' && (!refundAmount || parseFloat(refundAmount) <= 0))}
+              <AdminPrimaryButton
+                onClick={handleRefund}
+                disabled={refunding}
                 className="!bg-orange-600 hover:!bg-orange-700 !shadow-none"
               >
                 {refunding ? 'Processing...' : 'Confirm Refund'}
