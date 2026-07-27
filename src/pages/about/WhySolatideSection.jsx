@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CommonButton from '../../components/CommonBtn'
-import lab from '../../assets/images/lab.png'
+import lab from '../../assets/images/lab.webp'
 
 
 const WhySolatideSection = () => {

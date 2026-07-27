@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import facebookIcon from '../assets/icons/facebook.png'
-import linkdinIcon from '../assets/icons/linkdin.png'
-import instagramIcon from '../assets/icons/instagram.png'
-import twiterIcon from '../assets/icons/twiter.png'
-import logo from '../assets/icons/logo.png'
+import facebookIcon from '../assets/icons/facebook.webp'
+import linkdinIcon from '../assets/icons/linkdin.webp'
+import instagramIcon from '../assets/icons/instagram.webp'
+import twiterIcon from '../assets/icons/twiter.webp'
+import logo from '../assets/icons/logo.webp'
 
 function Footer() {
     return (

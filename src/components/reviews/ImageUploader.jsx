@@ -44,11 +44,10 @@ const ImageUploader = ({ files, setFiles, maxFiles = 5 }) => {
   return (
     <div className="w-full">
       <div
-        className={`relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors duration-200 ${
-          isDragging
+        className={`relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors duration-200 ${isDragging
             ? 'border-[#008060] bg-[#008060]/5'
             : 'border-slate-300 hover:bg-slate-50'
-        }`}
+          }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -59,7 +58,7 @@ const ImageUploader = ({ files, setFiles, maxFiles = 5 }) => {
           Click to upload <span className="font-normal text-slate-500">or drag and drop</span>
         </span>
         <span className="mt-1 text-xs text-slate-400">
-          PNG, JPG up to 5MB (Max {maxFiles} images)
+          webp, JPG up to 5MB (Max {maxFiles} images)
         </span>
         <input
           ref={fileInputRef}

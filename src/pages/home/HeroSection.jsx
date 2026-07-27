@@ -1,11 +1,10 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
+import { FileText } from 'lucide-react'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
-import mobileHeroImageWebp from '../../assets/images/mobile_products_img.png'
-import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.png'
-import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.png'
-import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.png'
-import tabHeroImagePng from '../../assets/images/tabImage.png'
+import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
+import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.webp'
+import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.webp'
+import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.webp'
 
 
 const HeroSection = () => {
@@ -24,11 +23,11 @@ const HeroSection = () => {
                 />
             </div>
 
-            {/* Mobile Hero Image & Content Overlap Wrapper */}
-            <div className="grid grid-cols-1 lg:block w-full relative z-10 flex-1">
+            {/* Mobile Hero Image & Content Wrapper */}
+            <div className="flex flex-col lg:block w-full relative z-10 flex-1">
 
                 {/* Mobile Background Image */}
-                <div className="col-start-1 row-start-1 w-full md:hidden relative z-10">
+                <div className="w-full md:hidden relative z-10">
                     <img
                         src={mobileHeroImageWebp}
                         className="w-full h-auto object-contain select-none pointer-events-none"
@@ -40,11 +39,11 @@ const HeroSection = () => {
                 </div>
 
                 {/* Tablet Dedicated Layout (768px - 1023px) */}
-                <div className="hidden md:grid lg:hidden grid-cols-1 w-full relative z-10 flex-1">
+                <div className="hidden md:flex lg:hidden flex-col w-full relative z-10 flex-1">
                     {/* Tablet Specific Background Image */}
-                    <div className="col-start-1 row-start-1 w-full relative z-10">
+                    <div className="w-full relative z-10">
                         <img
-                            src={tabHeroImagePng}
+                            src={mobileHeroImageWebp}
                             className="w-full h-auto object-contain select-none pointer-events-none"
                             alt="Solatide Biosciences"
                             loading="eager"
@@ -52,8 +51,8 @@ const HeroSection = () => {
                         />
                     </div>
 
-                    {/* Text Content sitting below bottles (Grid Overlap) */}
-                    <div className="col-start-1 row-start-1 flex flex-col justify-end self-end w-full relative z-20 pb-16">
+                    {/* Text Content sitting below bottles */}
+                    <div className="flex flex-col justify-end w-full relative z-20 pb-16 pt-8 bg-[#e4dbf8] -mt-2">
                         <div className="main-container w-full flex flex-col items-center text-center">
                             <h1 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
                                 Your Trusted Source For<br />Research Grade Peptides.
@@ -66,15 +65,15 @@ const HeroSection = () => {
                                     Shop Peptides →
                                 </Link>
                                 <Link to="/view-document" className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 transition-all border w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px', borderColor: '#007DD0' }}>
-                                    View Documents →
+                                    <FileText size={18} strokeWidth={2.5} /> View Documents →
                                 </Link>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* White Content Section */}
-                <div className="col-start-1 row-start-1 md:hidden lg:flex flex-col justify-end self-end w-full relative z-20 pb-1 min-[360px]:pb-2 sm:pb-12 lg:pb-0 pt-[118vw] min-[360px]:pt-[115vw] min-[400px]:pt-[100vw] min-[480px]:pt-[80vw] lg:pt-0">
+                {/* Mobile/Desktop Content Section */}
+                <div className="md:hidden lg:flex flex-col justify-start w-full relative z-20 pb-8 pt-6 sm:pb-4 lg:pb-0 lg:pt-0 bg-[#e4dbf8] lg:bg-transparent -mt-2">
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
@@ -115,7 +114,7 @@ const HeroSection = () => {
                                             flexShrink: 0,
                                         }}
                                     >
-                                        View Documents →
+                                        <FileText size={18} strokeWidth={2.5} /> View Documents →
                                     </Link>
 
                                 </div>

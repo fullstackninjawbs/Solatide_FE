@@ -1,6 +1,6 @@
 import React from 'react'
-import exporleImage from '../../assets/images/exporleImage.png'
-import RetatrutideMad from '../../assets/images/RetatrutideMad.png'
+import exporleImage from '../../assets/images/exporleImage.webp'
+import RetatrutideMad from '../../assets/images/RetatrutideMad.webp'
 import CommonButton from '../../components/CommonBtn'
 
 const ExploreProducts = () => {

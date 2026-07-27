@@ -23,28 +23,28 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
             title: 'Metabolic Pathway Research',
             description: 'Compounds selected for metabolic pathway research and related studies',
             path: '/shop?category=glp-1-metabolic-peptides',
-            icon: '/g3327 (1).png'
+            icon: '/g3327 (1).webp'
         },
         {
             id: 2,
             title: 'Tissue & Cellular Research',
             description: 'Research compounds studied in recovery and tissue-response models',
             path: '/shop?category=tissue-cellular-research-peptides',
-            icon: '/Frame.png'
+            icon: '/Frame.webp'
         },
         {
             id: 3,
             title: 'Dermal & Pigmentation Research',
             description: 'Peptides used in dermal and pigmentation-focused research environments',
             path: '/shop?category=dermal-pigmentation-research',
-            icon: '/Group.png'
+            icon: '/Group.webp'
         },
         {
             id: 4,
             title: 'Research Solutions',
             description: 'Supporting compounds and materials for laboratory-based research',
             path: '/shop?category=research-solutions',
-            icon: '/Frame (1).png'
+            icon: '/Frame (1).webp'
         }
     ];
 

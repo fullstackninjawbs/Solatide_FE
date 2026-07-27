@@ -38,7 +38,7 @@ const ByTheNumbers = () => {
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
-                                    <img src="/g3327 (1).png" alt="Metabolic Icon" className="h-7 w-7 object-contain" />
+                                    <img src="/g3327 (1).webp" alt="Metabolic Icon" className="h-7 w-7 object-contain" />
                                 </div>
                                 <span className="text-[28px] font-black text-[#D6E0EC]">01</span>
                             </div>
@@ -66,7 +66,7 @@ const ByTheNumbers = () => {
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
-                                    <img src="/Frame.png" alt="Tissue Icon" className="h-7 w-7 object-contain" />
+                                    <img src="/Frame.webp" alt="Tissue Icon" className="h-7 w-7 object-contain" />
                                 </div>
                                 <span className="text-[28px] font-black text-[#D6E0EC]">02</span>
                             </div>
@@ -94,7 +94,7 @@ const ByTheNumbers = () => {
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
-                                    <img src="/Group.png" alt="Dermal Icon" className="h-7 w-7 object-contain" />
+                                    <img src="/Group.webp" alt="Dermal Icon" className="h-7 w-7 object-contain" />
                                 </div>
                                 <span className="text-[28px] font-black text-[#D6E0EC]">03</span>
                             </div>
@@ -122,7 +122,7 @@ const ByTheNumbers = () => {
                         <div className="flex-grow flex flex-col">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-12 h-12 rounded-full bg-[#EAF7FD] flex items-center justify-center shrink-0 border border-[#EAF7FD]/50 shadow-sm">
-                                    <img src="/Frame (1).png" alt="Laboratory Support Icon" className="h-7 w-7 object-contain" />
+                                    <img src="/Frame (1).webp" alt="Laboratory Support Icon" className="h-7 w-7 object-contain" />
                                 </div>
                                 <span className="text-[28px] font-black text-[#D6E0EC]">04</span>
                             </div>

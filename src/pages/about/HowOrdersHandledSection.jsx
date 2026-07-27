@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import boxImage from '../../assets/images/Rectangle 4380.png'
+import boxImage from '../../assets/images/Rectangle 4380.webp'
 
 const HowOrdersHandledSection = () => {
     return (

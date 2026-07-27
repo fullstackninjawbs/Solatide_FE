@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CommonButton from '../../components/CommonBtn'
-import pipetteImage from '../../assets/images/Rectangle 42463.png'
+import pipetteImage from '../../assets/images/Rectangle 42463.webp'
 
 const ResearchUsePositioningSection = () => {
     return (
