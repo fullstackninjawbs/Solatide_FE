@@ -17,7 +17,8 @@ import {
   CreditCard,
   Tag,
   Printer,
-  X
+  X,
+  Activity
 } from 'lucide-react';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
@@ -311,6 +312,112 @@ const OrderDetail = () => {
   const isPaid = paymentStatus === 'paid';
   const isUnfulfilled = fulfilStatus === 'unfulfilled';
 
+  // ─── Timeline Events Logic ───────────────────────────────────────────────────
+
+  const getGroupKey = (dateStr) => {
+    if (!dateStr) return 'Past';
+    const date = new Date(dateStr);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  };
+
+  const getTimeString = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 60) return `${diffMins || 1} minutes ago`;
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
+
+  const timelineEvents = [];
+  const addEvent = (text, date, hasEmailButton = false) => {
+    timelineEvents.push({ text, date, hasEmailButton });
+  };
+
+  // Base created event
+  addEvent(
+    <span><span className="font-bold text-brand-navy">{customerName}</span> placed this order on Tagadacrm.</span>,
+    order.createdAt
+  );
+
+  // Tagada ID
+  if (order.tagadaOrderId) {
+    addEvent(
+      <span>Confirmation <span className="font-bold text-brand-navy">#{order.tagadaOrderId}</span> was generated for this order.</span>,
+      order.createdAt
+    );
+  }
+
+  // Admin note
+  if (order.adminNotes) {
+    addEvent(
+      <span>Tagadacrm added a note to this order.</span>,
+      order.updatedAt || order.createdAt
+    );
+  }
+
+  // Payment
+  if (isPaid || grandTotal > 0) {
+    addEvent(
+      <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.</span>,
+      order.createdAt
+    );
+    addEvent(
+      <span>Tagadacrm sent an order confirmation email to {customerName} ({customerEmail}).</span>,
+      order.createdAt,
+      true
+    );
+  }
+
+  // Refunds
+  if (refunds && refunds.length > 0) {
+    refunds.forEach(refund => {
+      addEvent(
+        <span>Tagadacrm refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span> to Tagada Pay.</span>,
+        refund.createdAt
+      );
+      if (refund.type === 'full') {
+        addEvent(
+          <span>Tagadacrm refunded shipping.</span>,
+          refund.createdAt
+        );
+      }
+      addEvent(
+        <span>Tagadacrm sent a refund notification email to {customerName} ({customerEmail}).</span>,
+        refund.createdAt,
+        true
+      );
+    });
+  }
+
+  // Comments
+  if (order.comments && order.comments.length > 0) {
+    order.comments.forEach(comment => {
+      addEvent(
+        <span className="text-slate-700">{comment.text}</span>,
+        comment.createdAt
+      );
+    });
+  }
+
+  timelineEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const groupedEvents = {};
+  timelineEvents.forEach(ev => {
+    const key = getGroupKey(ev.date);
+    if (!groupedEvents[key]) groupedEvents[key] = [];
+    groupedEvents[key].push(ev);
+  });
+
   return (
     <div className="space-y-6 font-sans text-slate-800 pb-24">
       <div className="w-full">
@@ -467,7 +574,7 @@ const OrderDetail = () => {
                       </AdminSecondaryButton>
                       <AdminPrimaryButton
                         onClick={handleCreateLabel}
-                        disabled={creatingLabel || !isPaid}
+                        disabled={creatingLabel || !isPaid || order.refundStatus === 'refunded'}
                       >
                         {creatingLabel ? 'Generating...' : 'Create shipping label'}
                       </AdminPrimaryButton>
@@ -612,11 +719,7 @@ const OrderDetail = () => {
                       onChange={(e) => setCommentText(e.target.value)}
                       className="w-full text-[14px] px-4 py-3 outline-none text-slate-700 placeholder-slate-400 bg-transparent resize-none min-h-[80px]"
                     />
-                    <div className="bg-white px-3 py-2 border-t border-slate-200 flex justify-between items-center">
-                      <div className="flex gap-1 text-slate-400">
-                        <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">@</button>
-                        <button className="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center">#</button>
-                      </div>
+                    <div className="bg-white px-3 py-2 border-t border-slate-200 flex justify-end items-center">
                       <AdminPrimaryButton onClick={handleAddComment} disabled={updating || !commentText.trim()} className="!py-1.5 !px-4 !text-[13px]">
                         {updating ? 'Posting...' : 'Post'}
                       </AdminPrimaryButton>
@@ -625,36 +728,36 @@ const OrderDetail = () => {
                 </div>
 
                 {/* Timeline events */}
-                <div className="ml-5 border-l-2 border-slate-100 pl-8 relative space-y-8 pb-4">
-                  {order.comments?.slice().reverse().map((comment, i) => (
-                    <div key={i} className="relative">
-                      <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-brand-blue ring-4 ring-white shadow-sm" />
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 inline-block min-w-[200px]">
-                        <p className="text-[14.5px] text-slate-700">{comment.text}</p>
+                <div className="ml-5 border-l-2 border-slate-100 pl-8 relative pb-4 mt-8">
+                  {Object.entries(groupedEvents).map(([groupName, events], gIdx) => (
+                    <div key={gIdx} className="mb-8 last:mb-0">
+                      <h4 className="text-[13px] font-bold text-slate-500 mb-6 relative">
+                        <span className="bg-white pr-4 relative z-10">{groupName}</span>
+                      </h4>
+                      <div className="space-y-6">
+                        {events.map((event, i) => (
+                          <div key={i} className="relative flex items-start justify-between gap-4 group">
+                            {/* The line dot */}
+                            <div className="absolute -left-[40px] top-1.5 w-[11px] h-[11px] rounded-full bg-slate-500 ring-4 ring-white shadow-sm" />
+
+                            <div className="flex items-start gap-3">
+                              {/* The light grey square icon */}
+                              <div className="w-6 h-6 bg-slate-100/80 rounded flex items-center justify-center text-slate-400 flex-shrink-0 mt-0.5 border border-slate-200/50">
+                                <Activity size={12} strokeWidth={2.5} />
+                              </div>
+                              <div>
+                                <p className="text-[14px] text-slate-600">{event.text}</p>
+
+                              </div>
+                            </div>
+                            <div className="text-[13px] text-slate-400 whitespace-nowrap font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+                              {getTimeString(event.date)}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <p className="text-[13px] font-medium text-slate-400 mt-1">{fmtDate(comment.createdAt)}</p>
                     </div>
                   ))}
-
-                  <div className="relative">
-                    <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-slate-300 ring-4 ring-white shadow-sm" />
-                    <div>
-                      <p className="text-[14.5px] text-slate-700">
-                        A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.
-                      </p>
-                      <p className="text-[13px] font-medium text-slate-400 mt-1">{fmtDate(order.createdAt)}</p>
-                    </div>
-                  </div>
-
-                  <div className="relative">
-                    <div className="absolute -left-[37px] top-1 w-[11px] h-[11px] rounded-full bg-slate-300 ring-4 ring-white shadow-sm" />
-                    <div>
-                      <p className="text-[14.5px] text-slate-700">
-                        <span className="font-bold text-brand-navy">{customerName}</span> placed this order on Tagadacrm.
-                      </p>
-                      <p className="text-[13px] font-medium text-slate-400 mt-1">{fmtDate(order.createdAt)}</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

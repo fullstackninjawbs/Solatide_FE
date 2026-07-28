@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 
@@ -9,7 +8,6 @@ const OrderStatus = () => {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { formatPrice } = useCurrency();
 
     useEffect(() => {
         const fetchOrder = async () => {

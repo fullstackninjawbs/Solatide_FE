@@ -71,8 +71,8 @@ const ProductForm = () => {
     summaryHtml: '',
     researchApplicationsHtml: '',
     technicalSpecsRawHtml: '',
-    inventoryPolicy: 'deny', // 'continue' or 'deny'
     taxable: true,
+    showPendingResultsSection: true,
 
     // Selected manual collection IDs
     collections: [],
@@ -281,8 +281,8 @@ const ProductForm = () => {
             researchApplicationsHtml: product.researchApplicationsHtml || '',
             technicalSpecsRawHtml: product.technicalSpecs?.rawHtml || '',
             technicalSpecsTable: product.technicalSpecsTable || [],
-            inventoryPolicy: product.variants?.[0]?.inventoryPolicy || 'deny',
             taxable: product.variants?.[0]?.taxable !== false,
+            showPendingResultsSection: product.showPendingResultsSection !== false,
             collections: product.collections || []
           });
           setInitialDescription(product.description || '');
@@ -501,6 +501,7 @@ const ProductForm = () => {
 
       // Shopify Refinements
       published: formData.published,
+      showPendingResultsSection: formData.showPendingResultsSection,
       vendor: formData.vendor,
       productType: formData.productType,
       barcode: formData.barcode,
@@ -1448,6 +1449,22 @@ const ProductForm = () => {
               onChange={(val) => setFormData(prev => ({ ...prev, published: val === 'true' }))}
               className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px] font-bold cursor-pointer focus:outline-none focus:border-brand-blue"
             />
+
+            <div className="pt-4 border-t border-slate-100 flex items-start gap-3 mt-4">
+              <input
+                type="checkbox"
+                id="showPendingResultsSection"
+                checked={formData.showPendingResultsSection}
+                onChange={(e) => setFormData(prev => ({ ...prev, showPendingResultsSection: e.target.checked }))}
+                className="h-4.5 w-4.5 mt-0.5 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+              />
+              <label htmlFor="showPendingResultsSection" className="text-[13.5px] font-semibold text-slate-700 cursor-pointer select-none leading-snug">
+                Show "Pending results" QC section when batch is pending
+                <p className="text-[12px] font-normal text-slate-400 mt-0.5">
+                  Uncheck this for utility products (e.g. Bac Water) that never need QC testing.
+                </p>
+              </label>
+            </div>
           </div>
 
 

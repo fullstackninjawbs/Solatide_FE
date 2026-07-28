@@ -62,7 +62,12 @@ const CurrentBatchCard = ({ batch, product }) => {
   const isPartialQc = hasQcData && !isFullQc;
   const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
+  const showPendingResultsSection = product?.showPendingResultsSection ?? true;
+
   if (!hasQcData) {
+    if (!showPendingResultsSection) {
+      return null;
+    }
 
     return (
       <div className="flex flex-col gap-3 mb-4 mt-2 font-['Poppins']">
