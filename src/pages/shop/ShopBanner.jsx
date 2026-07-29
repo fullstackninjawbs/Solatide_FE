@@ -4,7 +4,7 @@ const ShopBanner = () => {
     return (
         <section className="w-full py-8 border-b border-slate-100">
             <div className="max-w-4xl mx-auto px-4 flex flex-col items-center justify-center gap-4">
-                <h1 className="text-[48px] font-bold text-[#214A9E] leading-[100%] tracking-normal capitalize">
+                <h1 className="text-[32px] md:text-[48px] font-bold text-[#214A9E] leading-[100%] tracking-normal capitalize">
                     Shop All Products
                 </h1>
                 <p className="text-[#6A6A6A] text-[16px] font-normal leading-[100%] tracking-normal">

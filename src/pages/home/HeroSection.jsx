@@ -7,6 +7,49 @@ import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa
 import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.webp'
 
 
+const FeatureCards = () => (
+    <div className="flex flex-col sm:flex-row items-stretch justify-center lg:justify-start gap-2.5 xl:gap-3">
+        {/* Feature 1 */}
+        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
+            <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <div className="flex flex-col text-left">
+                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                    ≥99% Purity Standard
+                </span>
+                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
+                    HPLC-UV/LC-MS + Endotoxin
+                </span>
+            </div>
+        </div>
+
+        {/* Feature 2 */}
+        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
+            <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <div className="flex flex-col text-left">
+                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                    Lot-Traceable Vials
+                </span>
+                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
+                    Vial-to-COA Verified
+                </span>
+            </div>
+        </div>
+
+        {/* Feature 3 */}
+        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
+            <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <div className="flex flex-col text-left">
+                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
+                    Verifiable Reports
+                </span>
+                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
+                    Third-Party Results
+                </span>
+            </div>
+        </div>
+    </div>
+);
+
 const HeroSection = () => {
     return (
 
@@ -68,6 +111,11 @@ const HeroSection = () => {
                                     <FileText size={18} strokeWidth={2.5} /> View Documents →
                                 </Link>
                             </div>
+                            
+                            {/* Features Container (Tablet) */}
+                            <div className="mt-8 w-full max-w-full flex justify-center">
+                                <FeatureCards />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,49 +168,8 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Features Container */}
-                                <div className="mt-8 w-full lg:w-fit max-w-full hidden lg:block">
-                                    <div className="flex flex-col sm:flex-row items-stretch justify-start gap-2.5 xl:gap-3">
-
-                                        {/* Feature 1 */}
-                                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-                                            <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-                                            <div className="flex flex-col text-left">
-                                                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                                    ≥99% Purity Standard
-                                                </span>
-                                                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                                    HPLC-UV/LC-MS + Endotoxin
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Feature 2 */}
-                                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-                                            <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-                                            <div className="flex flex-col text-left">
-                                                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                                    Lot-Traceable Vials
-                                                </span>
-                                                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                                    Vial-to-COA Verified
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Feature 3 */}
-                                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-                                            <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-                                            <div className="flex flex-col text-left">
-                                                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                                    Verifiable Reports
-                                                </span>
-                                                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                                    Third-Party Results
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                <div className="mt-8 w-full lg:w-fit max-w-full">
+                                    <FeatureCards />
                                 </div>
 
                             </div>
@@ -174,53 +181,6 @@ const HeroSection = () => {
                 </div>
             </div>
 
-            {/* Mobile Features Container (Outside of overlay) */}
-            <div className="lg:hidden w-full bg-white relative z-10 pt-4 pb-12">
-                <div className="main-container w-full">
-                    <div className="flex flex-col items-stretch justify-start gap-2.5">
-
-                        {/* Feature 1 */}
-                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 flex items-center gap-2.5">
-                            <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 object-contain shrink-0" />
-                            <div className="flex flex-col text-left">
-                                <span className="text-[14px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                    ≥99% Purity Standard
-                                </span>
-                                <span className="text-[11px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                    HPLC-UV/LC-MS + Endotoxin
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Feature 2 */}
-                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 flex items-center gap-2.5">
-                            <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 object-contain shrink-0" />
-                            <div className="flex flex-col text-left">
-                                <span className="text-[14px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                    Lot-Traceable Vials
-                                </span>
-                                <span className="text-[11px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                    Vial-to-COA Verified
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Feature 3 */}
-                        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 flex items-center gap-2.5">
-                            <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 object-contain shrink-0" />
-                            <div className="flex flex-col text-left">
-                                <span className="text-[14px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                                    Verifiable Reports
-                                </span>
-                                <span className="text-[11px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                                    Third-Party Results
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
 
         </section>
     )

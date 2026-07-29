@@ -275,7 +275,7 @@ const Header = () => {
                             <div className="relative" ref={dropdownRef}>
                                 <div
                                     onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                                    className="inline-flex items-center gap-1.5 bg-[#102a5c] text-white px-3 py-[7px] rounded-full text-[12px] font-bold cursor-pointer hover:bg-[#1a4494] transition-colors shrink-0 select-none"
+                                    className="inline-flex items-center gap-1.5 bg-[#1a4494] text-white px-3 py-[7px] rounded-full text-[12px] font-bold cursor-pointer hover:bg-[#1a4494] transition-colors shrink-0 select-none"
                                 >
                                     <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
                                     <span>{selectedCountry.code}</span>
@@ -329,8 +329,6 @@ const Header = () => {
                                     </div>
                                 )}
                             </div>
-
-
 
                             <button
                                 onClick={() => setIsCartOpen(true)}
