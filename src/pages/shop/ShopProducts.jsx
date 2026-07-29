@@ -22,7 +22,7 @@ const FilterSidebarContent = ({
                 <button
                     onClick={() => {
                         setSelectedCategory('all-products');
-                        setAvailability('In Stock');
+                        setAvailability('All');
                     }}
                     className="text-xs font-bold text-[#0ea5e9] hover:text-[#008bc7] transition-colors"
                 >
@@ -40,6 +40,24 @@ const FilterSidebarContent = ({
         <div className="mb-8">
             <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Availability</h3>
             <div className="space-y-1.5">
+                <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'All' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                    <input
+                        type="radio"
+                        name="availability"
+                        checked={availability === 'All'}
+                        onChange={() => setAvailability('All')}
+                        className="sr-only"
+                    />
+                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'All'
+                        ? 'border-2 border-[#214A9E] bg-white'
+                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                        }`}>
+                        {availability === 'All' && (
+                            <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
+                        )}
+                    </div>
+                    <span>All Availability</span>
+                </label>
                 <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                     <input
                         type="radio"
@@ -58,7 +76,7 @@ const FilterSidebarContent = ({
                     </div>
                     <span>In Stock</span>
                 </label>
-                <label className={`hidden items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                     <input
                         type="radio"
                         name="availability"
@@ -195,108 +213,14 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
             <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Filters Sidebar */}
-                <aside className="w-full lg:w-[280px] bg-white rounded-3xl p-4 border border-[#E8E8E8] shadow-sm shrink-0 text-left lg:sticky lg:top-28 max-h-[calc(100vh-120px)] overflow-y-auto">
-                    <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
-                        <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
-                        <button
-                            onClick={() => {
-                                setSelectedCategory('all-products');
-                                setAvailability('All');
-                            }}
-                            className="text-xs font-bold text-[#0ea5e9] hover:text-[#008bc7] transition-colors"
-                        >
-                            Reset
-                        </button>
-                    </div>
-
-                    {/* Availability Filter */}
-                    <div className="mb-8">
-                        <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Availability</h3>
-                        <div className="space-y-1.5">
-
-                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'All' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
-                                <input
-                                    type="radio"
-                                    name="availability"
-                                    checked={availability === 'All'}
-                                    onChange={() => setAvailability('All')}
-                                    className="sr-only"
-                                />
-                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'All'
-                                    ? 'border-2 border-[#214A9E] bg-white'
-                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                    }`}>
-                                    {availability === 'All' && (
-                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
-                                    )}
-                                </div>
-                                <span>All Availability</span>
-                            </label>
-                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
-                                <input
-                                    type="radio"
-                                    name="availability"
-                                    checked={availability === 'In Stock'}
-                                    onChange={() => setAvailability('In Stock')}
-                                    className="sr-only"
-                                />
-                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'In Stock'
-                                    ? 'border-2 border-[#214A9E] bg-white'
-                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                    }`}>
-                                    {availability === 'In Stock' && (
-                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
-                                    )}
-                                </div>
-                                <span>In Stock</span>
-                            </label>
-                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
-                                <input
-                                    type="radio"
-                                    name="availability"
-                                    checked={availability === 'Out of Stock'}
-                                    onChange={() => setAvailability('Out of Stock')}
-                                    className="sr-only"
-                                />
-                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'Out of Stock'
-                                    ? 'border-2 border-[#214A9E] bg-white'
-                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                    }`}>
-                                    {availability === 'Out of Stock' && (
-                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
-                                    )}
-                                </div>
-                                <span>Out of Stock</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* Category Filter */}
-                    <div>
-                        <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Category</h3>
-                        <div className="space-y-1.5">
-                            {categories.map(category => (
-                                <label key={category.slug} className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${selectedCategory === category.slug ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
-                                    <input
-                                        type="radio"
-                                        name="category"
-                                        checked={selectedCategory === category.slug}
-                                        onChange={() => setSelectedCategory(category.slug)}
-                                        className="sr-only"
-                                    />
-                                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category.slug
-                                        ? 'border-2 border-[#214A9E] bg-white'
-                                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
-                                        }`}>
-                                        {selectedCategory === category.slug && (
-                                            <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
-                                        )}
-                                    </div>
-                                    <span>{category.name}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                <aside className="hidden lg:block w-full lg:w-[260px] bg-white rounded-3xl p-5 border border-[#E8E8E8] shadow-sm shrink-0 text-left sticky top-28 h-fit">
+                    <FilterSidebarContent
+                        selectedCategory={selectedCategory}
+                        setSelectedCategory={setSelectedCategory}
+                        availability={availability}
+                        setAvailability={setAvailability}
+                        categories={categories}
+                    />
                 </aside>
 
                 {/* Products Area */}
@@ -399,7 +323,12 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                     </div>
 
                     {/* Product Grid */}
-                    {productsList.length === 0 ? (
+                    {loading ? (
+                        <div className="w-full text-center py-20 bg-white rounded-3xl border border-slate-200/50 flex flex-col items-center justify-center gap-4">
+                            <div className="w-10 h-10 border-4 border-[#214A9E]/20 border-t-[#214A9E] rounded-full animate-spin"></div>
+                            <p className="text-slate-400 font-semibold">Loading products...</p>
+                        </div>
+                    ) : productsList.length === 0 ? (
                         <div className="w-full text-center py-20 bg-white rounded-3xl border border-slate-200/50">
                             <p className="text-slate-400 font-semibold">No products match your filter criteria.</p>
                         </div>

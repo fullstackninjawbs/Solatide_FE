@@ -186,7 +186,7 @@ const Header = () => {
                                 <img
                                     src={logo}
                                     alt="Solatide Biosciences"
-                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[70px] lg:h-[115px]' : 'h-[50px] lg:h-[65px]'}`}
+                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[70px] lg:h-[100px]' : 'h-[50px] lg:h-[65px]'}`}
                                     style={{ imageRendering: 'high-quality' }}
                                 />
                             </Link>

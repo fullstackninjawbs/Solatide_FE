@@ -433,17 +433,7 @@ const BatchForm = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">DisplayName / Alias</label>
-                <input
-                  type="text"
-                  name="displayName"
-                  value={formData.displayName}
-                  onChange={handleChange}
-                  placeholder="e.g. Batch RTA-26B"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
+
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Product *</label>
@@ -459,19 +449,6 @@ const BatchForm = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Variant Selector (optional)</label>
-                <CustomDropdown
-                  value={formData.variantId}
-                  onChange={(val) => handleChange({ target: { name: 'variantId', value: val } })}
-                  placeholder="All variants (product-level)"
-                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                  options={[
-                    { value: '', label: 'All variants (product-level)' },
-                    ...productVariants.map(v => ({ value: v._id, label: `${v.title} — ${v.sku}` }))
-                  ]}
-                />
-              </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">Purity</label>
@@ -497,29 +474,6 @@ const BatchForm = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Testing Method</label>
-                <input
-                  type="text"
-                  name="method"
-                  value={formData.method}
-                  onChange={handleChange}
-                  placeholder="HPLC, UV + LC-MS Tested"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Appearance</label>
-                <input
-                  type="text"
-                  name="appearance"
-                  value={formData.appearance}
-                  onChange={handleChange}
-                  placeholder="e.g. White Lyophilised Powder"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
             </div>
           </div>
 
