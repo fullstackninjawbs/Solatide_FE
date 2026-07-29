@@ -350,6 +350,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     >
                                         <img
                                             src={product.imageUrl || product.image || productVialImage}
+                                            loading="lazy"
+                                            decoding="async"
                                             className={product.imageUrl || product.image
                                                 ? `object-contain w-full h-full p-2 sm:p-4 md:p-5 select-none transition-transform duration-500 group-hover:scale-105`
                                                 : `object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover:scale-[1.78] ${viewMode === 'list' ? 'translate-y-1' : 'translate-y-3'}`

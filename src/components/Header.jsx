@@ -172,9 +172,9 @@ const Header = () => {
                     <div className={`absolute flex items-center justify-center gap-2.5 transition-all duration-500 ease-in-out ${announcementIndex === 1 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
                         <span className="tracking-wide text-[14.5px] lg:text-[15.5px]">Card Payments Available</span>
 
-                        <img src={visaLogo} alt="Visa" className="h-[12px] lg:h-[13px] w-auto object-contain" />
-                        <img src={mastercardLogo} alt="Mastercard" className="h-[14px] lg:h-[15px] w-auto object-contain" />
-                        <img src={applePayLogo} alt="Apple Pay" className="h-[14px] lg:h-[15px] w-auto object-contain" />
+                        <img src={visaLogo} alt="Visa" loading="lazy" decoding="async" className="h-[12px] lg:h-[13px] w-auto object-contain" />
+                        <img src={mastercardLogo} alt="Mastercard" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
+                        <img src={applePayLogo} alt="Apple Pay" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
                     </div>
                 </div>
 
@@ -186,6 +186,8 @@ const Header = () => {
                                 <img
                                     src={logo}
                                     alt="Solatide Biosciences"
+                                    fetchpriority="high"
+                                    decoding="sync"
                                     className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[70px] lg:h-[100px]' : 'h-[50px] lg:h-[65px]'}`}
                                     style={{ imageRendering: 'high-quality' }}
                                 />
