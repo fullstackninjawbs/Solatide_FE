@@ -227,6 +227,8 @@ const ProductDetail = () => {
                                 <img
                                     src={images[activeTab]}
                                     alt="Product Preview"
+                                    fetchpriority="high"
+                                    decoding="sync"
                                     className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                 />
                             ) : (
@@ -250,7 +252,7 @@ const ProductDetail = () => {
                                 >
                                     {idx < dbImages.length ? (
                                         img ? (
-                                            <img src={img} alt="Product Thumbnail" className="w-full h-full object-contain" />
+                                            <img src={img} alt="Product Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] rounded-lg border border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px]">
                                                 No Img
@@ -258,7 +260,7 @@ const ProductDetail = () => {
                                         )
                                     ) : (
                                         img ? (
-                                            <img src={img} alt="Report Thumbnail" className="w-full h-full object-contain" />
+                                            <img src={img} alt="Report Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center border border-dashed border-slate-300 rounded-lg text-slate-400 text-[8px] font-bold p-1 text-center">
                                                 <span>COA REPORT</span>

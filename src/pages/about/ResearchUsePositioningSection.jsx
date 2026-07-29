@@ -75,7 +75,7 @@ const ResearchUsePositioningSection = () => {
                     {/* Right image */}
                     <div className="w-full lg:w-[45%] shrink-0 order-1 lg:order-2 relative">
                         <div className="rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 bg-white">
-                            <img src={pipetteImage} alt="Laboratory technician pipetting sample" className="w-full h-auto object-contain select-none" />
+                            <img src={pipetteImage} alt="Laboratory technician pipetting sample" loading="lazy" decoding="async" className="w-full h-auto object-contain select-none" />
                         </div>
                         <div className="absolute bottom-6 left-6 bg-white rounded-full px-4 py-2 shadow-md flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-[#0ea5e9]"></div>

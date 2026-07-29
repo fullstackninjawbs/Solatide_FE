@@ -94,6 +94,8 @@ const ShopPeptides = () => {
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
                                         <img
                                             src={product.imageUrl || product.image || productVialImage}
+                                            loading="lazy"
+                                            decoding="async"
                                             className={product.imageUrl || product.image
                                                 ? `object-contain w-full h-full p-3 select-none transition-transform duration-500 group-hover:scale-105`
                                                 : `w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105`

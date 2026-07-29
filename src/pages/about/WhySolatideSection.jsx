@@ -15,7 +15,7 @@ const WhySolatideSection = () => {
                         <div className="rounded-[20px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.2] lg:aspect-[1.15] bg-slate-200">
                             {/* Placeholder for an image since the original site has one here */}
                             <div className="rounded-[20px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.2] lg:aspect-[1.15]">
-                                <img src={lab} alt="Scientist holding vials" className="w-full h-full object-cover select-none" />
+                                <img src={lab} alt="Scientist holding vials" loading="lazy" decoding="async" className="w-full h-full object-cover select-none" />
                             </div>
                         </div>
                         <div className="absolute bottom-6 left-6 bg-white rounded-full px-4 py-2 shadow-md flex items-center gap-2">

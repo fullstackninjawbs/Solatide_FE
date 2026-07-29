@@ -103,6 +103,8 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                             >
                                 <img
                                     src={product.imageUrl || product.image || productVialImage}
+                                    loading="lazy"
+                                    decoding="async"
                                     className={product.imageUrl || product.image
                                         ? `object-contain w-full h-full p-3 select-none transition-transform duration-500 group-hover/card:scale-105`
                                         : `object-cover object-center scale-[1.7] select-none transition-transform duration-500 group-hover/card:scale-[1.78] translate-y-3`
