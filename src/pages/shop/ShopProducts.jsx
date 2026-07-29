@@ -1,11 +1,113 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star, Filter, X } from 'lucide-react';
 import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+
+const FilterSidebarContent = ({
+    selectedCategory,
+    setSelectedCategory,
+    availability,
+    setAvailability,
+    categories,
+    onClose
+}) => (
+    <>
+        <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
+            <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={() => {
+                        setSelectedCategory('all-products');
+                        setAvailability('In Stock');
+                    }}
+                    className="text-xs font-bold text-[#0ea5e9] hover:text-[#008bc7] transition-colors"
+                >
+                    Reset
+                </button>
+                {onClose && (
+                    <button onClick={onClose} className="text-slate-500 hover:text-black">
+                        <X size={20} />
+                    </button>
+                )}
+            </div>
+        </div>
+
+        {/* Availability Filter */}
+        <div className="mb-8">
+            <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Availability</h3>
+            <div className="space-y-1.5">
+                <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                    <input
+                        type="radio"
+                        name="availability"
+                        checked={availability === 'In Stock'}
+                        onChange={() => setAvailability('In Stock')}
+                        className="sr-only"
+                    />
+                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'In Stock'
+                        ? 'border-2 border-[#214A9E] bg-white'
+                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                        }`}>
+                        {availability === 'In Stock' && (
+                            <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
+                        )}
+                    </div>
+                    <span>In Stock</span>
+                </label>
+                <label className={`hidden items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                    <input
+                        type="radio"
+                        name="availability"
+                        checked={availability === 'Out of Stock'}
+                        onChange={() => setAvailability('Out of Stock')}
+                        className="sr-only"
+                    />
+                    <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'Out of Stock'
+                        ? 'border-2 border-[#214A9E] bg-white'
+                        : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                        }`}>
+                        {availability === 'Out of Stock' && (
+                            <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
+                        )}
+                    </div>
+                    <span>Out of Stock</span>
+                </label>
+            </div>
+        </div>
+
+        {/* Category Filter */}
+        <div>
+            <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Category</h3>
+            <div className="space-y-1.5">
+                {categories.map(category => (
+                    <label key={category.slug} className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${selectedCategory === category.slug ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                        <input
+                            type="radio"
+                            name="category"
+                            checked={selectedCategory === category.slug}
+                            onChange={() => setSelectedCategory(category.slug)}
+                            className="sr-only"
+                        />
+                        <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${selectedCategory === category.slug
+                            ? 'border-2 border-[#214A9E] bg-white'
+                            : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                            }`}>
+                            {selectedCategory === category.slug && (
+                                <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
+                            )}
+                        </div>
+                        <span>{category.name}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+    </>
+);
+
 const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
@@ -14,6 +116,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const [sortBy, setSortBy] = useState('Best selling');
     const [viewMode, setViewMode] = useState('grid');
     const [isSortOpen, setIsSortOpen] = useState(false);
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
     const dropdownRef = useRef(null);
 
     const sortOptions = [
@@ -222,6 +325,14 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             )}
                         </div>
                         <div className="flex items-center gap-3">
+                            {/* Mobile Filters Button */}
+                            <button
+                                className="lg:hidden bg-transparent px-2 py-1.5 text-[15px] font-bold text-[#1E1E1E] cursor-pointer flex items-center gap-1 focus:outline-none transition-all hover:opacity-85"
+                                onClick={() => setIsMobileFiltersOpen(true)}
+                            >
+                                <Filter size={16} /> Filters
+                            </button>
+
                             {/* Sort Dropdown */}
                             <div className="relative" ref={dropdownRef}>
                                 <button
@@ -241,7 +352,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 </button>
 
                                 {isSortOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-[#f8fafc] border border-[#E8E8E8] rounded-[16px] shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                                    <div className="absolute right-0 max-[360px]:-right-12 mt-2 w-56 bg-[#f8fafc] border border-[#E8E8E8] rounded-[16px] shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
                                         {sortOptions.map((option) => (
                                             <button
                                                 key={option}
@@ -321,26 +432,26 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         {/* Badges — stacked vertically on mobile to avoid overlap */}
                                         <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
                                             {product.inStock && product.status !== 'Sale' && (
-                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide  text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                                <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
+                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
                                                     In Stock
                                                 </span>
                                             )}
                                             {!product.inStock && (
-                                                <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide  text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                                                <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
+                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
                                                     Sold Out
                                                 </span>
                                             )}
                                             {product.inStock && product.status === 'Sale' && (
-                                                <span className="inline-flex items-center rounded-md bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-amber-700 border border-amber-200 shadow-sm whitespace-nowrap">
+                                                <span className="inline-flex items-center rounded-md bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-amber-700 border border-amber-200 shadow-sm whitespace-nowrap">
                                                     Sale
                                                 </span>
                                             )}
                                         </div>
 
-                                        <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm z-10">
-                                            <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-[#f59e0b] stroke-[#f59e0b]" />
+                                        <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-[#fef3c7]/90 backdrop-blur-sm px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-extrabold text-[#92400e] border border-[#f59e0b]/30 shadow-sm z-10">
+                                            <Star className="h-2 w-2 min-[360px]:h-2.5 min-[360px]:w-2.5 sm:h-3 sm:w-3 fill-[#f59e0b] stroke-[#f59e0b]" />
                                             <span>{(product.ratingCount > 0 || product.reviewsCount > 0) ? product.rating : '0'}</span>
                                         </span>
                                     </Link>
@@ -372,6 +483,30 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                     )}
                 </div>
             </div>
+
+            {/* Mobile Filters Drawer */}
+            {isMobileFiltersOpen && (
+                <div className="fixed inset-0 z-[9999] lg:hidden flex">
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-black/40 transition-opacity"
+                        onClick={() => setIsMobileFiltersOpen(false)}
+                    />
+                    {/* Drawer */}
+                    <div className="relative w-full max-w-[280px] h-full bg-white shadow-xl flex flex-col slide-in-from-left animate-in duration-300">
+                        <div className="p-5 flex-grow overflow-y-auto">
+                            <FilterSidebarContent
+                                selectedCategory={selectedCategory}
+                                setSelectedCategory={setSelectedCategory}
+                                availability={availability}
+                                setAvailability={setAvailability}
+                                categories={categories}
+                                onClose={() => setIsMobileFiltersOpen(false)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
