@@ -10,7 +10,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [availability, setAvailability] = useState('In Stock');
+    const [availability, setAvailability] = useState('All');
     const [sortBy, setSortBy] = useState('Best selling');
     const [viewMode, setViewMode] = useState('grid');
     const [isSortOpen, setIsSortOpen] = useState(false);
@@ -92,13 +92,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
             <div className="flex flex-col lg:flex-row gap-8 items-start">
 
                 {/* Filters Sidebar */}
-                <aside className="w-full lg:w-[260px] bg-white rounded-3xl p-5 border border-[#E8E8E8] shadow-sm shrink-0 text-left lg:sticky lg:top-28 h-fit">
+                <aside className="w-full lg:w-[280px] bg-white rounded-3xl p-4 border border-[#E8E8E8] shadow-sm shrink-0 text-left lg:sticky lg:top-28 max-h-[calc(100vh-120px)] overflow-y-auto">
                     <div className="flex items-center justify-between border-b border-[#E8E8E8] pb-4 mb-6">
                         <h2 className="text-[17px] font-bold text-[#214A9E]">Filters</h2>
                         <button
                             onClick={() => {
                                 setSelectedCategory('all-products');
-                                setAvailability('In Stock');
+                                setAvailability('All');
                             }}
                             className="text-xs font-bold text-[#0ea5e9] hover:text-[#008bc7] transition-colors"
                         >
@@ -110,6 +110,25 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                     <div className="mb-8">
                         <h3 className="text-[13px] font-bold text-[#1E1E1E] mb-3.5 uppercase tracking-wider">Availability</h3>
                         <div className="space-y-1.5">
+
+                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'All' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                                <input
+                                    type="radio"
+                                    name="availability"
+                                    checked={availability === 'All'}
+                                    onChange={() => setAvailability('All')}
+                                    className="sr-only"
+                                />
+                                <div className={`h-4 w-4 rounded-full flex items-center justify-center transition-all shrink-0 ${availability === 'All'
+                                    ? 'border-2 border-[#214A9E] bg-white'
+                                    : 'border border-slate-400 bg-white group-hover:border-slate-600'
+                                    }`}>
+                                    {availability === 'All' && (
+                                        <div className="h-2 w-2 rounded-full bg-[#214A9E]" />
+                                    )}
+                                </div>
+                                <span>All Availability</span>
+                            </label>
                             <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'In Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
@@ -128,7 +147,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 </div>
                                 <span>In Stock</span>
                             </label>
-                            <label className={`hidden items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
+                            <label className={`flex items-center gap-3 cursor-pointer group text-[14px] rounded-xl px-3.5 py-2.5 transition-all border ${availability === 'Out of Stock' ? 'bg-[#F0F7FF] border-[#E0EFFE] text-[#214A9E] font-semibold' : 'border-transparent text-slate-700 font-medium hover:text-black'}`}>
                                 <input
                                     type="radio"
                                     name="availability"
