@@ -244,7 +244,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Content Outlet */}
-        <main className="flex-grow p-6 sm:p-8 overflow-y-auto print:overflow-visible bg-[#f8fafc] print:bg-white">
+        <main id="admin-main-content" className="flex-grow p-6 sm:p-8 overflow-y-auto print:overflow-visible bg-[#f8fafc] print:bg-white">
           <Outlet />
         </main>
       </div>

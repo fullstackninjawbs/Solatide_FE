@@ -427,8 +427,34 @@ const ProductForm = () => {
     });
   };
 
+  const handleInvalid = (e) => {
+    // onInvalid fires for EVERY invalid input. We only want to handle the first one.
+    const firstInvalidElement = e.currentTarget.querySelector(':invalid');
+    if (e.target !== firstInvalidElement) return;
+
+    e.preventDefault();
+    firstInvalidElement.focus();
+    setError('Please fill in all required fields (marked with *).');
+
+    // Manually calculate scroll position within the custom container
+    const mainContent = document.getElementById('admin-main-content');
+    if (mainContent) {
+      const containerRect = mainContent.getBoundingClientRect();
+      const elementRect = firstInvalidElement.getBoundingClientRect();
+      
+      // Calculate position so the element is roughly centered/visible
+      const offsetTop = mainContent.scrollTop + (elementRect.top - containerRect.top) - 150;
+      
+      mainContent.scrollTo({ top: offsetTop, behavior: 'smooth' });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const mainContent = document.getElementById('admin-main-content');
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     setError('');
     setLoading(true);
 
@@ -601,7 +627,7 @@ const ProductForm = () => {
       )}
 
       {/* Main Two-Column Layout */}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <form onSubmit={handleSubmit} onInvalid={handleInvalid} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
         {/* Left main form section (ColSpan 8) */}
         <div className="lg:col-span-8 space-y-6">
