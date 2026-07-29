@@ -432,6 +432,12 @@ const ProductForm = () => {
     setError('');
     setLoading(true);
 
+    if (!formData.tagadaVariantId || formData.tagadaVariantId.trim() === '') {
+      setError('Tagada Product ID is required.');
+      setLoading(false);
+      return;
+    }
+
     // Format weight to grams for database storage
     const weightGrams = formData.weightUnit === 'kg'
       ? parseFloat(formData.weightGrams) * 1000
@@ -774,18 +780,25 @@ const ProductForm = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 self-center mt-6">
-                <input
-                  type="checkbox"
-                  id="taxable"
-                  name="taxable"
-                  checked={formData.taxable}
-                  onChange={handleChange}
-                  className="h-4.5 w-4.5 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
-                />
-                <label htmlFor="taxable" className="text-[13.5px] font-semibold text-slate-700 cursor-pointer select-none">
-                  Charge tax on this product
+              <div className="flex flex-col">
+                <label className="flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  Tagada Product ID <span className="text-red-500">*</span>
+                  <div className="relative group flex items-center">
+                    <HelpCircle className="h-3.5 w-3.5 text-slate-400 cursor-help hover:text-brand-blue transition-colors" />
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2.5 bg-slate-800 text-white text-[11px] font-normal leading-relaxed rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
+                      This ID is required for placing the order and processing payments securely through Tagada.
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                    </div>
+                  </div>
                 </label>
+                <input
+                  type="text"
+                  name="tagadaVariantId"
+                  value={formData.tagadaVariantId || ''}
+                  onChange={handleChange}
+                  placeholder="e.g. prod_..."
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue transition-all text-[14px] font-mono"
+                />
               </div>
             </div>
           </div>
@@ -1085,160 +1098,6 @@ const ProductForm = () => {
                 {memoizedOverviewEditor}
               </div>
             </div>
-          </div>
-
-          {/* Variants Table Card */}
-          <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="text-base font-bold text-brand-navy">Variants</h3>
-              <button
-                type="button"
-                onClick={() => {
-                  const newVariant = {
-                    title: 'New Variant',
-                    sku: `${formData.sku || 'sku'}-v${Date.now()}`,
-                    price: parseFloat(formData.price) || 0,
-                    compareAtPrice: null,
-                    stockQty: 0,
-                    inventoryPolicy: 'deny',
-                    requiresShipping: true,
-                    taxable: true,
-                    weightGrams: 10,
-                    tagadaVariantId: ''
-                  };
-                  setFormData(prev => ({ ...prev, _originalVariants: [...prev._originalVariants, newVariant] }));
-                }}
-                className="text-[13px] font-semibold text-brand-blue hover:underline cursor-pointer flex items-center gap-1"
-              >
-                <Plus className="h-3.5 w-3.5" /> Add variant
-              </button>
-            </div>
-
-            {formData._originalVariants.length === 0 ? (
-              <p className="text-[13px] text-slate-400 italic">No variants. A default variant will be created on save.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-[13px]">
-                  <thead>
-                    <tr className="border-b border-slate-100 text-[11px] uppercase font-bold text-slate-400 tracking-wider">
-                      <th className="pb-2">Title</th>
-                      <th className="pb-2">SKU</th>
-                      <th className="pb-2">Price</th>
-                      <th className="pb-2">Stock</th>
-                      <th className="pb-2">Tagada ID</th>
-                      <th className="pb-2">Current Batch</th>
-                      <th className="pb-2 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {formData._originalVariants.map((variant, idx) => (
-                      <tr key={idx} className="py-2">
-                        <td className="py-2 pr-3">
-                          <input
-                            type="text"
-                            value={variant.title || ''}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = { ...updated[idx], title: e.target.value };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px] min-w-[90px]"
-                          />
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="text"
-                            value={variant.sku || ''}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = { ...updated[idx], sku: e.target.value };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px] font-mono min-w-[90px]"
-                          />
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="number"
-                            value={variant.price || ''}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = { ...updated[idx], price: parseFloat(e.target.value) || 0 };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="w-24 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px]"
-                          />
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="number"
-                            value={variant.stockQty || 0}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = { ...updated[idx], stockQty: parseInt(e.target.value) || 0 };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="w-20 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px]"
-                          />
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="text"
-                            value={variant.tagadaVariantId || ''}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = { ...updated[idx], tagadaVariantId: e.target.value };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            placeholder="var_..."
-                            className="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px] font-mono min-w-[100px]"
-                          />
-                        </td>
-                        <td className="py-2 pr-3">
-                          <select
-                            value={variant.currentBatchId?._id || variant.currentBatchId || variant.currentBatch?._id || ''}
-                            onChange={e => {
-                              const updated = [...formData._originalVariants];
-                              updated[idx] = {
-                                ...updated[idx],
-                                currentBatchId: e.target.value || null,
-                                currentBatch: e.target.value ? { _id: e.target.value } : null
-                              };
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 text-[12.5px] cursor-pointer"
-                          >
-                            <option value="">No Batch</option>
-                            {batchesList
-                              .filter(b => {
-                                const bProductId = b.productId?._id || b.productId;
-                                return bProductId === id;
-                              })
-                              .map(b => (
-                                <option key={b._id} value={b._id}>
-                                  {b.batchId} ({b.purity || 'No purity'})
-                                </option>
-                              ))}
-                          </select>
-                        </td>
-                        <td className="py-2 text-right">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = formData._originalVariants.filter((_, i) => i !== idx);
-                              setFormData(prev => ({ ...prev, _originalVariants: updated }));
-                            }}
-                            className="text-red-400 hover:text-red-600 p-1 rounded-lg cursor-pointer"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
           </div>
 
           {/* Search Engine Listing Preview */}
