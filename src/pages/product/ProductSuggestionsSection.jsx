@@ -6,6 +6,7 @@ import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
@@ -102,7 +103,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
-                                    src={product.imageUrl || product.image || productVialImage}
+                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
                                     loading="lazy"
                                     decoding="async"
                                     className={product.imageUrl || product.image

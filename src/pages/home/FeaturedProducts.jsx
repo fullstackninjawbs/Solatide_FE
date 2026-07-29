@@ -6,6 +6,7 @@ import { products as localProducts } from '../../data/products'
 import { useCart } from '../../context/CartContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import { apiService } from '../../services/api'
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -101,7 +102,7 @@ const FeaturedProducts = () => {
                                 >
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
                                         <img
-                                            src={product.imageUrl || product.image || productVialImage}
+                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
                                             loading="lazy"
                                             decoding="async"
                                             className={product.imageUrl || product.image

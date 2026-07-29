@@ -11,6 +11,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 
 
 
@@ -152,12 +153,12 @@ const ProductDetail = () => {
     }
 
     const dbImages = product.images && product.images.length > 0
-        ? product.images.map(img => (typeof img === 'string' ? img : img.url)).filter(Boolean)
-        : [product.imageUrl || product.image || retatrutideVial].filter(Boolean);
+        ? product.images.map(img => optimizeCloudinaryUrl(typeof img === 'string' ? img : img.url)).filter(Boolean)
+        : [optimizeCloudinaryUrl(product.imageUrl || product.image) || retatrutideVial].filter(Boolean);
 
     const coaImages = [
-        product.coaImage1,
-        product.coaImage2
+        optimizeCloudinaryUrl(product.coaImage1),
+        optimizeCloudinaryUrl(product.coaImage2)
     ].filter(Boolean);
 
 

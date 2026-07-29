@@ -6,6 +6,7 @@ import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 
 const FilterSidebarContent = ({
     selectedCategory,
@@ -349,7 +350,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[14px] sm:rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[180px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
                                     >
                                         <img
-                                            src={product.imageUrl || product.image || productVialImage}
+                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
                                             loading="lazy"
                                             decoding="async"
                                             className={product.imageUrl || product.image
