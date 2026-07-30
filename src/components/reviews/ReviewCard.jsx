@@ -43,7 +43,7 @@ const ReviewCard = ({ review, index }) => {
             {review.displayName || review.name || 'Anonymous'}
           </h5>
           <span className="text-slate-400 text-[12px] mt-0.5">
-            {review.role || 'Biotech Researcher'}
+            {review.role || ''}
           </span>
         </div>
       </div>
