@@ -130,6 +130,33 @@ const ReviewList = () => {
     return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setLoading(true);
+      const res = await apiService.importAdminReviews(formData);
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+        fetchReviews(); // refresh list
+      } else {
+        alert(data.message || 'Failed to import reviews.');
+      }
+    } catch (err) {
+      console.error('Import error:', err);
+      alert('An error occurred during import.');
+    } finally {
+      setLoading(false);
+      // Reset input
+      e.target.value = '';
+    }
+  };
+
   return (
     <div className="space-y-6 text-left font-sans">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -138,8 +165,13 @@ const ReviewList = () => {
           <p className="text-slate-500 text-[14px]">Manage and moderate customer product reviews.</p>
         </div>
         
-        {/* Filters */}
+        {/* Filters and Actions */}
         <div className="flex items-center gap-2">
+          <label className="cursor-pointer bg-brand-navy hover:bg-brand-navy/90 text-white px-4 py-2.5 rounded-xl text-[14px] font-medium transition-colors shadow-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Import XLSX
+            <input type="file" accept=".xlsx, .xls, .csv" onChange={handleFileUpload} className="hidden" />
+          </label>
           <CustomDropdown
             value={filterStatus}
             options={statusOptions}

@@ -117,6 +117,13 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  importAdminReviews: async (formData) => {
+    return fetch(`${API_URL}/api/v1/reviews/import`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }, // Content-Type omitted for formData
+      body: formData
+    });
+  },
 
   // Checkout / Orders
   createOrder: async (data) => {

@@ -111,7 +111,7 @@ const HeroSection = () => {
                                     <FileText size={18} strokeWidth={2.5} /> View Documents →
                                 </Link>
                             </div>
-                            
+
                             {/* Features Container (Tablet) */}
                             <div className="mt-8 w-full max-w-full flex justify-center">
                                 <FeatureCards />
@@ -168,7 +168,7 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Features Container */}
-                                <div className="mt-8 w-full lg:w-fit max-w-full">
+                                <div className="mt-4 w-full lg:w-fit max-w-full">
                                     <FeatureCards />
                                 </div>
 
