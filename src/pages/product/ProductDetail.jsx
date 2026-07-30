@@ -202,9 +202,16 @@ const ProductDetail = () => {
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
     const displayCompareAtPrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice;
-    const isOutOfStock = selectedVariant
-        ? selectedVariant.stockQty <= 0
-        : product.inStock === false || product.stockQuantity <= 0;
+    const isOutOfStock = (() => {
+        if (selectedVariant) {
+            const hasStock = (selectedVariant.stockQty ?? 0) > 0;
+            const canContinueSelling = selectedVariant.inventoryPolicy === 'continue' || selectedVariant.continueSellingWhenOutOfStock || product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
+            return !hasStock && !canContinueSelling;
+        }
+        const hasStock = product.inStock !== false && ((product.stockQuantity ?? 0) > 0 || (product.stockQty ?? 0) > 0);
+        const canContinueSelling = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
+        return !hasStock && !canContinueSelling;
+    })();
 
     const hasVariantsToSelect = product.variants && product.variants.length > 0 && !(product.variants.length === 1 && product.variants[0].title === 'Default Title');
 

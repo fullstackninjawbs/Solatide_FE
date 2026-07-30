@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp,
   ShoppingBag,
@@ -14,6 +16,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import CustomDropdown from '../../components/CustomDropdown';
 import { apiService } from '../../services/api';
 import toast from 'react-hot-toast';
+import LiveViewSection from '../../components/analytics/LiveViewSection';
 
 const Dashboard = () => {
   const { formatAUD } = useCurrency();
@@ -24,6 +27,10 @@ const Dashboard = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [recentCustomers, setRecentCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Live visitors
+  const [liveData, setLiveData] = useState(null);
+  const [liveOpen, setLiveOpen] = useState(false);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -67,6 +74,24 @@ const Dashboard = () => {
     fetchDashboard();
   }, [timeFilter, formatAUD]);
 
+  // Fetch live overview and auto-refresh every 30s
+  const fetchLive = async () => {
+    try {
+      const now = new Date();
+      const from = new Date(now.getTime() - 24 * 60 * 60 * 1000); // last 24h for context
+      const params = new URLSearchParams({ from: from.toISOString(), to: now.toISOString() });
+      const res = await apiService.getAnalyticsOverview(params.toString());
+      const data = await res.json();
+      if (data.success) setLiveData(data.data);
+    } catch { /* silently ignore — never break dashboard */ }
+  };
+
+  useEffect(() => {
+    fetchLive();
+    const interval = setInterval(fetchLive, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full min-h-[400px]">
@@ -98,6 +123,9 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* ─── Shopify Style Live View Section ─── */}
+      <LiveViewSection />
+
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => {
@@ -118,6 +146,174 @@ const Dashboard = () => {
           );
         })}
       </div>
+
+      {/* ─── Live Visitors Card ─────────────────────────────────────── */}
+      <button
+        onClick={() => setLiveOpen(true)}
+        className="w-full text-left bg-gradient-to-r from-[#0f2a5e] to-[#1a3f8f] border border-[#1e4ea0] rounded-[20px] p-5 shadow-lg flex items-center justify-between gap-4 hover:from-[#0d2454] hover:to-[#163680] transition-all cursor-pointer"
+      >
+        <div className="flex items-center gap-4">
+          <div className="relative shrink-0">
+            <div className="h-11 w-11 rounded-2xl bg-white/10 flex items-center justify-center">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+          </div>
+          <div>
+            <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider">Live Right Now</p>
+            <p className="text-3xl font-bold text-white leading-none mt-0.5">
+              {liveData ? liveData.liveVisitors : <span className="text-white/30 text-xl">—</span>}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-6 shrink-0">
+          {liveData?.sessionsByCountry?.slice(0, 3).map((c) => (
+            <div key={c.country} className="hidden sm:flex flex-col items-center">
+              <span className="text-white font-bold text-lg">{c.sessions}</span>
+              <span className="text-white/50 text-[11px] font-medium">{c.country || '—'}</span>
+            </div>
+          ))}
+          <div className="flex items-center gap-1.5 text-white/70 text-[13px] font-semibold">
+            <span>View details</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+        </div>
+      </button>
+
+      {/* ─── Live Details Slide-Over (Portaled to body with framer-motion) ─── */}
+      {createPortal(
+        <AnimatePresence>
+          {liveOpen && (
+            <div className="fixed inset-0 z-[9999] flex justify-end !mt-0 m-0 overflow-hidden">
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[9999]"
+                onClick={() => setLiveOpen(false)}
+              />
+
+              {/* Panel */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                className="relative w-full max-w-md bg-white shadow-2xl flex flex-col h-full overflow-y-auto z-[10000] !mt-0"
+              >
+                {/* Header */}
+                <div className="bg-gradient-to-r from-[#0f2a5e] to-[#1a3f8f] p-6 flex items-center justify-between shrink-0">
+                  <div>
+                    <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Live Visitors</p>
+                    <p className="text-4xl font-bold text-white mt-1">{liveData?.liveVisitors ?? '—'}</p>
+                    <p className="text-white/50 text-xs mt-1">Active in the last 5 minutes</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <button onClick={() => setLiveOpen(false)} className="text-white/60 hover:text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                    <button onClick={fetchLive} className="text-white/50 hover:text-white flex items-center gap-1 text-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-6 flex-grow">
+                  {/* Period stats */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-slate-50 rounded-xl p-3 text-center">
+                      <p className="text-xl font-bold text-slate-800">{liveData?.sessions ?? '—'}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Sessions (24h)</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-3 text-center">
+                      <p className="text-xl font-bold text-slate-800">{liveData?.orders ?? '—'}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Orders (24h)</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-3 text-center">
+                      <p className="text-xl font-bold text-slate-800">{liveData?.abandonedCarts ?? '—'}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Abandoned</p>
+                    </div>
+                  </div>
+
+                  {/* Sessions by Country */}
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      Sessions by Country (24h)
+                    </h4>
+                    {liveData?.sessionsByCountry?.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {liveData.sessionsByCountry.map((row, i) => {
+                          const max = liveData.sessionsByCountry[0]?.sessions || 1;
+                          const pct = Math.round((row.sessions / max) * 100);
+                          return (
+                            <div key={row.country || i} className="flex items-center gap-3">
+                              <span className="text-sm font-medium text-slate-600 w-24 shrink-0 truncate">{row.country || 'Unknown'}</span>
+                              <div className="flex-grow bg-slate-100 rounded-full h-2">
+                                <div className="h-2 rounded-full bg-[#1a3f8f]" style={{ width: `${pct}%` }} />
+                              </div>
+                              <span className="text-sm font-bold text-slate-700 w-8 text-right shrink-0">{row.sessions}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400 italic">No location data yet — country is tracked on completed orders.</p>
+                    )}
+                  </div>
+
+                  {/* Funnel */}
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                      Conversion Funnel (24h)
+                    </h4>
+                    <div className="space-y-2">
+                      {[
+                        { label: 'Sessions', value: liveData?.sessions, color: 'bg-[#1a3f8f]' },
+                        { label: 'Checkout Started', value: (liveData?.orders ?? 0) + (liveData?.abandonedCarts ?? 0), color: 'bg-amber-400' },
+                        { label: 'Orders Completed', value: liveData?.orders, color: 'bg-emerald-500' },
+                      ].map(({ label, value, color }) => {
+                        const max = liveData?.sessions || 1;
+                        const pct = Math.min(100, Math.round(((value || 0) / max) * 100));
+                        return (
+                          <div key={label}>
+                            <div className="flex justify-between text-xs font-medium text-slate-500 mb-1">
+                              <span>{label}</span>
+                              <span className="font-bold text-slate-700">{value ?? '—'}</span>
+                            </div>
+                            <div className="bg-slate-100 rounded-full h-2.5">
+                              <div className={`h-2.5 rounded-full ${color}`} style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100">
+                    <Link
+                      to="/admin/analytics"
+                      onClick={() => setLiveOpen(false)}
+                      className="flex items-center justify-center gap-2 w-full bg-[#0f2a5e] text-white text-sm font-semibold py-3 rounded-xl hover:bg-[#0d2454] transition-colors"
+                    >
+                      View Full Analytics
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Actions & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

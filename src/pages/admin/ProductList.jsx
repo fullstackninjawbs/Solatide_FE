@@ -339,7 +339,6 @@ const ProductList = () => {
                     <th className="py-4">Inventory</th>
                     <th className="py-4">Category</th>
                     <th className="py-4">Research Focus</th>
-                    <th className="py-4">Channels</th>
                     <th className="py-4">Product type</th>
                     <th className="py-4">Vendor</th>
                     <th className="py-4 pr-6 text-right w-24">Actions</th>
@@ -404,7 +403,6 @@ const ProductList = () => {
                        product.researchCategory === 'laboratory-support' ? 'Laboratory Support' : 
                        'None'}
                     </td>
-                    <td className="py-3.5 font-semibold text-slate-700">2</td>
                     <td className="py-3.5 text-slate-600">{product.productType || 'Research Peptides'}</td>
                     <td className="py-3.5 text-slate-500">{product.vendor || 'Solatide Biosciences'}</td>
                     <td className="py-3.5 pr-6 text-right">

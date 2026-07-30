@@ -212,7 +212,7 @@ const AdminLayout = () => {
       {/* Main Workspace */}
       <div className="flex-grow flex flex-col min-w-0 h-screen print:h-auto overflow-hidden print:overflow-visible">
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-40 shrink-0 print:hidden">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-8 z-20 shrink-0 print:hidden">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-bold text-brand-navy capitalize">
               {location.pathname === '/admin'
