@@ -77,6 +77,9 @@ const ProductForm = () => {
     // Selected manual collection IDs
     collections: [],
 
+    inventoryPolicy: 'deny',
+    continueSellingWhenOutOfStock: false,
+
     _originalVariants: [],
     currentBatch: null,
     technicalSpecsTable: []
@@ -283,7 +286,9 @@ const ProductForm = () => {
             technicalSpecsTable: product.technicalSpecsTable || [],
             taxable: product.variants?.[0]?.taxable !== false,
             showPendingResultsSection: product.showPendingResultsSection !== false,
-            collections: product.collections || []
+            collections: product.collections || [],
+            inventoryPolicy: product.inventoryPolicy || product.variants?.[0]?.inventoryPolicy || (product.continueSellingWhenOutOfStock ? 'continue' : 'deny'),
+            continueSellingWhenOutOfStock: (product.inventoryPolicy === 'continue' || product.variants?.[0]?.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true)
           });
           setInitialDescription(product.description || '');
           setInitialOverview(product.overviewHtml || '');
@@ -504,11 +509,14 @@ const ProductForm = () => {
       };
     }
 
+    const chosenPolicy = formData.inventoryPolicy || (formData.continueSellingWhenOutOfStock ? 'continue' : 'deny');
+
     // Map variants list payload to ensure clean currentBatchId reference values are sent
     const mappedVariants = updatedVariants.map(v => {
       const bId = v.currentBatchId?._id || v.currentBatchId || v.currentBatch?._id || null;
       return {
         ...v,
+        inventoryPolicy: chosenPolicy,
         currentBatchId: bId === '' ? null : bId
       };
     });
@@ -521,6 +529,8 @@ const ProductForm = () => {
       compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : undefined,
       stockQuantity: parseInt(formData.stockQuantity, 10),
       lowStockThreshold: parseInt(formData.lowStockThreshold, 10),
+      inventoryPolicy: chosenPolicy,
+      continueSellingWhenOutOfStock: chosenPolicy === 'continue',
       category: formData.category,
       researchCategory: formData.researchCategory,
       imageUrl: finalImageUrl,
