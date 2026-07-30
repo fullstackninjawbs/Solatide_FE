@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
+import { trackEvent } from '../../utils/analytics';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -21,6 +22,13 @@ const Checkout = () => {
   const discount = discountApplied ? subtotal * 0.1 : 0;
   // Shipping cost will be calculated and added natively by TagadaPay at checkout
   const total = subtotal - discount;
+
+  // Fire begin_checkout analytics event on mount
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      trackEvent('begin_checkout', { cartValue: cartTotalPrice });
+    }
+  }, []);
 
   const handleApplyDiscount = () => {
     if (discountCode.trim() === '') return;

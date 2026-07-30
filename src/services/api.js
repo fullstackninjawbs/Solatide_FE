@@ -198,6 +198,12 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  getAnalyticsOverview: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/overview${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
 
   // Dashboard Analytics (Legacy)
   getDashboardAnalytics: async (timeFilter = 'Today') => {

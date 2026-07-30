@@ -44,7 +44,7 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
             const productId = product._id || product.id;
             try {
                 setIsLoading(true);
-                const res = await apiService.getProductReviews(productId);
+                const res = await apiService.getProductReviews(productId, 'limit=100');
                 const data = await res.json();
                 if (data.success && data.reviews) {
                     setReviews(data.reviews);

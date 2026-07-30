@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { Suspense, lazy, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import AdminLayout from '../layouts/AdminLayout'
+import { trackEvent } from '../utils/analytics'
 
 const AdminLogin = lazy(() => import('../pages/admin/AdminLogin'))
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
@@ -53,9 +54,23 @@ const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
 const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
 
+// ─── Page View Tracker ─────────────────────────────────────────────────────────
+// Fires page_view on every route change. Rendered inside BrowserRouter so
+// useLocation works. Admin routes are excluded (no admin tracking).
+const PageViewTracker = () => {
+  const location = useLocation();
+  useEffect(() => {
+    // Skip admin panel pages
+    if (location.pathname.startsWith('/admin')) return;
+    trackEvent('page_view', { page: location.pathname });
+  }, [location.pathname]);
+  return null;
+};
+
 const AppRoutes = () => {
     return (
         <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
+            <PageViewTracker />
             <Routes>
                 {/* Admin Auth Route */}
                 <Route path="/admin/login" element={<AdminLogin />} />

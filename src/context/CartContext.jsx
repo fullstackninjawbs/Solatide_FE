@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { trackEvent } from '../utils/analytics';
 
 const CartContext = createContext();
 
@@ -59,6 +60,16 @@ export const CartProvider = ({ children }) => {
             }];
         });
         setIsCartOpen(true);
+        // Analytics: fire add_to_cart
+        try {
+            const resolvedVariantForAnalytics = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
+            const price = resolvedVariantForAnalytics ? resolvedVariantForAnalytics.price : product.price;
+            const numericPrice = typeof price === 'string' ? parseFloat(price.replace(/[^0-9.]/g, '')) : price;
+            trackEvent('add_to_cart', {
+                productId: product._id || product.id,
+                cartValue: (numericPrice || 0) * quantity,
+            });
+        } catch { /* analytics never breaks the cart */ }
     };
 
     const removeFromCart = (cartItemId) => {

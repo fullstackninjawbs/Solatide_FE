@@ -4,6 +4,7 @@ import { CheckCircle, Package, ArrowRight, Loader2 } from 'lucide-react';
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { useCart } from '../../context/CartContext';
+import { trackEvent } from '../../utils/analytics';
 
 const CheckoutSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -27,6 +28,15 @@ const CheckoutSuccess = () => {
         const data = await res.json();
         if (res.ok && data.success) {
           setOrder(data.data.order);
+          // Fire purchase analytics event
+          try {
+            const ord = data.data.order;
+            trackEvent('purchase', {
+              orderId: ord._id,
+              cartValue: ord.grandTotal || ord.totalAmount,
+              country: ord.shippingAddress?.country || ord.tagadaShipping?.address?.countryCode || undefined,
+            });
+          } catch { /* analytics never breaks the success page */ }
         } else {
           setError('Could not load order details.');
         }
