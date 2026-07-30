@@ -88,7 +88,7 @@ const LiveViewSection = ({ className = "" }) => {
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
           title="Refresh Live Data"
         >
-          <RefreshCw />
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
 

@@ -30,6 +30,7 @@ const Dashboard = () => {
 
   // Live visitors
   const [liveData, setLiveData] = useState(null);
+  const [liveLoading, setLiveLoading] = useState(false);
   const [liveOpen, setLiveOpen] = useState(false);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const Dashboard = () => {
   // Fetch live overview and auto-refresh every 30s
   const fetchLive = async () => {
     try {
+      setLiveLoading(true);
       const now = new Date();
       const from = new Date(now.getTime() - 24 * 60 * 60 * 1000); // last 24h for context
       const params = new URLSearchParams({ from: from.toISOString(), to: now.toISOString() });
@@ -84,6 +86,9 @@ const Dashboard = () => {
       const data = await res.json();
       if (data.success) setLiveData(data.data);
     } catch { /* silently ignore — never break dashboard */ }
+    finally {
+      setLiveLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -217,8 +222,8 @@ const Dashboard = () => {
                     <button onClick={() => setLiveOpen(false)} className="text-white/60 hover:text-white">
                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
-                    <button onClick={fetchLive} className="text-white/50 hover:text-white flex items-center gap-1 text-xs">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <button onClick={fetchLive} disabled={liveLoading} className="text-white/50 hover:text-white flex items-center gap-1 text-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={liveLoading ? 'animate-spin' : ''}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                       Refresh
                     </button>
                   </div>
