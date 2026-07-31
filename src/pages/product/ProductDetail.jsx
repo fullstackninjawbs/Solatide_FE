@@ -111,7 +111,11 @@ const ProductDetail = () => {
                         setProduct(result.data.product);
                         saveToRecentlyViewed(result.data.product);
                         // Fire product_view analytics event
-                        trackEvent('product_view', { productId: result.data.product._id });
+                        trackEvent('product_view', {
+                            productId: result.data.product._id,
+                            productName: result.data.product.name,
+                            path: window.location.pathname
+                        });
                     } else {
                         const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
                         setProduct(fallback);

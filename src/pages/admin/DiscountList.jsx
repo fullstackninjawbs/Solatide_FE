@@ -16,6 +16,7 @@ const DiscountList = () => {
   const urlQ = searchParams.get('q') || '';
 
   const [discounts, setDiscounts] = useState([]);
+  const [tagadaPortalUrl, setTagadaPortalUrl] = useState('https://app.tagada.io/org/gracie-collins-1779009767064524065/stores/store_6b8fa1a123cf/general/promotions/discounts');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [total, setTotal] = useState(0);
@@ -60,6 +61,9 @@ const DiscountList = () => {
       const data = await res.json();
       if (data.success && data.data) {
         setDiscounts(data.data.discounts);
+        if (data.data.tagadaPortalUrl) {
+          setTagadaPortalUrl(data.data.tagadaPortalUrl);
+        }
         setTotal(data.total ?? data.data.pagination?.total ?? 0);
       } else {
         setError('Failed to fetch discounts.');
@@ -139,11 +143,9 @@ const DiscountList = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Sync from Tagada
           </AdminSecondaryButton>
-          <div className='hidden' title="Order mgmt will happen in Tagada">
-            <AdminPrimaryButton href="https://app.tagadapay.com/dashboard" target="_blank">
-              Create discount
-            </AdminPrimaryButton>
-          </div>
+          <AdminPrimaryButton href={tagadaPortalUrl} target="_blank">
+            Create discount
+          </AdminPrimaryButton>
         </div>
       </div>
 
@@ -196,10 +198,7 @@ const DiscountList = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
-                  <th className="py-4 pl-6 w-12">
-                    <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
-                  </th>
-                  <th className="py-4 pl-2 pr-4 min-w-[200px]">Title</th>
+                  <th className="py-4 pl-6 pr-4 min-w-[200px]">Title</th>
                   <th className="py-4 px-4">Status</th>
                   <th className="py-4 px-4">Method</th>
                   <th className="py-4 px-4">Eligibility</th>
@@ -212,13 +211,10 @@ const DiscountList = () => {
               <tbody className="divide-y divide-slate-100 text-[14px]">
                 {discounts.map((discount) => (
                   <tr key={discount._id} className="hover:bg-slate-50/60 transition-colors group">
-                    <td className="py-3.5 pl-6">
-                      <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
-                    </td>
-                    <td className="py-3.5 pl-2 pr-4">
-                      <Link to={`/admin/discounts/edit/${discount._id}`} className="font-semibold text-slate-800 hover:text-brand-blue transition-colors">
+                    <td className="py-3.5 pl-6 pr-4">
+                      <span className="font-semibold text-slate-800">
                         {discount.code}
-                      </Link>
+                      </span>
                       <div className="text-slate-500 text-[13px] mt-0.5">
                         {discount.type === 'percent' ? `${discount.value}%` : `$${discount.value}`} off {discount.appliesTo === 'all' ? 'entire order' : discount.appliesTo}
                       </div>
@@ -261,11 +257,11 @@ const DiscountList = () => {
                     <td className="py-3.5 pr-6 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <a
-                          href="https://app.tagadapay.com/dashboard"
+                          href={tagadaPortalUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
-                          title="Order mgmt will happen in Tagada"
+                          title="Manage store discounts in Tagada"
                         >
                           Manage in Tagada
                         </a>

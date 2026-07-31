@@ -39,6 +39,25 @@ export function getSessionId() {
   }
 }
 
+function detectClientCountry() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('Asia/Colombo') || tz.includes('Asia/Kathmandu') || tz.includes('Asia/Karachi')) return 'India';
+    if (tz.includes('Australia') || tz.includes('Sydney') || tz.includes('Melbourne') || tz.includes('Brisbane') || tz.includes('Perth')) return 'Australia';
+    if (tz.includes('America') || tz.includes('US/') || tz.includes('New_York') || tz.includes('Los_Angeles')) return 'United States';
+    if (tz.includes('Europe/London')) return 'United Kingdom';
+    if (tz.includes('Canada') || tz.includes('Toronto') || tz.includes('Vancouver')) return 'Canada';
+    
+    const lang = (navigator.language || '').toUpperCase();
+    if (lang.includes('IN')) return 'India';
+    if (lang.includes('AU')) return 'Australia';
+    if (lang.includes('US')) return 'United States';
+    if (lang.includes('GB') || lang.includes('UK')) return 'United Kingdom';
+    if (lang.includes('CA')) return 'Canada';
+  } catch {}
+  return 'India';
+}
+
 // ─── Event Tracker ────────────────────────────────────────────────────────────
 
 /**
@@ -52,6 +71,7 @@ export function trackEvent(eventType, metadata = {}) {
       sessionId: getSessionId(),
       eventType,
       timestamp: new Date().toISOString(),
+      country: metadata.country || detectClientCountry(),
       ...metadata,
     });
 

@@ -62,7 +62,7 @@ const PageViewTracker = () => {
   useEffect(() => {
     // Skip admin panel pages
     if (location.pathname.startsWith('/admin')) return;
-    trackEvent('page_view', { page: location.pathname });
+    trackEvent('page_view', { page: location.pathname, path: location.pathname });
   }, [location.pathname]);
   return null;
 };

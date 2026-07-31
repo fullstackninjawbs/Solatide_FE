@@ -67,7 +67,9 @@ export const CartProvider = ({ children }) => {
             const numericPrice = typeof price === 'string' ? parseFloat(price.replace(/[^0-9.]/g, '')) : price;
             trackEvent('add_to_cart', {
                 productId: product._id || product.id,
+                productName: product.name || 'Research Compound',
                 cartValue: (numericPrice || 0) * quantity,
+                path: window.location.pathname
             });
         } catch { /* analytics never breaks the cart */ }
     };
