@@ -164,7 +164,7 @@ const AnalyticsDashboard = () => {
       )}
 
       {/* ─── Shopify Style Live View Section ─── */}
-      <LiveViewSection className="mb-8" />
+      <LiveViewSection className="mb-8" showViewAdvancedButton={false} />
 
 
       {loading ? (

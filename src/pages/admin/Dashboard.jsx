@@ -10,7 +10,9 @@ import {
   PlusCircle,
   Truck,
   Package,
-  Loader2
+  Loader2,
+  BarChart3,
+  ArrowRight
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -21,7 +23,7 @@ import LiveViewSection from '../../components/analytics/LiveViewSection';
 const Dashboard = () => {
   const { formatAUD } = useCurrency();
   const [timeFilter, setTimeFilter] = useState('Today');
-  
+
   const [stats, setStats] = useState([]);
   const [lowStockProducts, setLowStockProducts] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
@@ -125,11 +127,18 @@ const Dashboard = () => {
               { value: 'Year to Date', label: 'Year to Date' }
             ]}
           />
+          <Link
+            to="/admin/analytics"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0f2a5e] text-white hover:bg-[#15387a] text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer group"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-blue-200 group-hover:scale-110 transition-transform" />
+            <span>View Full Analytics</span>
+            <ArrowRight className="w-3.5 h-3.5 text-blue-200 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         </div>
       </div>
 
-      {/* ─── Shopify Style Live View Section ─── */}
-      <LiveViewSection />
+
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -183,7 +192,7 @@ const Dashboard = () => {
           ))}
           <div className="flex items-center gap-1.5 text-white/70 text-[13px] font-semibold">
             <span>View details</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
           </div>
         </div>
       </button>
@@ -220,10 +229,10 @@ const Dashboard = () => {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <button onClick={() => setLiveOpen(false)} className="text-white/60 hover:text-white">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                     </button>
                     <button onClick={fetchLive} disabled={liveLoading} className="text-white/50 hover:text-white flex items-center gap-1 text-xs">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={liveLoading ? 'animate-spin' : ''}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={liveLoading ? 'animate-spin' : ''}><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" /></svg>
                       Refresh
                     </button>
                   </div>
@@ -249,7 +258,7 @@ const Dashboard = () => {
                   {/* Sessions by Country */}
                   <div>
                     <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
                       Sessions by Country (24h)
                     </h4>
                     {liveData?.sessionsByCountry?.length > 0 ? (
@@ -276,7 +285,7 @@ const Dashboard = () => {
                   {/* Funnel */}
                   <div>
                     <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
                       Conversion Funnel (24h)
                     </h4>
                     <div className="space-y-2">
@@ -309,7 +318,7 @@ const Dashboard = () => {
                       className="flex items-center justify-center gap-2 w-full bg-[#0f2a5e] text-white text-sm font-semibold py-3 rounded-xl hover:bg-[#0d2454] transition-colors"
                     >
                       View Full Analytics
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                     </Link>
                   </div>
                 </div>
@@ -402,10 +411,9 @@ const Dashboard = () => {
                         {order.currency || 'AUD'} {order.totalAmount?.toFixed(2) || '0.00'}
                       </td>
                       <td className="py-3.5 text-right pr-4">
-                        <span className={`inline-flex items-center text-[11px] font-bold uppercase rounded-full px-2.5 py-0.5 ${
-                          order.paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-600' : 
+                        <span className={`inline-flex items-center text-[11px] font-bold uppercase rounded-full px-2.5 py-0.5 ${order.paymentStatus === 'paid' ? 'bg-emerald-50 text-emerald-600' :
                           order.paymentStatus === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-600'
-                        }`}>
+                          }`}>
                           {order.paymentStatus || 'unknown'}
                         </span>
                       </td>

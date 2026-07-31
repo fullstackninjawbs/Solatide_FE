@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, RefreshCw, TrendingUp, ShoppingBag, Activity, ShieldAlert, ArrowRight, Eye, ShoppingCart, CreditCard, CheckCircle2, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Globe, RefreshCw, TrendingUp, ShoppingBag, Activity, ShieldAlert, ArrowRight, Eye, ShoppingCart, CreditCard, CheckCircle2, Clock, BarChart3 } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -73,7 +74,7 @@ const Sparkline = ({ data = [], color = "#0079CD" }) => {
   );
 };
 
-const LiveViewSection = ({ className = "" }) => {
+const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
   const { formatAUD } = useCurrency();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -117,7 +118,7 @@ const LiveViewSection = ({ className = "" }) => {
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-[#214A9E]/10 text-[#214A9E]">
             <Globe className="w-5 h-5" />
@@ -134,15 +135,28 @@ const LiveViewSection = ({ className = "" }) => {
           </div>
         </div>
 
-        <button
-          onClick={fetchLiveData}
-          disabled={loading}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
-          title="Refresh Live Data"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#0079CD]' : 'text-slate-500'}`} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={fetchLiveData}
+            disabled={loading}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            title="Refresh Live Data"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#0079CD]' : 'text-slate-500'}`} />
+            <span>Refresh</span>
+          </button>
+
+          {showViewAdvancedButton && (
+            <Link
+              to="/admin/analytics"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#0f2a5e] to-[#214A9E] text-white hover:from-[#15387a] hover:to-[#1a3f8f] text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer group"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-blue-200 group-hover:scale-110 transition-transform" />
+              <span>View Advanced Analytics</span>
+              <ArrowRight className="w-3.5 h-3.5 text-blue-200 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Top 5 Metric Cards */}
