@@ -574,7 +574,7 @@ const OrderDetail = () => {
                       </AdminSecondaryButton>
                       <AdminPrimaryButton
                         onClick={handleCreateLabel}
-                        disabled={creatingLabel || !isPaid || order.refundStatus === 'refunded'}
+                        disabled={creatingLabel || order.refundStatus === 'refunded'}
                       >
                         {creatingLabel ? 'Generating...' : 'Create shipping label'}
                       </AdminPrimaryButton>

@@ -142,8 +142,9 @@ const CreateOrder = () => {
     country: 'AU'
   });
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
-  const [shippingMethod, setShippingMethod] = useState('Australia Post Express Shipping');
-  const [shippingCost, setShippingCost] = useState('15.00');
+  const [shippingMethod, setShippingMethod] = useState('Standard - $11.00');
+  const [customShippingMethod, setCustomShippingMethod] = useState('');
+  const [shippingCost, setShippingCost] = useState('11.00');
 
   // ── 4. Payment & Order Metadata State ─────────────────────────────────────────
   const [paymentStatus, setPaymentStatus] = useState('pending'); // 'pending' | 'paid'
@@ -367,7 +368,7 @@ const CreateOrder = () => {
           discountAmount: item.discountAmount || 0,
           productImageUrl: item.productImageUrl
         })),
-        shippingMethod,
+        shippingMethod: shippingMethod === 'Custom' ? (customShippingMethod.trim() || 'Custom Shipping') : shippingMethod,
         shippingCost: parsedShipping,
         discountTotal: parsedDiscountTotal,
         notes: notes.trim(),
@@ -815,17 +816,35 @@ const CreateOrder = () => {
 
               {/* Shipping Method */}
               <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Shipping Method</label>
-                  <select
-                    value={shippingMethod}
-                    onChange={(e) => setShippingMethod(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-blue font-medium text-slate-800"
-                  >
-                    <option value="Australia Post Express Shipping">Australia Post Express Shipping</option>
-                    <option value="Australia Post Standard Shipping">Australia Post Standard Shipping</option>
-                    <option value="Custom Direct Shipping">Custom Direct Shipping</option>
-                  </select>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Shipping Method</label>
+                    <select
+                      value={shippingMethod}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setShippingMethod(val);
+                        if (val === 'Standard - $11.00') setShippingCost('11.00');
+                        else if (val === 'Express - $15.00') setShippingCost('15.00');
+                        else setShippingCost('');
+                      }}
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-blue font-medium text-slate-800"
+                    >
+                      <option value="Standard - $11.00">Standard - $11.00</option>
+                      <option value="Express - $15.00">Express - $15.00</option>
+                      <option value="Custom">Custom Method...</option>
+                    </select>
+                  </div>
+                  {shippingMethod === 'Custom' && (
+                    <input
+                      type="text"
+                      value={customShippingMethod}
+                      onChange={(e) => setCustomShippingMethod(e.target.value)}
+                      placeholder="Enter custom shipping name"
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue"
+                      required
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Shipping Cost (A$)</label>
