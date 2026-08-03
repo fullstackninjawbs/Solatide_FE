@@ -10,7 +10,8 @@ import {
   Package,
   ExternalLink,
   RefreshCw,
-  Download
+  Download,
+  Plus
 } from 'lucide-react';
 
 // ─── Helper: format date like Shopify ("Today at 2:31 pm") ────────────────────
@@ -182,6 +183,15 @@ const OrderList = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            to="/admin/orders/new"
+            className="bg-cta-gradient hover:bg-cta-gradient-hover text-white px-5 py-2.5 rounded-xl text-[14px] font-bold shadow-cta hover:shadow-cta-hover flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create Order
+          </Link>
           <button
             onClick={fetchOrders}
             className="flex items-center gap-1.5 px-3 py-2 text-[13px] font-medium border border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 transition-colors"
@@ -303,7 +313,13 @@ const OrderList = () => {
 
                     {/* Channel */}
                     <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      Tagadacm
+                      {order.source === 'admin_manual' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                          Admin Manual
+                        </span>
+                      ) : (
+                        <span>Tagadacm</span>
+                      )}
                     </td>
 
                     {/* Total */}

@@ -341,6 +341,19 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  createAdminOrder: async (payload) => {
+    return fetch(`${API_URL}/api/admin/order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload),
+    });
+  },
+  getAdminOrderConfig: async () => {
+    return fetch(`${API_URL}/api/admin/order/new-config`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
   getAdminOrderById: async (id) => {
     return fetch(`${API_URL}/api/admin/order/${id}`, {
       method: 'GET',

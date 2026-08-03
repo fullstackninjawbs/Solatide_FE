@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const CustomDropdown = ({ value, options, onChange, placeholder = "Select an option", align = "left", className }) => {
+const CustomDropdown = ({ value, options, onChange, placeholder = "Select an option", align = "left", className, fullWidth = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -15,18 +15,18 @@ const CustomDropdown = ({ value, options, onChange, placeholder = "Select an opt
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const selectedOption = options.find(opt => opt.value === value) || options[0];
+  const selectedOption = options.find(opt => opt.value === value);
 
   const alignmentClasses = align === 'right' 
     ? 'right-0 origin-top-right' 
     : 'left-0 origin-top-left';
 
   return (
-    <div className="relative shrink-0" ref={dropdownRef}>
+    <div className={`relative shrink-0 ${fullWidth ? 'w-full' : ''}`} ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={className || "w-full sm:w-auto min-w-[150px] flex items-center justify-between gap-3 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm"}
+        className={className || `${fullWidth ? 'w-full' : 'w-full sm:w-auto min-w-[150px]'} flex items-center justify-between gap-3 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm`}
       >
         <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
         <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
