@@ -775,38 +775,7 @@ const BatchForm = () => {
             </div>
           </div>
 
-          {/* References Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-1.5">
-                <h3 className="text-base font-bold text-slate-850">References</h3>
-                <HelpCircle className="w-4 h-4 text-slate-400 cursor-help" title="Associated product variants using this batch record" />
-              </div>
-            </div>
 
-            {selectedProduct ? (
-              <div className="space-y-3">
-                <div className="bg-slate-50 border border-slate-150 rounded-xl p-3.5 flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-lg shadow-sm shrink-0 select-none">
-                    🧪
-                  </div>
-                  <div className="text-left min-w-0">
-                    <p className="text-[13px] font-bold text-slate-800 break-words leading-tight">
-                      {selectedProduct.name}
-                    </p>
-                    <p className="text-[11.5px] text-slate-500 font-semibold mt-1 flex items-center gap-1">
-                      <span>{selectedVariant ? selectedVariant.title : 'Default Title'}</span>
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-2.5">
-                      Product variant
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-[12.5px] text-slate-400 italic text-left select-none">No associated product variant references.</p>
-            )}
-          </div>
 
         </div>
 

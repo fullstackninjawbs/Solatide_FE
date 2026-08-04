@@ -298,7 +298,7 @@ const ProductDetail = () => {
                         <div>
 
                             {/* Product Title */}
-                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#214A9E] leading-tight mb-4" style={{ fontWeight: 600 }}>
+                            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-[#214A9E] leading-normal mb-4" style={{ fontWeight: 600, lineHeight: 1.3 }}>
                                 {product.name}
                             </h1>
 
@@ -334,28 +334,6 @@ const ProductDetail = () => {
                         {/* Current Batch Info (moved inline above selector and quantity!) */}
                         <CurrentBatchCard batch={selectedVariant?.currentBatch || product.currentBatch} product={product} />
 
-                        {/* Variant Selector */}
-                        {hasVariantsToSelect && (
-                            <div className="mb-8 border-t border-slate-100 pt-8">
-                                <span className="text-[14px] font-bold text-slate-800 block mb-3 uppercase tracking-wide">
-                                    Select Option
-                                </span>
-                                <div className="flex flex-wrap gap-3">
-                                    {product.variants.map((v, index) => (
-                                        <button
-                                            key={v.sku || index}
-                                            onClick={() => setSelectedVariant(v)}
-                                            className={`px-5 py-2.5 rounded-xl text-[14px] font-semibold border-2 transition-all focus:outline-none ${selectedVariant?.sku === v.sku
-                                                ? 'border-[#214A9E] bg-[#214A9E] text-white shadow-md'
-                                                : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
-                                                }`}
-                                        >
-                                            {v.title}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
 
                         {/* Actions area (Price, Qty & Cart) */}
                         <div className="border border-slate-200 rounded-2xl bg-white p-5 shadow-[0_2px_4px_rgba(0,0,0,0.02)] mt-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5 w-full">
