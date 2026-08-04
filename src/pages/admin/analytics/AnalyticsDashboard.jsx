@@ -139,6 +139,15 @@ const AnalyticsDashboard = () => {
         <p className="text-sm text-slate-500 mt-1">Overview of orders, revenue, and product performance</p>
       </div>
 
+      {error && (
+        <div className="mb-8 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+          {error}
+        </div>
+      )}
+
+      {/* ─── Shopify Style Live View Section ─── */}
+      <LiveViewSection className="mb-8" showViewAdvancedButton={false} />
+
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-8 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-2">
@@ -153,20 +162,7 @@ const AnalyticsDashboard = () => {
             ]}
           />
         </div>
-
-
       </div>
-
-      {error && (
-        <div className="mb-8 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
-          {error}
-        </div>
-      )}
-
-      {/* ─── Shopify Style Live View Section ─── */}
-      <LiveViewSection className="mb-8" showViewAdvancedButton={false} />
-
-
       {loading ? (
         <div className="w-full h-64 flex items-center justify-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-navy"></div>
