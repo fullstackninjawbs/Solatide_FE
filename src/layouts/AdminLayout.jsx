@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import logoImg from '../assets/icons/logo.webp';
 import {
   LayoutDashboard,
   Package,
@@ -129,16 +130,25 @@ const AdminLayout = () => {
 
         <div className="flex flex-col flex-grow overflow-hidden">
           {/* Header/Logo mimicking the website's top-left branding */}
-          <div className="h-20 flex items-center px-6 border-b border-slate-100 gap-3 shrink-0">
-            <div className="h-9 w-9 rounded-xl bg-brand-navy flex items-center justify-center font-bold text-white tracking-wider shadow-sm shrink-0">
-              S
-            </div>
-            {isSidebarOpen && (
-              <span className="font-sans text-[16px] flex flex-col leading-none text-left select-none">
-                <span className="text-[17px] font-extrabold tracking-wide text-brand-navy uppercase">Solatide</span>
-                <span className="text-[10px] text-brand-cyan tracking-widest uppercase font-bold mt-1">Biosciences</span>
-              </span>
-            )}
+          <div className="h-20 flex items-center px-5 border-b border-slate-100 shrink-0 print:hidden overflow-hidden">
+            <Link to="/admin" className="flex items-center gap-3 w-full">
+              {/* Cropped Logo Icon */}
+              <div className="h-10 w-10 rounded-xl overflow-hidden shrink-0 relative flex items-center justify-start">
+                <img 
+                  src={logoImg} 
+                  alt="Solatide Icon" 
+                  className="h-10 max-w-none object-contain object-left"
+                />
+              </div>
+              
+              {/* Crisp HTML Text */}
+              {isSidebarOpen && (
+                <span className="font-sans text-[16px] flex flex-col leading-none text-left select-none">
+                  <span className="text-[17px] font-extrabold tracking-wide text-[#214A9E] uppercase">Solatide</span>
+                  <span className="text-[10px] text-cyan-600 tracking-widest uppercase font-bold mt-1">Biosciences</span>
+                </span>
+              )}
+            </Link>
           </div>
 
           {/* Navigation Links */}

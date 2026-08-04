@@ -260,6 +260,20 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
+  adminForgotPassword: async (email) => {
+    return fetch(`${API_URL}/api/v1/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+  },
+  adminResetPassword: async (token, password) => {
+    return fetch(`${API_URL}/api/v1/auth/reset-password/${token}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+  },
 
   // Batches (Admin)
   uploadBatchCOA: async (formData) => {

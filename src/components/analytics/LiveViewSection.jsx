@@ -33,6 +33,15 @@ const getCountryFullName = (country) => {
   return country;
 };
 
+const formatLocation = (evt) => {
+  if (!evt) return '';
+  const parts = [];
+  if (evt.city) parts.push(evt.city);
+  if (evt.region) parts.push(evt.region);
+  parts.push(getCountryFullName(evt.country));
+  return parts.join(', ');
+};
+
 // Helper for relative time
 const formatTimeAgo = (timestamp) => {
   if (!timestamp) return 'just now';
@@ -405,10 +414,10 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                   className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between space-y-3.5 group"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold bg-slate-50 border border-slate-200/80 text-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xs">
-                        <span className="text-base">{getCountryFlag(evt.country)}</span>
-                        <span className="font-bold text-slate-800 text-[12px]">{getCountryFullName(evt.country)}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs font-bold bg-slate-50 border border-slate-200/80 text-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xs max-w-[170px] sm:max-w-[200px] truncate" title={formatLocation(evt)}>
+                        <span className="text-base shrink-0">{getCountryFlag(evt.country)}</span>
+                        <span className="font-bold text-slate-800 text-[12px] truncate">{formatLocation(evt)}</span>
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         isPurchase ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' :

@@ -6,6 +6,7 @@ import AdminLayout from '../layouts/AdminLayout'
 import { trackEvent } from '../utils/analytics'
 
 const AdminLogin = lazy(() => import('../pages/admin/AdminLogin'))
+const AdminResetPassword = lazy(() => import('../pages/admin/AdminResetPassword'))
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
 const ProductList = lazy(() => import('../pages/admin/ProductList'))
 const ProductForm = lazy(() => import('../pages/admin/ProductForm'))
@@ -75,6 +76,7 @@ const AppRoutes = () => {
             <Routes>
                 {/* Admin Auth Route */}
                 <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/checkout/success" element={<CheckoutSuccess />} />
                 <Route path="/checkout/failure" element={<CheckoutFailure />} />

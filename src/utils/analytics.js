@@ -39,24 +39,109 @@ export function getSessionId() {
   }
 }
 
-function detectClientCountry() {
+let locationCache = null;
+
+function detectLocationFromTimezone() {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('Asia/Colombo') || tz.includes('Asia/Kathmandu') || tz.includes('Asia/Karachi')) return 'India';
-    if (tz.includes('Australia') || tz.includes('Sydney') || tz.includes('Melbourne') || tz.includes('Brisbane') || tz.includes('Perth')) return 'Australia';
-    if (tz.includes('America') || tz.includes('US/') || tz.includes('New_York') || tz.includes('Los_Angeles')) return 'United States';
-    if (tz.includes('Europe/London')) return 'United Kingdom';
-    if (tz.includes('Canada') || tz.includes('Toronto') || tz.includes('Vancouver')) return 'Canada';
-    
-    const lang = (navigator.language || '').toUpperCase();
-    if (lang.includes('IN')) return 'India';
-    if (lang.includes('AU')) return 'Australia';
-    if (lang.includes('US')) return 'United States';
-    if (lang.includes('GB') || lang.includes('UK')) return 'United Kingdom';
-    if (lang.includes('CA')) return 'Canada';
-  } catch {}
-  return 'India';
+    let country = 'Australia';
+    let region = '';
+    let city = '';
+
+    if (tz.includes('Kolkata') || tz.includes('Calcutta')) {
+      country = 'India';
+      region = 'West Bengal';
+      city = 'Kolkata';
+    } else if (tz.includes('Delhi') || tz.includes('Mumbai') || tz.includes('Asia/Kolkata')) {
+      country = 'India';
+      region = 'Delhi';
+      city = 'Delhi';
+    } else if (tz.includes('Sydney')) {
+      country = 'Australia';
+      region = 'New South Wales';
+      city = 'Sydney';
+    } else if (tz.includes('Melbourne')) {
+      country = 'Australia';
+      region = 'Victoria';
+      city = 'Melbourne';
+    } else if (tz.includes('Brisbane')) {
+      country = 'Australia';
+      region = 'Queensland';
+      city = 'Brisbane';
+    } else if (tz.includes('Perth')) {
+      country = 'Australia';
+      region = 'Western Australia';
+      city = 'Perth';
+    } else if (tz.includes('Adelaide')) {
+      country = 'Australia';
+      region = 'South Australia';
+      city = 'Adelaide';
+    } else if (tz.includes('New_York')) {
+      country = 'United States';
+      region = 'New York';
+      city = 'New York';
+    } else if (tz.includes('Los_Angeles')) {
+      country = 'United States';
+      region = 'California';
+      city = 'Los Angeles';
+    } else if (tz.includes('Chicago')) {
+      country = 'United States';
+      region = 'Illinois';
+      city = 'Chicago';
+    } else if (tz.includes('London')) {
+      country = 'United Kingdom';
+      region = 'England';
+      city = 'London';
+    } else if (tz.includes('Toronto')) {
+      country = 'Canada';
+      region = 'Ontario';
+      city = 'Toronto';
+    } else if (tz.includes('Vancouver')) {
+      country = 'Canada';
+      region = 'British Columbia';
+      city = 'Vancouver';
+    } else {
+      // Split timezone
+      const parts = tz.split('/');
+      if (parts.length > 1) {
+        city = parts[1].replace('_', ' ');
+      }
+    }
+    return { country, region, city };
+  } catch {
+    return { country: 'Australia', region: '', city: '' };
+  }
 }
+
+// Initialize location retrieval
+async function fetchLocationDetails() {
+  try {
+    // Check localStorage first
+    const cached = localStorage.getItem('slat_loc');
+    if (cached) {
+      locationCache = JSON.parse(cached);
+      return;
+    }
+
+    const res = await fetch('https://ipapi.co/json/');
+    if (res.ok) {
+      const data = await res.json();
+      locationCache = {
+        country: data.country_name || data.country || 'Australia',
+        region: data.region || '',
+        city: data.city || ''
+      };
+      localStorage.setItem('slat_loc', JSON.stringify(locationCache));
+    } else {
+      locationCache = detectLocationFromTimezone();
+    }
+  } catch (err) {
+    locationCache = detectLocationFromTimezone();
+  }
+}
+
+// Call it immediately (fire and forget)
+fetchLocationDetails().catch(() => {});
 
 // ─── Event Tracker ────────────────────────────────────────────────────────────
 
@@ -67,11 +152,14 @@ function detectClientCountry() {
  */
 export function trackEvent(eventType, metadata = {}) {
   try {
+    const loc = locationCache || detectLocationFromTimezone();
     const payload = JSON.stringify({
       sessionId: getSessionId(),
       eventType,
       timestamp: new Date().toISOString(),
-      country: metadata.country || detectClientCountry(),
+      country: metadata.country || loc.country,
+      region: metadata.region || loc.region,
+      city: metadata.city || loc.city,
       ...metadata,
     });
 
