@@ -395,6 +395,13 @@ export const apiService = {
     });
   },
 
+  revalidateAdminOrderAddress: async (id) => {
+    return fetch(`${API_URL}/api/admin/order/${id}/revalidate-address`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
   // ─── Customers (Admin) ─────────────────────────────────────────────────────────
   getAdminCustomers: async (queryString = '') => {
     return fetch(`${API_URL}/api/admin/customer${queryString ? `?${queryString}` : ''}`, {

@@ -65,6 +65,7 @@ const OrderDetail = () => {
   const [updating, setUpdating] = useState(false);
   const [creatingLabel, setCreatingLabel] = useState(false);
   const [refunding, setRefunding] = useState(false);
+  const [revalidating, setRevalidating] = useState(false);
 
   // New states for interactive fields
   const [commentText, setCommentText] = useState('');
@@ -72,6 +73,7 @@ const OrderDetail = () => {
 
   const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
   const [addressTypeToEdit, setAddressTypeToEdit] = useState('shipping');
+  const [addressModalMode, setAddressModalMode] = useState('edit'); // 'edit' | 'suggested'
   const [editAddressForm, setEditAddressForm] = useState({ name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
 
   // Refund modal states
@@ -155,6 +157,7 @@ const OrderDetail = () => {
 
   const openAddressModal = (type) => {
     setAddressTypeToEdit(type);
+    setAddressModalMode('edit');
     const addr = type === 'shipping' ? order.shippingAddressObj : order.billingAddressObj;
     setEditAddressForm({
       name: addr?.name || '',
@@ -180,6 +183,7 @@ const OrderDetail = () => {
 
   const handleUseSuggestedAddress = () => {
     setAddressTypeToEdit('shipping');
+    setAddressModalMode('suggested');
     const addr = order.addressValidation.suggestedAddress;
     setEditAddressForm({
       name: order.shippingAddressObj?.name || '',
@@ -211,6 +215,33 @@ const OrderDetail = () => {
       toast.error('Network error while creating label');
     } finally {
       setCreatingLabel(false);
+    }
+  };
+
+  const handleRevalidateAddress = async () => {
+    if (revalidating) return;
+    setRevalidating(true);
+    try {
+      toast.loading('Re-running address validation...', { id: 'revalidate' });
+      const res = await apiService.revalidateAdminOrderAddress(id);
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Re-validation triggered! Refreshing...', { id: 'revalidate' });
+        // Wait 3 seconds then reload order to show new result
+        setTimeout(async () => {
+          const orderRes = await apiService.getAdminOrderById(id);
+          const orderData = await orderRes.json();
+          if (orderData.success) setOrder(orderData.data.order);
+          setRevalidating(false);
+        }, 3000);
+      } else {
+        toast.error(data.message || 'Re-validation failed', { id: 'revalidate' });
+        setRevalidating(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error', { id: 'revalidate' });
+      setRevalidating(false);
     }
   };
 
@@ -802,8 +833,8 @@ const OrderDetail = () => {
                   <div className="bg-white p-3 rounded-xl border border-slate-200 overflow-hidden">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Original Address</span>
                     <address className="not-italic text-[13px] font-medium text-slate-700">
-                      {order.shippingAddressObj?.street1}<br/>
-                      {order.shippingAddressObj?.street2 && <>{order.shippingAddressObj.street2}<br/></>}
+                      {order.shippingAddressObj?.street1}<br />
+                      {order.shippingAddressObj?.street2 && <>{order.shippingAddressObj.street2}<br /></>}
                       {order.shippingAddressObj?.city} {order.shippingAddressObj?.state} {order.shippingAddressObj?.zip}
                     </address>
                   </div>
@@ -811,21 +842,31 @@ const OrderDetail = () => {
                     <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-100 overflow-hidden">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 block mb-1">Suggested Correction</span>
                       <address className="not-italic text-[13px] font-medium text-emerald-800">
-                        {order.addressValidation.suggestedAddress.street1}<br/>
-                        {order.addressValidation.suggestedAddress.street2 && <>{order.addressValidation.suggestedAddress.street2}<br/></>}
+                        {order.addressValidation.suggestedAddress.street1}<br />
+                        {order.addressValidation.suggestedAddress.street2 && <>{order.addressValidation.suggestedAddress.street2}<br /></>}
                         {order.addressValidation.suggestedAddress.city} {order.addressValidation.suggestedAddress.state} {order.addressValidation.suggestedAddress.zip}
                       </address>
                     </div>
                   )}
                 </div>
                 {order.addressValidation.suggestedAddress ? (
-                  <button onClick={handleUseSuggestedAddress} className="w-full bg-[#0275d8] hover:bg-[#025aa5] text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
-                    Use Suggested Address
-                  </button>
+                  <>
+                    <button onClick={handleUseSuggestedAddress} className="w-full bg-[#0275d8] hover:bg-[#025aa5] text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center mb-2">
+                      Use Suggested Address
+                    </button>
+                    <button onClick={handleRevalidateAddress} disabled={revalidating} className="w-full bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors shadow-sm rounded-xl text-[13px] py-2 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                      {revalidating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-400 border-t-transparent"></span> Validating...</> : 'Re-validate Address'}
+                    </button>
+                  </>
                 ) : (
-                  <button onClick={() => openAddressModal('shipping')} className="w-full bg-brand-navy hover:bg-brand-blue text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
-                    Edit Shipping Address
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={() => openAddressModal('shipping')} className="flex-1 bg-brand-navy hover:bg-brand-blue text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
+                      Edit Address
+                    </button>
+                    <button onClick={handleRevalidateAddress} disabled={revalidating} className="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                      {revalidating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-400 border-t-transparent"></span> Validating...</> : 'Re-validate'}
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -977,24 +1018,7 @@ const OrderDetail = () => {
             </div>
 
             <div className="space-y-4 mb-6 max-h-[60vh] overflow-y-auto px-1">
-              <div>
-                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={editAddressForm.name}
-                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-gray-700 mb-1">Company</label>
-                <input
-                  type="text"
-                  value={editAddressForm.company}
-                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, company: e.target.value }))}
-                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
+              {/* Address fields only - Name and Company managed separately */}
               <div>
                 <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
                 <input
