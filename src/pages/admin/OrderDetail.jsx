@@ -178,6 +178,22 @@ const OrderDetail = () => {
     if (success) setIsEditAddressModalOpen(false);
   };
 
+  const handleUseSuggestedAddress = () => {
+    setAddressTypeToEdit('shipping');
+    const addr = order.addressValidation.suggestedAddress;
+    setEditAddressForm({
+      name: order.shippingAddressObj?.name || '',
+      company: order.shippingAddressObj?.company || '',
+      street1: addr?.street1 || '',
+      street2: addr?.street2 || '',
+      city: addr?.city || '',
+      state: addr?.state || '',
+      zip: addr?.zip || '',
+      country: addr?.country || ''
+    });
+    setIsEditAddressModalOpen(true);
+  };
+
   const handleCreateLabel = async () => {
     if (creatingLabel) return;
     setCreatingLabel(true);
@@ -565,6 +581,11 @@ const OrderDetail = () => {
                     </div>
                   ) : (
                     <>
+                      {order.addressValidation?.needsReview && (
+                        <p className="text-[12px] font-medium text-red-500 mr-auto flex items-center gap-1">
+                          ⚠️ Verify address before creating label
+                        </p>
+                      )}
                       <AdminSecondaryButton
                         onClick={handleFulfill}
                         disabled={fulfilling || !isUnfulfilled}
@@ -766,6 +787,44 @@ const OrderDetail = () => {
 
           {/* ════════════════ RIGHT COLUMN ════════════════ */}
           <div className="space-y-6">
+
+            {/* Address Validation Warning */}
+            {order.addressValidation?.needsReview && (
+              <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-200 p-6 relative group overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                <h3 className="text-[15px] font-bold text-red-700 mb-3 flex items-center gap-2">
+                  ⚠️ Address Needs Review
+                </h3>
+                <p className="text-[13px] text-slate-600 leading-relaxed mb-4">
+                  {order.addressValidation.validationMessage || 'Google Address Validation flagged this address. Please verify it before shipping.'}
+                </p>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 overflow-hidden">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Original Address</span>
+                    <address className="not-italic text-[13px] font-medium text-slate-700">
+                      {order.shippingAddressObj?.street1}<br/>
+                      {order.shippingAddressObj?.street2 && <>{order.shippingAddressObj.street2}<br/></>}
+                      {order.shippingAddressObj?.city} {order.shippingAddressObj?.state} {order.shippingAddressObj?.zip}
+                    </address>
+                  </div>
+                  {order.addressValidation.suggestedAddress && (
+                    <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-100 overflow-hidden">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 block mb-1">Suggested Correction</span>
+                      <address className="not-italic text-[13px] font-medium text-emerald-800">
+                        {order.addressValidation.suggestedAddress.street1}<br/>
+                        {order.addressValidation.suggestedAddress.street2 && <>{order.addressValidation.suggestedAddress.street2}<br/></>}
+                        {order.addressValidation.suggestedAddress.city} {order.addressValidation.suggestedAddress.state} {order.addressValidation.suggestedAddress.zip}
+                      </address>
+                    </div>
+                  )}
+                </div>
+                {order.addressValidation.suggestedAddress && (
+                  <AdminPrimaryButton onClick={handleUseSuggestedAddress} className="w-full !bg-red-600 hover:!bg-red-700 !shadow-none !text-[13px] !py-2 justify-center">
+                    Use Suggested Address
+                  </AdminPrimaryButton>
+                )}
+              </div>
+            )}
 
             {/* Notes */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 relative group">

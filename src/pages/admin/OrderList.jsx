@@ -319,7 +319,7 @@ const OrderList = () => {
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-                          Tagadacm
+                          Tagadacrm
                         </span>
                       )}
                     </td>
@@ -336,7 +336,14 @@ const OrderList = () => {
 
                     {/* Fulfilment */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <Badge text={order.fulfilmentStatus} styleMap={FULFIL_BADGE} />
+                      <div className="flex flex-col gap-1.5 items-start">
+                        <Badge text={order.fulfilmentStatus} styleMap={FULFIL_BADGE} />
+                        {order.addressValidation?.needsReview && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-200" title="Address needs review">
+                            ⚠️ Address Review
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Items */}
