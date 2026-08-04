@@ -796,10 +796,10 @@ const OrderDetail = () => {
                   ⚠️ Address Needs Review
                 </h3>
                 <p className="text-[13px] text-slate-600 leading-relaxed mb-4">
-                  {order.addressValidation.validationMessage || 'Google Address Validation flagged this address. Please verify it before shipping.'}
+                  {order.addressValidation.validationMessage || 'Address has unconfirmed or replaced/inferred components. Please review.'}
                 </p>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 overflow-hidden">
+                <div className={`grid gap-4 mb-4 ${order.addressValidation.suggestedAddress ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                  <div className="bg-white p-3 rounded-xl border border-slate-200 overflow-hidden">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Original Address</span>
                     <address className="not-italic text-[13px] font-medium text-slate-700">
                       {order.shippingAddressObj?.street1}<br/>
@@ -818,10 +818,14 @@ const OrderDetail = () => {
                     </div>
                   )}
                 </div>
-                {order.addressValidation.suggestedAddress && (
-                  <AdminPrimaryButton onClick={handleUseSuggestedAddress} className="w-full !bg-red-600 hover:!bg-red-700 !shadow-none !text-[13px] !py-2 justify-center">
+                {order.addressValidation.suggestedAddress ? (
+                  <button onClick={handleUseSuggestedAddress} className="w-full bg-[#0275d8] hover:bg-[#025aa5] text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
                     Use Suggested Address
-                  </AdminPrimaryButton>
+                  </button>
+                ) : (
+                  <button onClick={() => openAddressModal('shipping')} className="w-full bg-brand-navy hover:bg-brand-blue text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
+                    Edit Shipping Address
+                  </button>
                 )}
               </div>
             )}
