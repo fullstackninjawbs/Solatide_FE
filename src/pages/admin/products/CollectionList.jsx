@@ -9,7 +9,43 @@ const CollectionList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCollections, setSelectedCollections] = useState([]);
   const navigate = useNavigate();
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedCollections(filteredCollections.map(c => c._id));
+    } else {
+      setSelectedCollections([]);
+    }
+  };
+
+  const handleSelectCollection = (id) => {
+    setSelectedCollections(prev => 
+      prev.includes(id) ? prev.filter(cId => cId !== id) : [...prev, id]
+    );
+  };
+
+  const handleDeleteSelected = async () => {
+    if (!window.confirm(`Are you sure you want to delete the selected ${selectedCollections.length} collections?`)) {
+      return;
+    }
+
+    try {
+      let successCount = 0;
+      for (const id of selectedCollections) {
+        const response = await apiService.deleteCollection(id);
+        if (response.ok || response.status === 204) {
+          successCount++;
+        }
+      }
+      setCollections(collections.filter(c => !selectedCollections.includes(c._id)));
+      setSelectedCollections([]);
+      alert(`Successfully deleted ${successCount} collections.`);
+    } catch (err) {
+      alert('Network error deleting collections.');
+    }
+  };
 
   const fetchCollections = async () => {
     try {
@@ -151,23 +187,66 @@ const CollectionList = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
-                  <th className="py-4 pl-6 w-12">
-                    <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
-                  </th>
-                  <th className="py-4 pl-2">Title</th>
-                  <th className="py-4">Type</th>
-                  <th className="py-4">Products</th>
-                  <th className="py-4">Product Conditions</th>
-                  <th className="py-4">Status</th>
-                  <th className="py-4 pr-6 text-right w-24">Actions</th>
-                </tr>
+                {selectedCollections.length > 0 ? (
+                  <tr className="border-b border-slate-250 bg-slate-50 text-[14px]">
+                    <th className="py-3 pl-6 w-12">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedCollections.length === filteredCollections.length && filteredCollections.length > 0} 
+                        onChange={handleSelectAll} 
+                        className="rounded cursor-pointer h-4 w-4 accent-slate-800" 
+                      />
+                    </th>
+                    <th colSpan="5" className="py-3 pl-2 pr-6 font-normal">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-slate-850">
+                          {selectedCollections.length} selected
+                        </span>
+                        <button
+                          onClick={() => setSelectedCollections([])}
+                          className="text-[13px] text-slate-500 hover:text-slate-900 hover:underline font-medium cursor-pointer"
+                        >
+                          Deselect all
+                        </button>
+                        <span className="text-slate-300">|</span>
+                        <button
+                          onClick={handleDeleteSelected}
+                          className="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1 rounded-lg text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Delete selected
+                        </button>
+                      </div>
+                    </th>
+                  </tr>
+                ) : (
+                  <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
+                    <th className="py-4 pl-6 w-12">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedCollections.length === filteredCollections.length && filteredCollections.length > 0}
+                        onChange={handleSelectAll}
+                        className="rounded border-slate-350 cursor-pointer h-4 w-4" 
+                      />
+                    </th>
+                    <th className="py-4 pl-2">Title</th>
+                    <th className="py-4">Type</th>
+                    <th className="py-4">Products</th>
+                    <th className="py-4">Status</th>
+                    <th className="py-4 pr-6 text-right w-24">Actions</th>
+                  </tr>
+                )}
               </thead>
               <tbody className="divide-y divide-slate-100 text-[14px] text-slate-700">
                 {filteredCollections.map((col) => (
                   <tr key={col._id} className="hover:bg-slate-50/60 transition-colors group">
                     <td className="py-4 pl-6">
-                      <input type="checkbox" className="rounded border-slate-350 cursor-pointer" />
+                      <input 
+                        type="checkbox" 
+                        checked={selectedCollections.includes(col._id)}
+                        onChange={() => handleSelectCollection(col._id)}
+                        className={`rounded cursor-pointer h-4 w-4 ${selectedCollections.includes(col._id) ? 'accent-slate-800' : 'border-slate-350'}`} 
+                      />
                     </td>
                     <td className="py-4 pl-2 font-medium text-slate-900">
                       <div className="flex items-center gap-3">
@@ -202,9 +281,6 @@ const CollectionList = () => {
                     </td>
                     <td className="py-4 font-semibold text-slate-800">
                       {col.productCount || 0}
-                    </td>
-                    <td className="py-4">
-                      {renderConditions(col)}
                     </td>
                     <td className="py-4">
                       {col.status === 'active' ? (
