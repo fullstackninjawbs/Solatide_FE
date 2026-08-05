@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, X, Trash2, Send, Clock, DollarSign, Calendar, MessageSquare, Truck, Package, RotateCcw, UserPlus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
@@ -122,6 +122,13 @@ const CustomerDetail = () => {
         }
     };
 
+    const handleDeleteComment = async (indexToDelete) => {
+        if (window.confirm('Are you sure you want to delete this comment?')) {
+            const updatedComments = (customer.comments || []).filter((_, idx) => idx !== indexToDelete);
+            await updateCustomerField({ comments: updatedComments }, 'Comment deleted');
+        }
+    };
+
     const handleSaveContact = async () => {
         if (!editContactForm.email) {
             toast.error("Email is required");
@@ -189,23 +196,96 @@ const CustomerDetail = () => {
 
     const cardClass = "bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.03)]";
 
-    // Combine timeline items: orders and comments and account creation
-    const timelineItems = [
-        ...orders.map(order => ({
-            type: 'order',
-            date: new Date(order.createdAt),
-            order
-        })),
-        ...(customer.comments || []).map(comment => ({
-            type: 'comment',
-            date: new Date(comment.createdAt),
-            comment
-        })),
-        {
+    // Combine timeline items: orders (placed, paid, fulfilled, refunded), comments, and account creation
+    const timelineItems = (() => {
+        const items = [];
+
+        // Account Creation
+        items.push({
             type: 'creation',
-            date: new Date(customer.createdAt)
+            date: new Date(customer.createdAt),
+            title: 'Customer account was created.'
+        });
+
+        // Admin Comments
+        if (customer.comments && Array.isArray(customer.comments)) {
+            customer.comments.forEach((comment, idx) => {
+                items.push({
+                    type: 'comment',
+                    date: new Date(comment.createdAt),
+                    comment,
+                    originalIndex: idx
+                });
+            });
         }
-    ].sort((a, b) => b.date - a.date);
+
+        // Order-related lifecycle events
+        orders.forEach(order => {
+            const orderId = order._id;
+            const orderNo = order.orderNumber;
+            const orderLink = (
+                <Link
+                    to={`/admin/orders/${orderId}`}
+                    className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 hover:bg-gray-200 transition-colors"
+                >
+                    {orderNo}
+                </Link>
+            );
+
+            // 1. Placed
+            items.push({
+                type: 'order_placed',
+                date: new Date(order.createdAt),
+                content: (
+                    <span>
+                        This customer placed order {orderLink} on Web.
+                    </span>
+                )
+            });
+
+            // 2. Paid
+            if (order.paymentStatus === 'paid') {
+                items.push({
+                    type: 'order_paid',
+                    date: new Date(order.paidAt || order.updatedAt || order.createdAt),
+                    content: (
+                        <span>
+                            Payment of {formatCurrency(order.grandTotal)} for order {orderLink} was processed.
+                        </span>
+                    )
+                });
+            }
+
+            // 3. Fulfilled
+            if (order.fulfilmentStatus === 'fulfilled') {
+                items.push({
+                    type: 'order_fulfilled',
+                    date: new Date(order.fulfilledAt || order.updatedAt || order.createdAt),
+                    content: (
+                        <span>
+                            Order {orderLink} was fulfilled.
+                        </span>
+                    )
+                });
+            }
+
+            // 4. Refunded
+            if (order.refundStatus === 'refunded' || order.refundStatus === 'partially_refunded') {
+                const isFull = order.refundStatus === 'refunded';
+                items.push({
+                    type: 'order_refunded',
+                    date: new Date(order.updatedAt || order.createdAt),
+                    content: (
+                        <span>
+                            Order {orderLink} was {isFull ? 'fully refunded' : 'partially refunded'}.
+                        </span>
+                    )
+                });
+            }
+        });
+
+        return items.sort((a, b) => b.date - a.date);
+    })();
 
     return (
         <div className="font-sans w-full min-h-screen text-[#1a1a1a]">
@@ -314,7 +394,7 @@ const CustomerDetail = () => {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <p className="text-[14px] font-medium text-blue-700 hover:underline cursor-pointer">{item.title}</p>
+                                                            <p className="text-[14px] font-medium text-blue-750 hover:underline cursor-pointer">{item.title}</p>
                                                             {item.variantTitle && <p className="text-[13px] text-gray-500">{item.variantTitle}</p>}
                                                         </div>
                                                     </div>
@@ -333,7 +413,7 @@ const CustomerDetail = () => {
                                             <AdminPrimaryButton className="hidden !py-1.5 !px-4 !text-[13px]">
                                                 Create order
                                             </AdminPrimaryButton>
-                                        </div>
+                                        </div> 
                                     </>
                                 ) : (
                                     <div className="py-8 text-center">
@@ -363,19 +443,17 @@ const CustomerDetail = () => {
                                         />
                                     </div>
 
-                                    <div className="relative border-l-2 border-gray-100 ml-4 space-y-8 mt-8">
+                                    <div className="relative border-l-2 border-slate-100 ml-5 pl-8 space-y-6 mt-8">
                                         {timelineItems.map((item, idx) => {
-                                            if (item.type === 'order') {
+                                            if (item.type === 'creation') {
                                                 return (
-                                                    <div key={`order-${item.order._id}`} className="relative pl-6">
-                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
-                                                        <div className="flex justify-between items-start group">
-                                                            <div>
-                                                                <p className="text-[13px] text-gray-900">
-                                                                    This customer placed order <Link to={`/admin/orders/${item.order._id}`} className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 hover:bg-gray-200">{item.order.orderNumber}</Link> on Web.
-                                                                </p>
-                                                            </div>
-                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(item.date, true)}</span>
+                                                    <div key="creation" className="relative">
+                                                        <span className="absolute -left-[50px] top-0.5 w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center border-4 border-white shadow-sm">
+                                                            <UserPlus size={14} />
+                                                        </span>
+                                                        <div className="flex justify-between items-center group min-h-[36px]">
+                                                            <p className="text-[13.5px] font-medium text-slate-700">{item.title}</p>
+                                                            <span className="text-[12px] text-slate-400 font-medium">{formatDate(item.date, true)}</span>
                                                         </div>
                                                     </div>
                                                 );
@@ -383,33 +461,61 @@ const CustomerDetail = () => {
 
                                             if (item.type === 'comment') {
                                                 return (
-                                                    <div key={`comment-${idx}`} className="relative pl-6">
-                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-[3px] border-white"></span>
-                                                        <div className="flex justify-between items-start group">
-                                                            <div>
-                                                                <p className="text-[13px] text-gray-900 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                                                    {item.comment.text}
-                                                                </p>
+                                                    <div key={`comment-${idx}`} className="relative">
+                                                        <span className="absolute -left-[50px] top-1 w-9 h-9 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center border-4 border-white shadow-sm">
+                                                            <MessageSquare size={14} />
+                                                        </span>
+                                                        <div className="flex-1 bg-slate-50/80 rounded-xl p-3.5 border border-slate-100 relative group">
+                                                            <div className="flex justify-between items-start mb-1">
+                                                                <span className="text-[12px] font-bold text-slate-700">Staff Note</span>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[11px] text-slate-400 font-medium">{formatDate(item.date, true)}</span>
+                                                                    <button 
+                                                                        onClick={() => handleDeleteComment(item.originalIndex)} 
+                                                                        className="text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                                                        title="Delete note"
+                                                                    >
+                                                                        <Trash2 size={13} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ml-4">{formatDate(item.date, true)}</span>
+                                                            <p className="text-[13px] text-slate-600 whitespace-pre-wrap leading-relaxed">{item.comment.text}</p>
                                                         </div>
                                                     </div>
                                                 );
                                             }
 
-                                            if (item.type === 'creation') {
-                                                return (
-                                                    <div key="creation" className="relative pl-6">
-                                                        <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-300 border-[3px] border-white"></span>
-                                                        <div className="flex justify-between items-start group">
-                                                            <p className="text-[13px] text-gray-900">Customer Place order through Tagada Webcheckout!</p>
-                                                            <span className="text-[12px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{formatDate(item.date, true)}</span>
-                                                        </div>
-                                                    </div>
-                                                );
+                                            // Order lifecycle actions (placed, paid, fulfilled, refunded)
+                                            let icon = <Package size={14} />;
+                                            let badgeBg = 'bg-slate-100 text-slate-500';
+                                            
+                                            if (item.type === 'order_placed') {
+                                                icon = <ShoppingBag size={14} />;
+                                                badgeBg = 'bg-blue-50 text-blue-600';
+                                            } else if (item.type === 'order_paid') {
+                                                icon = <DollarSign size={14} />;
+                                                badgeBg = 'bg-emerald-50 text-emerald-600';
+                                            } else if (item.type === 'order_fulfilled') {
+                                                icon = <Truck size={14} />;
+                                                badgeBg = 'bg-indigo-50 text-indigo-600';
+                                            } else if (item.type === 'order_refunded') {
+                                                icon = <RotateCcw size={14} />;
+                                                badgeBg = 'bg-rose-50 text-rose-600';
                                             }
 
-                                            return null;
+                                            return (
+                                                <div key={`${item.type}-${idx}`} className="relative">
+                                                    <span className={`absolute -left-[50px] top-0.5 w-9 h-9 rounded-full ${badgeBg} flex items-center justify-center border-4 border-white shadow-sm`}>
+                                                        {icon}
+                                                    </span>
+                                                    <div className="flex justify-between items-center group min-h-[36px]">
+                                                        <div className="text-[13.5px] font-medium text-slate-700">
+                                                            {item.content}
+                                                        </div>
+                                                        <span className="text-[12px] text-slate-400 font-medium">{formatDate(item.date, true)}</span>
+                                                    </div>
+                                                </div>
+                                            );
                                         })}
                                     </div>
                                 </div>
