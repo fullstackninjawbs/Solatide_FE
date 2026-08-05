@@ -206,9 +206,6 @@ const ProductList = () => {
             <Trash2 className="h-4 w-4" />
             Delete All
           </button>
-          <AdminSecondaryButton>
-            Export
-          </AdminSecondaryButton>
           <AdminSecondaryButton to="/admin/products/import">
             Import
           </AdminSecondaryButton>
