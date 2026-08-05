@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
+import { State } from 'country-state-city';
+import CustomAddressAutocomplete from '../../components/admin/CustomAddressAutocomplete';
 import {
   ArrowLeft,
   MoreHorizontal,
@@ -1033,11 +1035,39 @@ const OrderDetail = () => {
               {/* Address fields only - Name and Company managed separately */}
               <div>
                 <label className="block text-[13px] font-semibold text-gray-700 mb-1">Address / Street 1</label>
-                <input
-                  type="text"
+                <CustomAddressAutocomplete
                   value={editAddressForm.street1}
-                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, street1: e.target.value }))}
-                  className="w-full h-10 border border-gray-300 rounded-lg px-3 text-[14px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  onChange={(val) => setEditAddressForm(prev => ({ ...prev, street1: val }))}
+                  onSelect={(place) => {
+                    const addr = place.address || {};
+                    let streetNumber = addr.house_number || '';
+                    let route = addr.road || '';
+                    let city = addr.suburb || addr.city || addr.town || addr.village || addr.municipality || addr.state_district || '';
+                    let stateName = addr.state || addr.province || addr.region || '';
+                    let zip = addr.postcode || addr.postal || '';
+                    let countryCode = addr.country_code ? addr.country_code.toUpperCase() : editAddressForm.country;
+
+                    let streetStr = `${streetNumber} ${route}`.trim();
+                    if (!streetStr) {
+                      streetStr = place.name || (place.display_name ? place.display_name.split(',')[0] : '');
+                    }
+
+                    const countryStates = State.getStatesOfCountry(countryCode);
+                    const matchedState = countryStates.find(s =>
+                      s.name.toLowerCase() === stateName.toLowerCase() ||
+                      s.isoCode.toLowerCase() === stateName.toLowerCase()
+                    );
+                    const finalStateCode = matchedState ? matchedState.isoCode : stateName;
+
+                    setEditAddressForm(prev => ({
+                      ...prev,
+                      street1: streetStr,
+                      city: city || prev.city,
+                      state: finalStateCode || prev.state,
+                      zip: zip || prev.zip,
+                      country: countryCode || prev.country
+                    }));
+                  }}
                 />
               </div>
               <div>

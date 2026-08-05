@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Layers } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Layers, Search } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
 import JoditEditor from 'jodit-react';
@@ -303,7 +303,7 @@ const CollectionForm = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Left Column (Main Form Content) */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-3 space-y-6">
 
           {/* Title and Description Card */}
           <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-5">
@@ -332,51 +332,62 @@ const CollectionForm = () => {
             </div>
           </div>
 
-          {/* Products List Card */}
-          <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[15px] font-bold text-slate-850">Products</h3>
-              <CustomDropdown
-                value="best_selling"
-                onChange={() => { }}
-                className="w-48 flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-[13px] cursor-pointer"
-                options={[
-                  { value: 'best_selling', label: 'Sort: Best selling' },
-                  { value: 'title_asc', label: 'Sort: Title A-Z' },
-                  { value: 'title_desc', label: 'Sort: Title Z-A' },
-                  { value: 'price_asc', label: 'Sort: Price low to high' },
-                  { value: 'price_desc', label: 'Sort: Price high to low' }
-                ]}
-              />
+          {/* Products Section */}
+          <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-[15px] font-bold text-slate-850">Products</h3>
+                <p className="text-[12px] text-slate-400 mt-0.5">Search and select products to add to this collection.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[12px] text-slate-500 font-medium bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
+                  {formData.products.length} added
+                </span>
+                <span className="text-slate-200">|</span>
+                <select
+                  value={formData.sortOrder}
+                  onChange={(e) => setFormData(prev => ({ ...prev, sortOrder: e.target.value }))}
+                  className="bg-transparent border-0 outline-none text-[13px] font-semibold text-[#214A9E] cursor-pointer hover:underline py-1"
+                >
+                  <option value="best-selling">Sort: Best selling</option>
+                  <option value="alpha-asc">Sort: Product title A-Z</option>
+                  <option value="alpha-desc">Sort: Product title Z-A</option>
+                  <option value="price-asc">Sort: Lowest price</option>
+                  <option value="price-desc">Sort: Highest price</option>
+                  <option value="created-desc">Sort: Newest</option>
+                  <option value="created-asc">Sort: Oldest</option>
+                </select>
+              </div>
             </div>
 
-            <div className="relative z-20">
+            {/* Search Input for Products */}
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <Search className="h-4 w-4" />
+              </span>
               <input
                 type="text"
-                placeholder="Search products to add..."
+                placeholder="Search products by name..."
                 value={productSearch}
                 onChange={(e) => {
                   setProductSearch(e.target.value);
                   setShowProductSearchDropdown(true);
                 }}
-                onFocus={() => setShowProductSearchDropdown(true)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue transition-colors text-[14px]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-450 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
               />
-              
-              {/* Search Results Dropdown */}
+
+              {/* Autocomplete Results */}
               {showProductSearchDropdown && productSearch && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden max-h-60 overflow-y-auto">
+                <div className="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto divide-y divide-slate-100">
                   {filteredSearchProducts.length === 0 ? (
-                    <div className="p-4 text-center text-slate-500 text-[13px]">
-                      No products found matching "{productSearch}"
-                    </div>
+                    <div className="p-4 text-center text-slate-400 text-[13px]">No products found</div>
                   ) : (
                     filteredSearchProducts.map(prod => (
                       <button
                         key={prod._id}
                         type="button"
                         onClick={() => handleAddProduct(prod)}
-                        className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-center gap-3 cursor-pointer"
+                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 transition-colors text-left"
                       >
                         <div className="h-8 w-8 rounded overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
                           {prod.images?.[0]?.url ? (
@@ -433,71 +444,6 @@ const CollectionForm = () => {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Right Column (Sidebar widgets) */}
-        <div className="space-y-6">
-
-          {/* Publishing Widget */}
-          <div className="hidden bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="text-[14px] font-bold text-slate-850">Publishing</h3>
-              <button type="button" className="text-brand-blue text-[13px] font-medium hover:underline">Manage</button>
-            </div>
-
-            <div className="hidden space-y-3">
-              <h4 className="text-[13px] font-medium text-slate-700">Sales channels</h4>
-              <ul className="space-y-2 text-[13.5px] text-slate-600">
-                <li className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${formData.publishing.includes('online_store') ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                  <span>Online Store</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${formData.publishing.includes('pos') ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                  <span>Point of Sale</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Banner Image Widget */}
-          <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-4">
-            <h3 className="text-[14px] font-bold text-slate-850">Image</h3>
-
-            <div className="space-y-4">
-              {formData.bannerImage ? (
-                <div className="relative h-40 w-full rounded-xl border border-slate-200 overflow-hidden group">
-                  <img src={formData.bannerImage} alt="Banner Preview" className="h-full w-full object-cover" />
-                  <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, bannerImage: '' }))}
-                      className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer font-bold text-xs"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative">
-                  <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center gap-3 bg-white hover:bg-slate-50 transition-colors">
-                    <div className="bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[13px] font-medium text-slate-700 shadow-sm">
-                      {isUploading ? 'Uploading...' : 'Add image'}
-                    </div>
-                    <span className="text-[12.5px] text-slate-400">or drop an image to upload</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      disabled={isUploading}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
         </div>
 
       </div>
