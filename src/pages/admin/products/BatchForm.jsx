@@ -138,8 +138,16 @@ const BatchForm = () => {
             ...(batchData.verificationDetails || {})
           },
           tests: {
-            purityHplc: { performed: false, result: '', ...(batchData.tests?.purityHplc || {}) },
-            netPeptideContent: { performed: false, result: '', ...(batchData.tests?.netPeptideContent || {}) },
+            purityHplc: { 
+              performed: batchData.tests?.purityHplc?.performed || !!batchData.purity, 
+              result: batchData.tests?.purityHplc?.result || batchData.purity || '', 
+              ...(batchData.tests?.purityHplc || {}) 
+            },
+            netPeptideContent: { 
+              performed: batchData.tests?.netPeptideContent?.performed || !!batchData.measuredContent, 
+              result: batchData.tests?.netPeptideContent?.result || batchData.measuredContent || '', 
+              ...(batchData.tests?.netPeptideContent || {}) 
+            },
             identityHplc: { performed: false, result: '', ...(batchData.tests?.identityHplc || {}) },
             fentanylScreen: { performed: false, result: '', ...(batchData.tests?.fentanylScreen || {}) },
             hplcConformity: { performed: false, result: '', ...(batchData.tests?.hplcConformity || {}) },
@@ -291,6 +299,8 @@ const BatchForm = () => {
 
     const payload = {
       ...formData,
+      purity: formData.tests?.purityHplc?.performed ? formData.tests.purityHplc.result : '',
+      measuredContent: formData.tests?.netPeptideContent?.performed ? formData.tests.netPeptideContent.result : '',
       variantId: formData.variantId === '' ? null : formData.variantId
     };
 
@@ -450,29 +460,7 @@ const BatchForm = () => {
               </div>
 
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Purity</label>
-                <input
-                  type="text"
-                  name="purity"
-                  value={formData.purity}
-                  onChange={handleChange}
-                  placeholder="e.g. 99.91%"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Measured Content</label>
-                <input
-                  type="text"
-                  name="measuredContent"
-                  value={formData.measuredContent}
-                  onChange={handleChange}
-                  placeholder="e.g. 10.2mg"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
 
             </div>
           </div>
