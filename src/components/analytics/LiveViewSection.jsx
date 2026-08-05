@@ -77,7 +77,7 @@ const Sparkline = ({ data = [], color = "#0079CD" }) => {
   const pathD = `M ${points.join(' L ')}`;
 
   return (
-    <svg className="w-24 h-9 overflow-visible" viewBox="0 0 100 30" fill="none">
+    <svg className="w-20 h-8 overflow-hidden" viewBox="0 0 100 30" fill="none" preserveAspectRatio="none">
       <path d={pathD} stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -169,7 +169,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
       </div>
 
       {/* Top 5 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
         {/* Card 1: Visitors right now */}
         <div className="bg-gradient-to-br from-[#0f2a5e] to-[#1e4491] text-white rounded-2xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -190,71 +190,71 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
         </div>
 
         {/* Card 2: Total sales */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-              Total sales
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-slate-900">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
+          <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
+            Total sales
+          </span>
+          <div className="flex items-end justify-between mt-2 gap-1">
+            <div>
+              <div className="text-2xl font-bold text-slate-900 whitespace-nowrap">
                 {loading && !data ? '—' : formatCurrency(data?.totalSales)}
-              </span>
+              </div>
               {data?.totalSalesChangePct != null && (
-                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5 mt-1">
                   <TrendingUp className="w-3.5 h-3.5 inline" />
                   {data.totalSalesChangePct >= 0 ? '+' : ''}{data.totalSalesChangePct}%
                 </span>
               )}
             </div>
-          </div>
-          <div className="shrink-0 pl-2">
-            <Sparkline data={sparkSales} color="#0079CD" />
+            <div className="shrink-0 self-center">
+              <Sparkline data={sparkSales} color="#0079CD" />
+            </div>
           </div>
         </div>
 
         {/* Card 3: Sessions */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-              Sessions
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-slate-900">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
+          <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
+            Sessions
+          </span>
+          <div className="flex items-end justify-between mt-2 gap-1">
+            <div>
+              <div className="text-2xl font-bold text-slate-900 whitespace-nowrap">
                 {loading && !data ? '—' : (data?.sessions ?? 0)}
-              </span>
+              </div>
               {data?.sessionsChangePct != null && (
-                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5 mt-1">
                   <TrendingUp className="w-3.5 h-3.5 inline" />
                   {data.sessionsChangePct >= 0 ? '+' : ''}{data.sessionsChangePct}%
                 </span>
               )}
             </div>
-          </div>
-          <div className="shrink-0 pl-2">
-            <Sparkline data={sparkSessions} color="#0079CD" />
+            <div className="shrink-0 self-center">
+              <Sparkline data={sparkSessions} color="#0079CD" />
+            </div>
           </div>
         </div>
 
         {/* Card 4: Orders */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-              Orders
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold text-slate-900">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
+          <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
+            Orders
+          </span>
+          <div className="flex items-end justify-between mt-2 gap-1">
+            <div>
+              <div className="text-2xl font-bold text-slate-900 whitespace-nowrap">
                 {loading && !data ? '—' : (data?.orders ?? 0)}
-              </span>
+              </div>
               {data?.ordersChangePct != null && (
-                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5 mt-1">
                   <TrendingUp className="w-3.5 h-3.5 inline" />
                   {data.ordersChangePct >= 0 ? '+' : ''}{data.ordersChangePct}%
                 </span>
               )}
             </div>
-          </div>
-          <div className="shrink-0 pl-2">
-            <Sparkline data={sparkOrders} color="#0079CD" />
+            <div className="shrink-0 self-center">
+              <Sparkline data={sparkOrders} color="#0079CD" />
+            </div>
           </div>
         </div>
 
