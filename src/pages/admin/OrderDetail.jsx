@@ -551,7 +551,7 @@ const OrderDetail = () => {
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-brand-navy">Fulfillment</h2>
-                      <p className="text-[13px] text-slate-500 font-medium">Standard Shipping</p>
+                      <p className="text-[13px] text-slate-500 font-medium">{order.shippingMethodName || 'Standard Shipping'}</p>
                     </div>
                   </div>
                   <span className="px-3 py-1 bg-slate-100 text-slate-600 text-[13px] font-semibold rounded-full border border-slate-200 flex items-center gap-1.5">
