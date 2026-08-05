@@ -119,7 +119,7 @@ const CartDrawer = () => {
                                                 <h3 className="text-[14px] font-semibold text-[#1E1E1E] leading-tight">
                                                     {item.name}
                                                 </h3>
-                                                {item.selectedVariant && (
+                                                {item.selectedVariant && item.selectedVariant.title !== 'Default Title' && (
                                                     <p className="text-[12px] text-slate-400 mt-1 font-medium">
                                                         Option: {item.selectedVariant.title}
                                                     </p>

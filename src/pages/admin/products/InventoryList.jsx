@@ -226,13 +226,7 @@ const InventoryList = () => {
                             />
                           </div>
 
-                          <select className="bg-white border border-slate-300 shadow-sm rounded-lg px-2 h-9 text-[13px] font-medium outline-none text-slate-700 w-36 hover:border-slate-400 transition-colors cursor-pointer">
-                            <option>Shop location</option>
-                            <option disabled>Damaged (Unavailable)</option>
-                            <option disabled>Quality control (Unavailable)</option>
-                            <option disabled>Safety stock (Unavailable)</option>
-                            <option disabled>Other (Unavailable)</option>
-                          </select>
+
 
                           <div className="flex items-center gap-1.5 ml-1">
                             <button

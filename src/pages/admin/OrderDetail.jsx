@@ -427,7 +427,19 @@ const OrderDetail = () => {
 
   // Refunds
   if (refunds && refunds.length > 0) {
+    const uniqueRefunds = [];
+    const seenRefundKeys = new Set();
+    
     refunds.forEach(refund => {
+      if (Number(refund.amount) <= 0) return;
+      
+      const key = `${refund.amount}-${new Date(refund.createdAt).toDateString()}-${new Date(refund.createdAt).getHours()}-${new Date(refund.createdAt).getMinutes()}`;
+      if (seenRefundKeys.has(key)) return;
+      seenRefundKeys.add(key);
+      uniqueRefunds.push(refund);
+    });
+
+    uniqueRefunds.forEach(refund => {
       addEvent(
         <span>Tagadacrm refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span> to Tagada Pay.</span>,
         refund.createdAt
