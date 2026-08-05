@@ -253,16 +253,24 @@ const BatchList = () => {
               ) : (
                 batches.map((batch) => (
                   <tr key={batch._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-3.5 font-bold text-slate-800 whitespace-nowrap">
-                      {batch.batchId}
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <Link
+                        to={`/admin/batches/${batch._id}/edit`}
+                        className="font-bold text-brand-blue hover:text-blue-800 hover:underline"
+                      >
+                        {batch.batchId}
+                      </Link>
                       {batch.displayName && (
                         <span className="block text-[11px] text-slate-400 font-normal">{batch.displayName}</span>
                       )}
                     </td>
                     <td className="px-5 py-3.5 max-w-[160px]">
-                      <span className="line-clamp-1 text-slate-700 font-medium">
+                      <Link
+                        to={`/admin/batches/${batch._id}/edit`}
+                        className="line-clamp-1 text-slate-700 font-medium hover:text-brand-blue hover:underline"
+                      >
                         {batch.productId?.name || <span className="text-red-400 italic">Unknown</span>}
-                      </span>
+                      </Link>
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="text-slate-700 font-medium">{batch.purity || '—'}</span>
