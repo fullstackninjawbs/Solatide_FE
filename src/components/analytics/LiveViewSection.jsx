@@ -296,11 +296,12 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <ShoppingCart className="w-4 h-4 text-amber-500" />
                   <span>Active Carts</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.activeCarts ?? 0)}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">Added item to cart</p>
+                <p className="text-[11px] text-slate-400 font-medium">Last 5 minutes</p>
               </div>
 
               {/* Checking out */}
@@ -308,11 +309,12 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <CreditCard className="w-4 h-4 text-blue-500" />
                   <span>Checking Out</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.checkingOut ?? 0)}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">Initiated payment</p>
+                <p className="text-[11px] text-slate-400 font-medium">Last 5 minutes</p>
               </div>
 
               {/* Purchased */}
