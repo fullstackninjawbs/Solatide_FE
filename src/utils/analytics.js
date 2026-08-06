@@ -26,6 +26,8 @@ function generateUUID() {
   });
 }
 
+let memorySessionId = null;
+
 export function getSessionId() {
   try {
     let sid = localStorage.getItem(SESSION_KEY);
@@ -35,7 +37,19 @@ export function getSessionId() {
     }
     return sid;
   } catch {
-    return generateUUID(); // Private browsing fallback
+    try {
+      let sid = sessionStorage.getItem(SESSION_KEY);
+      if (!sid) {
+        sid = generateUUID();
+        sessionStorage.setItem(SESSION_KEY, sid);
+      }
+      return sid;
+    } catch {
+      if (!memorySessionId) {
+        memorySessionId = generateUUID();
+      }
+      return memorySessionId;
+    }
   }
 }
 
