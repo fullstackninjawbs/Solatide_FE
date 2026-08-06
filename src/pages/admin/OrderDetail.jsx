@@ -491,7 +491,7 @@ const OrderDetail = () => {
                 <ArrowLeft size={18} />
               </Link>
               <h1 className="text-3xl font-bold text-brand-navy tracking-tight flex items-center gap-4">
-                {order.orderNumber ?? `#${String(order._id).slice(-8).toUpperCase()}`}
+                #{order.orderNumber ?? String(order._id).slice(-8).toUpperCase()}
 
                 <div className="flex items-center gap-2 mt-1">
                   {/* Payment Badge */}

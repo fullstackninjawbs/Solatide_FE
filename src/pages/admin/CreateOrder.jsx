@@ -302,7 +302,7 @@ const CreateOrder = () => {
       const json = await res.json();
 
       if (json.success && json.data?.order) {
-        toast.success(`Order ${json.data.order.orderNumber} created successfully!`);
+        toast.success(`Order #${json.data.order.orderNumber} created successfully!`);
         navigate(`/admin/orders/${json.data.order._id}`);
       } else {
         setError(json.message || 'Failed to create order. Please check inputs.');

@@ -72,7 +72,7 @@ const OrderStatus = () => {
                 <div className="flex justify-between items-start mb-6">
                     <div>
                         <h1 className="text-[22px] text-gray-900 font-normal">
-                            Order <span className="font-medium">{order.orderNumber}</span>
+                            Order <span className="font-medium">#{order.orderNumber}</span>
                         </h1>
                         <p className="text-[13px] text-gray-500 mt-1">Confirmed {orderDate}</p>
                     </div>

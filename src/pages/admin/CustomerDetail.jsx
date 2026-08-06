@@ -228,7 +228,7 @@ const CustomerDetail = () => {
                     to={`/admin/orders/${orderId}`}
                     className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 hover:bg-gray-200 transition-colors"
                 >
-                    {orderNo}
+                    #{orderNo}
                 </Link>
             );
 
@@ -364,7 +364,7 @@ const CustomerDetail = () => {
                                             <div>
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <Link to={`/admin/orders/${lastOrder._id}`} className="font-bold text-[16px] text-gray-900 hover:underline">
-                                                        {lastOrder.orderNumber}
+                                                        #{lastOrder.orderNumber}
                                                     </Link>
                                                     <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[12px] font-medium flex items-center gap-1">
                                                         <div className={`w-1.5 h-1.5 rounded-full ${lastOrder.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-gray-400'}`}></div>

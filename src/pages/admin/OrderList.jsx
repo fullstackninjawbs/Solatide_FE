@@ -296,7 +296,7 @@ const OrderList = () => {
                         to={`/admin/orders/${order._id}`}
                         className="font-semibold text-brand-navy hover:text-brand-blue transition-colors flex items-center gap-1 group-hover:underline"
                       >
-                        {order.orderNumber ?? `#${String(order._id).slice(-6).toUpperCase()}`}
+                        #{order.orderNumber ?? String(order._id).slice(-6).toUpperCase()}
                         <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
                       </Link>
                     </td>

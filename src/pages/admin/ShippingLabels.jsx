@@ -255,7 +255,7 @@ export default function ShippingLabels() {
                       </td>
                       <td className="px-5 py-4">
                         <Link to={`/admin/orders/${order._id}`} className="text-brand-navy hover:text-brand-cyan font-bold transition-colors">
-                          {order.orderNumber || order._id.substring(0, 8)}
+                          #{order.orderNumber || order._id.substring(0, 8)}
                         </Link>
                       </td>
                       <td className="px-5 py-4">

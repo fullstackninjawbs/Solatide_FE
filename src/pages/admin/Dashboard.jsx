@@ -401,7 +401,7 @@ const Dashboard = () => {
                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
                       <td className="py-3.5 pl-4 font-semibold text-brand-blue hover:text-brand-cyan">
                         <Link to={`/admin/orders/${order._id}`}>
-                          {order.orderNumber || order._id.substring(0, 8).toUpperCase()}
+                          #{order.orderNumber || order._id.substring(0, 8).toUpperCase()}
                         </Link>
                       </td>
                       <td className="py-3.5 text-slate-700">
