@@ -24,6 +24,14 @@ const CheckoutSuccess = () => {
 
     const fetchOrder = async () => {
       try {
+        // Instantly sync with Tagada to ensure we have the latest status & customer details
+        // even if the webhook hasn't fired yet!
+        try {
+          await apiService.syncOrderWithTagada(orderId);
+        } catch (syncErr) {
+          console.warn('Silent auto-sync failed:', syncErr);
+        }
+
         const res = await apiService.getOrderById(orderId);
         const data = await res.json();
         if (res.ok && data.success) {
