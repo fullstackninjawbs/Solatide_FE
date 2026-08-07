@@ -339,9 +339,32 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                 <span>Cart drop: {data.funnel.cartDropOffPct}%</span>
               </div>
               <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex">
-                <div style={{ width: `${Math.max(5, (data.funnel.purchased / (data.funnel.sessions || 1)) * 100)}%` }} className="bg-emerald-500 h-full" title="Purchased"></div>
-                <div style={{ width: `${Math.max(0, ((data.customerBehavior?.checkingOut || 0) / (data.funnel.sessions || 1)) * 100)}%` }} className="bg-blue-500 h-full" title="Checking out"></div>
-                <div style={{ width: `${Math.max(0, ((data.customerBehavior?.activeCarts || 0) / (data.funnel.sessions || 1)) * 100)}%` }} className="bg-amber-400 h-full" title="Active Carts"></div>
+                {(() => {
+                  const cb = data.customerBehavior || {};
+                  const purchased = cb.purchased || 0;
+                  const checkoutOnly = cb.checkingOut || 0;
+                  const cartOnly = cb.activeCarts || 0;
+                  
+                  const total = purchased + checkoutOnly + cartOnly;
+                  
+                  if (total === 0) {
+                    return (
+                      <>
+                        <div style={{ width: `33.33%` }} className="bg-emerald-500/20 h-full" title="Purchased (0)"></div>
+                        <div style={{ width: `33.33%` }} className="bg-blue-500/20 h-full" title="Checking out (0)"></div>
+                        <div style={{ width: `33.34%` }} className="bg-amber-400/20 h-full" title="Active Carts (0)"></div>
+                      </>
+                    );
+                  }
+                  
+                  return (
+                    <>
+                      <div style={{ width: `${(purchased / total) * 100}%` }} className="bg-emerald-500 h-full" title="Purchased"></div>
+                      <div style={{ width: `${(checkoutOnly / total) * 100}%` }} className="bg-blue-500 h-full" title="Checking out"></div>
+                      <div style={{ width: `${(cartOnly / total) * 100}%` }} className="bg-amber-400 h-full" title="Active Carts"></div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           )}
