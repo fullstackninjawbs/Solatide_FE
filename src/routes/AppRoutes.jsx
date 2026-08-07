@@ -55,18 +55,18 @@ const StoreSettings = lazy(() => import('../pages/admin/settings/StoreSettings')
 const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
 const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
-
+const ResearchPage = lazy(() => import('../pages/research/ResearchPage'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
 // Fires page_view on every route change. Rendered inside BrowserRouter so
 // useLocation works. Admin routes are excluded (no admin tracking).
 const PageViewTracker = () => {
-  const location = useLocation();
-  useEffect(() => {
-    // Skip admin panel pages
-    if (location.pathname.startsWith('/admin')) return;
-    trackEvent('page_view', { page: location.pathname, path: location.pathname });
-  }, [location.pathname]);
-  return null;
+    const location = useLocation();
+    useEffect(() => {
+        // Skip admin panel pages
+        if (location.pathname.startsWith('/admin')) return;
+        trackEvent('page_view', { page: location.pathname, path: location.pathname });
+    }, [location.pathname]);
+    return null;
 };
 
 const AppRoutes = () => {
@@ -138,6 +138,7 @@ const AppRoutes = () => {
                     <Route path="coa" element={<CoaAndTesting />} />
                     <Route path="calculator" element={<ConcentrationCalculator />} />
                     <Route path="contact" element={<ContactUs />} />
+                    <Route path="/ResearchPage" element={<ResearchPage />} />
                     <Route path="research-resource" element={<ResearchResource />} />
                     <Route path="resource" element={<ResearchResource />} />
                     <Route path="faq" element={<Faq />} />
