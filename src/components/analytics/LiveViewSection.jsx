@@ -295,38 +295,35 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
               <div className="pb-4 md:pb-0 md:pr-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <ShoppingCart className="w-4 h-4 text-amber-500" />
-                  <span>Active Carts</span>
+                  <span>Active Carts (Last 5 mins)</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.activeCarts ?? 0)}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">Last 5 minutes</p>
               </div>
 
               {/* Checking out */}
               <div className="py-4 md:py-0 md:px-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <CreditCard className="w-4 h-4 text-blue-500" />
-                  <span>Checking Out</span>
+                  <span>Checking Out (Last 5 mins)</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.checkingOut ?? 0)}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">Last 5 minutes</p>
               </div>
 
               {/* Purchased */}
               <div className="pt-4 md:pt-0 md:pl-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>Purchased</span>
+                  <span>Purchased (Last 5 mins)</span>
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.purchased ?? 0)}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">Completed order</p>
               </div>
             </div>
           </div>
