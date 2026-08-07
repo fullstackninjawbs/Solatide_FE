@@ -145,6 +145,12 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  syncOrderWithTagada: async (id) => {
+    return fetch(`${API_URL}/api/payments/tagada/sync/${id}`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
 
   // Admin Settings
   getTagadaSettings: async () => {
