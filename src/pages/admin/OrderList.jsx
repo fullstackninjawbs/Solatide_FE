@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import Pagination from '../../components/Pagination';
 import {
   Search,
-  ChevronLeft,
-  ChevronRight,
-  ArrowUpDown,
   Package,
   ExternalLink,
   RefreshCw,
-  Download,
-  Plus
+  Download
 } from 'lucide-react';
 
 // ─── Helper: format date like Shopify ("Today at 2:31 pm") ────────────────────
@@ -77,7 +73,7 @@ const TABS = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 const OrderList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '25', 10);
   const activeTab = parseInt(searchParams.get('tab') || '0', 10);
@@ -119,7 +115,7 @@ const OrderList = () => {
       const params = new URLSearchParams();
       const tabFilter = TABS[activeTab]?.filter || {};
       Object.entries(tabFilter).forEach(([k, v]) => params.set(k, v));
-      
+
       const q = searchParams.get('q');
       if (q) params.set('q', q);
       params.set('page', String(page));
@@ -241,8 +237,8 @@ const OrderList = () => {
                 key={tab.label}
                 onClick={() => handleTabChange(idx)}
                 className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 ${activeTab === idx
-                    ? 'border-brand-navy text-brand-navy bg-slate-50'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                  ? 'border-brand-navy text-brand-navy bg-slate-50'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
                   }`}
               >
                 {tab.label}
@@ -275,7 +271,6 @@ const OrderList = () => {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Customer</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Platform</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Traffic Source</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Traffic Channel</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Campaign</th>
                 <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Total</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Payment</th>
@@ -289,7 +284,7 @@ const OrderList = () => {
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
-                    {Array.from({ length: 13 }).map((__, j) => (
+                    {Array.from({ length: 12 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
@@ -298,7 +293,7 @@ const OrderList = () => {
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={13} className="px-4 py-20 text-center">
+                  <td colSpan={12} className="px-4 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
@@ -349,11 +344,6 @@ const OrderList = () => {
                     {/* Attribution Source */}
                     <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
                       {order.attribution?.firstTouch?.source || 'Direct / Unknown'}
-                    </td>
-
-                    {/* Attribution Channel */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      {order.attribution?.firstTouch?.channel || 'direct'}
                     </td>
 
                     {/* Attribution Campaign */}
