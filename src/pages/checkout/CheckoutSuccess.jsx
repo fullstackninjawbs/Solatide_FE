@@ -36,7 +36,7 @@ const CheckoutSuccess = () => {
         const data = await res.json();
         if (res.ok && data.success) {
           setOrder(data.data.order);
-          // Fire purchase analytics event
+          // Fire internal purchase analytics event
           try {
             const ord = data.data.order;
             trackEvent('purchase', {
@@ -44,7 +44,32 @@ const CheckoutSuccess = () => {
               cartValue: ord.grandTotal || ord.totalAmount,
               country: ord.shippingAddress?.country || ord.tagadaShipping?.address?.countryCode || undefined,
             });
-          } catch { /* analytics never breaks the success page */ }
+
+            // Fire GTM DataLayer Purchase Event
+            window.dataLayer = window.dataLayer || [];
+            
+            // Check if we already pushed this transaction to avoid duplicates on refresh
+            const hasPushed = sessionStorage.getItem(`gtm_pushed_${ord._id}`);
+            if (!hasPushed) {
+              window.dataLayer.push({
+                event: 'purchase',
+                transaction_id: ord._id,
+                value: ord.grandTotal || ord.totalAmount,
+                currency: 'AUD',
+                attribution_source: ord.attribution?.firstTouch?.source || 'Direct / Unknown',
+                attribution_channel: ord.attribution?.firstTouch?.channel || 'direct',
+                items: ord.products?.map(p => ({
+                  item_name: p.product?.name || 'Unknown Product',
+                  item_id: p.product?._id || p.product,
+                  price: p.price,
+                  quantity: p.quantity
+                })) || []
+              });
+              sessionStorage.setItem(`gtm_pushed_${ord._id}`, 'true');
+            }
+          } catch (e) {
+            console.error('Analytics push error:', e);
+          }
         } else {
           setError('Could not load order details.');
         }

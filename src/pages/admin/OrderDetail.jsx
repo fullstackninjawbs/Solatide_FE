@@ -20,7 +20,10 @@ import {
   Tag,
   Printer,
   X,
-  Activity
+  Activity,
+  ChevronDown,
+  ChevronUp,
+  Globe
 } from 'lucide-react';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
@@ -64,6 +67,8 @@ const OrderDetail = () => {
   const [refunds, setRefunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fulfilling, setFulfilling] = useState(false);
+  const [addingNote, setAddingNote] = useState(false);
+  const [showTechDetails, setShowTechDetails] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [creatingLabel, setCreatingLabel] = useState(false);
   const [refunding, setRefunding] = useState(false);
@@ -1000,6 +1005,96 @@ const OrderDetail = () => {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Conversion Summary */}
+            <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6">
+              <h3 className="text-[15px] font-bold text-brand-navy mb-5 flex items-center gap-2">
+                Conversion Summary
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-[13px]">
+                  <div>
+                    <span className="block text-slate-400 font-medium mb-1">Source</span>
+                    <span className="font-semibold text-brand-navy">{order.attribution?.firstTouch?.source || 'Direct / Unknown'}</span>
+                  </div>
+                  <div>
+                    <span className="block text-slate-400 font-medium mb-1">Channel</span>
+                    <span className="font-semibold text-brand-navy">{order.attribution?.firstTouch?.channel || 'direct'}</span>
+                  </div>
+                  {order.attribution?.firstTouch?.utmCampaign && (
+                    <div className="col-span-2">
+                      <span className="block text-slate-400 font-medium mb-1">Campaign</span>
+                      <span className="font-semibold text-brand-navy">{order.attribution.firstTouch.utmCampaign}</span>
+                    </div>
+                  )}
+                  {order.attribution?.firstTouch?.sourceDomain && (
+                    <div className="col-span-2">
+                      <span className="block text-slate-400 font-medium mb-1">Domain</span>
+                      <span className="font-semibold text-brand-blue truncate block">
+                        {order.attribution.firstTouch.sourceDomain}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 mt-2">
+                  <button 
+                    onClick={() => setShowTechDetails(!showTechDetails)}
+                    className="flex items-center justify-between w-full text-[13px] font-semibold text-slate-500 hover:text-brand-blue transition-colors"
+                  >
+                    Technical Details
+                    {showTechDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+
+                  {showTechDetails && (
+                    <div className="mt-4 p-4 bg-slate-50 rounded-xl space-y-3 text-[12px] font-mono break-all text-slate-600">
+                      {order.attribution?.firstTouch?.utmSource && (
+                        <div><span className="font-semibold text-slate-400">utm_source:</span> {order.attribution.firstTouch.utmSource}</div>
+                      )}
+                      {order.attribution?.firstTouch?.utmMedium && (
+                        <div><span className="font-semibold text-slate-400">utm_medium:</span> {order.attribution.firstTouch.utmMedium}</div>
+                      )}
+                      {order.attribution?.firstTouch?.utmContent && (
+                        <div><span className="font-semibold text-slate-400">utm_content:</span> {order.attribution.firstTouch.utmContent}</div>
+                      )}
+                      {order.attribution?.firstTouch?.utmTerm && (
+                        <div><span className="font-semibold text-slate-400">utm_term:</span> {order.attribution.firstTouch.utmTerm}</div>
+                      )}
+                      {order.attribution?.firstTouch?.gclid && (
+                        <div><span className="font-semibold text-slate-400">gclid:</span> {order.attribution.firstTouch.gclid}</div>
+                      )}
+                      {order.attribution?.firstTouch?.fbclid && (
+                        <div><span className="font-semibold text-slate-400">fbclid:</span> {order.attribution.firstTouch.fbclid}</div>
+                      )}
+                      {order.attribution?.firstTouch?.ttclid && (
+                        <div><span className="font-semibold text-slate-400">ttclid:</span> {order.attribution.firstTouch.ttclid}</div>
+                      )}
+                      {order.attribution?.firstTouch?.msclkid && (
+                        <div><span className="font-semibold text-slate-400">msclkid:</span> {order.attribution.firstTouch.msclkid}</div>
+                      )}
+                      {order.attribution?.firstTouch?.sessionId && (
+                        <div><span className="font-semibold text-slate-400">session_id:</span> {order.attribution.firstTouch.sessionId}</div>
+                      )}
+                      {order.attribution?.firstTouch?.referrerUrl && (
+                        <div>
+                          <span className="font-semibold text-slate-400">referrer:</span>
+                          <a href={order.attribution.firstTouch.referrerUrl} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline ml-1">
+                            {order.attribution.firstTouch.referrerUrl.substring(0, 50)}...
+                          </a>
+                        </div>
+                      )}
+                      {order.attribution?.firstTouch?.landingPage && (
+                        <div>
+                          <span className="font-semibold text-slate-400">landing_page:</span> 
+                          <span className="ml-1">{order.attribution.firstTouch.landingPage.substring(0, 50)}...</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Order Risk */}

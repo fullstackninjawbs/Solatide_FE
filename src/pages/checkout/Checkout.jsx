@@ -5,6 +5,7 @@ import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
+import { getCheckoutAttributionPayload } from '../../utils/attribution';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -63,7 +64,8 @@ const Checkout = () => {
       const orderId = orderData.data.order._id;
 
       // 2) Initiate Tagada Checkout Session
-      const payRes = await apiService.createTagadaPayment({ orderId });
+      const attribution = getCheckoutAttributionPayload();
+      const payRes = await apiService.createTagadaPayment({ orderId, attribution });
       const payData = await payRes.json();
 
       if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');

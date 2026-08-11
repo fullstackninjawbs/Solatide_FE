@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { apiService } from '../services/api';
 import { useCart } from '../context/CartContext';
+import { getCheckoutAttributionPayload } from '../utils/attribution';
 
 export const useTagadaCheckout = () => {
   const { clearCart } = useCart();
@@ -30,7 +31,8 @@ export const useTagadaCheckout = () => {
       const orderId = orderData.data.order._id;
 
       // 2) Initiate Tagada Checkout Session
-      const payRes = await apiService.createTagadaPayment({ orderId });
+      const attribution = getCheckoutAttributionPayload();
+      const payRes = await apiService.createTagadaPayment({ orderId, attribution });
       const payData = await payRes.json();
 
       if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');

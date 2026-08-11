@@ -210,6 +210,12 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  getAnalyticsAttribution: async (queryString = '') => {
+    return fetch(`${API_URL}/api/admin/analytics/attribution${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
 
   // Dashboard Analytics (Legacy)
   getDashboardAnalytics: async (timeFilter = 'Today') => {
@@ -505,6 +511,14 @@ export const apiService = {
   deleteAdminFaqSection: async (id) => {
     return fetch(`${API_URL}/api/admin/content/faqs/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+  },
+
+  // ─── Export ─────────────────────────────────────────────────────────────────
+  exportAdminOrdersCsv: async () => {
+    return fetch(`${API_URL}/api/admin/orders/export/csv`, {
+      method: 'GET',
       headers: getAuthHeaders(),
     });
   }
