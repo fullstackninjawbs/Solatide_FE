@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
 import ScrollToTop from './components/ScrollToTop'
+import DeferredTracker from './components/DeferredTracker'
 import { CartProvider } from './context/CartContext'
 import { CurrencyProvider } from './context/CurrencyContext'
 import './App.css'
@@ -11,6 +12,7 @@ function App() {
     <CartProvider>
       <CurrencyProvider>
         <BrowserRouter>
+          <DeferredTracker />
           <ScrollToTop />
           <AppRoutes />
         </BrowserRouter>
