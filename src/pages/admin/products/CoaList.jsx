@@ -177,9 +177,18 @@ const CoaList = () => {
                       {batch.batchId}
                     </td>
                     <td className="px-5 py-3.5 max-w-[200px]">
-                      <span className="line-clamp-1 text-slate-700 font-medium">
-                        {batch.productId?.name || <span className="text-red-400 italic">Unknown</span>}
-                      </span>
+                      <Link
+                        to={`/admin/batches/${batch._id}/edit`}
+                        className="line-clamp-1 text-slate-700 font-medium hover:text-brand-blue hover:underline"
+                      >
+                        {batch.products?.length > 0 ? (
+                          batch.products.map(p => p.name).join(', ')
+                        ) : batch.productId?.name ? (
+                          batch.productId.name
+                        ) : (
+                          <span className="text-red-400 italic">Unknown</span>
+                        )}
+                      </Link>
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="text-slate-700 font-medium">{batch.purity || '—'}</span>
