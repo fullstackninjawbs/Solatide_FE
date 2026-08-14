@@ -28,12 +28,12 @@ const CurrentBatchCard = ({ batch, product }) => {
   if (parts.length > 1) {
     return (
       <div className="my-0.5 leading-snug">
-        <div className="text-[12px] font-bold text-[#1a3a7d]">{parts[0].trim()}</div>
-        <div className="text-[11px] font-medium text-slate-400 mt-0.5">{parts.slice(1).join('\n').trim()}</div>
+        <div className="text-[12px] text-[#1a3a7d]">({parts[0].trim()})</div>
+        <div className="text-[11px] font-medium text-slate-400 mt-0.5">({parts.slice(1).join('\n').trim()})</div>
       </div>
     );
   }
-  return <div className="text-[12px] font-bold text-[#1a3a7d] my-0.5 leading-snug">{text}</div>;
+  return <div className="text-[12px] text-[#1a3a7d] my-0.5 leading-snug">({text})</div>;
 };
 
 const purityResult = tests.purityHplc?.result || '';
