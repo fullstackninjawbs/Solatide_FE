@@ -143,3 +143,23 @@ body,
   display: none !important;
   /* Hide the footer status bar for a clean shopify look */
 }
+
+/* Make links in HTML content and the Jodit Editor look like links */
+.product-description-content a,
+.product-overview-content a,
+.product-applications-content a,
+.product-specs-content a,
+.jodit-wysiwyg a {
+  color: #214A9E !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+}
+
+.product-description-content a:hover,
+.product-overview-content a:hover,
+.product-applications-content a:hover,
+.product-specs-content a:hover,
+.jodit-wysiwyg a:hover {
+  color: #16326b !important;
+}
