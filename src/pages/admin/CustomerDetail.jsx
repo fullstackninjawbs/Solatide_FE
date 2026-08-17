@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, 
 import { toast } from 'react-hot-toast';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
+import { useConfirm } from '../../components/admin/feedback/ConfirmProvider';
 
 const CustomerDetail = () => {
     const { id } = useParams();
@@ -13,6 +14,7 @@ const CustomerDetail = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+    const confirm = useConfirm();
 
     // New State for Interactions
     const [newTag, setNewTag] = useState('');
@@ -88,7 +90,13 @@ const CustomerDetail = () => {
     };
 
     const toggleBanStatus = async () => {
-        if (!window.confirm(`Are you sure you want to ${customer.banned ? 'unban' : 'ban'} this customer?`)) return;
+        const isConfirmed = await confirm({
+            title: customer.banned ? 'Unban Customer' : 'Ban Customer',
+            message: `Are you sure you want to ${customer.banned ? 'unban' : 'ban'} this customer?`,
+            confirmText: customer.banned ? 'Unban' : 'Ban',
+            type: customer.banned ? 'info' : 'danger'
+        });
+        if (!isConfirmed) return;
         await updateCustomerField({ banned: !customer.banned }, `Customer ${customer.banned ? 'unbanned' : 'banned'} successfully`);
     };
 
@@ -123,7 +131,13 @@ const CustomerDetail = () => {
     };
 
     const handleDeleteComment = async (indexToDelete) => {
-        if (window.confirm('Are you sure you want to delete this comment?')) {
+        const isConfirmed = await confirm({
+            title: 'Delete Comment',
+            message: 'Are you sure you want to delete this comment?',
+            confirmText: 'Delete',
+            type: 'danger'
+        });
+        if (isConfirmed) {
             const updatedComments = (customer.comments || []).filter((_, idx) => idx !== indexToDelete);
             await updateCustomerField({ comments: updatedComments }, 'Comment deleted');
         }

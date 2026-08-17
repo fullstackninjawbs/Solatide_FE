@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiService } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const CoaList = () => {
   const [batches, setBatches] = useState([]);
@@ -11,6 +14,8 @@ const CoaList = () => {
   // Filter state
   const [filterProductId, setFilterProductId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const toast = useToast();
+  const confirm = useConfirm();
 
   useEffect(() => {
     fetchProducts();
@@ -53,7 +58,14 @@ const CoaList = () => {
   };
 
   const handleDeleteCoa = async (batchId) => {
-    if (window.confirm('Are you sure you want to remove the COA document from this batch record?')) {
+    const isConfirmed = await confirm({
+      title: 'Remove COA Document?',
+      description: 'Are you sure you want to remove the COA document from this batch record?',
+      confirmLabel: 'Remove Document',
+      variant: 'danger'
+    });
+
+    if (isConfirmed) {
       try {
         const payload = {
             coaFile: null,
@@ -63,11 +75,12 @@ const CoaList = () => {
         const res = await apiService.updateBatch(batchId, payload);
         if (res.ok) {
           fetchBatches();
+          toast.success('COA document removed successfully');
         } else {
-          alert('Failed to remove COA document');
+          toast.error('Failed to remove COA document');
         }
       } catch (error) {
-        alert('Error removing COA document');
+        toast.error(getUserFriendlyErrorMessage(error, 'coaRemove'));
         console.error(error);
       }
     }

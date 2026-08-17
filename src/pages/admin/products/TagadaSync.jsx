@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Play, Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import { apiService } from '../../../services/api';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const TagadaSync = () => {
   const [loading, setLoading] = useState(false);
@@ -9,6 +12,8 @@ const TagadaSync = () => {
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('status');
+  const toast = useToast();
+  const confirm = useConfirm();
 
   useEffect(() => {
     fetchHistory();
@@ -47,10 +52,15 @@ const TagadaSync = () => {
   };
 
   const handleSync = async () => {
-    if (!window.confirm('Are you sure you want to run a full sync? This will update local products with Tagada data.')) {
-      return;
-    }
-    
+    const isConfirmed = await confirm({
+      title: 'Run Tagada Sync?',
+      description: 'Are you sure you want to run a full sync? This will update local products with Tagada data.',
+      confirmLabel: 'Run Sync',
+      variant: 'primary'
+    });
+
+    if (!isConfirmed) return;
+
     try {
       setSyncing(true);
       setError(null);
@@ -60,21 +70,22 @@ const TagadaSync = () => {
       await fetchHistory();
       setActiveTab('history');
       setPreview(null);
-      alert('Sync completed successfully!');
+      toast.success('Sync completed successfully!');
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Sync failed.');
+      setError(getUserFriendlyErrorMessage(err, 'tagadaSync'));
+      toast.error(getUserFriendlyErrorMessage(err, 'tagadaSync'));
     } finally {
       setSyncing(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tagada Product Sync</h1>
-          <p className="text-gray-600">Synchronize products and variants from Tagada to your local database.</p>
+          <h2 className="text-2xl font-bold text-brand-navy">Tagada Product Sync</h2>
+          <p className="text-slate-500 text-[14px]">Synchronize products and variants from Tagada to your local database.</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -109,46 +120,43 @@ const TagadaSync = () => {
         </div>
       )}
 
-      <div className="bg-white shadow rounded-lg mb-6">
-        <div className="border-b border-gray-200">
+      <div className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.01)] mb-6">
+        <div className="border-b border-slate-100">
           <nav className="-mb-px flex">
             <button
               onClick={() => setActiveTab('status')}
-              className={`${
-                activeTab === 'status'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
+              className={`${activeTab === 'status'
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
             >
               Status & Overview
             </button>
             <button
               onClick={() => setActiveTab('preview')}
-              className={`${
-                activeTab === 'preview'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
+              className={`${activeTab === 'preview'
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
             >
               Preview ({preview ? preview.length : 0})
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`${
-                activeTab === 'history'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
+              className={`${activeTab === 'history'
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm`}
             >
               Sync History
             </button>
           </nav>
         </div>
-        
-        <div className="p-6">
+
+        <div>
           {activeTab === 'status' && (
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Latest Sync Information</h3>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-slate-900 mb-4">Latest Sync Information</h3>
               {logs && logs.length > 0 ? (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-4">
                   <div className="bg-gray-50 overflow-hidden shadow rounded-lg p-5">
@@ -173,13 +181,13 @@ const TagadaSync = () => {
               ) : (
                 <p className="text-gray-500">No sync history available.</p>
               )}
-              
+
               <div className="mt-8 bg-blue-50 border-l-4 border-blue-400 p-4">
                 <h4 className="text-blue-800 font-medium">Important Information</h4>
                 <p className="mt-2 text-blue-700 text-sm">
-                  Tagada is the source of truth for commerce data (names, descriptions, pricing, inventory). 
-                  Syncing will update local products without overwriting local-only fields like Batches, COAs, 
-                  Purity results, or SEO settings. Run a preview first to see what will change.
+                  Tagada is the source of truth for commerce data (names, descriptions, pricing, inventory).
+                  Syncing will update local products without overwriting local-only fields like Batches, COAs,
+                  Purity results. Run a preview first to see what will change.
                 </p>
               </div>
             </div>
@@ -193,29 +201,29 @@ const TagadaSync = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tagada Variant ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Changes</th>
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
+                        <th className="py-4 pl-6 text-left">Product</th>
+                        <th className="py-4 text-left">Tagada Variant ID</th>
+                        <th className="py-4 text-left">Action</th>
+                        <th className="py-4 text-left pr-6">Changes</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-slate-100 text-[14px] text-slate-700">
                       {preview.map((item, idx) => (
-                        <tr key={idx}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.tagadaProductId}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                        <tr key={idx} className="hover:bg-slate-50/60 transition-colors group">
+                          <td className="py-4 pl-6 font-medium text-slate-900">{item.productName}</td>
+                          <td className="py-4 text-slate-500">{item.tagadaProductId}</td>
+                          <td className="py-4">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                              ${item.action === 'created' ? 'bg-green-100 text-green-800' : 
-                                item.action === 'updated' ? 'bg-blue-100 text-blue-800' : 
-                                'bg-gray-100 text-gray-800'}`}>
+                              ${item.action === 'created' ? 'bg-green-100 text-green-800' :
+                                item.action === 'updated' ? 'bg-blue-100 text-blue-800' :
+                                  'bg-gray-100 text-gray-800'}`}>
                               {item.action.toUpperCase()}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="py-4 pr-6 text-slate-500">
                             {item.changedFields?.join(', ') || '-'}
                           </td>
                         </tr>
@@ -229,35 +237,35 @@ const TagadaSync = () => {
 
           {activeTab === 'history' && (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Initiator</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated</th>
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
+                    <th className="py-4 pl-6 text-left">Date</th>
+                    <th className="py-4 text-left">Status</th>
+                    <th className="py-4 text-left">Type</th>
+                    <th className="py-4 text-left">Initiator</th>
+                    <th className="py-4 text-left">Created</th>
+                    <th className="py-4 text-left pr-6">Updated</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-slate-100 text-[14px] text-slate-700">
                   {logs.map((log) => (
-                    <tr key={log._id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tr key={log._id} className="hover:bg-slate-50/60 transition-colors group">
+                      <td className="py-4 pl-6 font-medium text-slate-900">
                         {new Date(log.startedAt).toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="py-4">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${log.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                            log.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                            'bg-yellow-100 text-yellow-800'}`}>
+                          ${log.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            log.status === 'failed' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'}`}>
                           {log.status.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{log.syncType}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{log.initiatedBy?.name || 'System'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{log.createdCount}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{log.updatedCount}</td>
+                      <td className="py-4 text-slate-500">{log.syncType}</td>
+                      <td className="py-4 text-slate-500">{log.initiatedBy?.name || 'System'}</td>
+                      <td className="py-4 text-slate-500 font-semibold">{log.createdCount}</td>
+                      <td className="py-4 text-slate-500 font-semibold pr-6">{log.updatedCount}</td>
                     </tr>
                   ))}
                 </tbody>

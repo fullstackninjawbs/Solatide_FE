@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '../../../services/api';
-import { toast } from 'react-hot-toast';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 import {
@@ -22,6 +24,8 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [maxAllowed, setMaxAllowed] = useState(3);
   const [searchTerm, setSearchTerm] = useState('');
+  const confirm = useConfirm();
+  const toast = useToast();
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +52,7 @@ const AdminUsers = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error('Network error fetching admin users');
+      toast.error(getUserFriendlyErrorMessage(error, 'fetchAdminUsers'));
     } finally {
       setLoading(false);
     }
@@ -116,7 +120,7 @@ const AdminUsers = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error('Network error');
+      toast.error(getUserFriendlyErrorMessage(error, 'saveAdminUser'));
     } finally {
       setSubmitting(false);
     }
@@ -126,7 +130,13 @@ const AdminUsers = () => {
     if (id === adminUser?._id) {
       return toast.error("You cannot delete your own account.");
     }
-    if (!window.confirm("Are you sure you want to remove this admin? This action cannot be undone.")) return;
+    const isConfirmed = await confirm({
+      title: 'Remove Admin',
+      message: 'Are you sure you want to remove this admin? This action cannot be undone.',
+      confirmText: 'Remove',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
 
     try {
       const res = await apiService.deleteAdminUser(id);
@@ -139,7 +149,7 @@ const AdminUsers = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error('Network error');
+      toast.error(getUserFriendlyErrorMessage(error, 'deleteAdminUser'));
     }
   };
 

@@ -6,6 +6,9 @@ import CustomDropdown from '../../components/CustomDropdown';
 import Pagination from '../../components/Pagination';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
+import { useConfirm } from '../../components/admin/feedback/ConfirmProvider';
+import { useToast } from '../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 const DiscountList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,6 +26,8 @@ const DiscountList = () => {
   const [searchQuery, setSearchQuery] = useState(urlQ);
   const navigate = useNavigate();
   const debounceRef = useRef(null);
+  const confirm = useConfirm();
+  const toast = useToast();
 
   // Sync search input with browser URL changes
   useEffect(() => {
@@ -95,17 +100,24 @@ const DiscountList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this discount?')) return;
+    const isConfirmed = await confirm({
+      title: 'Delete Discount',
+      message: 'Are you sure you want to delete this discount?',
+      confirmText: 'Delete',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     try {
       const res = await apiService.deleteAdminDiscount(id);
       if (res.ok || res.status === 204) {
         setDiscounts(discounts.filter(d => d._id !== id));
+        toast.success('Discount deleted successfully');
       } else {
-        alert('Failed to delete discount.');
+        toast.error('Failed to delete discount.');
       }
     } catch (err) {
       console.error(err);
-      alert('Error deleting discount.');
+      toast.error(getUserFriendlyErrorMessage(err, 'deleteDiscount'));
     }
   };
 
@@ -115,15 +127,15 @@ const DiscountList = () => {
       const res = await apiService.syncAdminDiscountsFromTagada();
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        toast.success(data.message);
         fetchDiscounts();
       } else {
-        alert(data.message || 'Failed to sync from Tagada.');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'syncDiscounts'));
         setLoading(false);
       }
     } catch (err) {
       console.error(err);
-      alert('Error connecting to server to sync.');
+      toast.error(getUserFriendlyErrorMessage(err, 'syncDiscounts'));
       setLoading(false);
     }
   };

@@ -3,6 +3,9 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
 import Pagination from '../../../components/Pagination';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const BatchList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +25,8 @@ const BatchList = () => {
 
   const navigate = useNavigate();
   const debounceRef = useRef(null);
+  const toast = useToast();
+  const confirm = useConfirm();
 
   // Sync search input with browser URL changes
   useEffect(() => {
@@ -126,16 +131,24 @@ const BatchList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this batch record?')) {
+    const isConfirmed = await confirm({
+      title: 'Delete Batch Record?',
+      description: 'Are you sure you want to delete this batch record?',
+      confirmLabel: 'Delete Batch',
+      variant: 'danger'
+    });
+
+    if (isConfirmed) {
       try {
         const res = await apiService.deleteBatch(id);
         if (res.ok || res.status === 204) {
           fetchBatches();
+          toast.success('Batch record deleted successfully.');
         } else {
-          alert('Failed to delete batch');
+          toast.error('Failed to delete batch');
         }
       } catch (error) {
-        alert('Error deleting batch');
+        toast.error(getUserFriendlyErrorMessage(error, 'batchDelete'));
         console.error(error);
       }
     }

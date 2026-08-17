@@ -6,6 +6,7 @@ import { apiService } from '../../../services/api';
 import JoditEditor from 'jodit-react';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
 
 const CollectionForm = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const CollectionForm = () => {
   const [productsCatalog, setProductsCatalog] = useState([]);
   const [productSearch, setProductSearch] = useState('');
   const [showProductSearchDropdown, setShowProductSearchDropdown] = useState(false);
+  const toast = useToast();
 
   // Collection State
   const [formData, setFormData] = useState({
@@ -131,7 +133,7 @@ const CollectionForm = () => {
   // Manual Mode: Products selection helpers
   const handleAddProduct = (product) => {
     if (formData.products.some(p => p._id === product._id)) {
-      alert('Product is already in this collection.');
+      toast.warning('Product is already in this collection.');
       return;
     }
     setFormData(prev => ({

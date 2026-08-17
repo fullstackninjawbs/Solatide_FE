@@ -3,6 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, ShoppingBag, Check, Save } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import Pagination from '../../../components/Pagination';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const InventoryList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +26,7 @@ const InventoryList = () => {
 
   const navigate = useNavigate();
   const debounceRef = useRef(null);
+  const toast = useToast();
 
   // Sync search input with browser URL changes
   useEffect(() => {
@@ -112,12 +115,13 @@ const InventoryList = () => {
       if (result.success) {
         setProducts(products.map(p => p._id === product._id ? { ...p, stockQuantity: newQty, inStock: newQty > 0 } : p));
         setEditingProductId(null);
+        toast.success('Inventory updated successfully');
       } else {
-        alert('Failed to update inventory');
+        toast.error('Failed to update inventory');
       }
     } catch (err) {
       console.error('Error saving inventory:', err);
-      alert('An error occurred while saving.');
+      toast.error(getUserFriendlyErrorMessage(err, 'inventoryUpdate'));
     }
   };
 

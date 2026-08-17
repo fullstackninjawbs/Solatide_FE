@@ -31,6 +31,9 @@ import {
   UserCog
 } from 'lucide-react';
 
+import { ToastProvider } from '../components/admin/feedback/ToastProvider';
+import { ConfirmProvider } from '../components/admin/feedback/ConfirmProvider';
+
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
@@ -114,7 +117,9 @@ const AdminLayout = () => {
   const filteredMenuItems = menuItems.filter(item => item.roles.includes(adminUser.role));
 
   return (
-    <div className="h-screen print:h-auto bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden print:overflow-visible">
+    <ToastProvider>
+      <ConfirmProvider>
+        <div className="h-screen print:h-auto bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden print:overflow-visible">
       {/* Sidebar */}
       <aside
         className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shrink-0 relative h-screen print:hidden ${isSidebarOpen ? 'w-64' : 'w-20'
@@ -259,6 +264,8 @@ const AdminLayout = () => {
         </main>
       </div>
     </div>
+      </ConfirmProvider>
+    </ToastProvider>
   );
 };
 

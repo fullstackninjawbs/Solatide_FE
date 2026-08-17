@@ -28,6 +28,7 @@ import {
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { toast } from 'react-hot-toast';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -260,12 +261,13 @@ const OrderDetail = () => {
       const data = await res.json();
       if (data.success) {
         setOrder(data.data.order);
+        toast.success('Order fulfilled successfully');
       } else {
-        alert('Failed to update status');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'orderFulfill'));
       }
     } catch (err) {
       console.error(err);
-      alert('Error updating status');
+      toast.error(getUserFriendlyErrorMessage(err, 'orderFulfill'));
     } finally {
       setFulfilling(false);
     }

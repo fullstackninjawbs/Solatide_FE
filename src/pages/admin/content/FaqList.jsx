@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../../../services/api';
-import toast from 'react-hot-toast';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 
 const FaqList = () => {
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const confirm = useConfirm();
+  const toast = useToast();
 
   // States for new section
   const [isAddingSection, setIsAddingSection] = useState(false);
@@ -28,7 +32,7 @@ const FaqList = () => {
       setSections(data.data.faqSections);
     } catch (err) {
       console.error(err);
-      toast.error('Failed to load FAQs');
+      toast.error(getUserFriendlyErrorMessage(err, 'loadFaqs'));
     } finally {
       setLoading(false);
     }
@@ -49,19 +53,25 @@ const FaqList = () => {
       toast.success('Section created');
     } catch (err) {
       console.error(err);
-      toast.error('Failed to create section');
+      toast.error(getUserFriendlyErrorMessage(err, 'createFaqSection'));
     }
   };
 
   const handleDeleteSection = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this section?')) return;
+    const isConfirmed = await confirm({
+      title: 'Delete Section',
+      message: 'Are you sure you want to delete this section?',
+      confirmText: 'Delete',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     try {
       await apiService.deleteAdminFaqSection(id);
       setSections(sections.filter(s => s._id !== id));
       toast.success('Section deleted');
     } catch (err) {
       console.error(err);
-      toast.error('Failed to delete section');
+      toast.error(getUserFriendlyErrorMessage(err, 'deleteFaqSection'));
     }
   };
 
@@ -102,7 +112,7 @@ const FaqList = () => {
       toast.success('Questions saved successfully');
     } catch (err) {
       console.error(err);
-      toast.error('Failed to save questions');
+      toast.error(getUserFriendlyErrorMessage(err, 'saveFaqQuestions'));
     }
   };
 

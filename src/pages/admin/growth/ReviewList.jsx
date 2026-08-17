@@ -3,6 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { apiService, API_URL } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
 import Pagination from '../../../components/Pagination';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const ReviewList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +17,8 @@ const ReviewList = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const confirm = useConfirm();
+  const toast = useToast();
 
   const statusOptions = [
     { value: 'all', label: 'All Statuses' },
@@ -70,28 +75,36 @@ const ReviewList = () => {
       if (data.success) {
         // Update local state to reflect the change
         setReviews(reviews.map(r => r._id === id ? { ...r, status } : r));
+        toast.success(`Review status updated to ${status}`);
       } else {
-        alert(data.message || 'Failed to update review status');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'updateReviewStatus'));
       }
     } catch (err) {
       console.error('Status update error:', err);
-      alert('An error occurred while updating the status.');
+      toast.error(getUserFriendlyErrorMessage(err, 'updateReviewStatus'));
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this review permanently?')) return;
+    const isConfirmed = await confirm({
+      title: 'Delete Review',
+      message: 'Are you sure you want to delete this review permanently?',
+      confirmText: 'Delete',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     
     try {
       const res = await apiService.deleteAdminReview(id);
       if (res.ok || res.status === 204 || res.status === 200) {
         setReviews(reviews.filter(r => r._id !== id));
+        toast.success('Review deleted');
       } else {
-        alert('Failed to delete review');
+        toast.error('Failed to delete review');
       }
     } catch (err) {
       console.error('Delete error:', err);
-      alert('An error occurred while deleting.');
+      toast.error(getUserFriendlyErrorMessage(err, 'deleteReview'));
     }
   };
 
@@ -112,13 +125,13 @@ const ReviewList = () => {
       const res = await apiService.resendVerificationEmail(id);
       const data = await res.json();
       if (data.success) {
-        alert('Verification email resent successfully.');
+        toast.success('Verification email resent successfully.');
       } else {
-        alert(data.message || 'Failed to resend verification email.');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'resendVerificationEmail'));
       }
     } catch (err) {
       console.error('Resend verification error:', err);
-      alert('An error occurred while resending the email.');
+      toast.error(getUserFriendlyErrorMessage(err, 'resendVerificationEmail'));
     }
   };
 
@@ -142,14 +155,14 @@ const ReviewList = () => {
       const res = await apiService.importAdminReviews(formData);
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        toast.success(data.message);
         fetchReviews(); // refresh list
       } else {
-        alert(data.message || 'Failed to import reviews.');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'importReviews'));
       }
     } catch (err) {
       console.error('Import error:', err);
-      alert('An error occurred during import.');
+      toast.error(getUserFriendlyErrorMessage(err, 'importReviews'));
     } finally {
       setLoading(false);
       // Reset input
@@ -271,7 +284,7 @@ const ReviewList = () => {
                           <button 
                             onClick={() => {
                               if (!review.emailVerified) {
-                                alert('This review must be verified by the customer before approval.');
+                                toast.error('This review must be verified by the customer before approval.');
                                 return;
                               }
                               handleUpdateStatus(review._id, 'approved');

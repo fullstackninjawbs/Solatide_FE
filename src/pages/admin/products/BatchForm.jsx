@@ -4,11 +4,14 @@ import { Info, HelpCircle, ExternalLink, Check, Trash2, ArrowLeft } from 'lucide
 import CustomDropdown from '../../../components/CustomDropdown';
 import MultiSelectDropdown from '../../../components/MultiSelectDropdown';
 import { apiService } from '../../../services/api';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const BatchForm = () => {
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditMode);
@@ -77,7 +80,7 @@ const BatchForm = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to load products');
+      toast.error('Failed to load products');
     }
   };
 
@@ -166,7 +169,7 @@ const BatchForm = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to load batch data');
+      toast.error('Failed to load batch data');
     } finally {
       setInitialLoading(false);
     }
@@ -270,11 +273,11 @@ const BatchForm = () => {
           coaFile: data.data
         }));
       } else {
-        alert('Upload failed: ' + data.message);
+        toast.error(getUserFriendlyErrorMessage(data.message, 'fileUpload'));
       }
     } catch (err) {
       console.error('File upload error:', err);
-      alert('Upload failed: ' + err.message);
+      toast.error(getUserFriendlyErrorMessage(err, 'fileUpload'));
     } finally {
       setUploadingCoa(false);
     }
@@ -299,7 +302,7 @@ const BatchForm = () => {
     e.preventDefault();
 
     if (!formData.batchId || !formData.products || formData.products.length === 0) {
-      alert('Batch ID and at least one Product are required');
+      toast.warning('Batch ID and at least one Product are required');
       return;
     }
 
@@ -322,14 +325,14 @@ const BatchForm = () => {
 
       const data = await res.json();
       if (data.success) {
-        alert(`Batch ${isEditMode ? 'updated' : 'created'} successfully`);
+        toast.success(`Batch ${isEditMode ? 'updated' : 'created'} successfully`);
         navigate('/admin/batches');
       } else {
-        alert(data.message || 'Error saving batch');
+        toast.error(getUserFriendlyErrorMessage(data.message, 'batchSave'));
       }
     } catch (err) {
       console.error(err);
-      alert('An error occurred while saving the batch');
+      toast.error(getUserFriendlyErrorMessage(err, 'batchSave'));
     } finally {
       setLoading(false);
     }

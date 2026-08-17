@@ -7,6 +7,9 @@ import CustomDropdown from '../../components/CustomDropdown';
 import Pagination from '../../components/Pagination';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
+import { useToast } from '../../components/admin/feedback/ToastProvider';
+import { useConfirm } from '../../components/admin/feedback/ConfirmProvider';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 const ProductList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,6 +33,8 @@ const ProductList = () => {
   const navigate = useNavigate();
   const { formatAUD } = useCurrency();
   const debounceRef = useRef(null);
+  const toast = useToast();
+  const confirm = useConfirm();
 
   // Sync search input with URL changes (back/forward)
   useEffect(() => {
@@ -154,39 +159,51 @@ const ProductList = () => {
   };
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete the product "${name}"?`)) {
-      return;
-    }
+    const isConfirmed = await confirm({
+      title: 'Delete Product?',
+      description: `Are you sure you want to delete the product "${name}"?`,
+      confirmLabel: 'Delete Product',
+      variant: 'danger'
+    });
+
+    if (!isConfirmed) return;
 
     try {
       const response = await apiService.deleteProduct(id);
       if (response.ok || response.status === 204) {
         setProducts(products.filter(p => p._id !== id));
+        toast.success(`Product "${name}" deleted successfully.`);
       } else {
         const errData = await response.json();
-        alert(errData.message || 'Failed to delete the product.');
+        toast.error(getUserFriendlyErrorMessage(errData.message, 'productDelete'));
       }
     } catch (err) {
-      alert('Network error deleting product.');
+      toast.error(getUserFriendlyErrorMessage(err, 'productDelete'));
     }
   };
 
   const handleDeleteAll = async () => {
-    if (!window.confirm(`Are you absolutely sure you want to delete ALL products? This action cannot be undone!`)) {
-      return;
-    }
+    const isConfirmed = await confirm({
+      title: 'Delete All Products?',
+      description: 'Are you absolutely sure you want to delete ALL products? This action cannot be undone!',
+      confirmLabel: 'Delete All',
+      variant: 'danger',
+      warningText: 'This will permanently remove all products from the database.'
+    });
+
+    if (!isConfirmed) return;
 
     try {
       const response = await apiService.deleteAllProducts();
       if (response.ok || response.status === 200) {
         setProducts([]);
-        alert('All products deleted successfully.');
+        toast.success('All products deleted successfully.');
       } else {
         const errData = await response.json();
-        alert(errData.message || 'Failed to delete all products.');
+        toast.error(getUserFriendlyErrorMessage(errData.message, 'productDelete'));
       }
     } catch (err) {
-      alert('Network error deleting products.');
+      toast.error(getUserFriendlyErrorMessage(err, 'productDelete'));
     }
   };
 

@@ -9,6 +9,8 @@ import {
   RefreshCw,
   Download
 } from 'lucide-react';
+import { useToast } from '../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 // ─── Helper: format date like Shopify ("Today at 2:31 pm") ────────────────────
 function formatOrderDate(dateStr) {
@@ -84,6 +86,7 @@ const OrderList = () => {
   const [total, setTotal] = useState(0);
   const [searchValue, setSearchValue] = useState(urlQ);
   const debounceRef = useRef(null);
+  const toast = useToast();
 
   // Sync search input with browser back/forward URL changes
   useEffect(() => {
@@ -182,7 +185,7 @@ const OrderList = () => {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export error:', err);
-      alert('Failed to export orders');
+      toast.error(getUserFriendlyErrorMessage(err, 'exportOrders'));
     }
   };
 

@@ -6,6 +6,8 @@ import JoditEditor from 'jodit-react';
 import CustomDropdown from '../../components/CustomDropdown';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
+import { useToast } from '../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -15,6 +17,7 @@ const ProductForm = () => {
   const [fetching, setFetching] = useState(isEditMode);
   const [error, setError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const toast = useToast();
 
   // Lists fetched from APIs
   const [collectionsList, setCollectionsList] = useState([]);
@@ -331,7 +334,7 @@ const ProductForm = () => {
   // Image helpers
   const addImage = () => {
     if (!formData.imageUrl) {
-      alert('Please fill the URL field first.');
+      toast.warning('Please fill the URL field first.');
       return;
     }
     setFormData(prev => ({
@@ -380,11 +383,11 @@ const ProductForm = () => {
           };
         });
       } else {
-        alert('Upload Failed: ' + (result.message || 'Unknown error'));
+        toast.error('Upload Failed: ' + (result.message || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Failed to connect to the server for upload.');
+      toast.error('Failed to connect to the server for upload.');
     } finally {
       setIsUploading(false);
     }

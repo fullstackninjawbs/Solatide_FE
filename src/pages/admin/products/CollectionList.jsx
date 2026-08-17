@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, Layers } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import { useToast } from '../../../components/admin/feedback/ToastProvider';
+import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
+import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const CollectionList = () => {
   const [collections, setCollections] = useState([]);
@@ -11,6 +14,8 @@ const CollectionList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCollections, setSelectedCollections] = useState([]);
   const navigate = useNavigate();
+  const toast = useToast();
+  const confirm = useConfirm();
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -27,9 +32,14 @@ const CollectionList = () => {
   };
 
   const handleDeleteSelected = async () => {
-    if (!window.confirm(`Are you sure you want to delete the selected ${selectedCollections.length} collections?`)) {
-      return;
-    }
+    const isConfirmed = await confirm({
+      title: 'Delete Collections?',
+      description: `Are you sure you want to delete the selected ${selectedCollections.length} collections?`,
+      confirmLabel: 'Delete Collections',
+      variant: 'danger'
+    });
+
+    if (!isConfirmed) return;
 
     try {
       let successCount = 0;
@@ -41,9 +51,9 @@ const CollectionList = () => {
       }
       setCollections(collections.filter(c => !selectedCollections.includes(c._id)));
       setSelectedCollections([]);
-      alert(`Successfully deleted ${successCount} collections.`);
+      toast.success(`Successfully deleted ${successCount} collections.`);
     } catch (err) {
-      alert('Network error deleting collections.');
+      toast.error(getUserFriendlyErrorMessage(err, 'collectionDelete'));
     }
   };
 
@@ -71,20 +81,26 @@ const CollectionList = () => {
   }, []);
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete the collection "${name}"?`)) {
-      return;
-    }
+    const isConfirmed = await confirm({
+      title: 'Delete Collection?',
+      description: `Are you sure you want to delete the collection "${name}"?`,
+      confirmLabel: 'Delete Collection',
+      variant: 'danger'
+    });
+
+    if (!isConfirmed) return;
 
     try {
       const response = await apiService.deleteCollection(id);
       if (response.ok || response.status === 204) {
         setCollections(collections.filter(c => c._id !== id));
+        toast.success(`Collection "${name}" deleted successfully.`);
       } else {
         const errData = await response.json();
-        alert(errData.message || 'Failed to delete collection.');
+        toast.error(getUserFriendlyErrorMessage(errData.message, 'collectionDelete'));
       }
     } catch (err) {
-      alert('Network error deleting collection.');
+      toast.error(getUserFriendlyErrorMessage(err, 'collectionDelete'));
     }
   };
 
