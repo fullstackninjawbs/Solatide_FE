@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Info, HelpCircle, ExternalLink, Check, Trash2, ArrowLeft } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
+import MultiSelectDropdown from '../../../components/MultiSelectDropdown';
 import { apiService } from '../../../services/api';
 
 const BatchForm = () => {
@@ -17,7 +18,7 @@ const BatchForm = () => {
   const [formData, setFormData] = useState({
     batchId: '',
     vendorLotNumber: '',
-    productId: '',
+    products: [],
     variantId: '',
     variantSku: '',
     purity: '',
@@ -100,37 +101,38 @@ const BatchForm = () => {
       const data = await res.json();
       if (data.success && data.data.batch) {
         const batchData = data.data.batch;
-        const mappedProductId = batchData.productId?._id || batchData.productId;
+        const mappedProducts = batchData.products?.map(p => p._id || p) || (batchData.productId ? [batchData.productId._id || batchData.productId] : []);
 
-        // Determine if this batch is currently the active/current batch on the product
+        // Determine if this batch is currently the active/current batch on any of the products
         let isCurrent = false;
-        if (mappedProductId) {
-          try {
-            const prodRes = await apiService.getProductById(mappedProductId);
-            const prodData = await prodRes.json();
-            if (prodData.success && prodData.data.product) {
-              const prod = prodData.data.product;
-              // Check root-level currentBatch
-              const rootBatchId = prod.currentBatch?._id || prod.currentBatchId;
-              if (rootBatchId && rootBatchId.toString() === (batchData._id || id).toString()) {
-                isCurrent = true;
+        if (mappedProducts.length > 0) {
+          for (const pId of mappedProducts) {
+            if (isCurrent) break;
+            try {
+              const prodRes = await apiService.getProductById(pId);
+              const prodData = await prodRes.json();
+              if (prodData.success && prodData.data.product) {
+                const prod = prodData.data.product;
+                const rootBatchId = prod.currentBatch?._id || prod.currentBatchId;
+                if (rootBatchId && rootBatchId.toString() === (batchData._id || id).toString()) {
+                  isCurrent = true;
+                }
+                if (!isCurrent && prod.variants) {
+                  isCurrent = prod.variants.some(v => {
+                    const vBatchId = v.currentBatch?._id || v.currentBatchId;
+                    return vBatchId && vBatchId.toString() === (batchData._id || id).toString();
+                  });
+                }
               }
-              // Check variant-level currentBatch
-              if (!isCurrent && prod.variants) {
-                isCurrent = prod.variants.some(v => {
-                  const vBatchId = v.currentBatch?._id || v.currentBatchId;
-                  return vBatchId && vBatchId.toString() === (batchData._id || id).toString();
-                });
-              }
+            } catch (e) {
+              console.error('Failed to check current batch status:', e);
             }
-          } catch (e) {
-            console.error('Failed to check current batch status:', e);
           }
         }
 
         setFormData({
           ...batchData,
-          productId: mappedProductId,
+          products: mappedProducts,
           setAsCurrent: isCurrent,
           qcLevel: batchData.qcLevel,
           verificationDetails: {
@@ -158,8 +160,8 @@ const BatchForm = () => {
           customTests: batchData.customTests || []
         });
 
-        if (mappedProductId) {
-          fetchVariantsForProduct(mappedProductId);
+        if (mappedProducts.length > 0) {
+          fetchVariantsForProduct(mappedProducts[0]); // Just fetch variants for the first product for now, or you could aggregate them
         }
       }
     } catch (err) {
@@ -283,17 +285,21 @@ const BatchForm = () => {
     const nextVal = type === 'checkbox' ? checked : value;
     setFormData(prev => ({ ...prev, [name]: nextVal }));
 
-    if (name === 'productId') {
-      fetchVariantsForProduct(value);
-      setFormData(prev => ({ ...prev, productId: value, variantId: '', variantSku: '' }));
+    if (name === 'products') {
+      if (value.length > 0) {
+        fetchVariantsForProduct(value[0]);
+      } else {
+        setProductVariants([]);
+      }
+      setFormData(prev => ({ ...prev, variantId: '', variantSku: '' }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.batchId || !formData.productId) {
-      alert('Batch ID and Product are required');
+    if (!formData.batchId || !formData.products || formData.products.length === 0) {
+      alert('Batch ID and at least one Product are required');
       return;
     }
 
@@ -378,7 +384,7 @@ const BatchForm = () => {
   }
 
   // Find references info
-  const selectedProduct = products.find(p => p._id === formData.productId);
+  const selectedProducts = products.filter(p => formData.products.includes(p._id));
   const selectedVariant = productVariants.find(v => v._id === formData.variantId);
 
   return (
@@ -446,16 +452,12 @@ const BatchForm = () => {
 
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Product *</label>
-                <CustomDropdown
-                  value={formData.productId}
-                  onChange={(val) => handleChange({ target: { name: 'productId', value: val } })}
-                  placeholder="Select a product..."
-                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
-                  options={[
-                    { value: '', label: 'Select a product...' },
-                    ...products.map(p => ({ value: p._id, label: p.name }))
-                  ]}
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Products *</label>
+                <MultiSelectDropdown
+                  value={formData.products}
+                  onChange={(val) => handleChange({ target: { name: 'products', value: val } })}
+                  placeholder="Select products..."
+                  options={products.map(p => ({ value: p._id, label: p.name }))}
                 />
               </div>
 
@@ -720,26 +722,7 @@ const BatchForm = () => {
               />
             </div>
 
-            <div className="bg-[#f0f7ff]/70 border border-[#214A9E]/10 rounded-xl p-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-[#1a4494] text-[13.5px]">Set as Current Batch</h4>
-                  <p className="text-[11.5px] text-[#214A9E]/70 mt-0.5 leading-relaxed">
-                    Automatically link this batch to the selected product page.
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    name="setAsCurrent"
-                    checked={formData.setAsCurrent}
-                    onChange={handleChange}
-                    className="sr-only peer"
-                  />
-                  <div className="w-10 h-5.5 bg-blue-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-350 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-            </div>
+
 
             {/* Actions */}
             <div className="flex flex-col gap-2 pt-2">

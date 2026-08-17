@@ -269,7 +269,13 @@ const BatchList = () => {
                         to={`/admin/batches/${batch._id}/edit`}
                         className="line-clamp-1 text-slate-700 font-medium hover:text-brand-blue hover:underline"
                       >
-                        {batch.productId?.name || <span className="text-red-400 italic">Unknown</span>}
+                        {batch.products?.length > 0 ? (
+                          batch.products.map(p => p.name).join(', ')
+                        ) : batch.productId?.name ? (
+                          batch.productId.name
+                        ) : (
+                          <span className="text-red-400 italic">Unknown</span>
+                        )}
                       </Link>
                     </td>
                     <td className="px-5 py-3.5">

@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import Pagination from '../../components/Pagination';
 import {
   Search,
-  ChevronLeft,
-  ChevronRight,
-  ArrowUpDown,
   Package,
   ExternalLink,
   RefreshCw,
-  Download,
-  Plus
+  Download
 } from 'lucide-react';
 
 // ─── Helper: format date like Shopify ("Today at 2:31 pm") ────────────────────
@@ -77,7 +73,7 @@ const TABS = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 const OrderList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '25', 10);
   const activeTab = parseInt(searchParams.get('tab') || '0', 10);
@@ -119,7 +115,7 @@ const OrderList = () => {
       const params = new URLSearchParams();
       const tabFilter = TABS[activeTab]?.filter || {};
       Object.entries(tabFilter).forEach(([k, v]) => params.set(k, v));
-      
+
       const q = searchParams.get('q');
       if (q) params.set('q', q);
       params.set('page', String(page));
@@ -171,6 +167,25 @@ const OrderList = () => {
 
   const orderTotal = (o) => fmtAUD(o.grandTotal ?? o.totalAmount);
 
+  const handleExport = async () => {
+    try {
+      const response = await apiService.exportAdminOrdersCsv();
+      if (!response.ok) throw new Error('Export failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `orders_export_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export error:', err);
+      alert('Failed to export orders');
+    }
+  };
+
   return (
     <div className="space-y-5 text-left font-sans">
 
@@ -200,9 +215,9 @@ const OrderList = () => {
             Refresh
           </button>
           <button
-            disabled
-            className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium border border-slate-200 rounded-xl bg-white text-slate-400 cursor-not-allowed opacity-60"
-            title="Export (coming soon)"
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium border border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+            title="Export orders as CSV"
           >
             <Download size={14} />
             Export
@@ -222,8 +237,8 @@ const OrderList = () => {
                 key={tab.label}
                 onClick={() => handleTabChange(idx)}
                 className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 ${activeTab === idx
-                    ? 'border-brand-navy text-brand-navy bg-slate-50'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                  ? 'border-brand-navy text-brand-navy bg-slate-50'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
                   }`}
               >
                 {tab.label}
@@ -254,7 +269,9 @@ const OrderList = () => {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Order</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Date</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Customer</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Channel</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Platform</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Traffic Source</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Campaign</th>
                 <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Total</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Payment</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Fulfilment</th>
@@ -267,7 +284,7 @@ const OrderList = () => {
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
-                    {Array.from({ length: 10 }).map((__, j) => (
+                    {Array.from({ length: 12 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
@@ -276,7 +293,7 @@ const OrderList = () => {
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-20 text-center">
+                  <td colSpan={12} className="px-4 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
@@ -311,7 +328,7 @@ const OrderList = () => {
                       <span className="text-slate-700 font-medium">{customerName(order)}</span>
                     </td>
 
-                    {/* Channel */}
+                    {/* Platform */}
                     <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
                       {order.source === 'admin_manual' ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
@@ -322,6 +339,16 @@ const OrderList = () => {
                           Tagadacrm
                         </span>
                       )}
+                    </td>
+
+                    {/* Attribution Source */}
+                    <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
+                      {order.attribution?.firstTouch?.source || 'Direct / Unknown'}
+                    </td>
+
+                    {/* Attribution Campaign */}
+                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[120px] truncate" title={order.attribution?.firstTouch?.utmCampaign}>
+                      {order.attribution?.firstTouch?.utmCampaign || '—'}
                     </td>
 
                     {/* Total */}

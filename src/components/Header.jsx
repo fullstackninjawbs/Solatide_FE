@@ -186,7 +186,7 @@ const Header = () => {
                                 <img
                                     src={logo}
                                     alt="Solatide Biosciences"
-                                    fetchpriority="high"
+                                    fetchPriority="high"
                                     decoding="sync"
                                     className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[70px] lg:h-[100px]' : 'h-[50px] lg:h-[65px]'}`}
                                     style={{ imageRendering: 'high-quality' }}
