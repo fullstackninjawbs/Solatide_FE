@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
@@ -438,10 +439,10 @@ const OrderDetail = () => {
   if (refunds && refunds.length > 0) {
     const uniqueRefunds = [];
     const seenRefundKeys = new Set();
-    
+
     refunds.forEach(refund => {
       if (Number(refund.amount) <= 0) return;
-      
+
       const key = `${refund.amount}-${new Date(refund.createdAt).toDateString()}-${new Date(refund.createdAt).getHours()}-${new Date(refund.createdAt).getMinutes()}`;
       if (seenRefundKeys.has(key)) return;
       seenRefundKeys.add(key);
@@ -1014,7 +1015,7 @@ const OrderDetail = () => {
               <h3 className="text-[15px] font-bold text-brand-navy mb-5 flex items-center gap-2">
                 Conversion Summary
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-[13px]">
                   <div>
@@ -1042,7 +1043,7 @@ const OrderDetail = () => {
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 mt-2">
-                  <button 
+                  <button
                     onClick={() => setShowTechDetails(!showTechDetails)}
                     className="flex items-center justify-between w-full text-[13px] font-semibold text-slate-500 hover:text-brand-blue transition-colors"
                   >
@@ -1089,7 +1090,7 @@ const OrderDetail = () => {
                       )}
                       {(order.attribution?.lastTouch?.landingPage || order.attribution?.firstTouch?.landingPage) && (
                         <div>
-                          <span className="font-semibold text-slate-400">landing_page:</span> 
+                          <span className="font-semibold text-slate-400">landing_page:</span>
                           <span className="ml-1">{(order.attribution?.lastTouch?.landingPage || order.attribution?.firstTouch?.landingPage).substring(0, 50)}...</span>
                         </div>
                       )}

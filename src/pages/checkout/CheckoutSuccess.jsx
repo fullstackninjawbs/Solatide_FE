@@ -56,8 +56,8 @@ const CheckoutSuccess = () => {
                 transaction_id: ord._id,
                 value: ord.grandTotal || ord.totalAmount,
                 currency: 'AUD',
-                attribution_source: ord.attribution?.firstTouch?.source || 'Direct / Unknown',
-                attribution_channel: ord.attribution?.firstTouch?.channel || 'direct',
+                attribution_source: (ord.attribution?.lastTouch?.source || ord.attribution?.firstTouch?.source) || 'Direct / Unknown',
+                attribution_channel: (ord.attribution?.lastTouch?.channel || ord.attribution?.firstTouch?.channel) || 'direct',
                 items: ord.products?.map(p => ({
                   item_name: p.product?.name || 'Unknown Product',
                   item_id: p.product?._id || p.product,

@@ -46,8 +46,8 @@ const DeferredTracker = () => {
                 transaction_id: ord._id,
                 value: ord.grandTotal || ord.totalAmount,
                 currency: 'AUD',
-                attribution_source: ord.attribution?.firstTouch?.source || 'Deferred / Unknown',
-                attribution_channel: ord.attribution?.firstTouch?.channel || 'deferred',
+                attribution_source: (ord.attribution?.lastTouch?.source || ord.attribution?.firstTouch?.source) || 'Deferred / Unknown',
+                attribution_channel: (ord.attribution?.lastTouch?.channel || ord.attribution?.firstTouch?.channel) || 'deferred',
                 items: (ord.lineItems?.length > 0 ? ord.lineItems : ord.products)?.map(p => ({
                   item_name: p.title || p.product?.name || 'Unknown Product',
                   item_id: p.sku || p.product?._id || p.product,
