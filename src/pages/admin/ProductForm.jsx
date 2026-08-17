@@ -699,9 +699,9 @@ const ProductForm = () => {
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute inset-0 bg-red-650/80 text-white flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity focus:outline-none cursor-pointer"
+                      className="absolute top-1 right-1 bg-white p-1.5 rounded-full text-red-500 shadow hover:bg-red-50 hover:text-red-600 opacity-0 group-hover/img:opacity-100 transition-all focus:outline-none cursor-pointer"
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
