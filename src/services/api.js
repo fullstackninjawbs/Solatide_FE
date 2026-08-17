@@ -58,6 +58,25 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  // Tagada Sync
+  getTagadaSyncHistory: async () => {
+    return customFetch(`${API_URL}/api/admin/tagada/products/sync-history`, {
+      method: 'GET',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  getTagadaSyncPreview: async () => {
+    return customFetch(`${API_URL}/api/admin/tagada/products/sync-preview`, {
+      method: 'GET',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  runTagadaSync: async () => {
+    return customFetch(`${API_URL}/api/admin/tagada/products/sync`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   saveProduct: async (id, data) => {
     return customFetch(`${API_URL}/api/products${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',

@@ -141,13 +141,13 @@ const BatchForm = () => {
           },
           tests: {
             purityHplc: { 
-              performed: batchData.tests?.purityHplc?.performed || !!batchData.purity, 
-              result: batchData.tests?.purityHplc?.result || batchData.purity || '', 
+              performed: batchData.tests?.purityHplc?.performed ?? !!batchData.purity, 
+              result: batchData.tests?.purityHplc?.result ?? (batchData.purity || ''), 
               ...(batchData.tests?.purityHplc || {}) 
             },
             netPeptideContent: { 
-              performed: batchData.tests?.netPeptideContent?.performed || !!batchData.measuredContent, 
-              result: batchData.tests?.netPeptideContent?.result || batchData.measuredContent || '', 
+              performed: batchData.tests?.netPeptideContent?.performed ?? !!batchData.measuredContent, 
+              result: batchData.tests?.netPeptideContent?.result ?? (batchData.measuredContent || ''), 
               ...(batchData.tests?.netPeptideContent || {}) 
             },
             identityHplc: { performed: false, result: '', ...(batchData.tests?.identityHplc || {}) },

@@ -11,6 +11,7 @@ const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
 const ProductList = lazy(() => import('../pages/admin/ProductList'))
 const ProductForm = lazy(() => import('../pages/admin/ProductForm'))
 const AdminProductsImportPage = lazy(() => import('../pages/admin/AdminProductsImportPage'))
+const TagadaSync = lazy(() => import('../pages/admin/products/TagadaSync'))
 const InventoryList = lazy(() => import('../pages/admin/products/InventoryList'))
 const BatchList = lazy(() => import('../pages/admin/products/BatchList'))
 const BatchForm = lazy(() => import('../pages/admin/products/BatchForm'))
@@ -87,6 +88,7 @@ const AppRoutes = () => {
                     <Route path="products/new" element={<ProductForm />} />
                     <Route path="products/edit/:id" element={<ProductForm />} />
                     <Route path="products/import" element={<AdminProductsImportPage />} />
+                    <Route path="products/tagada-sync" element={<TagadaSync />} />
                     <Route path="products/inventory" element={<InventoryList />} />
                     <Route path="products/collections" element={<CollectionList />} />
                     <Route path="products/collections/new" element={<CollectionForm />} />

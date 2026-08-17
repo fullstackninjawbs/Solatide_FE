@@ -464,7 +464,7 @@ const ProductForm = () => {
     setLoading(true);
 
     if (!formData.tagadaVariantId || formData.tagadaVariantId.trim() === '') {
-      setError('Tagada Product ID is required.');
+      setError('Tagada Variant ID is required.');
       setLoading(false);
       return;
     }
@@ -818,7 +818,7 @@ const ProductForm = () => {
 
               <div className="flex flex-col">
                 <label className="flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Tagada Product ID <span className="text-red-500">*</span>
+                  Tagada Variant ID <span className="text-red-500">*</span>
                   <div className="relative group flex items-center">
                     <HelpCircle className="h-3.5 w-3.5 text-slate-400 cursor-help hover:text-brand-blue transition-colors" />
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2.5 bg-slate-800 text-white text-[11px] font-normal leading-relaxed rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
