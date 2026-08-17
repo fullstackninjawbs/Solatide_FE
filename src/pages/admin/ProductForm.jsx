@@ -449,10 +449,10 @@ const ProductForm = () => {
     if (mainContent) {
       const containerRect = mainContent.getBoundingClientRect();
       const elementRect = firstInvalidElement.getBoundingClientRect();
-      
+
       // Calculate position so the element is roughly centered/visible
       const offsetTop = mainContent.scrollTop + (elementRect.top - containerRect.top) - 150;
-      
+
       mainContent.scrollTo({ top: offsetTop, behavior: 'smooth' });
     }
   };
@@ -617,7 +617,6 @@ const ProductForm = () => {
                 {formData.published ? 'Active' : 'Draft'}
               </span>
             </div>
-            <p className="text-slate-500 text-[13.5px]">Refined Shopify-style product catalog detail manager</p>
           </div>
         </div>
 
