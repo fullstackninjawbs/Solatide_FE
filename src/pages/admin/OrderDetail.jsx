@@ -1019,23 +1019,23 @@ const OrderDetail = () => {
                 <div className="grid grid-cols-2 gap-4 text-[13px]">
                   <div>
                     <span className="block text-slate-400 font-medium mb-1">Source</span>
-                    <span className="font-semibold text-brand-navy">{order.attribution?.firstTouch?.source || 'Direct / Unknown'}</span>
+                    <span className="font-semibold text-brand-navy">{(order.attribution?.lastTouch?.source || order.attribution?.firstTouch?.source) || 'Direct / Unknown'}</span>
                   </div>
                   <div>
                     <span className="block text-slate-400 font-medium mb-1">Channel</span>
-                    <span className="font-semibold text-brand-navy">{order.attribution?.firstTouch?.channel || 'direct'}</span>
+                    <span className="font-semibold text-brand-navy">{(order.attribution?.lastTouch?.channel || order.attribution?.firstTouch?.channel) || 'direct'}</span>
                   </div>
-                  {order.attribution?.firstTouch?.utmCampaign && (
+                  {(order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign) && (
                     <div className="col-span-2">
                       <span className="block text-slate-400 font-medium mb-1">Campaign</span>
-                      <span className="font-semibold text-brand-navy">{order.attribution.firstTouch.utmCampaign}</span>
+                      <span className="font-semibold text-brand-navy">{order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign}</span>
                     </div>
                   )}
-                  {order.attribution?.firstTouch?.sourceDomain && (
+                  {(order.attribution?.lastTouch?.sourceDomain || order.attribution?.firstTouch?.sourceDomain) && (
                     <div className="col-span-2">
                       <span className="block text-slate-400 font-medium mb-1">Domain</span>
                       <span className="font-semibold text-brand-blue truncate block">
-                        {order.attribution.firstTouch.sourceDomain}
+                        {order.attribution?.lastTouch?.sourceDomain || order.attribution?.firstTouch?.sourceDomain}
                       </span>
                     </div>
                   )}
@@ -1052,45 +1052,45 @@ const OrderDetail = () => {
 
                   {showTechDetails && (
                     <div className="mt-4 p-4 bg-slate-50 rounded-xl space-y-3 text-[12px] font-mono break-all text-slate-600">
-                      {order.attribution?.firstTouch?.utmSource && (
-                        <div><span className="font-semibold text-slate-400">utm_source:</span> {order.attribution.firstTouch.utmSource}</div>
+                      {(order.attribution?.lastTouch?.utmSource || order.attribution?.firstTouch?.utmSource) && (
+                        <div><span className="font-semibold text-slate-400">utm_source:</span> {order.attribution?.lastTouch?.utmSource || order.attribution?.firstTouch?.utmSource}</div>
                       )}
-                      {order.attribution?.firstTouch?.utmMedium && (
-                        <div><span className="font-semibold text-slate-400">utm_medium:</span> {order.attribution.firstTouch.utmMedium}</div>
+                      {(order.attribution?.lastTouch?.utmMedium || order.attribution?.firstTouch?.utmMedium) && (
+                        <div><span className="font-semibold text-slate-400">utm_medium:</span> {order.attribution?.lastTouch?.utmMedium || order.attribution?.firstTouch?.utmMedium}</div>
                       )}
-                      {order.attribution?.firstTouch?.utmContent && (
-                        <div><span className="font-semibold text-slate-400">utm_content:</span> {order.attribution.firstTouch.utmContent}</div>
+                      {(order.attribution?.lastTouch?.utmContent || order.attribution?.firstTouch?.utmContent) && (
+                        <div><span className="font-semibold text-slate-400">utm_content:</span> {order.attribution?.lastTouch?.utmContent || order.attribution?.firstTouch?.utmContent}</div>
                       )}
-                      {order.attribution?.firstTouch?.utmTerm && (
-                        <div><span className="font-semibold text-slate-400">utm_term:</span> {order.attribution.firstTouch.utmTerm}</div>
+                      {(order.attribution?.lastTouch?.utmTerm || order.attribution?.firstTouch?.utmTerm) && (
+                        <div><span className="font-semibold text-slate-400">utm_term:</span> {order.attribution?.lastTouch?.utmTerm || order.attribution?.firstTouch?.utmTerm}</div>
                       )}
-                      {order.attribution?.firstTouch?.gclid && (
-                        <div><span className="font-semibold text-slate-400">gclid:</span> {order.attribution.firstTouch.gclid}</div>
+                      {(order.attribution?.lastTouch?.gclid || order.attribution?.firstTouch?.gclid) && (
+                        <div><span className="font-semibold text-slate-400">gclid:</span> {order.attribution?.lastTouch?.gclid || order.attribution?.firstTouch?.gclid}</div>
                       )}
-                      {order.attribution?.firstTouch?.fbclid && (
-                        <div><span className="font-semibold text-slate-400">fbclid:</span> {order.attribution.firstTouch.fbclid}</div>
+                      {(order.attribution?.lastTouch?.fbclid || order.attribution?.firstTouch?.fbclid) && (
+                        <div><span className="font-semibold text-slate-400">fbclid:</span> {order.attribution?.lastTouch?.fbclid || order.attribution?.firstTouch?.fbclid}</div>
                       )}
-                      {order.attribution?.firstTouch?.ttclid && (
-                        <div><span className="font-semibold text-slate-400">ttclid:</span> {order.attribution.firstTouch.ttclid}</div>
+                      {(order.attribution?.lastTouch?.ttclid || order.attribution?.firstTouch?.ttclid) && (
+                        <div><span className="font-semibold text-slate-400">ttclid:</span> {order.attribution?.lastTouch?.ttclid || order.attribution?.firstTouch?.ttclid}</div>
                       )}
-                      {order.attribution?.firstTouch?.msclkid && (
-                        <div><span className="font-semibold text-slate-400">msclkid:</span> {order.attribution.firstTouch.msclkid}</div>
+                      {(order.attribution?.lastTouch?.msclkid || order.attribution?.firstTouch?.msclkid) && (
+                        <div><span className="font-semibold text-slate-400">msclkid:</span> {order.attribution?.lastTouch?.msclkid || order.attribution?.firstTouch?.msclkid}</div>
                       )}
-                      {order.attribution?.firstTouch?.sessionId && (
-                        <div><span className="font-semibold text-slate-400">session_id:</span> {order.attribution.firstTouch.sessionId}</div>
+                      {(order.attribution?.lastTouch?.sessionId || order.attribution?.firstTouch?.sessionId) && (
+                        <div><span className="font-semibold text-slate-400">session_id:</span> {order.attribution?.lastTouch?.sessionId || order.attribution?.firstTouch?.sessionId}</div>
                       )}
-                      {order.attribution?.firstTouch?.referrerUrl && (
+                      {(order.attribution?.lastTouch?.referrerUrl || order.attribution?.firstTouch?.referrerUrl) && (
                         <div>
                           <span className="font-semibold text-slate-400">referrer:</span>
-                          <a href={order.attribution.firstTouch.referrerUrl} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline ml-1">
-                            {order.attribution.firstTouch.referrerUrl.substring(0, 50)}...
+                          <a href={order.attribution?.lastTouch?.referrerUrl || order.attribution?.firstTouch?.referrerUrl} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline ml-1">
+                            {(order.attribution?.lastTouch?.referrerUrl || order.attribution?.firstTouch?.referrerUrl).substring(0, 50)}...
                           </a>
                         </div>
                       )}
-                      {order.attribution?.firstTouch?.landingPage && (
+                      {(order.attribution?.lastTouch?.landingPage || order.attribution?.firstTouch?.landingPage) && (
                         <div>
                           <span className="font-semibold text-slate-400">landing_page:</span> 
-                          <span className="ml-1">{order.attribution.firstTouch.landingPage.substring(0, 50)}...</span>
+                          <span className="ml-1">{(order.attribution?.lastTouch?.landingPage || order.attribution?.firstTouch?.landingPage).substring(0, 50)}...</span>
                         </div>
                       )}
                     </div>

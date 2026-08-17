@@ -346,12 +346,12 @@ const OrderList = () => {
 
                     {/* Attribution Source */}
                     <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
-                      {order.attribution?.firstTouch?.source || 'Direct / Unknown'}
+                      {(order.attribution?.lastTouch?.source || order.attribution?.firstTouch?.source) || 'Direct / Unknown'}
                     </td>
 
                     {/* Attribution Campaign */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[120px] truncate" title={order.attribution?.firstTouch?.utmCampaign}>
-                      {order.attribution?.firstTouch?.utmCampaign || '—'}
+                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[120px] truncate" title={order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign}>
+                      {(order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign) || '—'}
                     </td>
 
                     {/* Total */}
