@@ -136,7 +136,7 @@ const FeaturedProducts = () => {
 
                                     <div className="flex flex-col justify-between flex-grow mt-4 px-1.5 pb-2">
                                         <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-tight text-left font-['Anek_Telugu',sans-serif] mb-2 line-clamp-2">
-                                            <Link to={`/product/${product.id || product._id}`} className="hover:text-[#00bfef] transition-colors">
+                                            <Link to={`/product/${product._id || product.id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
