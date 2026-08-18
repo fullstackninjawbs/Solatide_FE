@@ -13,6 +13,7 @@ import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackEvent } from '../../utils/analytics';
+import { getProductImageAltText } from '../../utils/imageHelpers';
 
 
 
@@ -161,14 +162,17 @@ const ProductDetail = () => {
     }
 
     const dbImages = product.images && product.images.length > 0
-        ? product.images.map(img => optimizeCloudinaryUrl(typeof img === 'string' ? img : img.url)).filter(Boolean)
-        : [optimizeCloudinaryUrl(product.imageUrl || product.image) || retatrutideVial].filter(Boolean);
+        ? product.images.map(img => {
+            const isString = typeof img === 'string';
+            const url = optimizeCloudinaryUrl(isString ? img : img.url);
+            return url ? (isString ? { url } : { ...img, url }) : null;
+        }).filter(Boolean)
+        : [{ url: optimizeCloudinaryUrl(product.imageUrl || product.image) || retatrutideVial }].filter(img => img.url);
 
     const coaImages = [
         optimizeCloudinaryUrl(product.coaImage1),
         optimizeCloudinaryUrl(product.coaImage2)
-    ].filter(Boolean);
-
+    ].filter(Boolean).map(url => ({ url, isCoa: true }));
 
     const images = [
         ...dbImages,
@@ -241,8 +245,8 @@ const ProductDetail = () => {
                         <div className="bg-[#f8fafc] rounded-3xl border border-slate-200/60 p-6 flex items-center justify-center overflow-hidden h-[340px] sm:h-[450px] md:h-[550px] w-full relative group">
                             {images[activeTab] ? (
                                 <img
-                                    src={images[activeTab]}
-                                    alt="Product Preview"
+                                    src={images[activeTab].url}
+                                    alt={images[activeTab].isCoa ? "COA Report" : getProductImageAltText(images[activeTab], product.name, activeTab)}
                                     fetchpriority="high"
                                     decoding="sync"
                                     className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
@@ -268,7 +272,7 @@ const ProductDetail = () => {
                                 >
                                     {idx < dbImages.length ? (
                                         img ? (
-                                            <img src={img} alt="Product Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                                            <img src={img.url} alt={getProductImageAltText(img, product.name, idx)} loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] rounded-lg border border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px]">
                                                 No Img
@@ -276,7 +280,7 @@ const ProductDetail = () => {
                                         )
                                     ) : (
                                         img ? (
-                                            <img src={img} alt="Report Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                                            <img src={img.url} alt="Report Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center border border-dashed border-slate-300 rounded-lg text-slate-400 text-[8px] font-bold p-1 text-center">
                                                 <span>COA REPORT</span>

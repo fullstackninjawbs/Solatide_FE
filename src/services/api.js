@@ -45,6 +45,13 @@ export const apiService = {
       body: formData
     });
   },
+  updateMediaAltText: async (productId, mediaId, altText) => {
+    return customFetch(`${API_URL}/api/admin/product/${productId}/media/${mediaId}/alt-text`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ altText })
+    });
+  },
   saveAdminProduct: async (id, data) => {
     return customFetch(`${API_URL}/api/admin/product${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',

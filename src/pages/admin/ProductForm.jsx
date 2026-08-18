@@ -33,6 +33,12 @@ const ProductForm = () => {
   // Search Engine Listing preview editing toggle
   const [editSeo, setEditSeo] = useState(false);
 
+  // Alt Text Modal State
+  const [altTextModalOpen, setAltTextModalOpen] = useState(false);
+  const [editingImageIndex, setEditingImageIndex] = useState(null);
+  const [tempAltText, setTempAltText] = useState('');
+  const [isSavingAltText, setIsSavingAltText] = useState(false);
+
   // Product Form Attributes
   const [formData, setFormData] = useState({
     id: '', // Numeric ID
@@ -334,12 +340,12 @@ const ProductForm = () => {
   // Image helpers
   const addImage = () => {
     if (!formData.imageUrl) {
-      toast.warning('Please fill the URL field first.');
+      toast.error('Please enter an image URL first');
       return;
     }
     setFormData(prev => ({
       ...prev,
-      images: [...prev.images, { url: prev.imageUrl, alt: prev.name + ' image' }],
+      images: [...prev.images, { url: prev.imageUrl, altText: '', alt: '' }],
       imageUrl: '' // Clear URL input
     }));
   };
@@ -353,6 +359,66 @@ const ProductForm = () => {
         imageUrl: newImages.length > 0 ? newImages[0].url : ''
       };
     });
+  };
+
+  const openAltTextModal = (index) => {
+    setEditingImageIndex(index);
+    setTempAltText(formData.images[index]?.altText || '');
+    setAltTextModalOpen(true);
+  };
+
+  const closeAltTextModal = () => {
+    setAltTextModalOpen(false);
+    setEditingImageIndex(null);
+    setTempAltText('');
+  };
+
+  const saveAltText = async () => {
+    if (editingImageIndex === null) return;
+    
+    // If it's a new unsaved image, just save locally
+    const image = formData.images[editingImageIndex];
+    if (!id || !image._id) {
+      setFormData(prev => {
+        const newImages = [...prev.images];
+        newImages[editingImageIndex] = { ...newImages[editingImageIndex], altText: tempAltText };
+        return { ...prev, images: newImages };
+      });
+      toast.success('Alt text updated (will be saved when product is saved).');
+      closeAltTextModal();
+      return;
+    }
+
+    // Existing product, existing image -> use dedicated endpoint
+    setIsSavingAltText(true);
+    try {
+      const res = await apiService.updateMediaAltText(id, image._id, tempAltText);
+      const result = await res.json();
+      if (result.success && result.data) {
+        setFormData(prev => {
+          const newImages = [...prev.images];
+          newImages[editingImageIndex] = { 
+            ...newImages[editingImageIndex], 
+            altText: tempAltText,
+            cloudinarySync: result.data.cloudinarySync
+          };
+          return { ...prev, images: newImages };
+        });
+        
+        if (result.data.cloudinarySync?.lastSyncError) {
+          toast.warning('Alt text saved locally, but Cloudinary metadata sync failed.');
+        } else {
+          toast.success('Image alt text updated.');
+        }
+        closeAltTextModal();
+      } else {
+        toast.error(result.message || 'Failed to update alt text');
+      }
+    } catch (err) {
+      toast.error('Network error while saving alt text');
+    } finally {
+      setIsSavingAltText(false);
+    }
   };
 
   const handleFileUpload = async (e) => {
@@ -369,7 +435,17 @@ const ProductForm = () => {
       const result = await response.json();
 
       if (result.success && result.data?.secure_url) {
-        const newImage = { url: result.data.secure_url, alt: file.name };
+        const newImage = { 
+          url: result.data.secure_url, 
+          secureUrl: result.data.secure_url,
+          publicId: result.data.public_id,
+          assetId: result.data.asset_id,
+          width: result.data.width,
+          height: result.data.height,
+          format: result.data.format,
+          altText: '',
+          alt: '' // Legacy
+        };
 
         setFormData(prev => {
           const newImages = [...prev.images, newImage];
@@ -694,17 +770,50 @@ const ProductForm = () => {
             </h3>
 
             {formData.images.length > 0 && (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="flex flex-col gap-3">
                 {formData.images.map((img, index) => (
-                  <div key={index} className="relative h-24 bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center p-1.5 group/img">
-                    <img src={img.url} alt="preview" className="h-full object-contain" />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-1 right-1 bg-white p-1.5 rounded-full text-red-500 shadow hover:bg-red-50 hover:text-red-600 opacity-0 group-hover/img:opacity-100 transition-all focus:outline-none cursor-pointer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                  <div key={index} className="flex items-start gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-lg flex-shrink-0 flex items-center justify-center p-2">
+                      <img src={img.url} alt="preview" className="max-w-full max-h-full object-contain" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          {index === 0 && <span className="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase tracking-wider mb-1.5">Primary Image</span>}
+                          <p className="text-[13px] font-semibold text-slate-700">Alt text</p>
+                          {img.altText ? (
+                            <p className="text-[14px] text-slate-600 truncate mt-0.5" title={img.altText}>{img.altText}</p>
+                          ) : (
+                            <div className="flex items-center gap-1.5 text-amber-500 mt-0.5">
+                              <AlertCircle size={14} />
+                              <span className="text-[13px] italic">No alt text provided</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openAltTextModal(index)}
+                            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg text-[12px] font-semibold hover:bg-slate-50 hover:text-brand-blue transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {img.cloudinarySync?.lastSyncError && (
+                        <p className="text-[11px] text-red-500 mt-2 flex items-center gap-1">
+                          <AlertCircle size={12} /> Sync Error: {img.cloudinarySync.lastSyncError}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1388,6 +1497,76 @@ const ProductForm = () => {
         </div>
 
       </form>
+
+      {/* Alt Text Modal */}
+      {altTextModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <h3 className="font-bold text-slate-800 text-[15px]">Edit Alt Text</h3>
+              <button 
+                onClick={closeAltTextModal}
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors focus:outline-none"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="p-5">
+              {editingImageIndex !== null && formData.images[editingImageIndex] && (
+                <div className="mb-5 flex justify-center bg-slate-50 border border-slate-200 p-2 rounded-xl">
+                  <img 
+                    src={formData.images[editingImageIndex].url} 
+                    alt="thumbnail" 
+                    className="h-32 object-contain rounded"
+                  />
+                </div>
+              )}
+              
+              <label className="block text-[12.5px] font-semibold text-slate-600 mb-1.5">
+                Image Alt Text
+              </label>
+              <textarea
+                value={tempAltText}
+                onChange={(e) => setTempAltText(e.target.value)}
+                placeholder="Briefly describe the image for screen readers and search engines..."
+                className="w-full h-24 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-700 focus:outline-none focus:border-brand-blue focus:bg-white resize-none transition-colors"
+                maxLength={160}
+              />
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-[11px] text-slate-400">
+                  Write a brief description of this image to improve SEO and accessibility.
+                </span>
+                <span className={`text-[11px] font-medium ${tempAltText.length >= 160 ? 'text-red-500' : 'text-slate-400'}`}>
+                  {tempAltText.length} / 160
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 px-5 py-4 border-t border-slate-100 bg-slate-50">
+              <button
+                onClick={closeAltTextModal}
+                className="px-4 py-2 text-[13px] font-semibold text-slate-600 hover:text-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveAltText}
+                disabled={isSavingAltText}
+                className="px-5 py-2 bg-brand-blue text-white text-[13px] font-semibold rounded-lg shadow-sm shadow-blue-500/20 hover:bg-blue-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isSavingAltText && (
+                  <svg className="animate-spin -ml-1 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                )}
+                Save Alt Text
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
