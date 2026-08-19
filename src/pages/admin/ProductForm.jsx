@@ -20,12 +20,13 @@ const ProductForm = () => {
   const toast = useToast();
 
   // Lists fetched from APIs
-  const [collectionsList, setCollectionsList] = useState([]);
+  const [tagsList, setTagsList] = useState([]);
   const [batchesList, setBatchesList] = useState([]);
+  const [collectionsList, setCollectionsList] = useState([]);
+  const [packagesList, setPackagesList] = useState([]);
 
   // Interactive tags list state
   const [tagInput, setTagInput] = useState('');
-  const [tagsList, setTagsList] = useState([]);
 
   // Category metafields suggestions state
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -220,6 +221,19 @@ const ProductForm = () => {
       } catch (err) {
         console.error('Failed to load batches', err);
       }
+
+      try {
+        // Fetch shipping packages
+        const packageRes = await apiService.getShippingPackages();
+        const packageResult = await packageRes.json();
+        if (packageResult.success && packageResult.packages) {
+          setPackagesList(packageResult.packages);
+        } else if (packageResult.success && packageResult.data) {
+          setPackagesList(packageResult.data.packages || packageResult.data);
+        }
+      } catch (err) {
+        console.error('Failed to load shipping packages', err);
+      }
     };
 
     fetchInitData();
@@ -281,8 +295,9 @@ const ProductForm = () => {
             barcode: product.barcode || '',
             costPerItem: product.costPerItem || '',
             requiresShipping: product.variants?.[0]?.requiresShipping !== false,
+            packageTemplate: product.variants?.[0]?.shippingPackage || 'default',
             weightGrams: product.variants?.[0]?.weightGrams || 10,
-            weightUnit: product.variants?.[0]?.weightGrams >= 1000 ? 'kg' : 'g',
+            weightUnit: (product.variants?.[0]?.weightGrams && product.variants?.[0]?.weightGrams >= 1000) ? 'kg' : 'g',
             countryOfOrigin: product.countryOfOrigin || 'Australia',
             hsCode: product.hsCode || '',
             chemicalGrade: product.chemicalGrade || 'Laboratory',
@@ -558,6 +573,11 @@ const ProductForm = () => {
     // Ensure imageUrl is set to the first image if it exists
     const finalImageUrl = finalImages.length > 0 ? finalImages[0].url : formData.imageUrl;
 
+    // Determine selected shipping package ID
+    const selectedPackageId = formData.packageTemplate && formData.packageTemplate !== 'default' 
+      ? formData.packageTemplate 
+      : (packagesList.find(p => p.isDefault)?._id || null);
+
     // Construct variants array matching structure
     let updatedVariants = [...formData._originalVariants];
     if (updatedVariants.length === 0) {
@@ -569,6 +589,7 @@ const ProductForm = () => {
         stockQty: parseInt(formData.stockQuantity, 10) || 0,
         inventoryPolicy: formData.inventoryPolicy,
         requiresShipping: formData.requiresShipping,
+        shippingPackage: selectedPackageId,
         taxable: formData.taxable,
         weightGrams: weightGrams,
         tagadaVariantId: formData.tagadaVariantId
@@ -583,6 +604,7 @@ const ProductForm = () => {
         stockQty: parseInt(formData.stockQuantity, 10) || 0,
         inventoryPolicy: formData.inventoryPolicy,
         requiresShipping: formData.requiresShipping,
+        shippingPackage: selectedPackageId,
         taxable: formData.taxable,
         weightGrams: weightGrams
       };
@@ -627,8 +649,6 @@ const ProductForm = () => {
       productType: formData.productType,
       barcode: formData.barcode,
       costPerItem: formData.costPerItem ? parseFloat(formData.costPerItem) : undefined,
-      countryOfOrigin: formData.countryOfOrigin,
-      hsCode: formData.hsCode,
       chemicalGrade: formData.chemicalGrade,
       chemicalPurity: formData.chemicalPurity,
       chemicalColor: formData.chemicalColor,
@@ -1080,11 +1100,16 @@ const ProductForm = () => {
                       Package Template
                     </label>
                     <CustomDropdown
-                      options={[
-                        { value: 'default', label: 'Store default • Padded Mailer - 12 × 18 × 2 cm, 10 g' },
-                        { value: 'box', label: 'Cardboard Box - 15 × 15 × 10 cm, 30 g' }
-                      ]}
-                      value={formData.packageTemplate || 'default'}
+                      options={packagesList.length > 0 
+                        ? packagesList.map(p => ({
+                            value: p._id,
+                            label: p.isDefault 
+                              ? `Store default • ${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
+                              : `${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
+                          }))
+                        : [{ value: 'default', label: 'Loading packages...' }]
+                      }
+                      value={formData.packageTemplate || (packagesList.find(p => p.isDefault)?._id || 'default')}
                       onChange={(val) => setFormData(prev => ({ ...prev, packageTemplate: val }))}
                       className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px] cursor-pointer"
                     />
@@ -1114,36 +1139,6 @@ const ProductForm = () => {
                         align="right"
                       />
                     </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-                  <div>
-                    <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                      Country/Region of origin
-                    </label>
-                    <input
-                      type="text"
-                      name="countryOfOrigin"
-                      value={formData.countryOfOrigin}
-                      onChange={handleChange}
-                      placeholder="Australia"
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                      HS (Harmonized System) Code
-                    </label>
-                    <input
-                      type="text"
-                      name="hsCode"
-                      value={formData.hsCode}
-                      onChange={handleChange}
-                      placeholder="e.g. 2933.99"
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px] font-mono"
-                    />
                   </div>
                 </div>
               </div>

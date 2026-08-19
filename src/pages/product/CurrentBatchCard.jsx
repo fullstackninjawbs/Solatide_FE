@@ -63,9 +63,10 @@ const isPartialQc = hasQcData && !isFullQc;
 const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
 
 const showPendingResultsSection = product?.showPendingResultsSection ?? true;
+const isBacteriostaticWater = product?.name?.toLowerCase().includes('bacteriostatic water');
 
 if (!hasQcData) {
-  if (!showPendingResultsSection) {
+  if (!showPendingResultsSection || isBacteriostaticWater) {
     return null;
   }
 

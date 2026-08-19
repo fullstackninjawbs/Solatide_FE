@@ -560,5 +560,39 @@ export const apiService = {
       method: 'GET',
       headers: getAuthHeaders(),
     });
+  },
+
+  // ─── Shipping Packages ──────────────────────────────────────────────────────
+  getShippingPackages: async () => {
+    return customFetch(`${API_URL}/api/admin/shipping/packages`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  createShippingPackage: async (payload) => {
+    return customFetch(`${API_URL}/api/admin/shipping/packages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  updateShippingPackage: async (id, payload) => {
+    return customFetch(`${API_URL}/api/admin/shipping/packages/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  deleteShippingPackage: async (id) => {
+    return customFetch(`${API_URL}/api/admin/shipping/packages/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+  },
+  setDefaultShippingPackage: async (id) => {
+    return customFetch(`${API_URL}/api/admin/shipping/packages/${id}/default`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+    });
   }
 };

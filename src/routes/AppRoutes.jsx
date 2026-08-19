@@ -127,6 +127,11 @@ const AppRoutes = () => {
                     <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
                     <Route path="settings/store" element={<StoreSettings />} />
                     <Route path="settings/admin-users" element={<AdminUsers />} />
+                    <Route path="settings/shipping-packages" element={
+                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                            {React.createElement(lazy(() => import('../pages/admin/settings/ShippingPackages')))}
+                        </React.Suspense>
+                    } />
                     <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
                 </Route>
 
