@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Sparkles, Upload, X, Layers, Globe, Eye, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X, HelpCircle } from 'lucide-react';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
 import CustomDropdown from '../../components/CustomDropdown';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
-import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -390,7 +389,7 @@ const ProductForm = () => {
 
   const saveAltText = async () => {
     if (editingImageIndex === null) return;
-    
+
     // If it's a new unsaved image, just save locally
     const image = formData.images[editingImageIndex];
     if (!id || !image._id) {
@@ -412,14 +411,14 @@ const ProductForm = () => {
       if (result.success && result.data) {
         setFormData(prev => {
           const newImages = [...prev.images];
-          newImages[editingImageIndex] = { 
-            ...newImages[editingImageIndex], 
+          newImages[editingImageIndex] = {
+            ...newImages[editingImageIndex],
             altText: tempAltText,
             cloudinarySync: result.data.cloudinarySync
           };
           return { ...prev, images: newImages };
         });
-        
+
         if (result.data.cloudinarySync?.lastSyncError) {
           toast.warning('Alt text saved locally, but Cloudinary metadata sync failed.');
         } else {
@@ -450,8 +449,8 @@ const ProductForm = () => {
       const result = await response.json();
 
       if (result.success && result.data?.secure_url) {
-        const newImage = { 
-          url: result.data.secure_url, 
+        const newImage = {
+          url: result.data.secure_url,
           secureUrl: result.data.secure_url,
           publicId: result.data.public_id,
           assetId: result.data.asset_id,
@@ -574,8 +573,8 @@ const ProductForm = () => {
     const finalImageUrl = finalImages.length > 0 ? finalImages[0].url : formData.imageUrl;
 
     // Determine selected shipping package ID
-    const selectedPackageId = formData.packageTemplate && formData.packageTemplate !== 'default' 
-      ? formData.packageTemplate 
+    const selectedPackageId = formData.packageTemplate && formData.packageTemplate !== 'default'
+      ? formData.packageTemplate
       : (packagesList.find(p => p.isDefault)?._id || null);
 
     // Construct variants array matching structure
@@ -827,7 +826,7 @@ const ProductForm = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       {img.cloudinarySync?.lastSyncError && (
                         <p className="text-[11px] text-red-500 mt-2 flex items-center gap-1">
                           <AlertCircle size={12} /> Sync Error: {img.cloudinarySync.lastSyncError}
@@ -1100,13 +1099,13 @@ const ProductForm = () => {
                       Package Template
                     </label>
                     <CustomDropdown
-                      options={packagesList.length > 0 
+                      options={packagesList.length > 0
                         ? packagesList.map(p => ({
-                            value: p._id,
-                            label: p.isDefault 
-                              ? `Store default • ${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
-                              : `${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
-                          }))
+                          value: p._id,
+                          label: p.isDefault
+                            ? `Store default • ${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
+                            : `${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
+                        }))
                         : [{ value: 'default', label: 'Loading packages...' }]
                       }
                       value={formData.packageTemplate || (packagesList.find(p => p.isDefault)?._id || 'default')}
@@ -1499,25 +1498,25 @@ const ProductForm = () => {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h3 className="font-bold text-slate-800 text-[15px]">Edit Alt Text</h3>
-              <button 
+              <button
                 onClick={closeAltTextModal}
                 className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors focus:outline-none"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            
+
             <div className="p-5">
               {editingImageIndex !== null && formData.images[editingImageIndex] && (
                 <div className="mb-5 flex justify-center bg-slate-50 border border-slate-200 p-2 rounded-xl">
-                  <img 
-                    src={formData.images[editingImageIndex].url} 
-                    alt="thumbnail" 
+                  <img
+                    src={formData.images[editingImageIndex].url}
+                    alt="thumbnail"
                     className="h-32 object-contain rounded"
                   />
                 </div>
               )}
-              
+
               <label className="block text-[12.5px] font-semibold text-slate-600 mb-1.5">
                 Image Alt Text
               </label>
@@ -1537,7 +1536,7 @@ const ProductForm = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex justify-end gap-2 px-5 py-4 border-t border-slate-100 bg-slate-50">
               <button
                 onClick={closeAltTextModal}
