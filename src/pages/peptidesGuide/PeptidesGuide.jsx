@@ -11,7 +11,7 @@ const PeptidesGuide = () => {
                     </h1>
                 </div>
             </section>
-            
+
             <div className="main-container pb-16">
                 {/* Top Disclaimer */}
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-14 rounded-[4px]">
@@ -77,7 +77,7 @@ const PeptidesGuide = () => {
 
                         <div className="bg-[#F8FAFC] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Anti-Inflammatory & Immune Peptides</h3>
-                            <p className="text-[13.5px] text-slate-700 leading-relaxed">Peptides studied for inflammatory pathway modulation, immune signalling and epithelial research in laboratory models. KPV (alpha-MSH fragment) is the primary compound in this category. <Link to="/research-insight/kpv" className="text-[#3390ec] hover:underline">KPV Overview</Link></p>
+                            <p className="text-[13.5px] text-slate-700 leading-relaxed">Peptides studied for inflammatory pathway modulation, immune signalling and epithelial research in laboratory models. KPV (alpha-MSH fragment) is the primary compound in this category.</p>
                         </div>
 
                         <div className="bg-[#F8FAFC] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">
