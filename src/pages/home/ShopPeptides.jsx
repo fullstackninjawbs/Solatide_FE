@@ -89,7 +89,8 @@ const ShopPeptides = () => {
                         {products.map((product) => (
                             <SwiperSlide key={product._id || product.id} className="!h-auto">
                                 <div
-                                    onClick={() => navigate(`/product/${product._id || product.id}`)}
+                                    key={product.slug || product._id || product.id}
+                                    onClick={() => navigate(`/product/${product.slug || product._id || product.id}`)}
                                     className="group flex flex-col h-full bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
                                 >
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
@@ -133,7 +134,9 @@ const ShopPeptides = () => {
 
                                     <div className="flex flex-col justify-between flex-grow mt-4 px-1.5 pb-2">
                                         <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-tight text-left font-['Anek_Telugu',sans-serif] mb-2 line-clamp-2">
-                                            {product.name}
+                                            <Link to={`/product/${product.slug || product._id || product.id}`} className="hover:text-[#00bfef] transition-colors">
+                                                {product.name}
+                                            </Link>
                                         </h3>
                                         <div className="flex items-center justify-between mt-3.5">
                                             <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu',sans-serif]">

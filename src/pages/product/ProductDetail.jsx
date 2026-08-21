@@ -110,12 +110,20 @@ const ProductDetail = () => {
                 const result = await response.json();
                 if (!signal.aborted) {
                     if (result.success && result.data && result.data.product) {
-                        setProduct(result.data.product);
-                        saveToRecentlyViewed(result.data.product);
+                        const fetchedProduct = result.data.product;
+                        
+                        // SEO Redirect: If product has a URL handle (slug) and current URL doesn't use it, redirect
+                        if (fetchedProduct.slug && id !== fetchedProduct.slug) {
+                            navigate(`/product/${fetchedProduct.slug}`, { replace: true });
+                            return; // Stop rendering this instance, the route change will re-mount/re-fetch
+                        }
+
+                        setProduct(fetchedProduct);
+                        saveToRecentlyViewed(fetchedProduct);
                         // Fire product_view analytics event
                         trackEvent('product_view', {
-                            productId: result.data.product._id,
-                            productName: result.data.product.name,
+                            productId: fetchedProduct._id,
+                            productName: fetchedProduct.name,
                             path: window.location.pathname
                         });
                     } else {

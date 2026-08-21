@@ -697,6 +697,13 @@ const ProductForm = () => {
   // Interactive URL slug helper
   const slugifiedName = formData.name ? formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'product-slug';
 
+  const handleSlugChange = (e) => {
+    let val = e.target.value;
+    // Lowercase, spaces to hyphens, alphanumeric and hyphens only
+    val = val.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+    setFormData(prev => ({ ...prev, slug: val }));
+  };
+
   return (
     <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
 
@@ -1319,7 +1326,7 @@ const ProductForm = () => {
                   <input
                     type="text"
                     value={formData.slug}
-                    onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                    onChange={handleSlugChange}
                     placeholder={slugifiedName}
                     className="w-full px-3 py-2 rounded-lg bg-white border border-[#8c9196] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-[#202223] text-[14px]"
                   />

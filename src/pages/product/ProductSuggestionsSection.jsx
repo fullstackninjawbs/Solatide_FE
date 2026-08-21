@@ -99,7 +99,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                         >
                             {/* Product Image Link */}
                             <Link
-                                to={`/product/${product._id || product.id}`}
+                                to={`/product/${product.slug || product._id || product.id}`}
                                 className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
@@ -136,7 +136,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                             <div className="flex flex-col flex-grow text-left mt-4 justify-between">
                                 <div>
                                     <h3 className="text-[16px] font-bold text-[#1E1E1E] tracking-tight leading-snug">
-                                        <Link to={`/product/${product._id || product.id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
+                                        <Link to={`/product/${product.slug || product._id || product.id}`} className="hover:text-[#00bfef] transition-colors line-clamp-2">
                                             {product.name}
                                         </Link>
                                     </h3>

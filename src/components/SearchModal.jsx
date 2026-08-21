@@ -128,8 +128,8 @@ export const SearchModal = ({ onClose, navigate }) => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {recentlyViewed.map((product) => (
                 <div
-                  key={product._id || product.id}
-                  onClick={() => handleProductClick(product._id || product.id)}
+                  key={product.slug || product._id || product.id}
+                  onClick={() => handleProductClick(product.slug || product._id || product.id)}
                   className="group bg-white rounded-[20px] p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
                 >
                   <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
@@ -171,8 +171,8 @@ export const SearchModal = ({ onClose, navigate }) => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {searchResults.map((product) => (
                 <div
-                  key={product._id || product.id}
-                  onClick={() => handleProductClick(product._id || product.id)}
+                  key={product.slug || product._id || product.id}
+                  onClick={() => handleProductClick(product.slug || product._id || product.id)}
                   className="group bg-white rounded-[20px] p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
                 >
                   <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>

@@ -340,13 +340,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                         }>
                             {productsList.map((product) => (
                                 <div
-                                    key={product._id || product.id}
-                                    onClick={() => navigate(`/product/${product._id || product.id}`)}
+                                    key={product.slug || product._id || product.id}
+                                    onClick={() => navigate(`/product/${product.slug || product._id || product.id}`)}
                                     className={`group bg-white rounded-[16px] sm:rounded-[24px] border border-slate-100 shadow-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-4 sm:gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
                                     <Link
-                                        to={`/product/${product._id || product.id}`}
+                                        to={`/product/${product.slug || product._id || product.id}`}
                                         className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[14px] sm:rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[180px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
                                     >
                                         <img
@@ -390,8 +390,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
                                     {/* Info */}
                                     <div className={`flex flex-col flex-grow text-left ${viewMode === 'list' ? '' : 'mt-3 sm:mt-4'}`}>
-                                        <h3 className="text-[13px] sm:text-[18px] font-weight-500 font-medium text-[#1E1E1E] tracking-tight leading-snug line-clamp-2">
-                                            <Link to={`/product/${product._id || product.id}`} className="hover:text-[#00bfef] transition-colors">
+                                        <h3 className={`font-semibold text-[#150F3A] leading-tight ${viewMode === 'list' ? 'text-[15px] sm:text-[18px] md:text-[20px] mb-2 sm:mb-3' : 'text-[14px] sm:text-[16px] mb-2 sm:mb-3 mt-1'}`}>
+                                            <Link to={`/product/${product.slug || product._id || product.id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
