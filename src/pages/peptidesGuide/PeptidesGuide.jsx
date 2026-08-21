@@ -166,7 +166,6 @@ const PeptidesGuide = () => {
                         </p>
                     </div>
                 </div>
-
             </div>
         </div>
     );

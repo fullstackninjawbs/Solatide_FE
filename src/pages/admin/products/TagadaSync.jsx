@@ -185,7 +185,7 @@ const TagadaSync = () => {
               <div className="mt-8 bg-blue-50 border-l-4 border-blue-400 p-4">
                 <h4 className="text-blue-800 font-medium">Important Information</h4>
                 <p className="mt-2 text-blue-700 text-sm">
-                  Tagada is the source of truth for commerce data (names, descriptions, pricing, inventory).
+                  Tagada is the source of truth for commerce data (names, descriptions, pricing, tagada variant id).
                   Syncing will update local products without overwriting local-only fields like Batches, COAs,
                   Purity results. Run a preview first to see what will change.
                 </p>

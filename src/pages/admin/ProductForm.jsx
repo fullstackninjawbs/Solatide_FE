@@ -7,6 +7,8 @@ import CustomDropdown from '../../components/CustomDropdown';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
+const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
+
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -61,6 +63,7 @@ const ProductForm = () => {
       description: '',
       canonicalUrl: ''
     },
+    slug: '',
 
     // Shopify Refinements
     published: true,
@@ -283,9 +286,10 @@ const ProductForm = () => {
               description: product.seo?.description || '',
               canonicalUrl: product.seo?.canonicalUrl || ''
             },
-            tagadaVariantId: product.variants?.[0]?.tagadaVariantId || '',
+            tagadaVariantId: product.tagadaVariantId || product.variants?.[0]?.tagadaVariantId || '',
             _originalVariants: product.variants || [],
             currentBatch: product.currentBatch || null,
+            slug: product.slug || '',
 
             // Shopify Refinements
             published: product.published !== false,
@@ -639,6 +643,7 @@ const ProductForm = () => {
       tagadaVariantId: formData.tagadaVariantId,
       variants: mappedVariants,
       seo: formData.seo,
+      slug: formData.slug || slugifiedName,
       inStock: parseInt(formData.stockQuantity, 10) > 0,
 
       // Shopify Refinements
@@ -1242,61 +1247,85 @@ const ProductForm = () => {
           </div>
 
           {/* Search Engine Listing Preview */}
-          <div className="bg-white hidden  border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
+          <div className="bg-white border border-slate-200 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] space-y-4">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="text-base font-bold text-brand-navy">
+              <h3 className="text-base font-bold text-[#150F3A]">
                 Search engine listing
               </h3>
               <button
                 type="button"
                 onClick={() => setEditSeo(!editSeo)}
-                className="text-[13px] font-semibold text-brand-blue hover:underline cursor-pointer"
+                className="text-[13px] font-semibold text-[#3390ec] hover:underline cursor-pointer"
               >
                 {editSeo ? 'Cancel' : 'Edit'}
               </button>
             </div>
 
             {/* Google Search Result Preview */}
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-1 max-w-full overflow-hidden">
-              <span className="text-[11.5px] text-[#202124] block leading-none font-sans font-normal">
-                https://solatidebiosciences.com.au › products › <span className="font-bold">{slugifiedName}</span>
+            <div className="pt-2 text-left space-y-1">
+              <span className="text-[13px] text-[#202124] block leading-none font-sans font-normal">
+                Solatide Biosciences<br/>
+                {SITE_URL} › products › <span className="font-bold">{formData.slug || slugifiedName}</span>
               </span>
-              <span className="text-[18px] text-[#1a0dab] hover:underline cursor-pointer font-medium leading-tight font-sans block">
+              <span className="text-[18px] text-[#1a0dab] hover:underline cursor-pointer font-medium leading-tight font-sans block mt-1">
                 {formData.seo.title || `Buy ${formData.name || 'CagriSema 10mg'} Australia | Solatide Biosciences`}
               </span>
-              <span className="text-[13.5px] text-[#4d5156] leading-normal font-sans block max-w-2xl">
-                {formData.seo.description || `${formData.name || 'CagriSema 10mg'}: pre-blended Cagrilintide + Semaglutide lyophilised research peptide in Australia. ≥99% purity, batch COA. For laboratory research use only.`}
+              <span className="text-[13.5px] text-[#4d5156] leading-normal font-sans block max-w-2xl mt-1">
+                {formData.seo.description || `${formData.name || 'CagriSema 10mg'} Australia for laboratory research only. Batch COA reports ≥99% purity. For laboratory research use only.`}
               </span>
-              <span className="text-[12px] text-slate-500 font-bold block mt-1">AUD {formData.price || '149.95'} AUD</span>
+              <span className="text-[13.5px] text-[#4d5156] font-sans block mt-1">${formData.price || '129.95'} AUD</span>
             </div>
 
             {editSeo && (
-              <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="space-y-4 pt-4 mt-4 border-t border-slate-100">
                 <div>
-                  <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    Page Title Override
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    Page title
                   </label>
                   <input
                     type="text"
                     name="title"
                     value={formData.seo.title}
                     onChange={handleSeoChange}
-                    placeholder={`Buy ${formData.name} Australia | Solatide`}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px]"
+                    maxLength={70}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-[#8c9196] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-[#202223] text-[14px]"
                   />
+                  <div className="text-[12px] text-slate-500 mt-1">
+                    {(formData.seo.title || '').length} of 70 characters used
+                  </div>
                 </div>
+                
                 <div>
-                  <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                    Meta Description
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    Meta description
                   </label>
                   <textarea
                     name="description"
                     value={formData.seo.description}
                     onChange={handleSeoChange}
-                    placeholder="Describe this product for search engine result snippets..."
-                    rows={3}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px]"
+                    maxLength={320}
+                    rows={4}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-[#8c9196] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-[#202223] text-[14px]"
                   />
+                  <div className="text-[12px] text-slate-500 mt-1">
+                    {(formData.seo.description || '').length} of 320 characters used
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    URL handle
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                    placeholder={slugifiedName}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-[#8c9196] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-[#202223] text-[14px]"
+                  />
+                  <div className="text-[12px] text-slate-500 mt-1">
+                    {SITE_URL}/products/{formData.slug || slugifiedName}
+                  </div>
                 </div>
               </div>
             )}
