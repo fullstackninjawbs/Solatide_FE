@@ -8,6 +8,7 @@ import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const BatchForm = () => {
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const { id } = useParams();
   const isEditMode = Boolean(id);
   const navigate = useNavigate();
@@ -507,7 +508,7 @@ const BatchForm = () => {
                   {(formData.coaFile?.url || formData.coaUrl) && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2">
                       <a href={formData.coaFile?.url || formData.coaUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200">View File</a>
-                      <button type="button" onClick={() => setFormData(prev => ({ ...prev, coaFile: null, coaUrl: '' }))} className="text-red-600 hover:bg-red-50 text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 transition-colors">Remove</button>
+                      <button type="button" disabled={adminUser?.role !== 'super_admin'} title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove COAs" : "Remove COA"} onClick={() => setFormData(prev => ({ ...prev, coaFile: null, coaUrl: '' }))} className="text-red-600 hover:bg-red-50 text-xs font-semibold cursor-pointer bg-white px-3 py-2 rounded-lg shadow-sm border border-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Remove</button>
                     </div>
                   )}
                   {uploadingCoa && <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-40"><div className="animate-spin w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full" /></div>}
@@ -680,8 +681,9 @@ const BatchForm = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveCustomTest(index)}
-                        className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                        title="Delete Custom Test"
+                        disabled={adminUser?.role !== 'super_admin'}
+                        className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete custom tests" : "Delete Custom Test"}
                       >
                         <Trash2 className="w-4.5 h-4.5" />
                       </button>

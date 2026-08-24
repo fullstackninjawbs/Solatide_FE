@@ -24,6 +24,7 @@ import { Country, State } from 'country-state-city';
 import CustomAddressAutocomplete from '../../components/admin/CustomAddressAutocomplete';
 
 const CreateOrder = () => {
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const navigate = useNavigate();
 
   // ── 1. Customer State ────────────────────────────────────────────────────────
@@ -614,8 +615,9 @@ const CreateOrder = () => {
                             <button
                               type="button"
                               onClick={() => handleRemoveLineItem(idx)}
-                              className="text-slate-400 hover:text-red-600 transition-colors p-1 cursor-pointer"
-                              title="Remove item"
+                              disabled={adminUser?.role !== 'super_admin'}
+                              className="text-slate-400 hover:text-red-600 transition-colors p-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                              title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove items" : "Remove item"}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>

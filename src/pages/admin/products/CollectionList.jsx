@@ -8,6 +8,7 @@ import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
 import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
 const CollectionList = () => {
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -227,7 +228,9 @@ const CollectionList = () => {
                         <span className="text-slate-300">|</span>
                         <button
                           onClick={handleDeleteSelected}
-                          className="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1 rounded-lg text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+                          disabled={adminUser?.role !== 'super_admin'}
+                          title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete collections" : "Delete selected"}
+                          className="disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1 rounded-lg text-[13px] font-semibold transition-all flex items-center gap-1.5"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Delete selected
@@ -319,7 +322,9 @@ const CollectionList = () => {
                           </Link>
                           <button
                             onClick={() => handleDelete(col._id, col.name)}
-                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
+                            disabled={adminUser?.role !== 'super_admin'}
+                            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete collections" : "Delete Collection"}
+                            className="text-red-500 hover:text-red-700 disabled:text-slate-300 disabled:cursor-not-allowed font-semibold text-[13px] focus:outline-none"
                           >
                             Delete
                           </button>

@@ -9,6 +9,7 @@ import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryBu
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 
 const CollectionForm = () => {
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const { id } = useParams();
   const isEditMode = !!id;
   const navigate = useNavigate();
@@ -436,7 +437,9 @@ const CollectionForm = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveProduct(prod._id || prod)}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        disabled={adminUser?.role !== 'super_admin'}
+                        title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove products" : "Remove product"}
+                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

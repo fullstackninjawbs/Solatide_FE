@@ -556,7 +556,7 @@ export const apiService = {
 
   // ─── Export ─────────────────────────────────────────────────────────────────
   exportAdminOrdersCsv: async () => {
-    return customFetch(`${API_URL}/api/admin/orders/export/csv`, {
+    return customFetch(`${API_URL}/api/admin/order/export/csv`, {
       method: 'GET',
       headers: getAuthHeaders(),
     });

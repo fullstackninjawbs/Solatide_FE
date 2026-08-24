@@ -12,6 +12,7 @@ import { useConfirm } from '../../components/admin/feedback/ConfirmProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 const ProductList = () => {
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get('page') || '1', 10);
@@ -218,7 +219,9 @@ const ProductList = () => {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleDeleteAll}
-            className="hidden bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer flex items-center gap-2"
+            disabled={adminUser?.role !== 'super_admin'}
+            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete products" : "Delete All"}
+            className="hidden disabled:opacity-50 disabled:cursor-not-allowed bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all flex items-center gap-2"
           >
             <Trash2 className="h-4 w-4" />
             Delete All
@@ -433,7 +436,9 @@ const ProductList = () => {
                           </Link>
                           <button
                             onClick={() => handleDelete(product._id, product.name)}
-                            className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
+                            disabled={adminUser?.role !== 'super_admin'}
+                            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete products" : "Delete Product"}
+                            className="text-red-500 hover:text-red-700 disabled:text-slate-300 disabled:cursor-not-allowed font-semibold text-[13px] focus:outline-none"
                           >
                             Delete
                           </button>
