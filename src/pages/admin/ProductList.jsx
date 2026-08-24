@@ -217,15 +217,15 @@ const ProductList = () => {
           <p className="text-slate-500 text-[14px]">Manage your catalog, stock quantities, and research listings.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={handleDeleteAll}
-            disabled={adminUser?.role !== 'super_admin'}
-            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete products" : "Delete All"}
-            className="hidden disabled:opacity-50 disabled:cursor-not-allowed bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all flex items-center gap-2"
-          >
-            <Trash2 className="h-4 w-4" />
-            Delete All
-          </button>
+          {adminUser?.role === 'super_admin' && (
+            <button
+              onClick={handleDeleteAll}
+              className="hidden bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete All
+            </button>
+          )}
           <AdminSecondaryButton to="/admin/products/import">
             Import
           </AdminSecondaryButton>
@@ -434,14 +434,14 @@ const ProductList = () => {
                           >
                             Edit
                           </Link>
-                          <button
-                            onClick={() => handleDelete(product._id, product.name)}
-                            disabled={adminUser?.role !== 'super_admin'}
-                            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete products" : "Delete Product"}
-                            className="text-red-500 hover:text-red-700 disabled:text-slate-300 disabled:cursor-not-allowed font-semibold text-[13px] focus:outline-none"
-                          >
-                            Delete
-                          </button>
+                          {adminUser?.role === 'super_admin' && (
+                            <button
+                              onClick={() => handleDelete(product._id, product.name)}
+                              className="text-red-500 hover:text-red-700 font-semibold text-[13px] focus:outline-none"
+                            >
+                              Delete
+                            </button>
+                          )}
                         </div>
                     </td>
                   </tr>

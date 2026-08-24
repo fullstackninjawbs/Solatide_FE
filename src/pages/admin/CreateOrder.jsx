@@ -612,15 +612,16 @@ const CreateOrder = () => {
                             A${lineTotal.toFixed(2)}
                           </td>
                           <td className="py-3 pr-3 text-center">
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveLineItem(idx)}
-                              disabled={adminUser?.role !== 'super_admin'}
-                              className="text-slate-400 hover:text-red-600 transition-colors p-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                              title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove items" : "Remove item"}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            {adminUser?.role === 'super_admin' && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveLineItem(idx)}
+                                className="text-slate-400 hover:text-red-600 transition-colors p-1 cursor-pointer"
+                                title="Remove item"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );

@@ -434,15 +434,15 @@ const CollectionForm = () => {
                       <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[12px] font-semibold rounded-md">
                         Active
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveProduct(prod._id || prod)}
-                        disabled={adminUser?.role !== 'super_admin'}
-                        title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove products" : "Remove product"}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {adminUser?.role === 'super_admin' && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveProduct(prod._id || prod)}
+                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))

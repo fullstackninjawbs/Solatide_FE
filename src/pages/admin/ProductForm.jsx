@@ -869,15 +869,15 @@ const ProductForm = () => {
                           >
                             Edit
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            disabled={adminUser?.role !== 'super_admin'}
-                            title={adminUser?.role !== 'super_admin' ? "Only Super Admins can remove images" : "Remove Image"}
-                            className="p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
+                          {adminUser?.role === 'super_admin' && (
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
                         </div>
                       </div>
 

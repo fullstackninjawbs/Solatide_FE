@@ -486,14 +486,15 @@ const CustomerDetail = () => {
                                                                 <span className="text-[12px] font-bold text-slate-700">Staff Note</span>
                                                                 <div className="flex items-center gap-2">
                                                                     <span className="text-[11px] text-slate-400 font-medium">{formatDate(item.date, true)}</span>
-                                                                    <button 
-                                                                        onClick={() => handleDeleteComment(item.originalIndex)} 
-                                                                        disabled={adminUser?.role !== 'super_admin'}
-                                                                        className="text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                        title={adminUser?.role !== 'super_admin' ? "Only Super Admins can delete notes" : "Delete note"}
-                                                                    >
-                                                                        <Trash2 size={13} />
-                                                                    </button>
+                                                                    {adminUser?.role === 'super_admin' && (
+                                                                        <button 
+                                                                            onClick={() => handleDeleteComment(item.originalIndex)} 
+                                                                            className="text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                                                            title="Delete note"
+                                                                        >
+                                                                            <Trash2 size={13} />
+                                                                        </button>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                             <p className="text-[13px] text-slate-600 whitespace-pre-wrap leading-relaxed">{item.comment.text}</p>
