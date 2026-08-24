@@ -10,6 +10,16 @@ import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButto
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
 
+const generateAltText = (title, index) => {
+  const baseAltText = (title || 'product')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+  const uniqueSuffix = index > 0 ? `-${index + 1}` : '';
+  return `${baseAltText}${uniqueSuffix}`;
+};
+
 const ProductForm = () => {
   const { id } = useParams();
   const isEditMode = !!id;
@@ -578,7 +588,24 @@ const ProductForm = () => {
       ? parseFloat(formData.weightGrams) * 1000
       : parseFloat(formData.weightGrams);
 
-    const finalImages = [...formData.images];
+    // Auto-generate alt text for images if missing
+    const finalImages = formData.images.map((img, index) => {
+      if (img.altText && img.altText.trim() !== '') {
+        return img;
+      }
+      
+      const baseAltText = (formData.name || 'product')
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+        
+      const uniqueSuffix = index > 0 ? `-${index + 1}` : '';
+      return {
+        ...img,
+        altText: `${baseAltText}${uniqueSuffix}`
+      };
+    });
 
     // Ensure imageUrl is set to the first image if it exists
     const finalImageUrl = finalImages.length > 0 ? finalImages[0].url : formData.imageUrl;
@@ -819,12 +846,17 @@ const ProductForm = () => {
                         <div>
                           {index === 0 && <span className="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase tracking-wider mb-1.5">Primary Image</span>}
                           <p className="text-[13px] font-semibold text-slate-700">Alt text</p>
-                          {img.altText ? (
+                          {img.altText && img.altText.trim() !== '' ? (
                             <p className="text-[14px] text-slate-600 truncate mt-0.5" title={img.altText}>{img.altText}</p>
                           ) : (
-                            <div className="flex items-center gap-1.5 text-amber-500 mt-0.5">
-                              <AlertCircle size={14} />
-                              <span className="text-[13px] italic">No alt text provided</span>
+                            <div className="mt-0.5">
+                              <p className="text-[14px] text-slate-400 italic truncate" title={`Auto-generated: ${generateAltText(formData.name, index)}`}>
+                                {generateAltText(formData.name, index)}
+                              </p>
+                              <div className="flex items-center gap-1.5 text-amber-500 mt-1">
+                                <AlertCircle size={12} />
+                                <span className="text-[12px] italic">Will be auto-generated on save</span>
+                              </div>
                             </div>
                           )}
                         </div>
