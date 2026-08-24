@@ -743,7 +743,7 @@ const ProductForm = () => {
     <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
 
       {/* Top Header Section */}
-      <div className="sticky top-0 z-50 bg-[#f8fafc] -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 mb-4 border-b border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="sticky -top-6 sm:-top-8 pt-6 sm:pt-8 pb-4 z-50 bg-[#f8fafc] -mx-6 sm:-mx-8 px-6 sm:px-8 mb-4 border-b border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <Link
             to="/admin/products"
