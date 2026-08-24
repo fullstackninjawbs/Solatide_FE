@@ -23,7 +23,7 @@ const ProductInfoSection = ({ product }) => {
                             <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
                                 {product.overviewHtml ? (
                                     <div
-                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4"
+                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4 [&_a]:no-underline [&_a:hover]:underline"
                                         dangerouslySetInnerHTML={{ __html: product.overviewHtml }}
                                     />
                                 ) : (
