@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { apiService } from '../../../services/api';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
@@ -294,8 +295,8 @@ const AdminUsers = () => {
       </div>
 
       {/* Add/Edit Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
           <div
             className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200"
             onClick={e => e.stopPropagation()}
@@ -308,60 +309,10 @@ const AdminUsers = () => {
                 onClick={handleCloseModal}
                 className="text-slate-400 hover:text-slate-600 bg-white hover:bg-slate-100 p-1.5 rounded-lg border border-slate-200 transition-colors"
               >
-                <X size={16} />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all"
-                  placeholder="John Doe"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all"
-                  placeholder="john@solatide.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
-                  Password
-                  {editingUser && <span className="text-slate-400 font-normal ml-2">(Leave blank to keep current)</span>}
-                </label>
-                <input
-                  type="password"
-                  required={!editingUser}
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all"
-                  placeholder="••••••••"
-                  minLength={6}
-                />
-              </div>
-
-              <div className="relative">
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Role Permission</label>
-                <div
-                  className="relative cursor-pointer"
-                  onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                >
-                  <div className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-sm flex items-center justify-between transition-all ${isRoleDropdownOpen ? 'border-brand-cyan ring-2 ring-brand-cyan/20' : 'border-slate-200'
-                    }`}>
-                    <span className="font-medium text-slate-700">
                       {formData.role === 'super_admin' ? 'Super Admin (Full Access)' : 'Admin'}
                     </span>
                     <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />

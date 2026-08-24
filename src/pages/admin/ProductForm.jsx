@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X, HelpCircle } from 'lucide-react';
 import { apiService } from '../../services/api';
@@ -1529,8 +1530,8 @@ const ProductForm = () => {
       </form>
 
       {/* Alt Text Modal */}
-      {altTextModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+      {altTextModalOpen && createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h3 className="font-bold text-slate-800 text-[15px]">Edit Alt Text</h3>
@@ -1548,42 +1549,37 @@ const ProductForm = () => {
                   <img
                     src={formData.images[editingImageIndex].url}
                     alt="thumbnail"
-                    className="h-32 object-contain rounded"
+                    className="max-h-[120px] object-contain rounded-lg"
                   />
                 </div>
               )}
 
-              <label className="block text-[12.5px] font-semibold text-slate-600 mb-1.5">
-                Image Alt Text
-              </label>
-              <textarea
-                value={tempAltText}
-                onChange={(e) => setTempAltText(e.target.value)}
-                placeholder="Briefly describe the image for screen readers and search engines..."
-                className="w-full h-24 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-700 focus:outline-none focus:border-brand-blue focus:bg-white resize-none transition-colors"
-                maxLength={160}
-              />
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-[11px] text-slate-400">
-                  Write a brief description of this image to improve SEO and accessibility.
-                </span>
-                <span className={`text-[11px] font-medium ${tempAltText.length >= 160 ? 'text-red-500' : 'text-slate-400'}`}>
-                  {tempAltText.length} / 160
-                </span>
+              <div className="space-y-2 text-left">
+                <label className="block text-[13px] font-semibold text-slate-700">Image Alt Text</label>
+                <textarea
+                  value={tempAltText}
+                  onChange={(e) => setTempAltText(e.target.value.slice(0, 160))}
+                  placeholder="Describe the image..."
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-brand-navy focus:ring-1 focus:ring-brand-navy outline-none text-slate-700 text-[14px] min-h-[100px] resize-y transition-colors"
+                />
+                <div className="flex justify-between items-center text-[11.5px] text-slate-500 mt-1.5">
+                  <span className="leading-snug">Write a brief description of this image to improve SEO and accessibility.</span>
+                  <span className="shrink-0 ml-4 tabular-nums">{tempAltText.length} / 160</span>
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 px-5 py-4 border-t border-slate-100 bg-slate-50">
+            <div className="px-5 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
               <button
                 onClick={closeAltTextModal}
-                className="px-4 py-2 text-[13px] font-semibold text-slate-600 hover:text-slate-800 transition-colors"
+                className="px-4 py-2 text-[14px] font-semibold text-slate-600 hover:text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={saveAltText}
                 disabled={isSavingAltText}
-                className="px-5 py-2 bg-brand-blue text-white text-[13px] font-semibold rounded-lg shadow-sm shadow-blue-500/20 hover:bg-blue-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-5 py-2 text-[14px] font-semibold text-white bg-[#0070bc] hover:bg-[#005a96] shadow-sm rounded-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSavingAltText && (
                   <svg className="animate-spin -ml-1 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -1595,7 +1591,8 @@ const ProductForm = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
