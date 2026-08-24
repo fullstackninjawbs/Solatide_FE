@@ -80,9 +80,9 @@ const AdminLayout = () => {
         { name: 'COAs', path: '/admin/coas', roles: ['super_admin', 'operations', 'admin'] }
       ]
     },
-    { name: 'Shipping Packages', path: '/admin/settings/shipping-packages', icon: Box, roles: ['super_admin', 'admin'] },
 
     { name: 'Customers', path: '/admin/customers', icon: Users, roles: ['super_admin', 'operations', 'support', 'admin'] },
+    { name: 'Shipping Packages', path: '/admin/settings/shipping-packages', icon: Box, roles: ['super_admin', 'admin'] },
     { name: 'Discounts', path: '/admin/discounts', icon: Tag, roles: ['super_admin', 'operations', 'admin'] },
     {
       name: 'Content',
@@ -96,8 +96,8 @@ const AdminLayout = () => {
     { name: 'Reviews', path: '/admin/growth/reviews', icon: MessageSquare, roles: ['super_admin', 'operations', 'support', 'admin'] },
     // { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart2, roles: ['super_admin', 'operations', 'admin'] },
+    { name: 'Admin Users', path: '/admin/settings/admin-users', icon: UserCog, roles: ['super_admin', 'admin'] },
     { name: 'Settings', path: '/admin/settings/store', icon: Settings, roles: ['super_admin', 'admin'] },
-    { name: 'Admin Users', path: '/admin/settings/admin-users', icon: UserCog, roles: ['super_admin', 'admin'] }
   ];
 
   const handleLogout = () => {

@@ -278,9 +278,15 @@ const AdminUsers = () => {
                         </button>
                         <button
                           onClick={() => handleDelete(user._id)}
-                          disabled={adminUser?._id === user._id}
+                          disabled={adminUser?._id === user._id || adminUser?.role !== 'super_admin'}
                           className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          title={adminUser?._id === user._id ? "You cannot delete yourself" : "Remove User"}
+                          title={
+                            adminUser?._id === user._id 
+                              ? "You cannot delete yourself" 
+                              : adminUser?.role !== 'super_admin'
+                                ? "Only Super Admins can delete users"
+                                : "Remove User"
+                          }
                         >
                           <Trash2 size={16} />
                         </button>
