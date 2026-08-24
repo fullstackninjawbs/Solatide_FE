@@ -32,13 +32,6 @@ const ProductInfoSection = ({ product }) => {
                                     </p>
                                 )}
 
-                                <div className="mt-6 pt-6 border-t border-slate-100 flex flex-wrap gap-2 text-[12.5px] font-semibold">
-                                    <Link to="/shop" className="text-[#0079CD] hover:underline">{product.name.split(' ')[0]} (vial only)</Link>
-                                    <span className="text-slate-300">|</span>
-                                    <Link to="/calculator" className="text-[#0079CD] hover:underline">Concentration Calculator</Link>
-                                    <span className="text-slate-300">|</span>
-                                    <Link to="/terms" className="text-[#0079CD] hover:underline">Research Use Disclaimer</Link>
-                                </div>
                             </div>
                         </div>
 
