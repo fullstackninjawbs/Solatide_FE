@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { ArrowLeft, CheckCircle, Ban, Loader2, Edit2, ShoppingBag, ChevronDown, X, Trash2, Send, Clock, DollarSign, Calendar, MessageSquare, Truck, Package, RotateCcw, UserPlus } from 'lucide-react';
@@ -636,8 +637,8 @@ const CustomerDetail = () => {
             </div>
 
             {/* Edit Contact Modal */}
-            {isEditContactModalOpen && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            {isEditContactModalOpen && createPortal(
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-lg font-bold text-gray-900">Edit contact information</h2>
@@ -684,12 +685,13 @@ const CustomerDetail = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Edit Address Modal */}
-            {isEditAddressModalOpen && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            {isEditAddressModalOpen && createPortal(
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-lg font-bold text-gray-900">Edit address</h2>
@@ -784,7 +786,8 @@ const CustomerDetail = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

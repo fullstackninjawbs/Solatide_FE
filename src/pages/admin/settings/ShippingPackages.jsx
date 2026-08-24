@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { apiService } from '../../../services/api';
 import { Package, Mail, Briefcase, Plus, Trash2, Edit2, ShieldCheck, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -315,8 +316,8 @@ const ShippingPackages = () => {
             </div>
 
             {/* Add/Edit Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            {isModalOpen && createPortal(
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
                     <div 
                         className="bg-white rounded-2xl shadow-2xl w-full max-w-[520px] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
                         onClick={e => e.stopPropagation()}
@@ -457,7 +458,8 @@ const ShippingPackages = () => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

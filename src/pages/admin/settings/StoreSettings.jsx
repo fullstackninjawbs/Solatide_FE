@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { apiService } from '../../../services/api';
 import { Store, MapPin, ChevronRight, X } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
@@ -188,8 +189,8 @@ const StoreSettings = () => {
             </div>
 
             {/* Contact Modal */}
-            {isContactModalOpen && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            {isContactModalOpen && createPortal(
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-lg font-bold text-gray-900">Store contact details</h2>
@@ -242,12 +243,13 @@ const StoreSettings = () => {
                             </AdminPrimaryButton>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Address Modal */}
-            {isAddressModalOpen && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            {isAddressModalOpen && createPortal(
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
                         <div className="flex justify-between items-center mb-5">
                             <h2 className="text-lg font-bold text-gray-900">Edit store address</h2>
@@ -367,7 +369,8 @@ const StoreSettings = () => {
                             </AdminPrimaryButton>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

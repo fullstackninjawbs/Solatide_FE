@@ -363,7 +363,8 @@ const AdminUsers = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

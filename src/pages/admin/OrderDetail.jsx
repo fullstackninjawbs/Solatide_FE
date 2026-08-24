@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, Link } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { State } from 'country-state-city';
@@ -1119,8 +1120,8 @@ const OrderDetail = () => {
       </div>
 
       {/* Edit Address Modal */}
-      {isEditAddressModalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      {isEditAddressModalOpen && createPortal(
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-lg font-bold text-gray-900">Edit {addressTypeToEdit} address</h2>
@@ -1235,12 +1236,13 @@ const OrderDetail = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Refund Modal */}
-      {isRefundModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+      {isRefundModalOpen && createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
           <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden p-7 animate-in fade-in zoom-in duration-200">
             <h3 className="text-xl font-bold text-brand-navy mb-2">
               Refund Full Amount
@@ -1282,7 +1284,8 @@ const OrderDetail = () => {
               </AdminPrimaryButton>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
