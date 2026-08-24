@@ -561,6 +561,12 @@ const ProductForm = () => {
     setError('');
     setLoading(true);
 
+    if (!formData.name || formData.name.trim() === '') {
+      setError('Product title is required.');
+      setLoading(false);
+      return;
+    }
+
     if (!formData.tagadaVariantId || formData.tagadaVariantId.trim() === '') {
       setError('Tagada Variant ID is required.');
       setLoading(false);
@@ -757,7 +763,7 @@ const ProductForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">
               <div className="sm:col-span-9">
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Title
+                  Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -771,7 +777,7 @@ const ProductForm = () => {
               </div>
               <div className="sm:col-span-3">
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Product ID *
+                  Product ID <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -904,7 +910,7 @@ const ProductForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Price (AUD) *
+                  Price (AUD) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="absolute left-3.5 text-slate-400 font-semibold text-[14px] top-2.5">$</span>
