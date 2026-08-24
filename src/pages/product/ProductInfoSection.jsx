@@ -24,7 +24,7 @@ const ProductInfoSection = ({ product }) => {
                                 {product.overviewHtml ? (
                                     <div
                                         className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4 [&_a]:no-underline [&_a:hover]:underline"
-                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml }}
+                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
                                     />
                                 ) : (
                                     <p className="mb-4">
@@ -42,7 +42,7 @@ const ProductInfoSection = ({ product }) => {
                                 {product.researchApplicationsHtml ? (
                                     <div
                                         className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-2"
-                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml }}
+                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
                                     />
                                 ) : (
                                     <ul className="list-disc pl-5 mb-4 space-y-2">
