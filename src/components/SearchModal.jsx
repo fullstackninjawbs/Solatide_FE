@@ -90,7 +90,7 @@ export const SearchModal = ({ onClose, navigate }) => {
     <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[1000] flex justify-center items-start pt-[12vh] px-4">
       <div
         ref={modalRef}
-        className="w-full max-w-[800px] bg-[#f4f7fc] rounded-[28px] p-6 sm:p-7 flex flex-col gap-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] relative font-sans text-left border border-slate-100"
+        className="w-full max-w-[800px] bg-[#f4f7fc] rounded-[28px] p-6 sm:p-7 flex flex-col gap-4 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] relative font-sans text-left border border-slate-100"
       >
         {/* Search Header Input bar */}
         <div className="relative flex items-center bg-white border border-slate-100 rounded-[20px] px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#1a4494]/10 transition-all duration-200 shadow-sm">

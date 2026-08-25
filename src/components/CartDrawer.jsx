@@ -6,14 +6,14 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useTagadaCheckout } from '../hooks/useTagadaCheckout';
 
 const CartDrawer = () => {
-    const { 
-        isCartOpen, 
-        setIsCartOpen, 
-        cartItems, 
-        removeFromCart, 
-        updateQuantity, 
-        cartTotalCount, 
-        cartTotalPrice 
+    const {
+        isCartOpen,
+        setIsCartOpen,
+        cartItems,
+        removeFromCart,
+        updateQuantity,
+        cartTotalCount,
+        cartTotalPrice
     } = useCart();
     const navigate = useNavigate();
     const drawerRef = useRef(null);
@@ -43,7 +43,7 @@ const CartDrawer = () => {
     }, [isCartOpen, setIsCartOpen]);
 
     // Deleted local formatPrice helper in favor of context-level formatting
-    
+
     const getNumericPrice = (priceStr) => {
         if (typeof priceStr === 'string') {
             const match = priceStr.replace(/,/g, '').match(/\d+(\.\d+)?/);
@@ -60,7 +60,7 @@ const CartDrawer = () => {
             )}
 
             {/* Slide-out Drawer */}
-            <div 
+            <div
                 ref={drawerRef}
                 className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[1001] transform transition-transform duration-300 ease-in-out flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}
                 style={{ fontFamily: 'Poppins' }}
@@ -73,7 +73,7 @@ const CartDrawer = () => {
                             {cartTotalCount}
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setIsCartOpen(false)}
                         className="text-slate-400 hover:text-[#1E1E1E] transition-colors focus:outline-none"
                     >
@@ -89,7 +89,7 @@ const CartDrawer = () => {
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                             </div>
                             <p className="font-medium text-[#1E1E1E]">Your cart is currently empty.</p>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setIsCartOpen(false);
                                     navigate('/shop');
@@ -100,7 +100,7 @@ const CartDrawer = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-4">
                             {cartItems.map((item) => (
                                 <div key={item.cartItemId || item.id || item._id} className="flex gap-4">
                                     {/* Item Image */}
@@ -111,7 +111,7 @@ const CartDrawer = () => {
                                             <div className="text-slate-300 text-[10px]">No Img</div>
                                         )}
                                     </div>
-                                    
+
                                     {/* Item Details */}
                                     <div className="flex flex-col flex-1 text-left">
                                         <div className="flex justify-between items-start gap-2">
@@ -130,12 +130,12 @@ const CartDrawer = () => {
                                             </span>
                                         </div>
                                         <p className="text-[13px] text-slate-500 mt-1 font-medium">{formatPrice(item.price)}</p>
-                                        
+
                                         {/* Actions (Qty + Trash) */}
                                         <div className="flex items-center gap-4 mt-auto pt-2">
                                             {/* Qty Selector */}
                                             <div className="flex items-center bg-[#f8fafc] rounded-lg border border-slate-200">
-                                                <button 
+                                                <button
                                                     onClick={() => updateQuantity(item.cartItemId || item.id || item._id, item.quantity - 1)}
                                                     className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-black focus:outline-none"
                                                 >
@@ -144,16 +144,16 @@ const CartDrawer = () => {
                                                 <span className="w-6 text-center text-[13px] font-semibold text-[#1E1E1E]">
                                                     {item.quantity}
                                                 </span>
-                                                <button 
+                                                <button
                                                     onClick={() => updateQuantity(item.cartItemId || item.id || item._id, item.quantity + 1)}
                                                     className="w-7 h-7 flex items-center justify-center text-[#008fe2] hover:text-[#007cc5] focus:outline-none"
                                                 >
                                                     <Plus size={12} />
                                                 </button>
                                             </div>
-                                            
+
                                             {/* Trash */}
-                                            <button 
+                                            <button
                                                 onClick={() => removeFromCart(item.cartItemId || item.id || item._id)}
                                                 className="text-slate-400 hover:text-red-500 transition-colors focus:outline-none"
                                             >
@@ -178,7 +178,7 @@ const CartDrawer = () => {
                             Taxes included. Discounts and shipping calculated at checkout.
                         </p>
                         {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
-                        <button 
+                        <button
                             onClick={() => {
                                 initiateCheckout(cartItems);
                             }}

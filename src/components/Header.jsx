@@ -230,7 +230,7 @@ const Header = () => {
                                                                 </div>
                                                                 <span className="text-[15px] font-bold text-[#1a4494]">{section.title}</span>
                                                             </div>
-                                                            <div className="flex flex-col gap-6">
+                                                            <div className="flex flex-col gap-4">
                                                                 {section.links.map((link, lIdx) => (
                                                                     <Link
                                                                         key={lIdx}

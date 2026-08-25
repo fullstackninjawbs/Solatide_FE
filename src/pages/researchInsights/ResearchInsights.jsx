@@ -59,7 +59,7 @@ const ResearchInsights = () => {
                         Getting Started
                     </h2>
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4">
                         {articles.map((article) => (
                             <div key={article.id} className="border border-[#E2E8F0] rounded-[12px] p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
                                 <h3 className="text-[14px] font-weight-500 font-medium text-[#214A9E] mb-2 cursor-pointer hover:underline">

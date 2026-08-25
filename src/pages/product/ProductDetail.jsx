@@ -111,7 +111,7 @@ const ProductDetail = () => {
                 if (!signal.aborted) {
                     if (result.success && result.data && result.data.product) {
                         const fetchedProduct = result.data.product;
-                        
+
                         // SEO Redirect: If product has a URL handle (slug) and current URL doesn't use it, redirect
                         if (fetchedProduct.slug && id !== fetchedProduct.slug) {
                             navigate(`/product/${fetchedProduct.slug}`, { replace: true });
@@ -307,7 +307,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Right Column: Product Specs */}
-                    <div className="lg:col-span-6 text-left flex flex-col gap-6" style={{ fontFamily: 'Poppins' }}>
+                    <div className="lg:col-span-6 text-left flex flex-col gap-4" style={{ fontFamily: 'Poppins' }}>
                         <div>
 
                             {/* Product Title */}
