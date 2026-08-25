@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Play, Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { RefreshCw, Play, Search, AlertTriangle, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
@@ -88,6 +89,13 @@ const TagadaSync = () => {
           <p className="text-slate-500 text-[14px]">Synchronize products and variants from Tagada to your local database.</p>
         </div>
         <div className="flex space-x-3">
+          <Link
+            to="/admin/products"
+            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            All Products
+          </Link>
           <button
             onClick={handlePreview}
             disabled={loading || syncing}
