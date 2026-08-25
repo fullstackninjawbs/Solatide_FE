@@ -1041,8 +1041,6 @@ const ProductForm = () => {
                 <thead>
                   <tr className="bg-slate-55/20 border-b border-slate-200 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
                     <th className="py-2.5 px-4">Location</th>
-                    <th className="py-2.5 px-4 text-center">Unavailable</th>
-                    <th className="py-2.5 px-4 text-center">Committed</th>
                     <th className="py-2.5 px-4 text-center">Available</th>
                     <th className="py-2.5 px-4 text-center">On Hand</th>
                   </tr>
@@ -1050,8 +1048,6 @@ const ProductForm = () => {
                 <tbody className="divide-y divide-slate-100 text-slate-700 font-semibold bg-slate-50/10">
                   <tr>
                     <td className="py-3 px-4 text-slate-900 font-bold">Shop location</td>
-                    <td className="py-3 px-4 text-center text-slate-400">0</td>
-                    <td className="py-3 px-4 text-center text-slate-400">0</td>
                     <td className="py-3 px-4 text-center text-brand-blue">
                       <input
                         type="number"

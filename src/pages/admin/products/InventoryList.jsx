@@ -288,11 +288,8 @@ const InventoryList = () => {
                   </th>
                   <th className="py-4 pl-2 pr-8 min-w-[240px]">Product</th>
                   <th className="py-4 px-4 whitespace-nowrap">SKU</th>
-                  <th className="py-4 px-4 text-center">Unavailable</th>
-                  <th className="py-4 px-4 text-center">Committed</th>
                   <th className="py-4 px-4 text-center">Available</th>
                   <th className="py-4 px-4 text-center">On hand</th>
-                  <th className="py-4 pr-6 text-center">Incoming</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[14px]">
@@ -323,8 +320,6 @@ const InventoryList = () => {
                     <td className="py-3.5 px-4 text-slate-500 whitespace-nowrap">
                       {product.sku || '—'}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500 text-center font-medium">0</td>
-                    <td className="py-3.5 px-4 text-slate-500 text-center font-medium">0</td>
 
                     {/* Available Column - Interactive */}
                     <td className="py-3.5 px-4 text-center relative">
@@ -381,7 +376,6 @@ const InventoryList = () => {
                     <td className="py-3.5 px-4 text-slate-600 text-center font-semibold">
                       {product.stockQuantity || 0}
                     </td>
-                    <td className="py-3.5 pr-6 text-slate-500 text-center font-medium">0</td>
                   </tr>
                 ))}
               </tbody>
