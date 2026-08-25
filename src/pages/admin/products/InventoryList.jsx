@@ -24,6 +24,12 @@ const InventoryList = () => {
   const [editQuantity, setEditQuantity] = useState('');
   const [editAction, setEditAction] = useState('Set to');
 
+  // Bulk edit state
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [bulkAction, setBulkAction] = useState('Set to');
+  const [bulkQuantity, setBulkQuantity] = useState('');
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false);
+
   const navigate = useNavigate();
   const debounceRef = useRef(null);
   const toast = useToast();
@@ -125,6 +131,72 @@ const InventoryList = () => {
     }
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedProductIds(products.map(p => p._id));
+    } else {
+      setSelectedProductIds([]);
+    }
+  };
+
+  const handleSelectRow = (productId) => {
+    setSelectedProductIds(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleBulkUpdate = async () => {
+    try {
+      let qty = parseInt(bulkQuantity, 10);
+      if (isNaN(qty)) return;
+
+      setIsBulkUpdating(true);
+      let successCount = 0;
+      let failCount = 0;
+
+      // Update sequentially to avoid overwhelming server
+      for (const productId of selectedProductIds) {
+        const product = products.find(p => p._id === productId);
+        if (!product) continue;
+
+        const currentQty = product.stockQuantity || 0;
+        let newQty = qty;
+        if (bulkAction === 'Add') {
+          newQty = currentQty + qty;
+        }
+
+        const payload = {
+          stockQuantity: newQty,
+          inStock: newQty > 0
+        };
+
+        const response = await apiService.saveProduct(productId, JSON.stringify(payload));
+        const result = await response.json();
+        
+        if (result.success) {
+          successCount++;
+          // Update local state for this product
+          setProducts(prev => prev.map(p => p._id === productId ? { ...p, stockQuantity: newQty, inStock: newQty > 0 } : p));
+        } else {
+          failCount++;
+        }
+      }
+
+      if (successCount > 0) toast.success(`Successfully updated ${successCount} products`);
+      if (failCount > 0) toast.error(`Failed to update ${failCount} products`);
+      
+      setSelectedProductIds([]);
+      setBulkQuantity('');
+    } catch (err) {
+      console.error('Bulk update error:', err);
+      toast.error('An error occurred during bulk update');
+    } finally {
+      setIsBulkUpdating(false);
+    }
+  };
+
   return (
     <div className="space-y-6 text-left font-sans pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -142,20 +214,52 @@ const InventoryList = () => {
 
       {/* Filter and Table Container */}
       <div className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.01)] min-h-[500px]">
-        {/* Search Bar */}
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-grow max-w-md">
-            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
-              <Search className="h-4 w-4" />
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products by name or SKU..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-450 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
-            />
-          </div>
+        {/* Search Bar & Bulk Actions */}
+        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3 min-h-[72px]">
+          {selectedProductIds.length > 0 ? (
+            <div className="flex-1 w-full bg-brand-blue/5 border border-brand-blue/20 rounded-xl p-2 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+              <span className="text-[13px] font-semibold text-brand-navy px-2">
+                {selectedProductIds.length} product{selectedProductIds.length > 1 ? 's' : ''} selected
+              </span>
+              <div className="flex items-center gap-2">
+                <select
+                  value={bulkAction}
+                  onChange={(e) => setBulkAction(e.target.value)}
+                  className="bg-white px-2 py-1.5 h-9 rounded-lg text-[13px] font-medium border border-slate-300 outline-none text-slate-700 cursor-pointer hover:border-slate-400"
+                >
+                  <option value="Set to">Set to</option>
+                  <option value="Add">Add</option>
+                </select>
+                <input
+                  type="number"
+                  placeholder="Qty"
+                  value={bulkQuantity}
+                  onChange={(e) => setBulkQuantity(e.target.value)}
+                  className="w-20 px-2 py-1.5 h-9 rounded-lg border border-slate-300 outline-none text-[13px] font-semibold text-slate-800 focus:border-brand-blue"
+                />
+                <button
+                  onClick={handleBulkUpdate}
+                  disabled={isBulkUpdating || bulkQuantity === ''}
+                  className="h-9 px-4 bg-brand-blue hover:bg-[#102a5c] text-white text-[13px] font-bold rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {isBulkUpdating ? 'Saving...' : 'Apply'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="relative flex-grow max-w-md w-full">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <Search className="h-4 w-4" />
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products by name or SKU..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-450 focus:outline-none focus:bg-white focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all text-[14px]"
+              />
+            </div>
+          )}
         </div>
 
         {/* Table list */}
@@ -174,7 +278,14 @@ const InventoryList = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
-
+                  <th className="py-4 pl-4 pr-2 w-10">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer h-4 w-4"
+                      checked={products.length > 0 && selectedProductIds.length === products.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th className="py-4 pl-2 pr-8 min-w-[240px]">Product</th>
                   <th className="py-4 px-4 whitespace-nowrap">SKU</th>
                   <th className="py-4 px-4 text-center">Unavailable</th>
@@ -186,8 +297,15 @@ const InventoryList = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 text-[14px]">
                 {products.map((product) => (
-                  <tr key={product._id} className="hover:bg-slate-50/60 transition-colors group relative">
-
+                  <tr key={product._id} className={`hover:bg-slate-50/60 transition-colors group relative ${selectedProductIds.includes(product._id) ? 'bg-brand-blue/5' : ''}`}>
+                    <td className="py-3.5 pl-4 pr-2 w-10">
+                      <input 
+                        type="checkbox" 
+                        className="rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer h-4 w-4"
+                        checked={selectedProductIds.includes(product._id)}
+                        onChange={() => handleSelectRow(product._id)}
+                      />
+                    </td>
                     <td className="py-3.5 pl-2 pr-8 font-semibold text-slate-700 max-w-[300px]">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-slate-50 border border-slate-150 overflow-hidden flex items-center justify-center p-1.5 shrink-0">
