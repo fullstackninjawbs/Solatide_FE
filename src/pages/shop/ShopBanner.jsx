@@ -12,7 +12,7 @@ const ShopBanner = () => {
                 </p>
                 <p className="text-[#6A6A6A] text-[16px] font-normal leading-[100%] tracking-normal">
                     New to research peptides?{' '}
-                    <a href="#" className="text-[#0ea5e9] hover:underline font-normal text-[16px]">
+                    <a href="/peptides-guide" className="text-[#0ea5e9] hover:underline font-normal text-[16px]">
                         Research Peptides Guide
                     </a>
                 </p>
