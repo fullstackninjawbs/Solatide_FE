@@ -375,11 +375,7 @@ const ProductDetail = () => {
                                 <span className="text-2xl sm:text-[28px] font-bold text-[#214A9E]">
                                     {displayPrice}
                                 </span>
-                                {displayCompareAtPrice && (
-                                    <span className="text-lg text-slate-400 line-through">
-                                        {formatPrice(displayCompareAtPrice)}
-                                    </span>
-                                )}
+
                             </div>
 
                             <div className="flex flex-row items-center gap-4 flex-wrap xl:flex-nowrap">
