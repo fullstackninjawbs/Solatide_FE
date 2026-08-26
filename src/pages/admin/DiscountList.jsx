@@ -215,7 +215,6 @@ const DiscountList = () => {
                   <th className="py-4 px-4">Method</th>
                   <th className="py-4 px-4">Eligibility</th>
                   <th className="py-4 px-4">Type</th>
-                  <th className="py-4 px-4">Combinations</th>
                   <th className="py-4 px-4 text-center">Used</th>
                   <th className="py-4 pr-6 text-right">Actions</th>
                 </tr>
@@ -254,13 +253,6 @@ const DiscountList = () => {
                       <div className="flex items-center gap-2">
                         <Tag className="w-3.5 h-3.5 text-slate-400" />
                         Amount off order
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-1.5 text-slate-300">
-                        <Tag className="w-4 h-4" />
-                        <Package className="w-4 h-4" />
-                        <Truck className="w-4 h-4" />
                       </div>
                     </td>
                     <td className="py-3.5 px-4 text-center font-medium text-slate-700">
