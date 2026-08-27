@@ -14,23 +14,24 @@ import Testimonials from '../pages/home/Testimonials';
 import Faq from '../pages/home/Faq';
 import NeverMissRestock from '../pages/home/NeverMissRestock';
 import TelegramPopup from '../components/TelegramPopup';
+import Reveal from '../components/storefront/ui/Reveal';
 
 const Home = () => {
     return (
         <>
             <HeroSection />
             <TrustBanner />
-            <ShopPeptides />
-            <ByTheNumbers />
-            {/* <ProductCategories isHome={true} /> */}
-            <FeaturedProducts />
-            <WhySolatide />
-            <OurCommitment />
-            {/* <QualityAssurance /> */}
-            {/* <ExploreProducts /> */}
-            <Testimonials />
-            <Faq />
-            <NeverMissRestock />
+            <Reveal><ShopPeptides /></Reveal>
+            <Reveal><ByTheNumbers /></Reveal>
+            {/* <Reveal><ProductCategories isHome={true} /></Reveal> */}
+            <Reveal><FeaturedProducts /></Reveal>
+            <Reveal><WhySolatide /></Reveal>
+            <Reveal><OurCommitment /></Reveal>
+            {/* <Reveal><QualityAssurance /></Reveal> */}
+            {/* <Reveal><ExploreProducts /></Reveal> */}
+            <Reveal><Testimonials /></Reveal>
+            <Reveal><Faq /></Reveal>
+            <Reveal><NeverMissRestock /></Reveal>
             <TelegramPopup />
         </>
     );
