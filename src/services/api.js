@@ -594,5 +594,44 @@ export const apiService = {
       method: 'PATCH',
       headers: getAuthHeaders(),
     });
+  },
+
+  // ─── Pages (Admin & Public) ────────────────────────────────────────────────
+  getAdminPages: async (queryString = '') => {
+    return customFetch(`${API_URL}/api/admin/content/pages${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAdminPageById: async (id) => {
+    return customFetch(`${API_URL}/api/admin/content/pages/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  createAdminPage: async (payload) => {
+    return customFetch(`${API_URL}/api/admin/content/pages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  updateAdminPage: async (id, payload) => {
+    return customFetch(`${API_URL}/api/admin/content/pages/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  deleteAdminPage: async (id) => {
+    return customFetch(`${API_URL}/api/admin/content/pages/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+  },
+  getPublicPage: async (slug) => {
+    return customFetch(`${API_URL}/api/v1/pages/${slug}`, {
+      method: 'GET',
+    });
   }
 };

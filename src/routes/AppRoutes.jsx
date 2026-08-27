@@ -120,6 +120,21 @@ const AppRoutes = () => {
                     <Route path="discounts/new" element={<DiscountForm />} />
                     <Route path="discounts/edit/:id" element={<DiscountForm />} />
                     <Route path="growth/reviews" element={<ReviewList />} />
+                    <Route path="content/pages" element={
+                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                            {React.createElement(lazy(() => import('../pages/admin/content/PageList')))}
+                        </React.Suspense>
+                    } />
+                    <Route path="content/pages/new" element={
+                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                            {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                        </React.Suspense>
+                    } />
+                    <Route path="content/pages/edit/:id" element={
+                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                            {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                        </React.Suspense>
+                    } />
                     <Route path="content/faqs" element={<FaqList />} />
                     <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                     <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
@@ -162,6 +177,14 @@ const AppRoutes = () => {
                     <Route path="terms" element={<Terms />} />
                     <Route path="research-use" element={<ResearchUseDisclaimer />} />
                     <Route path="returns" element={<Returns />} />
+                    
+                    {/* Custom Pages */}
+                    <Route path="page/:slug" element={
+                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                            {React.createElement(lazy(() => import('../pages/DynamicPage')))}
+                        </React.Suspense>
+                    } />
+
                     <Route path="*" element={<Home />} />
                 </Route>
             </Routes>

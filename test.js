@@ -1,0 +1,1 @@
+const DOMPurify = require('dompurify'); const { JSDOM } = require('jsdom'); const window = new JSDOM('').window; const purify = DOMPurify(window); console.log(purify.sanitize('<span style='color: red;'>text</span>', { ALLOWED_TAGS: ['span'], ALLOWED_ATTR: ['style'] }));

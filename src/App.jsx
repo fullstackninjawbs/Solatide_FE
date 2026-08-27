@@ -7,17 +7,21 @@ import { CartProvider } from './context/CartContext'
 import { CurrencyProvider } from './context/CurrencyContext'
 import './App.css'
 
+import { HelmetProvider } from 'react-helmet-async'
+
 function App() {
   return (
-    <CartProvider>
-      <CurrencyProvider>
-        <BrowserRouter>
-          <DeferredTracker />
-          <ScrollToTop />
-          <AppRoutes />
-        </BrowserRouter>
-      </CurrencyProvider>
-    </CartProvider>
+    <HelmetProvider>
+      <CartProvider>
+        <CurrencyProvider>
+          <BrowserRouter>
+            <DeferredTracker />
+            <ScrollToTop />
+            <AppRoutes />
+          </BrowserRouter>
+        </CurrencyProvider>
+      </CartProvider>
+    </HelmetProvider>
   )
 }
 
