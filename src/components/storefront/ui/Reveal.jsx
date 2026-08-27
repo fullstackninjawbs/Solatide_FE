@@ -35,7 +35,7 @@ const Reveal = ({ children, delay = 0, direction = 'up', width = '100%', classNa
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 1, delay: delay, ease: [0.17, 0.55, 0.55, 1] }}
+        transition={{ duration: 0.5, delay: delay, ease: [0.17, 0.55, 0.55, 1] }}
         style={{ width: '100%', height: '100%', willChange: 'opacity, transform' }}
       >
         {children}
