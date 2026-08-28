@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Info, HelpCircle, ExternalLink, Check, Trash2, ArrowLeft } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
 import MultiSelectDropdown from '../../../components/MultiSelectDropdown';
-import { apiService } from '../../../services/api';
+import { apiService, API_URL } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
 
@@ -258,9 +258,7 @@ const BatchForm = () => {
       fileData.append('coaFile', file);
 
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || sessionStorage.getItem('token');
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-      const res = await fetch(`${apiUrl}/api/admin/batches/upload-coa`, {
+      const res = await fetch(`${API_URL}/api/admin/batches/upload-coa`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: fileData

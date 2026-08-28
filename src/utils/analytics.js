@@ -7,7 +7,7 @@
  *  - Generates and persists a sessionId in localStorage.
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+import { API_URL } from '../services/api';
 const ENDPOINT = `${API_URL}/api/analytics/events`;
 
 // ─── Session ID ───────────────────────────────────────────────────────────────

@@ -1,4 +1,14 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const getApiUrl = () => {
+    if (typeof window !== 'undefined') {
+        if (window.location.hostname === 'hub.solatidebiosciences.com.au') {
+            // Replace this with your actual production API URL for the hub
+            return 'https://api-hub.solatidebiosciences.com.au'; 
+        }
+    }
+    return import.meta.env.VITE_API_URL || 'http://localhost:5001';
+};
+
+export const API_URL = getApiUrl();
 const getAuthHeaders = () => {
   const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || sessionStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};

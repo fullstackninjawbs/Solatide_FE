@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Eye, X, CheckCircle2, ShieldCheck, ZoomIn, ZoomOut } from 'lucide-react'
+import { API_URL } from '../../services/api';
 
 const CertificatesAnalysis = () => {
     const [activeTab, setActiveTab] = useState('All');
@@ -11,7 +12,7 @@ const CertificatesAnalysis = () => {
     useEffect(() => {
         const fetchCoas = async () => {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
                 const res = await fetch(`${API_URL}/api/v1/coas`);
                 const data = await res.json();
                 console.log(data, "data---->");
