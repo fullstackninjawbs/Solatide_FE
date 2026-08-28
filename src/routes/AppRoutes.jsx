@@ -57,6 +57,7 @@ const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
 const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
 const ResearchPage = lazy(() => import('../pages/research/ResearchPage'))
+const NotFound = lazy(() => import('../pages/NotFound'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
 // Fires page_view on every route change. Rendered inside BrowserRouter so
 // useLocation works. Admin routes are excluded (no admin tracking).
@@ -185,7 +186,7 @@ const AppRoutes = () => {
                         </React.Suspense>
                     } />
 
-                    <Route path="*" element={<Home />} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
         </Suspense>
