@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
-import logoImg from '../../assets/icons/logo.webp';
+import logoImg from '../../assets/images/logo.webp';
 
 const AdminLogin = () => {
   const [view, setView] = useState('login'); // 'login' | 'forgot'
@@ -90,13 +90,13 @@ const AdminLogin = () => {
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-[440px] bg-white/95 backdrop-blur-md rounded-[32px] border border-slate-200/60 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-8 sm:p-10 relative z-10 transition-all duration-300">
-        
+
         {/* Logo */}
         <div className="mb-6 flex justify-center">
-          <img 
-            src={logoImg} 
-            alt="Solatide Biosciences" 
-            className="h-[70px] w-auto object-contain transition-transform duration-300 hover:scale-105" 
+          <img
+            src={logoImg}
+            alt="Solatide Biosciences"
+            className="h-[70px] w-auto object-contain transition-transform duration-300 hover:scale-105"
           />
         </div>
 
@@ -141,9 +141,9 @@ const AdminLogin = () => {
                   <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                     Password
                   </label>
-                  <button 
-                    type="button" 
-                    onClick={() => { setView('forgot'); setError(''); }} 
+                  <button
+                    type="button"
+                    onClick={() => { setView('forgot'); setError(''); }}
                     className="text-[12px] text-[#214A9E] hover:text-[#1a4494] font-bold transition-colors focus:outline-none"
                   >
                     Forgot password?

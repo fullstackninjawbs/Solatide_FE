@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
-import logoImg from '../../assets/icons/logo.webp';
+import logoImg from '../../assets/images/logo.webp';
 
 const AdminResetPassword = () => {
   const { token } = useParams();
@@ -65,13 +65,13 @@ const AdminResetPassword = () => {
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-[440px] bg-white/95 backdrop-blur-md rounded-[32px] border border-slate-200/60 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-8 sm:p-10 relative z-10">
-        
+
         {/* Logo */}
         <div className="mb-6 flex justify-center">
-          <img 
-            src={logoImg} 
-            alt="Solatide Biosciences" 
-            className="h-[70px] w-auto object-contain" 
+          <img
+            src={logoImg}
+            alt="Solatide Biosciences"
+            className="h-[70px] w-auto object-contain"
           />
         </div>
 

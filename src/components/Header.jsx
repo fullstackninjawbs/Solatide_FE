@@ -6,7 +6,7 @@ import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
 import { useCurrency, countriesList } from '../context/CurrencyContext'
 import SearchModal from './SearchModal'
-import logo from '../assets/icons/logo.webp'
+import logo from '../assets/images/logo.webp'
 import visaLogo from '../assets/icons/Visa_Inc._logo__2021_present.svg'
 import mastercardLogo from '../assets/icons/ma_symbol.svg'
 import applePayLogo from '../assets/icons/apple-black-logo-svgrepo-com.svg'
@@ -188,7 +188,7 @@ const Header = () => {
                                     alt="Solatide Biosciences"
                                     fetchPriority="high"
                                     decoding="sync"
-                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[70px] lg:h-[100px]' : 'h-[50px] lg:h-[65px]'}`}
+                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[90px] lg:h-[120px]' : 'h-[65px] lg:h-[75px]'}`}
                                     style={{ imageRendering: 'high-quality' }}
                                 />
                             </Link>
