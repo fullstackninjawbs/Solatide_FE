@@ -216,7 +216,12 @@ const OrderDetail = () => {
       const data = await res.json();
       if (data.success) {
         setOrder(data.data.order);
-        toast.success('Shipping label generated successfully!');
+        // If there was a warning (e.g. Starshipit address validation failed but order was created)
+        if (data.warning) {
+          toast.error(`Warning: ${data.warning}`, { duration: 8000 });
+        } else {
+          toast.success(data.message || 'Shipping label generated successfully!');
+        }
       } else {
         toast.error(data.message || 'Failed to create shipping label');
       }
@@ -618,7 +623,7 @@ const OrderDetail = () => {
                           {order.trackingCarrier} - {order.trackingNumber ? (
                             <a href={order.trackingUrl || `https://www.google.com/search?q=${order.trackingNumber}`} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
                           ) : (
-                            <span className="text-slate-400 italic font-medium">Generating Label...</span>
+                            <span className="text-slate-400 italic font-medium">Label Pending (Check Starshipit)</span>
                           )}
                         </p>
                       </div>
