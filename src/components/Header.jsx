@@ -188,8 +188,12 @@ const Header = () => {
                                     alt="Solatide Biosciences"
                                     fetchPriority="high"
                                     decoding="sync"
-                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[90px] lg:h-[120px]' : 'h-[65px] lg:h-[75px]'}`}
-                                    style={{ imageRendering: 'high-quality' }}
+                                    className={`w-auto object-contain transition-all duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'h-[90px] lg:h-[100px]' : 'h-[68px] lg:h-[80px]'}`}
+                                    style={{
+                                        imageRendering: '-webkit-optimize-contrast',
+                                        transform: 'translateZ(0)',
+                                        backfaceVisibility: 'hidden'
+                                    }}
                                 />
                             </Link>
                         </div>
