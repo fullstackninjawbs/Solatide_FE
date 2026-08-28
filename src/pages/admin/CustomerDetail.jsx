@@ -423,7 +423,7 @@ const CustomerDetail = () => {
                                         </div>
 
                                         <div className="mt-6 pt-5 border-t border-gray-100 flex justify-end gap-3">
-                                            <AdminSecondaryButton to="/admin/orders" className="!py-1.5 !px-4 !text-[13px]">
+                                            <AdminSecondaryButton to={`/admin/orders?q=${encodeURIComponent(customer.email)}`} className="!py-1.5 !px-4 !text-[13px]">
                                                 View all orders
                                             </AdminSecondaryButton>
                                             <AdminPrimaryButton className="hidden !py-1.5 !px-4 !text-[13px]">
