@@ -1,11 +1,11 @@
 const getApiUrl = () => {
-    if (typeof window !== 'undefined') {
-        if (window.location.hostname === 'hub.solatidebiosciences.com.au') {
-            // Replace this with your actual production API URL for the hub
-            return 'https://api-hub.solatidebiosciences.com.au'; 
-        }
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'hub.solatidebiosciences.com.au') {
+      // Replace this with your actual production API URL for the hub
+      return 'https://hub.solatidebiosciences.com.au';
     }
-    return import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  }
+  return import.meta.env.VITE_API_URL || 'http://localhost:5001';
 };
 
 export const API_URL = getApiUrl();
