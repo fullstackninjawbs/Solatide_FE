@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logoImg from '../assets/images/logo.webp';
+import logoImg from '../assets/images/logo.png';
 
 const Logo = ({ className = "flex items-center gap-2", asColumn = false, onClick }) => {
     return (

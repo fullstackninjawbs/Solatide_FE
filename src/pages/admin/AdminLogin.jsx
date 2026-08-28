@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
-import logoImg from '../../assets/images/logo.webp';
+import logoImg from '../../assets/images/logo.png';
 
 const AdminLogin = () => {
   const [view, setView] = useState('login'); // 'login' | 'forgot'
