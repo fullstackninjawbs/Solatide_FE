@@ -203,7 +203,8 @@ const BatchForm = () => {
           ...currentTests,
           [key]: {
             ...currentTest,
-            result: value
+            result: value,
+            performed: (value.length > 0 && !currentTest.performed) ? true : currentTest.performed
           }
         }
       };
@@ -585,64 +586,56 @@ const BatchForm = () => {
 
             <div className="divide-y divide-slate-100 text-left">
               {[
-                { key: 'purityHplc', label: 'Purity (HPLC)', placeholder: 'e.g. 99.94%' },
-                { key: 'netPeptideContent', label: 'Net Peptide Content', placeholder: 'e.g. 10.2mg or 98.4%' },
-                { key: 'identityHplc', label: 'Identity (HPLC)', placeholder: 'e.g. Conform or PASS' },
-                { key: 'fentanylScreen', label: 'Fentanyl Screen', placeholder: 'e.g. Not Detected or PASS', highlight: true },
-                { key: 'hplcConformity', label: 'HPLC Conformity', placeholder: 'e.g. Conform' },
-                { key: 'heavyMetalsIcpMs', label: 'Heavy Metals (ICP-MS)', placeholder: 'e.g. PASS or < LOD' },
-                { key: 'sterilityPcr', label: 'Sterility (PCR)', placeholder: 'e.g. Negative' },
-                { key: 'endotoxinUsp85', label: 'Endotoxin (USP <85>)', placeholder: 'e.g. < 0.05 EU/mg' }
-              ].map(({ key, label, placeholder, highlight }) => {
+                { key: 'purityHplc', label: 'Purity', description: 'Chromatographic purity of the peptide', placeholder: 'e.g. 99.91%' },
+                { key: 'netPeptideContent', label: 'Net Peptide Content', description: 'Amount of peptide measured in the vial', placeholder: 'e.g. 11.05 mg' },
+                { key: 'identityHplc', label: 'Identity', description: 'Confirms the expected peptide identity', placeholder: 'e.g. Confirmed' },
+                { key: 'fentanylScreen', label: 'Fentanyl Screen', description: 'Screen for the presence of fentanyl', placeholder: 'e.g. Not Detected', badge: 'Safety Test' },
+                { key: 'heavyMetalsIcpMs', label: 'Heavy Metals', description: 'Screen for trace heavy metals', placeholder: 'e.g. < LOD or Pass' },
+                { key: 'sterilityPcr', label: 'Microbial / Sterility Testing', description: 'Assessment for microbial contamination', placeholder: 'e.g. Negative or Pass' },
+                { key: 'endotoxinUsp85', label: 'Endotoxin', description: 'Measurement of bacterial endotoxin levels', placeholder: 'e.g. < 0.05 EU/mg' }
+              ].map(({ key, label, description, placeholder, badge }) => {
                 const testData = formData.tests?.[key] || { performed: false, result: '' };
                 return (
-                  <div
-                    key={key}
-                    className={`py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${highlight ? 'bg-emerald-50/40 -mx-6 px-6 border-y border-emerald-100 my-1 first:mt-0 last:mb-0' : ''
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
+                  <div key={key} className="py-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-start gap-4 flex-1">
                       <input
                         type="checkbox"
                         id={`test-${key}`}
                         checked={testData.performed}
                         onChange={() => handleTestToggle(key)}
-                        className="w-4.5 h-4.5 text-blue-600 border-slate-350 rounded focus:ring-blue-500 cursor-pointer"
+                        className="mt-1 w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"
                       />
-                      <label
-                        htmlFor={`test-${key}`}
-                        className={`text-sm font-semibold cursor-pointer select-none flex items-center gap-2 ${highlight ? 'text-emerald-900 font-bold' : 'text-slate-700'
-                          }`}
-                      >
-                        {label}
-                        {highlight && (
-                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                            Safety Priority
-                          </span>
-                        )}
-                      </label>
+                      <div className="flex flex-col">
+                        <label htmlFor={`test-${key}`} className="text-[15px] font-bold text-[#102a5c] cursor-pointer flex items-center gap-2">
+                          {label}
+                          {badge && (
+                            <span className="bg-[#e6f4ea] text-[#1e8e3e] text-[11px] font-medium px-2 py-0.5 rounded-full">
+                              {badge}
+                            </span>
+                          )}
+                        </label>
+                        <p className="text-[13px] text-slate-500 mt-1">{description}</p>
+                      </div>
                     </div>
 
-                    {testData.performed && (
-                      <div className="flex-1 max-w-md md:pl-4 flex flex-col gap-2">
-                        <input
-                          type="text"
-                          value={testData.result}
-                          onChange={(e) => handleTestResultChange(key, e.target.value)}
-                          placeholder={placeholder}
-                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
-                        />
-                        {key === 'endotoxinUsp85' && (
+                    <div className="flex-1 max-w-[450px] w-full flex flex-col gap-2">
+                      <input
+                        type="text"
+                        value={testData.result}
+                        onChange={(e) => handleTestResultChange(key, e.target.value)}
+                        placeholder={placeholder}
+                        className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-400"
+                      />
+                      {key === 'endotoxinUsp85' && testData.performed && (
                           <input
                             type="url"
                             value={formData.endotoxinReportUrl || ''}
                             onChange={(e) => setFormData(prev => ({ ...prev, endotoxinReportUrl: e.target.value }))}
                             placeholder="Link to Endotoxin Report (e.g. https://...)"
-                            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
+                            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-[14px] focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-400 mt-2"
                           />
-                        )}
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 );
               })}

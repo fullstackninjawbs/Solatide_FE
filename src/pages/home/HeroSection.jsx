@@ -2,6 +2,10 @@ import { Link } from 'react-router-dom'
 import { FileText } from 'lucide-react'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
 import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
+import purityIconWeb from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.webp'
+import traceableIconWeb from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.webp'
+import reportsIconWeb from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.webp'
+
 import purityIcon from '../../assets/icons/solatide-icon-purity-identity.svg'
 import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg'
 import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
@@ -52,7 +56,7 @@ const FeatureCards = () => (
     <div className="flex flex-col sm:flex-row items-stretch justify-center lg:justify-start gap-2.5 xl:gap-3">
         {/* Feature 1 */}
         <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={purityIcon} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <img src={purityIconWeb} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
             <div className="flex flex-col text-left">
                 <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
                     ≥99% Purity Standard
@@ -65,7 +69,7 @@ const FeatureCards = () => (
 
         {/* Feature 2 */}
         <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={traceableIcon} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <img src={traceableIconWeb} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
             <div className="flex flex-col text-left">
                 <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
                     Lot-Traceable Vials
@@ -78,7 +82,7 @@ const FeatureCards = () => (
 
         {/* Feature 3 */}
         <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={reportsIcon} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
+            <img src={reportsIconWeb} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
             <div className="flex flex-col text-left">
                 <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
                     Verifiable Reports
@@ -154,8 +158,8 @@ const HeroSection = () => {
                             </div>
 
                             {/* Features Container (Tablet) */}
-                            <div className="mt-8 w-full max-w-full flex justify-center opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                                <FeatureCards />
+                            <div className="mt-8 w-full max-w-full flex justify-center">
+                                <MobileEvidenceSection />
                             </div>
                         </div>
                     </div>

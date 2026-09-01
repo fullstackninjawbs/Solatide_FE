@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle, ChevronRight } from 'lucide-react';
+import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle, ChevronRight, Activity, CircleDot } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const CurrentBatchCard = ({ batch, product }) => {
@@ -28,12 +28,12 @@ const CurrentBatchCard = ({ batch, product }) => {
   if (parts.length > 1) {
     return (
       <div className="my-0.5 leading-snug">
-        <div className="text-[12px] text-[#1a3a7d]">({parts[0].trim()})</div>
-        <div className="text-[11px] font-medium text-slate-400 mt-0.5">({parts.slice(1).join('\n').trim()})</div>
+        <div className="text-[12px] text-[#1a3a7d]">{parts[0].trim()}</div>
+        <div className="text-[11px] font-medium text-slate-400 mt-0.5">{parts.slice(1).join('\n').trim()}</div>
       </div>
     );
   }
-  return <div className="text-[12px] text-[#1a3a7d] my-0.5 leading-snug">({text})</div>;
+  return <div className="text-[12px] text-[#1a3a7d] my-0.5 leading-snug">{text}</div>;
 };
 
 const purityResult = tests.purityHplc?.result || '';
@@ -205,13 +205,13 @@ return (
             </div>
 
             <div className="flex flex-row overflow-x-auto px-5 py-4 gap-8 bg-white snap-x scrollbar-hide">
-
               {hasPurity && (
                 <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <BarChart2 className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
+                  <Activity className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Purity (HPLC)</p>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Purity</p>
                     {renderResultText(purityResult)}
+                    <p className="text-[10px] text-slate-500 mt-0.5">HPLC</p>
                     <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Pass
                     </p>
@@ -221,49 +221,11 @@ return (
 
               {hasIdentity && (
                 <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <ShieldCheck className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
+                  <ShieldCheck className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <p className="text-[11px] font-bold text-[#1a3a7d]">Identity</p>
                     {renderResultText(identityResult)}
-                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {hasFentanyl && (
-                <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <Droplet className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Fentanyl Screen</p>
-                    {renderResultText(fentanylResult)}
-                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {hasEndotoxin && (
-                <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <Shield className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin</p>
-                    {renderResultText(endotoxinResult)}
-                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {hasSterility && (
-                <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <FlaskConical className="w-6 h-6 text-[#214A9E] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Sterility (PCR)</p>
-                    {renderResultText(sterilityResult)}
+                    <p className="text-[10px] text-slate-500 mt-0.5">LC-MS</p>
                     <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Pass
                     </p>
@@ -273,10 +235,24 @@ return (
 
               {hasNetContent && (
                 <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <CheckSquare className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
+                  <FlaskConical className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Net Content</p>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Net Peptide Content</p>
                     {renderResultText(netContentResult)}
+                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {hasFentanyl && (
+                <div className="flex gap-3 shrink-0 min-w-[140px]">
+                  <Shield className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <div>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Fentanyl Screen</p>
+                    {renderResultText(fentanylResult)}
+                    <p className="text-[10px] text-slate-500 mt-0.5">Safety screen</p>
                     <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Pass
                     </p>
@@ -286,10 +262,38 @@ return (
 
               {hasHeavyMetals && (
                 <div className="flex gap-3 shrink-0 min-w-[140px]">
-                  <Hourglass className="w-6 h-6 text-[#137333] shrink-0 mt-0.5" />
+                  <FlaskConical className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
-                    <p className="text-[11px] font-bold text-[#1a3a7d]">Heavy Metals (ICP-MS)</p>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Heavy Metals</p>
                     {renderResultText(heavyMetalsResult)}
+                    <p className="text-[10px] text-slate-500 mt-0.5">ICP-MS</p>
+                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {hasSterility && (
+                <div className="flex gap-3 shrink-0 min-w-[140px]">
+                  <CircleDot className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <div>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Microbial / Sterility</p>
+                    {renderResultText(sterilityResult)}
+                    <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Pass
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {hasEndotoxin && (
+                <div className="flex gap-3 shrink-0 min-w-[140px]">
+                  <Droplet className="w-6 h-6 text-[#1a3a7d] shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <div>
+                    <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin</p>
+                    {renderResultText(endotoxinResult)}
+                    <p className="text-[10px] text-slate-500 mt-0.5">USP &lt;85&gt;</p>
                     <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Pass
                     </p>
