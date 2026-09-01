@@ -4,7 +4,7 @@ import facebookIcon from '../assets/icons/facebook.webp'
 import linkdinIcon from '../assets/icons/linkdin.webp'
 import instagramIcon from '../assets/icons/instagram.webp'
 import twiterIcon from '../assets/icons/twiter.webp'
-import logo from '../assets/images/logo.png'
+import logo from '../assets/images/logo.webp'
 
 function Footer() {
     return (

@@ -6,7 +6,7 @@ import ReactCountryFlag from "react-country-flag"
 import { useCart } from '../context/CartContext'
 import { useCurrency, countriesList } from '../context/CurrencyContext'
 import SearchModal from './SearchModal'
-import logo from '../assets/images/logo.png'
+import logo from '../assets/images/logo.webp'
 import visaLogo from '../assets/icons/Visa_Inc._logo__2021_present.svg'
 import mastercardLogo from '../assets/icons/ma_symbol.svg'
 import applePayLogo from '../assets/icons/apple-black-logo-svgrepo-com.svg'
