@@ -369,7 +369,7 @@ const ProductDetail = () => {
 
 
                         {/* Actions area (Price, Qty & Cart) */}
-                        <div className="border border-slate-200 rounded-2xl bg-white p-5 shadow-[0_2px_4px_rgba(0,0,0,0.02)] mt-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5 w-full">
+                        <div className="border border-slate-200 rounded-2xl bg-white p-5 shadow-[0_2px_4px_rgba(0,0,0,0.02)] mt-6 flex flex-row flex-wrap items-center justify-between gap-5 w-full">
                             {/* Price (Moved to row) */}
                             <div className="flex items-baseline gap-3 shrink-0">
                                 <span className="text-2xl sm:text-[28px] font-bold text-[#214A9E]">
@@ -378,10 +378,10 @@ const ProductDetail = () => {
 
                             </div>
 
-                            <div className="flex flex-row items-center gap-4 flex-wrap xl:flex-nowrap">
-                                <span className="text-[13px] font-semibold text-slate-700">Quantity</span>
+                            <div className="flex flex-row items-center gap-4 flex-wrap">
+                                <span className="text-[13px] font-semibold text-slate-700 hidden min-[400px]:block">Quantity</span>
                                 {/* Quantity Selector - Pill style */}
-                                <div className="flex items-center bg-[#EBF4FA] rounded-full h-[46px] px-2 w-max border border-transparent">
+                                <div className="flex items-center bg-[#EBF4FA] rounded-full h-[46px] px-2 w-max border border-transparent shrink-0">
                                     <button
                                         onClick={decrementQty}
                                         className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
@@ -400,11 +400,11 @@ const ProductDetail = () => {
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                                <div className="flex flex-col gap-1 w-full min-[500px]:w-auto flex-1 min-[500px]:flex-none shrink-0">
                                     <button
                                         onClick={() => addToCart(product, quantity, selectedVariant)}
                                         disabled={isOutOfStock}
-                                        className={`w-full sm:w-[200px] text-white text-[15px] font-bold h-[48px] rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
+                                        className={`w-full min-[500px]:w-[180px] lg:w-[200px] text-white text-[15px] font-bold h-[48px] rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
                                             ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed'
                                             : 'bg-[#0079CD] hover:bg-[#0062a3]'
                                             }`}
