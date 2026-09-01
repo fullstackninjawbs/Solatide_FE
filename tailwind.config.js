@@ -32,6 +32,8 @@ export default {
       animation: {
         'marquee': 'marquee 30s linear infinite',
         'marquee-four-sets': 'marquee-four-sets 40s linear infinite',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+        'fade-in': 'fadeIn 1s ease-out forwards',
       },
       keyframes: {
         marquee: {
@@ -41,6 +43,14 @@ export default {
         'marquee-four-sets': {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-25%)' },
+        },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         }
       }
     },

@@ -96,7 +96,7 @@ const HeroSection = () => {
 
                     {/* Text Content sitting below bottles */}
                     <div className="flex flex-col justify-end w-full relative z-20 pb-16 pt-8 bg-[#e4dbf8] -mt-2">
-                        <div className="main-container w-full flex flex-col items-center text-center">
+                        <div className="main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                             <h1 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
                                 Your Trusted Source For<br />Research Grade Peptides.
                             </h1>
@@ -113,7 +113,7 @@ const HeroSection = () => {
                             </div>
 
                             {/* Features Container (Tablet) */}
-                            <div className="mt-8 w-full max-w-full flex justify-center">
+                            <div className="mt-8 w-full max-w-full flex justify-center opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                                 <FeatureCards />
                             </div>
                         </div>
@@ -125,7 +125,7 @@ const HeroSection = () => {
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
-                            <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20">
+                            <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20 opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
 
                                 <h1 className="text-[24px] min-[360px]:text-[28px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-3 sm:mb-5">
                                     Your Trusted Source For<br />Research Grade Peptides.
@@ -168,7 +168,7 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Features Container */}
-                                <div className="mt-4 w-full lg:w-fit max-w-full">
+                                <div className="mt-4 w-full lg:w-fit max-w-full opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                                     <FeatureCards />
                                 </div>
 
