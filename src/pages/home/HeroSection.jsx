@@ -9,6 +9,7 @@ import reportsIconWeb from '../../assets/icons/solatide_document_magnifying_glas
 import purityIcon from '../../assets/icons/solatide-icon-purity-identity.svg'
 import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg'
 import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
+import { useEffect } from 'react'
 
 const MobileEvidenceSection = () => (
     <section
