@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
-import logoImg from '../../assets/images/logo.webp';
+import logoImg from '../../assets/images/logo.png';
 
 const AdminResetPassword = () => {
   const { token } = useParams();

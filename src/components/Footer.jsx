@@ -1,28 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { API_URL } from '../services/api'
+import toast from 'react-hot-toast'
 import facebookIcon from '../assets/icons/facebook.webp'
 import linkdinIcon from '../assets/icons/linkdin.webp'
 import instagramIcon from '../assets/icons/instagram.webp'
 import twiterIcon from '../assets/icons/twiter.webp'
-import logo from '../assets/images/logo.webp'
+import logo from '../assets/images/logo.png'
 
 function Footer() {
+    const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const handleEmailSubmit = async (e) => {
+        e.preventDefault()
+        if (!email) return;
+
+        setLoading(true)
+        try {
+            const res = await fetch(`${API_URL}/api/v1/subscribe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || 'Successfully subscribed!');
+                setEmail('');
+            } else {
+                toast.error(data.message || 'Failed to subscribe. Please try again.');
+            }
+        } catch (error) {
+            console.error('Subscription error:', error);
+            toast.error('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <footer className="bg-[#0b1426] text-white pt-16 pb-8 px-4 sm:px-6 lg:px-8">
             <div className="main-container mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between pb-12 gap-6">
                     <div className="w-full max-w-[340px]">
-                        <form className="flex bg-white rounded-[12px] p-1" onSubmit={(e) => e.preventDefault()}>
+                        <form className="flex bg-white rounded-[12px] p-1" onSubmit={handleEmailSubmit}>
                             <input
                                 type="email"
                                 placeholder="Email address"
-                                className="w-full bg-transparent border-0 px-4 py-2 text-slate-800 placeholder-slate-400 text-sm focus:outline-none"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading}
+                                className="w-full bg-transparent border-0 px-4 py-2 text-slate-800 placeholder-slate-400 text-sm focus:outline-none disabled:opacity-70"
                             />
                             <button
                                 type="submit"
-                                className="rounded-[10px] bg-gradient-to-r from-[#017ACE] to-[#01ACEE] px-7 py-2 text-[11px] font-medium tracking-wide text-white uppercase hover:opacity-90 transition-opacity shrink-0"
+                                disabled={loading}
+                                className="rounded-[10px] bg-gradient-to-r from-[#017ACE] to-[#01ACEE] px-7 py-2 text-[11px] font-medium tracking-wide text-white uppercase hover:opacity-90 transition-opacity shrink-0 disabled:opacity-70 flex items-center justify-center min-w-[100px]"
                             >
-                                SUBSCRIBE
+                                {loading ? 'Subscribing...' : 'SUBSCRIBE'}
                             </button>
                         </form>
                     </div>

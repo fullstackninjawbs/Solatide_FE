@@ -2,9 +2,50 @@ import { Link } from 'react-router-dom'
 import { FileText } from 'lucide-react'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
 import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
-import purityIcon from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.webp'
-import traceableIcon from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.webp'
-import reportsIcon from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.webp'
+import purityIcon from '../../assets/icons/solatide-icon-purity-identity.svg'
+import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg'
+import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
+
+const MobileEvidenceSection = () => (
+    <section
+        className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up mt-5 rounded-b-[24px]"
+        style={{
+            background: 'radial-gradient(circle at 50% 0%, rgba(16, 185, 220, 0.17), transparent 48%), #062d5c',
+            animationDelay: '300ms',
+            fontFamily: '"Poppins", system-ui, sans-serif'
+        }}
+    >
+        <div className="pt-[14px] px-[12px] pb-[16px]">
+            <p className="flex items-center gap-[7px] mx-[4px] mb-[12px] text-[#8fdced] text-[11px] leading-none tracking-[0.11em] uppercase font-medium">
+                <span className="w-[6px] h-[6px] flex-none rounded-full bg-[#10b9dc]"></span>
+                Analytical evidence
+            </p>
+            <div className="grid grid-cols-3">
+                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
+                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={purityIcon} alt="" aria-hidden="true" />
+                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Purity &amp;<br />Identity</h3>
+                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">HPLC-UV purity<br />LC-MS identity</p>
+                </div>
+                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center border-l border-[rgba(200,224,239,0.18)]" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
+                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={traceableIcon} alt="" aria-hidden="true" />
+                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Lot-Specific<br />COA</h3>
+                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">Matched to the<br />vial lot</p>
+                </div>
+                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center border-l border-[rgba(200,224,239,0.18)]" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
+                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={reportsIcon} alt="" aria-hidden="true" />
+                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Independent<br />Analysis</h3>
+                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">Third-party reports</p>
+                </div>
+            </div>
+        </div>
+
+        <div className="relative pt-[13px] px-[18px] pb-[15px] border-t border-[rgba(143,220,237,0.35)] text-center" style={{ background: 'linear-gradient(90deg, rgba(16, 185, 220, 0.18), transparent 28%, transparent 72%, rgba(16, 185, 220, 0.18)), #0a3c73' }}>
+            <div className="absolute top-[-2px] left-1/2 -translate-x-1/2 w-[88px] h-[3px] rounded-full bg-[#10b9dc]"></div>
+            <span className="block mb-[6px] text-[#8fdced] text-[11px] leading-none tracking-[0.13em] uppercase font-medium">Contaminant analysis</span>
+            <strong className="block text-white text-[14px] min-[360px]:text-[16px] leading-[1.2] tracking-[-0.02em] font-medium">Fentanyl + Endotoxin Testing</strong>
+        </div>
+    </section>
+);
 
 
 const FeatureCards = () => (
@@ -168,8 +209,11 @@ const HeroSection = () => {
                                 </div>
 
                                 {/* Features Container */}
-                                <div className="mt-4 w-full lg:w-fit max-w-full opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                                    <FeatureCards />
+                                <div className="mt-4 w-full lg:w-fit max-w-full">
+                                    <div className="hidden lg:block opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+                                        <FeatureCards />
+                                    </div>
+                                    <MobileEvidenceSection />
                                 </div>
 
                             </div>

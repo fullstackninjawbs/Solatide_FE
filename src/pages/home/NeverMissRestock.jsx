@@ -1,9 +1,38 @@
-import React from 'react'
-import { Send, MessageSquare } from 'lucide-react'
+import React, { useState } from 'react'
+import { Send, MessageSquare, Loader2 } from 'lucide-react'
+import { API_URL } from '../../services/api'
+import toast from 'react-hot-toast'
 
 const NeverMissRestock = () => {
-    const handleEmailSubmit = (e) => {
+    const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const handleEmailSubmit = async (e) => {
         e.preventDefault()
+        if (!email) return;
+
+        setLoading(true)
+        try {
+            const res = await fetch(`${API_URL}/api/v1/subscribe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || 'Successfully subscribed!');
+                setEmail('');
+            } else {
+                toast.error(data.message || 'Failed to subscribe. Please try again.');
+            }
+        } catch (error) {
+            console.error('Subscription error:', error);
+            toast.error('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -29,14 +58,18 @@ const NeverMissRestock = () => {
                         type="email"
                         placeholder="Enter Your E-Mail"
                         required
-                        className="w-full sm:flex-1 h-[46px] rounded-[14px] px-5 bg-[#F5F8FC] border border-[#DEF5FF] text-[14px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/10 focus:border-[#00ADEE] transition-all"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
+                        className="w-full sm:flex-1 h-[46px] rounded-[14px] px-5 bg-[#F5F8FC] border border-[#DEF5FF] text-[14px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/10 focus:border-[#00ADEE] transition-all disabled:opacity-70"
                     />
                     <button
                         type="submit"
-                        className="w-full sm:w-auto h-[46px] rounded-[14px] px-8 bg-gradient-to-r from-[#00ADEE] to-[#0079CE] text-white font-semibold text-[14px] flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md shadow-[#00ADEE]/10 cursor-pointer focus:outline-none shrink-0"
+                        disabled={loading}
+                        className="w-full sm:w-auto h-[46px] rounded-[14px] px-8 bg-gradient-to-r from-[#00ADEE] to-[#0079CE] text-white font-semibold text-[14px] flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md shadow-[#00ADEE]/10 cursor-pointer focus:outline-none shrink-0 disabled:opacity-70"
                     >
-                        <Send className="w-4.5 h-4.5 text-white" />
-                        <span>Signup</span>
+                        {loading ? <Loader2 className="w-4.5 h-4.5 text-white animate-spin" /> : <Send className="w-4.5 h-4.5 text-white" />}
+                        <span>{loading ? 'Subscribing...' : 'Signup'}</span>
                     </button>
                 </form>
 
