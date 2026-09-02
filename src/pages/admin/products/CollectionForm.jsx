@@ -200,7 +200,7 @@ const CollectionForm = () => {
   const updateRule = (index, key, value) => {
     const newRules = [...formData.rules];
     const updatedRule = { ...newRules[index], [key]: value };
-    
+
     // Automatically reset operator to a sensible default when switching between string/number fields
     if (key === 'field' && newRules[index].field !== value) {
       if (['Price', 'Compare at price', 'Weight', 'Inventory stock'].includes(value)) {
@@ -209,7 +209,7 @@ const CollectionForm = () => {
         updatedRule.operator = 'Contains';
       }
     }
-    
+
     newRules[index] = updatedRule;
     setFormData(prev => ({ ...prev, rules: newRules }));
   };
@@ -352,7 +352,6 @@ const CollectionForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, sortOrder: e.target.value }))}
                   className="bg-transparent border-0 outline-none text-[13px] font-semibold text-[#214A9E] cursor-pointer hover:underline py-1"
                 >
-                  <option value="best-selling">Sort: Best selling</option>
                   <option value="alpha-asc">Sort: Product title A-Z</option>
                   <option value="alpha-desc">Sort: Product title Z-A</option>
                   <option value="price-asc">Sort: Lowest price</option>
