@@ -1,4 +1,5 @@
 import React from 'react';
+import ilsLogo from '../../assets/icons/ils_logo.png';
 
 const FreedomLogo = () => (
     <div className="flex flex-col items-center justify-center shrink-0 h-[100px]">
@@ -94,6 +95,13 @@ const JanoshikLogo = () => (
     </div>
 );
 
+const IlsLogo = () => (
+    <div className="flex items-center justify-center shrink-0 h-[100px]">
+        <img src={ilsLogo} alt="ILS Laboratories" className="h-[72px] w-auto object-contain" />
+    </div>
+);
+
+
 const TrustBanner = () => {
     const baseLogos = [
         <TrustpilotLogo key="trust" />,
@@ -102,6 +110,7 @@ const TrustBanner = () => {
         <JanoshikLogo key="jano" />,
         <FreedomLogo key="freedom" />,
         <MetrixLogo key="metrix" />,
+        <IlsLogo key="ils" />,
     ];
     const allLogos = [...Array(4)].flatMap((_, setIdx) =>
         baseLogos.map((logo, logoIdx) =>

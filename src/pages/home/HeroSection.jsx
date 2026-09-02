@@ -13,7 +13,7 @@ import { useEffect } from 'react'
 
 const MobileEvidenceSection = () => (
     <section
-        className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up mt-5 rounded-b-[24px]"
+        className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up rounded-b-[24px]"
         style={{
             background: 'radial-gradient(circle at 50% 0%, rgba(16, 185, 220, 0.17), transparent 48%), #062d5c',
             animationDelay: '300ms',
@@ -141,7 +141,7 @@ const HeroSection = () => {
                     </div>
 
                     {/* Text Content sitting below bottles */}
-                    <div className="flex flex-col justify-end w-full relative z-20 pb-16 pt-8 bg-[#e4dbf8] -mt-2">
+                    <div className="flex flex-col justify-end w-full relative z-20 pb-0 pt-8 bg-[#e4dbf8] -mt-2">
                         <div className="main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                             <h1 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
                                 Your Trusted Source For<br />Research Grade Peptides.
@@ -158,16 +158,12 @@ const HeroSection = () => {
                                 </Link>
                             </div>
 
-                            {/* Features Container (Tablet) */}
-                            <div className="mt-8 w-full max-w-full flex justify-center">
-                                <MobileEvidenceSection />
-                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Mobile/Desktop Content Section */}
-                <div className="md:hidden lg:flex flex-col justify-start w-full relative z-20 pb-8 pt-6 sm:pb-4 lg:pb-0 lg:pt-0 bg-[#e4dbf8] lg:bg-transparent -mt-2">
+                <div className="md:hidden lg:flex flex-col justify-start w-full relative z-20 pb-0 pt-6 lg:pb-0 lg:pt-0 bg-[#e4dbf8] lg:bg-transparent -mt-2">
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
@@ -218,7 +214,6 @@ const HeroSection = () => {
                                     <div className="hidden lg:block opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                                         <FeatureCards />
                                     </div>
-                                    <MobileEvidenceSection />
                                 </div>
 
                             </div>
@@ -230,6 +225,10 @@ const HeroSection = () => {
                 </div>
             </div>
 
+            {/* Mobile/Tablet Analytical Evidence - Ends the Hero Section */}
+            <div className="lg:hidden w-full relative z-30">
+                <MobileEvidenceSection />
+            </div>
 
         </section>
     )

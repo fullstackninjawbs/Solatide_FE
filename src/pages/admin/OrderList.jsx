@@ -274,7 +274,6 @@ const OrderList = () => {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Customer</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Platform</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Traffic Source</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Campaign</th>
                 <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Total</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Payment</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Fulfilment</th>
@@ -287,7 +286,7 @@ const OrderList = () => {
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
-                    {Array.from({ length: 12 }).map((__, j) => (
+                    {Array.from({ length: 11 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
@@ -296,7 +295,7 @@ const OrderList = () => {
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="px-4 py-20 text-center">
+                  <td colSpan={11} className="px-4 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
@@ -347,11 +346,6 @@ const OrderList = () => {
                     {/* Attribution Source */}
                     <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
                       {(order.attribution?.lastTouch?.source || order.attribution?.firstTouch?.source) || 'Direct / Unknown'}
-                    </td>
-
-                    {/* Attribution Campaign */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[120px] truncate" title={order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign}>
-                      {(order.attribution?.lastTouch?.utmCampaign || order.attribution?.firstTouch?.utmCampaign) || '—'}
                     </td>
 
                     {/* Total */}
