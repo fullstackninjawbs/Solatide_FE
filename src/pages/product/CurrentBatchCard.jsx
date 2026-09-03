@@ -324,56 +324,60 @@ const CurrentBatchCard = ({ batch, product }) => {
 
         {/* Box 3: COA Verification */}
         {batch.verificationDetails?.verificationUrl && (
-          <div className="border border-slate-100 rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="border border-slate-200 rounded-2xl bg-white overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.02)] mt-1">
+            <div className="bg-slate-50/80 border-b border-slate-100 px-5 py-3.5">
+              <h4 className="text-[13px] font-bold text-[#1a3a7d] flex items-center gap-2 uppercase tracking-wide">
+                <ShieldCheck className="w-4 h-4 text-[#1a3a7d]" /> Official COA Verification
+              </h4>
+            </div>
+            <div className="p-5 flex flex-col gap-5">
 
-              <div className="flex flex-col">
-                <h4 className="text-[13.5px] font-bold text-[#1a3a7d] flex items-center gap-1.5 mb-3">
-                  <HelpCircle className="w-4 h-4 text-[#1a3a7d]" /> COA Verification
-                </h4>
+              <div className="flex items-start gap-4 sm:gap-5">
+                <div className="w-[100px] h-[100px] bg-white border border-slate-200 rounded-xl shrink-0 flex items-center justify-center p-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                  <QRCodeSVG
+                    value={batch.verificationDetails.verificationUrl}
+                    size={100}
+                    level="L"
+                    includeMargin={false}
+                    fgColor="#1a3a7d"
+                  />
+                </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-[78px] h-[78px] bg-white border border-slate-200 rounded-lg shrink-0 flex items-center justify-center p-1.5 shadow-sm">
-                    <QRCodeSVG
-                      value={batch.verificationDetails.verificationUrl}
-                      size={66}
-                      level="L"
-                      includeMargin={false}
-                      fgColor="#1e293b"
-                    />
-                  </div>
+                <div className="flex flex-col">
+                  <h5 className="text-[14px] font-bold text-slate-800 mb-1.5">
+                    Independent Lab Verification
+                  </h5>
+                  <p className="text-[12.5px] text-slate-500 leading-relaxed max-w-[400px]">
+                    Scan the QR code to verify this certificate directly on the {batch.verificationDetails?.labName || 'laboratory'} secure portal.
+                  </p>
 
-                  <div className="flex flex-col justify-center mt-0.5">
-                    <p className="text-[12px] text-slate-500 leading-snug max-w-[280px]">
-                      Verify this COA directly with {batch.verificationDetails?.labName || 'the lab'}.<br />
-                      Scan the QR code{batch.verificationDetails?.coaReportId ? ' or enter the access code' : ''}<br />
-                      on the {batch.verificationDetails?.labName || 'lab'} portal to verify this COA.
-                    </p>
-
-                    {batch.verificationDetails?.coaReportId && (
-                      <div className="flex items-center gap-2 mt-2.5">
-                        <span className="text-[11.5px] font-bold text-[#214A9E]">Access Code:</span>
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-0.5">
-                          <span className="text-[11px] font-bold text-slate-800 tracking-wide font-mono">
-                            {batch.verificationDetails.coaReportId}
-                          </span>
-                          <button onClick={handleCopyAccessCode} className="text-slate-500 hover:text-slate-800 focus:outline-none transition-colors" title="Copy code">
-                            <Copy className="w-3 h-3" />
-                          </button>
-                        </div>
+                  {batch.verificationDetails?.coaReportId && (
+                    <div className="flex items-center gap-2.5 mt-3.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Access Code</span>
+                      <div
+                        onClick={handleCopyAccessCode}
+                        className="flex items-center gap-2 bg-[#F4F7FC] border border-slate-200 hover:border-slate-300 rounded-lg px-2.5 py-1 cursor-pointer transition-colors group"
+                        title="Click to copy"
+                      >
+                        <span className="text-[12px] font-bold text-[#1a3a7d] font-mono tracking-wide">
+                          {batch.verificationDetails.coaReportId}
+                        </span>
+                        <Copy className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#1a3a7d] transition-colors" />
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <button
-                onClick={() => window.open(batch.verificationDetails.verificationUrl, '_blank')}
-                className="w-full md:w-auto px-6 py-2.5 rounded-xl border border-blue-600 text-blue-600 text-[13px] font-bold hover:bg-blue-50 transition-all focus:outline-none flex items-center justify-center gap-2 shrink-0 bg-white shadow-sm"
-              >
-                Verify on {batch.verificationDetails.labName || 'Portal'}
-                <ExternalLink className="w-3.5 h-3.5" />
-              </button>
+              <div className="w-full pt-1">
+                <button
+                  onClick={() => window.open(batch.verificationDetails.verificationUrl, '_blank')}
+                  className="w-full px-6 py-3 rounded-xl bg-[#1a3a7d] text-white text-[13px] font-bold hover:bg-[#122859] transition-all focus:outline-none flex items-center justify-center gap-2 shadow-sm"
+                >
+                  Verify on {batch.verificationDetails.labName || 'Portal'}
+                  <ExternalLink className="w-4 h-4 opacity-80" />
+                </button>
+              </div>
 
             </div>
           </div>
