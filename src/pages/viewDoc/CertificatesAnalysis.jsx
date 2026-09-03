@@ -18,14 +18,18 @@ const CertificatesAnalysis = () => {
                 console.log(data, "data---->");
 
                 if (data.success) {
-                    const mappedCoas = data.data.batches.map((batch, index) => ({
-                        id: batch._id || index,
-                        title: batch.productId?.name || batch.displayName || batch.batchId || 'Unknown Product',
-                        purity: batch.purity || 'N/A',
-                        endotoxin: batch.hasEndotoxinTest || batch.includesEndotoxin || batch.endotoxinIncludedInCoa ? '<1 EU/mg (Pass)' : '',
-                        imageUrl: batch.coaFile?.url || batch.coaUrl || '',
-                        status: batch.coaStatus === 'approved' ? 'Verified' : 'Pending'
-                    }));
+                    const mappedCoas = data.data.batches.map((batch, index) => {
+                        const productName = batch.productId?.name || (batch.products && batch.products.length > 0 ? batch.products[0].name : '');
+                        return {
+                            id: batch._id || index,
+                            title: batch.batchId || batch.displayName || 'Unknown Batch',
+                            productName: productName,
+                            purity: batch.purity || 'N/A',
+                            endotoxin: batch.hasEndotoxinTest || batch.includesEndotoxin || batch.endotoxinIncludedInCoa ? '<1 EU/mg (Pass)' : '',
+                            imageUrl: batch.coaFile?.url || batch.coaUrl || '',
+                            status: batch.coaStatus === 'approved' ? 'Verified' : 'Pending'
+                        };
+                    });
                     setCoaData(mappedCoas);
                 }
             } catch (error) {
@@ -101,7 +105,7 @@ const CertificatesAnalysis = () => {
                                 {/* Image Container */}
                                 <div className="p-4 pb-0 relative">
                                     <div className="h-[150px] w-full bg-white border border-slate-200 rounded-[10px] overflow-hidden relative">
-                                        {coa.imageUrl ? (
+                                        {coa.imageUrl && coa.status === 'Verified' ? (
                                             <img
                                                 src={coa.imageUrl}
                                                 alt={`Certificate of Analysis for ${coa.title}`}
@@ -110,22 +114,36 @@ const CertificatesAnalysis = () => {
                                         ) : (
                                             <>
                                                 {/* Simulated Document */}
-                                                <div className={`w-full h-full bg-white shadow-sm p-3 flex flex-col gap-2 ${coa.status === 'Pending' ? 'opacity-30 blur-[1px]' : 'opacity-80'}`}>
-                                                    <div className="h-1.5 w-1/3 bg-[#ff9999] rounded"></div>
-                                                    <div className="h-1 w-1/4 bg-slate-200 rounded"></div>
-                                                    <div className="w-full h-px bg-slate-100 my-1"></div>
-                                                    <div className="flex gap-2 mb-2">
-                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
-                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                                <div className={`w-full h-full bg-white shadow-sm p-3 flex flex-col gap-1.5 ${coa.status === 'Pending' ? 'opacity-50 blur-[3px]' : 'opacity-80 blur-[1px]'}`}>
+                                                    <div className="flex justify-between items-start mb-2 border-b border-slate-200 pb-2">
+                                                        <div className="w-12 h-4 bg-slate-300 rounded-sm"></div>
+                                                        <div className="w-16 h-3 bg-slate-200 rounded-sm"></div>
                                                     </div>
-                                                    <div className="h-12 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm mt-auto"></div>
+                                                    <div className="w-32 h-3 bg-slate-300 rounded-sm mx-auto mb-2"></div>
+                                                    
+                                                    <div className="flex justify-between gap-4 mb-1">
+                                                        <div className="w-1/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                        <div className="w-2/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                    </div>
+                                                    <div className="flex justify-between gap-4 mb-1">
+                                                        <div className="w-1/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                        <div className="w-2/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                    </div>
+                                                    <div className="flex justify-between gap-4 mb-1">
+                                                        <div className="w-1/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                        <div className="w-2/3 h-2 bg-slate-200 rounded-sm"></div>
+                                                    </div>
+                                                    
+                                                    <div className="w-full h-10 bg-slate-200 rounded-sm mt-2"></div>
                                                 </div>
                                             </>
                                         )}
                                         {/* Watermark */}
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] transform -rotate-[25deg] pointer-events-none">
-                                            <span className="text-4xl font-black tracking-widest text-slate-900">PUBLIC COPY</span>
-                                        </div>
+                                        {coa.status === 'Verified' && (
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] transform -rotate-[25deg] pointer-events-none">
+                                                <span className="text-4xl font-black tracking-widest text-slate-900">PUBLIC COPY</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Status Tag overlay */}
@@ -147,6 +165,9 @@ const CertificatesAnalysis = () => {
                                     <div className="mb-4">
                                         <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
                                         <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{coa.title}</h3>
+                                        {coa.productName && (
+                                            <p className="text-[13px] font-medium text-slate-500 mt-1 leading-snug">{coa.productName}</p>
+                                        )}
                                     </div>
 
                                     <div className="mt-auto mb-5 space-y-1.5">
