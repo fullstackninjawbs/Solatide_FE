@@ -155,7 +155,7 @@ const Header = () => {
             )}
             <header
                 className={`top-0 left-0 w-full z-[999] transform-gpu transition-[background-color,border-color,box-shadow,height] duration-300 ease-in-out fixed ${(!isScrolled && !isMobileMenuOpen)
-                    ? 'bg-transparent border-none shadow-none'
+                    ? 'bg-transparent border-none shadow-none '
                     : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                     }`}
             >

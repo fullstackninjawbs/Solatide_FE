@@ -53,7 +53,7 @@ const WhySolatide = () => {
                     </div>
 
                     <div className="w-full lg:w-[50%]">
-                        <div className="bg-white rounded-[24px] p-8 sm:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100">
+                        <div className="bg-white rounded-[24px] p-6 sm:p-10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] border border-slate-100">
                             <h3 className="text-[20px] font-bold text-[#1E1E1E] mb-3">
                                 Built to reduce sourcing uncertainty
                             </h3>
