@@ -8,9 +8,9 @@ const OurStandardsSection = () => {
                 {/* Header Row (2 Columns) */}
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start mb-12">
                     <div className="w-full lg:w-1/2 text-left">
-                        <span className="flex items-center gap-2 text-[16px] font-bold text-[#00adee] mb-3">
-                            <div className="w-5 h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
-                                <div className="w-2.5 h-2.5 rounded-full bg-[#00adee]" />
+                        <span className="flex items-center gap-2 text-[14px] sm:text-[16px] font-bold text-[#00adee] mb-3">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
+                                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#00adee]" />
                             </div>
                             Quality Assurance
                         </span>

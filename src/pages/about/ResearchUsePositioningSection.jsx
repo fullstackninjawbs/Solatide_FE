@@ -11,9 +11,9 @@ const ResearchUsePositioningSection = () => {
 
                     {/* Left content */}
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center order-2 lg:order-1">
-                        <span className="flex items-center gap-2 text-[16px] font-bold text-[#00adee] mb-3">
-                            <div className="w-5 h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
-                                <div className="w-2.5 h-2.5 rounded-full bg-[#00adee]" />
+                        <span className="flex items-center gap-2 text-[14px] sm:text-[16px] font-bold text-[#00adee] mb-3">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#00adee]/15 flex items-center justify-center shrink-0">
+                                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#00adee]" />
                             </div>
                             About Solatide
                         </span>
@@ -77,9 +77,9 @@ const ResearchUsePositioningSection = () => {
                         <div className="rounded-[20px] overflow-hidden shadow-sm border border-slate-100/30 bg-white">
                             <img src={pipetteImage} alt="Laboratory technician pipetting sample" loading="lazy" decoding="async" className="w-full h-auto object-contain select-none" />
                         </div>
-                        <div className="absolute bottom-6 left-6 bg-white rounded-full px-4 py-2 shadow-md flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-[#0ea5e9]"></div>
-                            <span className="text-[12px] sm:text-[13px] font-bold text-[#1D1D1F] leading-none">
+                        <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 bg-white rounded-3xl px-3 py-1.5 sm:px-4 sm:py-2 shadow-md flex items-center gap-2 max-w-[85%] sm:max-w-none">
+                            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#0ea5e9] shrink-0"></div>
+                            <span className="text-[10px] sm:text-[13px] font-bold text-[#1D1D1F] leading-tight">
                                 In-vitro laboratory research use only
                             </span>
                         </div>
