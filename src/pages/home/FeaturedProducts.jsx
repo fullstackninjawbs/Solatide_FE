@@ -48,7 +48,7 @@ const FeaturedProducts = () => {
     }, []);
 
     return (
-        <section className="relative w-full py-12 lg:py-16 overflow-hidden">
+        <section className="relative w-full py-4 lg:py-12  overflow-hidden">
             <div className="main-container">
                 {/* Section Header */}
                 <div className="text-center mb-10">

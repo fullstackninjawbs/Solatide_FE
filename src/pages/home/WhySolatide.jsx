@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const WhySolatide = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
+        <section className="w-full bg-[#F5F8FC] py-6 md:py-16">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-16">
 

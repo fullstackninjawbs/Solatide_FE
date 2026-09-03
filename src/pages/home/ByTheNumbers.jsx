@@ -10,7 +10,7 @@ const ByTheNumbers = () => {
     }
 
     return (
-        <section className="relative w-full bg-[#f4f7fa] py-12 lg:py-16 overflow-hidden">
+        <section className="relative w-full bg-[#f4f7fa] py-8 lg:py-12  overflow-hidden">
             <div className="main-container">
                 {/* Header Block */}
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-12 text-left">

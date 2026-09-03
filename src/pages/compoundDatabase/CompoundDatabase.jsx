@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 const CompoundDatabase = () => {
     return (
         <div className="min-h-screen bg-white font-sans">
-            <section className="w-full py-8 text-center border-b border-slate-100 mb-10">
+            <section className="w-full py-4 text-center border-b border-slate-100 mb-10">
                 <div className="main-container">
                     <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">
                         Compound Index
                     </h1>
                 </div>
             </section>
-            
+
             <div className="main-container pb-16">
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-14 rounded-[4px]">
                     <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds listed in this index are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
+                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds listed in this index are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
                     </p>
                 </div>
 
@@ -40,7 +40,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A long-acting GLP-1 receptor agonist used in metabolic research. Structural modifications enable extended half-life and sustained receptor activation in experimental models.</p>
                             <Link to="/research-insight/semaglutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
                         </div>
-                        
+
                         <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">
                             <span className="inline-block bg-[#e6effc] text-[#214A9E] text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">DUAL GLP-1/GIP AGONIST</span>
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Tirzepatide</h3>
@@ -296,7 +296,7 @@ const CompoundDatabase = () => {
                 {/* Footer Disclaimer */}
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 rounded-[4px] mb-8 border-t border-slate-200">
                     <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/research-use" className="text-[#3390ec] hover:underline">Full disclaimer.</Link>
+                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Full disclaimer.</Link>
                     </p>
                 </div>
 

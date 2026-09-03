@@ -69,7 +69,7 @@ const Testimonials = () => {
     }, [])
 
     return (
-        <section className="w-full bg-[#F3F4F6] py-12 lg:py-16 overflow-hidden relative">
+        <section className="w-full bg-[#F3F4F6] py-8 lg:py-12  overflow-hidden relative">
             <div className="main-container">
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-10">
                     <div className="text-left flex items-center gap-4">
@@ -131,7 +131,7 @@ const Testimonials = () => {
                 <div id="modal-overlay" className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
                     <div className="bg-white rounded-[8px] w-full max-w-[600px] relative p-8 shadow-xl animate-fade-in">
                         {/* Close Button */}
-                        <button 
+                        <button
                             onClick={() => setSelectedReview(null)}
                             className="absolute top-[-12px] right-[-12px] bg-[#374151] text-white w-8 h-8 rounded-md flex items-center justify-center border-2 border-white hover:bg-black transition-colors"
                         >
@@ -142,7 +142,7 @@ const Testimonials = () => {
                             <div className="flex gap-1 text-[#008B74] text-[24px] mb-4">
                                 ★★★★★
                             </div>
-                            
+
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-full bg-[#ECFDF5] flex items-center justify-center text-[#111827] font-bold text-[16px]">
                                     {selectedReview.name.charAt(0)}

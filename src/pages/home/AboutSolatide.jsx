@@ -8,7 +8,7 @@ import CommonButton from '../../components/CommonBtn'
 
 export default function AboutSolatide() {
     return (
-        <section className="w-full bg-[#F5F8FC] py-12 md:py-16">
+        <section className="w-full bg-[#F5F8FC] py-6 md:py-16">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12 lg:gap-[8%]">
 

@@ -12,7 +12,7 @@ const ResearchResource = () => {
                 {/* Top Disclaimer */}
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-14 rounded-[4px]">
                     <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds and materials referenced across this site are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
+                        <strong className="text-[#150F3A]">Research Use Only:</strong> All compounds and materials referenced across this site are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
                     </p>
                 </div>
 

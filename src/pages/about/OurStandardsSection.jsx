@@ -2,7 +2,7 @@ import React from 'react'
 
 const OurStandardsSection = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
+        <section className="w-full bg-[#F5F8FC] py-6 md:py-12">
             <div className="main-container">
 
                 {/* Header Row (2 Columns) */}

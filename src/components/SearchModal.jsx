@@ -87,52 +87,52 @@ export const SearchModal = ({ onClose, navigate }) => {
   // Format price using global currency hook
 
   return createPortal(
-    <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[1000] flex justify-center items-start pt-[12vh] px-4">
+    <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[1000] flex justify-center items-start pt-[5vh] sm:pt-[12vh] px-3 sm:px-4">
       <div
         ref={modalRef}
-        className="w-full max-w-[800px] bg-[#f4f7fc] rounded-[28px] p-6 sm:p-7 flex flex-col gap-4 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] relative font-sans text-left border border-slate-100"
+        className="w-full max-w-[800px] max-h-[90vh] overflow-y-auto custom-scrollbar bg-[#f4f7fc] rounded-[24px] sm:rounded-[28px] p-4 sm:p-7 flex flex-col gap-4 sm:gap-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] relative font-sans text-left border border-slate-100"
       >
         {/* Search Header Input bar */}
-        <div className="relative flex items-center bg-white border border-slate-100 rounded-[20px] px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#1a4494]/10 transition-all duration-200 shadow-sm">
-          <Search className="h-[18px] w-[18px] text-[#1a4494]/70 mr-3.5 shrink-0" />
+        <div className="relative flex items-center bg-white border border-slate-100 rounded-[20px] px-4 sm:px-5 py-3 sm:py-3.5 focus-within:ring-2 focus-within:ring-[#1a4494]/10 transition-all duration-200 shadow-sm shrink-0">
+          <Search className="h-[16px] w-[16px] sm:h-[18px] sm:w-[18px] text-[#1a4494]/70 mr-3 sm:mr-3.5 shrink-0" />
           <input
             type="text"
             placeholder="Search"
             value={searchVal}
             onChange={(e) => setSearchVal(e.target.value)}
-            className="w-full bg-transparent border-0 p-0 text-[16px] text-slate-800 placeholder-slate-400 font-medium focus:ring-0 focus:outline-none"
+            className="w-full bg-transparent border-0 p-0 text-[15px] sm:text-[16px] text-slate-800 placeholder-slate-400 font-medium focus:ring-0 focus:outline-none"
             autoFocus
           />
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-colors p-1 focus:outline-none"
+            className="text-slate-400 hover:text-slate-600 transition-colors p-1 focus:outline-none ml-2 shrink-0"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
 
         {/* Recently viewed products */}
         {recentlyViewed.length > 0 && (
           <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-center px-1">
-              <h4 className="text-[14px] font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex justify-between items-center px-1 shrink-0">
+              <h4 className="text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-wider">
                 Recently viewed
               </h4>
               <button
                 onClick={handleClearRecentlyViewed}
-                className="text-[13px] font-bold text-slate-500 hover:text-[#1a4494] transition-colors"
+                className="text-[12px] sm:text-[13px] font-bold text-slate-500 hover:text-[#1a4494] transition-colors"
               >
                 Clear
               </button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 shrink-0">
               {recentlyViewed.map((product) => (
                 <div
                   key={product.slug || product._id || product.id}
                   onClick={() => handleProductClick(product.slug || product._id || product.id)}
-                  className="group bg-white rounded-[20px] p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
+                  className="group bg-white rounded-[16px] sm:rounded-[20px] p-2.5 sm:p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
                 >
-                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
+                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[12px] sm:rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
                     <img
                       src={product.imageUrl || product.image || productVialImage}
                       className={product.imageUrl || product.image
@@ -143,10 +143,10 @@ export const SearchModal = ({ onClose, navigate }) => {
                     />
                   </div>
                   <div className="flex flex-col text-left px-0.5">
-                    <h5 className="text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[34px] tracking-tight">
+                    <h5 className="text-[12px] sm:text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[32px] sm:h-[34px] tracking-tight">
                       {product.name}
                     </h5>
-                    <span className="text-[12px] font-extrabold text-[#214A9E] mt-1.5 whitespace-nowrap">
+                    <span className="text-[11px] sm:text-[12px] font-extrabold text-[#214A9E] mt-1 sm:mt-1.5 whitespace-nowrap">
                       {formatPrice(product.price)}
                     </span>
                   </div>
@@ -157,25 +157,25 @@ export const SearchModal = ({ onClose, navigate }) => {
         )}
 
         {/* Dynamic products list section */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 shrink-0">
           <div className="px-1 text-left">
-            <h4 className="text-[14px] font-bold text-slate-500 uppercase tracking-wider">
+            <h4 className="text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-wider">
               {searchVal.trim() === '' ? 'Products' : 'Search Results'}
             </h4>
           </div>
           {searchResults.length === 0 ? (
-            <div className="w-full text-center py-10 bg-white rounded-2xl border border-slate-100 text-slate-400 font-semibold text-sm">
+            <div className="w-full text-center py-10 bg-white rounded-[16px] sm:rounded-2xl border border-slate-100 text-slate-400 font-semibold text-sm">
               No products found matching your search.
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 shrink-0 pb-2">
               {searchResults.map((product) => (
                 <div
                   key={product.slug || product._id || product.id}
                   onClick={() => handleProductClick(product.slug || product._id || product.id)}
-                  className="group bg-white rounded-[20px] p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
+                  className="group bg-white rounded-[16px] sm:rounded-[20px] p-2.5 sm:p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
                 >
-                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
+                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[12px] sm:rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
                     <img
                       src={product.imageUrl || product.image || productVialImage}
                       className={product.imageUrl || product.image
@@ -186,10 +186,10 @@ export const SearchModal = ({ onClose, navigate }) => {
                     />
                   </div>
                   <div className="flex flex-col text-left px-0.5">
-                    <h5 className="text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[34px] tracking-tight">
+                    <h5 className="text-[12px] sm:text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[32px] sm:h-[34px] tracking-tight">
                       {product.name}
                     </h5>
-                    <span className="text-[12px] font-extrabold text-[#214A9E] mt-1.5 whitespace-nowrap">
+                    <span className="text-[11px] sm:text-[12px] font-extrabold text-[#214A9E] mt-1 sm:mt-1.5 whitespace-nowrap">
                       {formatPrice(product.price)}
                     </span>
                   </div>

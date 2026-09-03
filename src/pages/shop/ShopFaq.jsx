@@ -39,7 +39,7 @@ const ShopFaq = () => {
     ];
 
     return (
-        <section className="w-full bg-[#f8fafc] py-20 lg:py-24 text-left">
+        <section className="w-full bg-[#f8fafc] py-10 lg:py-24 text-left">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-12">

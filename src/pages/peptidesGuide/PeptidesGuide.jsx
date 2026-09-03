@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const PeptidesGuide = () => {
     return (
         <div className="min-h-screen bg-white font-sans">
-            <section className="w-full py-8 text-center border-b border-slate-100 mb-10">
+            <section className="w-full py-4 text-center border-b border-slate-100 mb-10">
                 <div className="main-container">
                     <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">
                         Research Peptide Guide
@@ -16,7 +16,7 @@ const PeptidesGuide = () => {
                 {/* Top Disclaimer */}
                 <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-14 rounded-[4px]">
                     <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                        <strong className="text-[#150F3A]">Research Use Only:</strong> All peptides and compounds discussed on this page are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
+                        <strong className="text-[#150F3A]">Research Use Only:</strong> All peptides and compounds discussed on this page are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
                     </p>
                 </div>
 
@@ -42,7 +42,7 @@ const PeptidesGuide = () => {
                 <div className="mb-14">
                     <h2 className="text-[18px] font-bold text-[#150F3A] mb-5 border-b border-slate-200 pb-3">Research Use Only</h2>
                     <p className="text-[14px] text-slate-700 leading-[1.8]">
-                        All compounds available through Solatide Biosciences are manufactured and distributed exclusively for in-vitro laboratory research. They are not approved for human consumption, medical treatment, or veterinary applications. Researchers should operate under appropriate institutional oversight and follow all applicable biosafety guidelines. <Link to="/research-use" className="text-[#3390ec] hover:underline">Read the full Research Use Disclaimer.</Link>
+                        All compounds available through Solatide Biosciences are manufactured and distributed exclusively for in-vitro laboratory research. They are not approved for human consumption, medical treatment, or veterinary applications. Researchers should operate under appropriate institutional oversight and follow all applicable biosafety guidelines. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read the full Research Use Disclaimer.</Link>
                     </p>
                 </div>
 
@@ -155,14 +155,14 @@ const PeptidesGuide = () => {
                         <Link to="/contact" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
                             <span className="text-[14px]">✉️</span> Contact Us
                         </Link>
-                        <Link to="/research-use" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
+                        <Link to="/research-use-disclaimer" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
                             <span className="text-[14px]">⚠️</span> Research Use Disclaimer
                         </Link>
                     </div>
 
                     <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 rounded-[4px]">
                         <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                            <strong className="text-[#150F3A]">Research Use Only:</strong> All peptides are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/research-use" className="text-[#3390ec] hover:underline">Full disclaimer.</Link>
+                            <strong className="text-[#150F3A]">Research Use Only:</strong> All peptides are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/research-use-disclaimer" className="text-[#3390ec] hover:underline">Full disclaimer.</Link>
                         </p>
                     </div>
                 </div>

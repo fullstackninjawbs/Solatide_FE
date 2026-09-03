@@ -4,7 +4,7 @@ import CommonButton from '../../components/CommonBtn'
 
 const WhatMakesUsDifferentSection = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-16 md:py-24">
+        <section className="w-full bg-[#F5F8FC] py-6 md:py-12">
             <div className="main-container">
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 

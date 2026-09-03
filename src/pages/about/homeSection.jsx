@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonBtn'
 const AboutUs = () => {
     return (
         <div className="w-full bg-[#F5F8FC]">
-            <section className="w-full py-8">
+            <section className="w-full py-4">
                 <div className="main-container">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-[10%]">
                         <div className="w-full lg:w-[45%] flex flex-col text-left justify-center order-2 lg:order-1">

@@ -22,7 +22,7 @@ const UsefulLinksSection = () => {
                         <Link to="/shipping-policy" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             Shipping Policy
                         </Link>
-                        <Link to="/disclaimer" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/research-use-disclaimer" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             Research Use Disclaimer
                         </Link>
                     </div>

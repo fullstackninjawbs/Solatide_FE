@@ -36,7 +36,7 @@ const Faq = () => {
     }
 
     return (
-        <section className="w-full bg-[#F5F8FC] py-12 lg:py-16 text-left">
+        <section className="w-full bg-[#F5F8FC] py-8 lg:py-12  text-left">
             <div className="main-container">
                 {/* Header */}
                 <div className="mb-12">

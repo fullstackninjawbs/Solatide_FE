@@ -60,7 +60,7 @@ const ShippingPolicy = () => {
     return (
         <div className="w-full min-h-screen pb-20">
             {/* Header Banner */}
-            <section className="w-full py-8 text-center border-b border-slate-100">
+            <section className="w-full py-4 text-center border-b border-slate-100">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <h1
                         className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight mb-4"
@@ -243,7 +243,7 @@ const ShippingPolicy = () => {
                                     <li>Legal consequences arising from non-compliance with local regulations</li>
                                 </ul>
                                 <p>
-                                    Review our <Link to="/disclaimer" className="text-[#00E5FF] font-semibold hover:underline">Research Use Disclaimer</Link> for more information about buyer responsibilities.
+                                    Review our <Link to="/research-use-disclaimer" className="text-[#00E5FF] font-semibold hover:underline">Research Use Disclaimer</Link> for more information about buyer responsibilities.
                                 </p>
                             </div>
                         </section>

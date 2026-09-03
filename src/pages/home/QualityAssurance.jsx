@@ -2,7 +2,7 @@ import React from 'react'
 
 const QualityAssurance = () => {
     return (
-        <section className="w-full bg-[#F5F8FC] py-12 lg:py-16">
+        <section className="w-full bg-[#F5F8FC] py-8 lg:py-12 ">
             <div className="main-container">
 
                 {/* Header Block */}

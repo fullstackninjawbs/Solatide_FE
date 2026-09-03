@@ -5,7 +5,7 @@ const ContactUs = () => {
     return (
         <div className="w-full bg-white min-h-screen text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
             {/* Header Banner */}
-            <section className="w-full py-8 text-center border-b border-slate-100">
+            <section className="w-full py-4 text-center border-b border-slate-100">
                 <div className="main-container">
                     <h1 className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight">
                         Contact Us
@@ -83,7 +83,7 @@ const ContactUs = () => {
                         <li>Information on use outside legitimate in-vitro research purposes</li>
                     </ul>
                     <p className="text-[14px] text-slate-500 font-sans">
-                        All products are supplied strictly for <strong className="text-slate-700">research use only</strong>. For more information, please read our <Link to="/disclaimer" className="text-[#00bfef] hover:underline">Research Use Disclaimer</Link>.
+                        All products are supplied strictly for <strong className="text-slate-700">research use only</strong>. For more information, please read our <Link to="/research-use-disclaimer" className="text-[#00bfef] hover:underline">Research Use Disclaimer</Link>.
                     </p>
                 </div>
 
@@ -94,7 +94,7 @@ const ContactUs = () => {
                         <li><Link to="/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
                         <li><Link to="/coa" className="hover:underline">COA & Lab Testing</Link></li>
                         <li><Link to="/faq" className="hover:underline">FAQ</Link></li>
-                        <li><Link to="/disclaimer" className="hover:underline">Research Use Disclaimer</Link></li>
+                        <li><Link to="/research-use-disclaimer" className="hover:underline">Research Use Disclaimer</Link></li>
                     </ul>
                 </div>
 

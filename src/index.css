@@ -26,7 +26,7 @@ body,
 
 @layer components {
   .main-container {
-    @apply mx-auto max-w-[1440px] py-5 px-5;
+    @apply mx-auto max-w-[1440px] py-3 px-5;
   }
 }
 
@@ -162,4 +162,4 @@ body,
 .product-specs-content a:hover,
 .jodit-wysiwyg a:hover {
   color: #16326b !important;
-}
+}

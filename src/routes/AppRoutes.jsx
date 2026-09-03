@@ -176,9 +176,9 @@ const AppRoutes = () => {
                     <Route path="compound-database" element={<CompoundDatabase />} />
                     <Route path="coa-reports" element={<CoaReports />} />
                     <Route path="terms" element={<Terms />} />
-                    <Route path="research-use" element={<ResearchUseDisclaimer />} />
+                    <Route path="research-use-disclaimer" element={<ResearchUseDisclaimer />} />
                     <Route path="returns" element={<Returns />} />
-                    
+
                     {/* Custom Pages */}
                     <Route path="page/:slug" element={
                         <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>

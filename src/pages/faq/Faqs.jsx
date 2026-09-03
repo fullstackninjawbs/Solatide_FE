@@ -48,7 +48,7 @@ const Faqs = () => {
 
     return (
         <div className="w-full bg-white min-h-screen">
-            <section className="w-full py-8 text-center border-b border-slate-100">
+            <section className="w-full py-4 text-center border-b border-slate-100">
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-bold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
@@ -176,7 +176,7 @@ const Faqs = () => {
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/disclaimer" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Research Use Disclaimer</Link>
+                                    <Link to="/research-use-disclaimer" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Research Use Disclaimer</Link>
                                 </li>
                             </ul>
                         </div>
