@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { RefreshCw, Play, Search, AlertTriangle, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { RefreshCw, Play, Search, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
