@@ -24,7 +24,8 @@ const ProductInfoSection = ({ product }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Left Column */}
-                    <div className="lg:col-span-6 flex flex-col gap-2.5">
+                    {(hasOverview || hasApplications) && (
+                        <div className="lg:col-span-6 flex flex-col gap-2.5">
 
                         {/* Box 1: Product Overview Description */}
                         {hasOverview && (
@@ -52,11 +53,12 @@ const ProductInfoSection = ({ product }) => {
                         )}
 
                     </div>
+                    )}
 
                     {/* Right Column */}
-                    <div className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start">
-                        {/* Box 3: Technical Specifications */}
-                        {hasSpecs && (
+                    {hasSpecs && (
+                        <div className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start">
+                            {/* Box 3: Technical Specifications */}
                             <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col">
                                 <h3 className="text-[14px] font-bold text-[#0079CD] mb-5">Technical Specifications</h3>
 
@@ -110,8 +112,8 @@ const ProductInfoSection = ({ product }) => {
                                     )}
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                 </div>
             </div>
