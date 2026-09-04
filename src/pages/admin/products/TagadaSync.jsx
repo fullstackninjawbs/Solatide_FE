@@ -16,9 +16,7 @@ const TagadaSync = () => {
   const toast = useToast();
   const confirm = useConfirm();
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
+
 
   const fetchHistory = async () => {
     try {
@@ -80,6 +78,10 @@ const TagadaSync = () => {
       setSyncing(false);
     }
   };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   return (
     <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
