@@ -213,8 +213,8 @@ const CurrentBatchCard = ({ batch, product }) => {
 
               <div className="grid grid-cols-2 md:grid-cols-3 bg-white -mb-[1px] -mr-[1px]">
                 {hasPurity && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={purityIcon} alt="Purity" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={purityIcon} alt="Purity" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Purity</p>
                       {renderResultText(purityResult)}
@@ -227,8 +227,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasIdentity && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={identityIcon} alt="Identity" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={identityIcon} alt="Identity" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Identity</p>
                       {renderResultText(identityResult)}
@@ -241,8 +241,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasNetContent && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={netPeptideIcon} alt="Net Peptide Content" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={netPeptideIcon} alt="Net Peptide Content" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Net Peptide Content</p>
                       {renderResultText(netContentResult)}
@@ -254,8 +254,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasFentanyl && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={fentanylScreenIcon} alt="Fentanyl Screen" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={fentanylScreenIcon} alt="Fentanyl Screen" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Fentanyl Screen</p>
                       {renderResultText(fentanylResult)}
@@ -268,8 +268,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasHeavyMetals && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={heavyMetalIcon} alt="Heavy Metals" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={heavyMetalIcon} alt="Heavy Metals" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Heavy Metals</p>
                       {renderResultText(heavyMetalsResult)}
@@ -282,8 +282,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasSterility && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={microbialIcon} alt="Microbial / Sterility" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={microbialIcon} alt="Microbial / Sterility" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Microbial / Sterility</p>
                       {renderResultText(sterilityResult)}
@@ -295,8 +295,8 @@ const CurrentBatchCard = ({ batch, product }) => {
                 )}
 
                 {hasEndotoxin && (
-                  <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white border-r border-b border-slate-100">
-                    <img src={endotoxinIcon} alt="Endotoxin" className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] shrink-0 mt-0.5 object-contain" />
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
+                    <img src={endotoxinIcon} alt="Endotoxin" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
                     <div>
                       <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin</p>
                       {renderResultText(endotoxinResult)}

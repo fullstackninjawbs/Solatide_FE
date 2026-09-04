@@ -1,25 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-const coaData = [
-    { id: 1, title: 'Retatrutide 5mg', purity: '99.94%', endotoxin: '< 1 EU/mg (Pass)', status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_5mg_SOL_RTA_26C_2605210107_1790b1cf-8acd-4785-acf3-01b06adfffb5.webp?v=1781301675&width=900' },
-    { id: 2, title: 'Retatrutide 10mg', purity: '99.91%', endotoxin: '< 1 EU/mg (Pass)', status: 'Verified', imageUrl: "https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_10mg_SOL_RTA_26B_2605210109_3eca789b-cb5d-474c-b0d8-25c0fd2028ab.webp?v=1781301673&width=900" },
-    { id: 3, title: 'Tirzepatide 5mg', purity: '99.74%', endotoxin: null, status: 'Verified', imageUrl: "https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_10mg_SOL_RTA_26B_2605210109_3eca789b-cb5d-474c-b0d8-25c0fd2028ab.webp?v=1781301673&width=900" },
-    { id: 4, title: 'Tirzepatide 10mg', purity: '99.72%', endotoxin: null, status: 'Verified', imageUrl: "https://solatidebiosciences.com.au/cdn/shop/files/Solatide_Public_COA_Retatrutide_10mg_SOL_RTA_26B_2605210109_3eca789b-cb5d-474c-b0d8-25c0fd2028ab.webp?v=1781301673&width=900" },
-    { id: 5, title: 'GHK-Cu 50mg', purity: null, endotoxin: null, status: 'Pending' },
-    { id: 6, title: 'BPC-157 + TB-500 20mg', purity: '99.20%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/BPC_157_and_TB_500_20mg_SOL_WLV_Solatide_Public_COA_010_2605210114.webp?v=1781301544&width=900' },
-    { id: 7, title: 'BPC-157 10mg', purity: '99.34%', endotoxin: null, status: 'Verified', imageUrl: "https://solatidebiosciences.com.au/cdn/shop/files/BPC_157_and_TB_500_20mg_SOL_WLV_Solatide_Public_COA_010_2605210114.webp?v=1781301544&width=900" },
-    { id: 8, title: 'TB-500 10mg', purity: '99.37%', endotoxin: null, status: 'Verified', imageUrl: "https://solatidebiosciences.com.au/cdn/shop/files/BPC_157_and_TB_500_20mg_SOL_WLV_Solatide_Public_COA_010_2605210114.webp?v=1781301544&width=900" },
-    { id: 9, title: 'Semaglutide 5mg', purity: '99.9%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/semaglutide-5mg-freedom-diagnostics-certificate-of-analysis-coa_187eeac4-707d-4b88-8819-30ac968f7b50.jpg?v=1781301682&width=900' },
-    { id: 10, title: 'Semaglutide 10mg', purity: '99.88%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/semaglutide-10mg-chromate-certificate-of-analysis-coa_ea84de7c-84f1-4549-b20e-1f6f3573c764.jpg?v=1781299572&width=900' },
-    { id: 11, title: 'Cagrilintide 5mg', purity: '99.81%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/cagrilintide-5mg-chromate-certificate-of-analysis-coa_c1702f8f-8370-40d3-8eed-a377f83048ce_1.jpg?v=1781299575&width=900' },
-    { id: 12, title: 'CagriSema 10mg', purity: '99.54%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/cagrilintide-hplc-purity-analysis-report-shimadzu-cagrisema-blend-solatide_1305d634-bf1b-4826-bdbc-f01f17a2a283.webp?v=1781299542&width=900' },
-    { id: 13, title: '5-Amino-1MQ 50mg', purity: '99.09%', endotoxin: null, status: 'Verified', imageUrl: 'https://solatidebiosciences.com.au/cdn/shop/files/5-amino-1mq-50mg-certificate-of-analysis-coa-batch-202512004-solatide_799e0390-84a9-4069-8e18-a43b5a6d0af2.webp?v=1781299544&width=900' },
-];
+import { apiService } from '../../services/api';
 
 const CoaReports = () => {
+    const [coaData, setCoaData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
     const [selectedCoa, setSelectedCoa] = useState(null);
+
+    useEffect(() => {
+        const fetchCoas = async () => {
+            try {
+                const res = await apiService.getPublicCoas();
+                const json = await res.json();
+                if (json.success && json.data?.batches) {
+                    const formattedData = json.data.batches.map(batch => {
+                        const hasCoa = batch.coaFile?.url || batch.coaUrl;
+                        const productName = batch.productId?.name || (batch.products && batch.products.length > 0 ? batch.products[0].name : '');
+                        const amountStr = batch.amount ? ` ${batch.amount}${batch.unit || ''}` : '';
+                        const titleName = productName ? `${productName}${amountStr}`.trim() : (batch.displayName || batch.batchId);
+                        
+                        return {
+                            id: batch._id,
+                            title: titleName,
+                            batchNumber: batch.batchId,
+                            purity: batch.tests?.purityHplc?.result,
+                            endotoxin: batch.tests?.endotoxinUsp85?.result,
+                            status: batch.coaStatus === 'approved' ? 'Verified' : 'Pending',
+                            imageUrl: batch.coaFile?.url || batch.coaUrl
+                        };
+                    });
+                    setCoaData(formattedData);
+                }
+            } catch (err) {
+                console.error("Error fetching COAs", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCoas();
+    }, []);
+
     useEffect(() => {
         if (selectedCoa) {
             document.body.style.overflow = 'hidden';
@@ -78,14 +99,24 @@ const CoaReports = () => {
             </div>
 
             <div className="main-container">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredData.map(item => (
-                        <div key={item.id} className="bg-white rounded-[14px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
+                {loading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#214A9E]"></div>
+                    </div>
+                ) : filteredData.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-center text-slate-500">
+                        <p className="text-lg mb-2">No COA reports found matching your criteria.</p>
+                        <button onClick={() => setFilter('All')} className="text-[#214A9E] hover:underline">View all reports</button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredData.map(item => (
+                            <div key={item.id} className="bg-white rounded-[14px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
                             {/* Image Container */}
                             {/* Image Container */}
                             <div className="p-4 pb-0 relative">
                                 <div className="h-[150px] w-full bg-white border border-slate-200 rounded-[10px] overflow-hidden relative">
-                                    {item.imageUrl ? (
+                                    {item.imageUrl && item.status === 'Verified' ? (
                                         <img
                                             src={item.imageUrl}
                                             alt={`Certificate of Analysis for ${item.title}`}
@@ -132,6 +163,7 @@ const CoaReports = () => {
                                 <div className="mb-4">
                                     <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
                                     <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{item.title}</h3>
+                                    <p className="text-slate-500 text-[12px] font-medium mt-1">Batch: {item.batchNumber}</p>
                                 </div>
 
                                 <div className="mt-auto mb-5 space-y-1.5">
@@ -161,6 +193,7 @@ const CoaReports = () => {
                         </div>
                     ))}
                 </div>
+                )}
             </div>
 
             <div className="max-w-[750px] mx-auto px-4 mt-24 mb-16">
@@ -246,7 +279,7 @@ const CoaReports = () => {
                                             </div>
                                             <div className="flex border border-[#214A9E]/20">
                                                 <div className="bg-[#214A9E] text-white w-24 px-2 py-1.5 font-bold flex items-center">Batch:</div>
-                                                <div className="px-2 py-1.5 bg-[#F0F5FB] flex-1 text-[#214A9E] font-semibold flex items-center"></div>
+                                                <div className="px-2 py-1.5 bg-[#F0F5FB] flex-1 text-[#214A9E] font-semibold flex items-center">{selectedCoa.batchNumber}</div>
                                             </div>
                                             <div className="flex border border-[#214A9E]/20">
                                                 <div className="bg-[#214A9E] text-white w-24 px-2 py-1.5 font-bold flex items-center">Formula:</div>

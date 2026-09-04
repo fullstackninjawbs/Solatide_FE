@@ -41,6 +41,9 @@ export const apiService = {
   getProductBySlug: async (slug, options = {}) => {
     return customFetch(`${API_URL}/api/products/${slug}`, options);
   },
+  getPublicCoas: async () => {
+    return customFetch(`${API_URL}/api/v1/coas`);
+  },
   // Admin-namespaced product endpoints (auth required)
   getAdminProducts: async (queryParams = '') => {
     return customFetch(`${API_URL}/api/admin/product${queryParams ? `?${queryParams}` : ''}`, {
