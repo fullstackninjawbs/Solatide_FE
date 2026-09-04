@@ -164,9 +164,9 @@ const CertificatesAnalysis = () => {
                                 <div className="p-5 flex flex-col flex-1">
                                     <div className="mb-4">
                                         <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
-                                        <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{coa.title}</h3>
-                                        {coa.productName && (
-                                            <p className="text-[13px] font-medium text-slate-500 mt-1 leading-snug">{coa.productName}</p>
+                                        <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{coa.productName || 'Unknown Product'}</h3>
+                                        {coa.title && (
+                                            <p className="text-[13px] font-medium text-slate-500 mt-1 leading-snug">Batch: {coa.title}</p>
                                         )}
                                     </div>
 
