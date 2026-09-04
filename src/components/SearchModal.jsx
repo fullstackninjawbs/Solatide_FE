@@ -111,6 +111,49 @@ export const SearchModal = ({ onClose, navigate }) => {
           </button>
         </div>
 
+        {/* Dynamic products list section */}
+        <div className="flex flex-col gap-3 shrink-0">
+          <div className="px-1 text-left">
+            <h4 className="text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-wider">
+              {searchVal.trim() === '' ? 'Products' : 'Search Results'}
+            </h4>
+          </div>
+          {searchResults.length === 0 ? (
+            <div className="w-full text-center py-10 bg-white rounded-[16px] sm:rounded-2xl border border-slate-100 text-slate-400 font-semibold text-sm">
+              No products found matching your search.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 shrink-0 pb-2">
+              {searchResults.map((product) => (
+                <div
+                  key={product.slug || product._id || product.id}
+                  onClick={() => handleProductClick(product.slug || product._id || product.id)}
+                  className="group bg-white rounded-[16px] sm:rounded-[20px] p-2.5 sm:p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
+                >
+                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[12px] sm:rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
+                    <img
+                      src={product.imageUrl || product.image || productVialImage}
+                      className={product.imageUrl || product.image
+                        ? 'object-contain w-full h-full p-2 select-none transition-transform duration-500 group-hover:scale-105'
+                        : 'object-cover object-center scale-[1.7] translate-y-2.5 select-none transition-transform duration-500 group-hover:scale-[1.78]'
+                      }
+                      alt={product.name}
+                    />
+                  </div>
+                  <div className="flex flex-col text-left px-0.5">
+                    <h5 className="text-[12px] sm:text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[32px] sm:h-[34px] tracking-tight">
+                      {product.name}
+                    </h5>
+                    <span className="text-[11px] sm:text-[12px] font-extrabold text-[#214A9E] mt-1 sm:mt-1.5 whitespace-nowrap">
+                      {formatPrice(product.price)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Recently viewed products */}
         {recentlyViewed.length > 0 && (
           <div className="flex flex-col gap-3">
@@ -155,49 +198,6 @@ export const SearchModal = ({ onClose, navigate }) => {
             </div>
           </div>
         )}
-
-        {/* Dynamic products list section */}
-        <div className="flex flex-col gap-3 shrink-0">
-          <div className="px-1 text-left">
-            <h4 className="text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-wider">
-              {searchVal.trim() === '' ? 'Products' : 'Search Results'}
-            </h4>
-          </div>
-          {searchResults.length === 0 ? (
-            <div className="w-full text-center py-10 bg-white rounded-[16px] sm:rounded-2xl border border-slate-100 text-slate-400 font-semibold text-sm">
-              No products found matching your search.
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 shrink-0 pb-2">
-              {searchResults.map((product) => (
-                <div
-                  key={product.slug || product._id || product.id}
-                  onClick={() => handleProductClick(product.slug || product._id || product.id)}
-                  className="group bg-white rounded-[16px] sm:rounded-[20px] p-2.5 sm:p-3 border border-slate-100 flex flex-col gap-2 cursor-pointer hover:shadow-md hover:border-slate-200/50 transition-all duration-300"
-                >
-                  <div className={`relative w-full aspect-square ${product.imageUrl || product.image ? 'bg-white border border-slate-100/50' : 'bg-[#eef2f6]'} rounded-[12px] sm:rounded-[14px] flex items-center justify-center overflow-hidden shrink-0`}>
-                    <img
-                      src={product.imageUrl || product.image || productVialImage}
-                      className={product.imageUrl || product.image
-                        ? 'object-contain w-full h-full p-2 select-none transition-transform duration-500 group-hover:scale-105'
-                        : 'object-cover object-center scale-[1.7] translate-y-2.5 select-none transition-transform duration-500 group-hover:scale-[1.78]'
-                      }
-                      alt={product.name}
-                    />
-                  </div>
-                  <div className="flex flex-col text-left px-0.5">
-                    <h5 className="text-[12px] sm:text-[13px] font-bold text-slate-800 leading-tight line-clamp-2 h-[32px] sm:h-[34px] tracking-tight">
-                      {product.name}
-                    </h5>
-                    <span className="text-[11px] sm:text-[12px] font-extrabold text-[#214A9E] mt-1 sm:mt-1.5 whitespace-nowrap">
-                      {formatPrice(product.price)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>,
     document.body

@@ -843,15 +843,15 @@ const ProductForm = () => {
                       <img src={img.url} alt="preview" className="max-w-full max-h-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start">
-                        <div>
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="min-w-0 flex-1">
                           {index === 0 && <span className="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase tracking-wider mb-1.5">Primary Image</span>}
                           <p className="text-[13px] font-semibold text-slate-700">Alt text</p>
                           {img.altText && img.altText.trim() !== '' ? (
-                            <p className="text-[14px] text-slate-600 truncate mt-0.5" title={img.altText}>{img.altText}</p>
+                            <p className="text-[14px] text-slate-600 line-clamp-3 break-all mt-0.5" title={img.altText}>{img.altText}</p>
                           ) : (
-                            <div className="mt-0.5">
-                              <p className="text-[14px] text-slate-400 italic truncate" title={`Auto-generated: ${generateAltText(formData.name, index)}`}>
+                            <div className="mt-0.5 min-w-0">
+                              <p className="text-[14px] text-slate-400 italic line-clamp-3 break-all" title={`Auto-generated: ${generateAltText(formData.name, index)}`}>
                                 {generateAltText(formData.name, index)}
                               </p>
                               <div className="flex items-center gap-1.5 text-amber-500 mt-1">
@@ -861,7 +861,7 @@ const ProductForm = () => {
                             </div>
                           )}
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 shrink-0">
                           <button
                             type="button"
                             onClick={() => openAltTextModal(index)}

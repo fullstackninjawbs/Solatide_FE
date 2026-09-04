@@ -341,7 +341,7 @@ const ProductDetail = () => {
                                 className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
                                 style={{ fontWeight: 400 }}
                                 dangerouslySetInnerHTML={{
-                                    __html: (product.summaryHtml || product.description || '').replace(
+                                    __html: (product.description || product.summaryHtml || '').replace(
                                         // Match "Learn more about <Something> here" or typo "her" - handles &nbsp; and variable whitespace
                                         /Learn\s+more\s+abou?o?t\s+([^<\|]+?)\s*(?:&nbsp;|\s)\s*here?/gi,
                                         (match, compoundName) => {
@@ -378,33 +378,35 @@ const ProductDetail = () => {
 
                             </div>
 
-                            <div className="flex flex-row items-center gap-4 flex-wrap">
-                                <span className="text-[13px] font-semibold text-slate-700 hidden min-[400px]:block">Quantity</span>
-                                {/* Quantity Selector - Pill style */}
-                                <div className="flex items-center bg-[#EBF4FA] rounded-full h-[46px] px-2 w-max border border-transparent shrink-0">
-                                    <button
-                                        onClick={decrementQty}
-                                        className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
-                                    >
-                                        −
-                                    </button>
-                                    <span className="w-8 text-center font-bold text-[15px] text-[#214A9E]">
-                                        {quantity}
-                                    </span>
-                                    <button
-                                        onClick={incrementQty}
-                                        className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
-                                    >
-                                        +
-                                    </button>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:flex-1">
+                                <div className="flex items-center gap-4 justify-between w-full sm:w-auto shrink-0">
+                                    <span className="text-[14px] sm:text-[13px] font-semibold text-slate-700">Quantity</span>
+                                    {/* Quantity Selector - Pill style */}
+                                    <div className="flex items-center bg-[#EBF4FA] rounded-full h-[46px] px-2 w-max border border-transparent shrink-0">
+                                        <button
+                                            onClick={decrementQty}
+                                            className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
+                                        >
+                                            −
+                                        </button>
+                                        <span className="w-8 text-center font-bold text-[15px] text-[#214A9E]">
+                                            {quantity}
+                                        </span>
+                                        <button
+                                            onClick={incrementQty}
+                                            className="text-[20px] font-medium text-[#214A9E] hover:bg-[#d6eaf8] w-8 h-8 rounded-full flex items-center justify-center focus:outline-none transition-colors"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex flex-col gap-1 w-full min-[500px]:w-auto flex-1 min-[500px]:flex-none shrink-0">
+                                <div className="flex flex-col gap-1 w-full sm:flex-1 sm:min-w-[200px] mt-2 sm:mt-0">
                                     <button
                                         onClick={() => addToCart(product, quantity, selectedVariant)}
                                         disabled={isOutOfStock}
-                                        className={`w-full min-[500px]:w-[180px] lg:w-[200px] text-white text-[15px] font-bold h-[48px] rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
+                                        className={`w-full text-white text-[15px] font-bold h-[48px] rounded-xl transition-all shadow-sm focus:outline-none flex items-center justify-center gap-2.5 ${isOutOfStock
                                             ? 'bg-slate-200/80 text-slate-500 cursor-not-allowed'
                                             : 'bg-[#0079CD] hover:bg-[#0062a3]'
                                             }`}

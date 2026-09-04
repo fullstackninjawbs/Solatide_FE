@@ -332,7 +332,7 @@ const CurrentBatchCard = ({ batch, product }) => {
             </div>
             <div className="p-5 flex flex-col gap-5">
 
-              <div className="flex items-start gap-4 sm:gap-5">
+              <div className="flex flex-col min-[400px]:flex-row items-center min-[400px]:items-start gap-4 sm:gap-5 text-center min-[400px]:text-left">
                 <div className="w-[100px] h-[100px] bg-white border border-slate-200 rounded-xl shrink-0 flex items-center justify-center p-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                   <QRCodeSVG
                     value={batch.verificationDetails.verificationUrl}
@@ -343,7 +343,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                   />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center min-[400px]:items-start">
                   <h5 className="text-[14px] font-bold text-slate-800 mb-1.5">
                     Independent Lab Verification
                   </h5>
@@ -352,7 +352,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                   </p>
 
                   {batch.verificationDetails?.coaReportId && (
-                    <div className="flex items-center gap-2.5 mt-3.5">
+                    <div className="flex flex-col min-[400px]:flex-row items-center gap-2.5 mt-3.5">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Access Code</span>
                       <div
                         onClick={handleCopyAccessCode}
