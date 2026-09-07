@@ -23,7 +23,7 @@ export const ToastProvider = ({ children }) => {
   const addToast = useCallback(({ title, message, type = 'info', duration = 5000 }) => {
     const id = ++nextId;
     const newToast = { id, title, message, type };
-    
+
     setToasts((prev) => [...prev, newToast]);
 
     if (duration !== Infinity && type !== 'loading') {
@@ -47,8 +47,8 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div 
-        aria-live="polite" 
+      <div
+        aria-live="polite"
         className="fixed top-4 right-4 z-50 flex flex-col gap-3 w-full max-w-sm pointer-events-none sm:top-6 sm:right-6"
       >
         {toasts.map((t) => (
@@ -103,8 +103,8 @@ const ToastItem = ({ toast, onDismiss }) => {
   const config = typeConfig[type] || typeConfig.info;
 
   return (
-    <div 
-      className={`pointer-events-auto flex w-full flex-col p-4 rounded-[16px] border shadow-lg animate-fade-in ${config.bgColor} ${config.borderColor}`}
+    <div
+      className={`pointer-events-auto flex w-full flex-col p-4 rounded-[16px] border shadow-lg ${config.bgColor} ${config.borderColor}`}
       style={{ fontFamily: 'Poppins, sans-serif' }}
       role="alert"
     >

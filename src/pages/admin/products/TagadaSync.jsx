@@ -84,7 +84,7 @@ const TagadaSync = () => {
   }, []);
 
   return (
-    <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-navy">Tagada Product Sync</h2>
@@ -224,7 +224,7 @@ const TagadaSync = () => {
                       {preview.map((item, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/60 transition-colors group">
                           <td className="py-4 pl-6 font-medium text-slate-900">{item.productName}</td>
-                          <td className="py-4 text-slate-500">{item.tagadaProductId}</td>
+                          <td className="py-4 text-slate-500">{item.tagadaVariantId || item.tagadaProductId}</td>
                           <td className="py-4">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                               ${item.action === 'created' ? 'bg-green-100 text-green-800' :

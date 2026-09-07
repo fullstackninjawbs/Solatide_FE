@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
-export const Modal = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children, 
+export const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
   maxWidth = 'max-w-md',
   closeOnOutsideClick = true,
   hideCloseButton = false
@@ -45,12 +45,12 @@ export const Modal = ({
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
       onClick={handleBackdropClick}
       style={{ fontFamily: 'Poppins, sans-serif' }}
     >
-      <div 
+      <div
         ref={modalRef}
         role="dialog"
         aria-modal="true"

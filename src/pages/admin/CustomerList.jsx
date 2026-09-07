@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { Search, Users, MoreVertical, Ban, CheckCircle } from 'lucide-react';
+import { Search, Users, Ban, CheckCircle } from 'lucide-react';
 import Pagination from '../../components/Pagination';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 

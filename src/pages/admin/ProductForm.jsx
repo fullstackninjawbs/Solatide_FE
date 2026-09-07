@@ -594,13 +594,13 @@ const ProductForm = () => {
       if (img.altText && img.altText.trim() !== '') {
         return img;
       }
-      
+
       const baseAltText = (formData.name || 'product')
         .toLowerCase()
         .trim()
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '');
-        
+
       const uniqueSuffix = index > 0 ? `-${index + 1}` : '';
       return {
         ...img,
@@ -740,7 +740,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans animate-fade-in" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
 
       {/* Top Header Section */}
       <div className="sticky -top-6 sm:-top-8 pt-6 sm:pt-8 pb-4 z-50 bg-[#f8fafc] -mx-6 sm:-mx-8 px-6 sm:px-8 mb-4 border-b border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -1309,7 +1309,7 @@ const ProductForm = () => {
             {/* Google Search Result Preview */}
             <div className="pt-2 text-left space-y-1">
               <span className="text-[13px] text-[#202124] block leading-none font-sans font-normal">
-                Solatide Biosciences<br/>
+                Solatide Biosciences<br />
                 {SITE_URL} › products › <span className="font-bold">{formData.slug || slugifiedName}</span>
               </span>
               <span className="text-[18px] text-[#1a0dab] hover:underline cursor-pointer font-medium leading-tight font-sans block mt-1">
@@ -1339,7 +1339,7 @@ const ProductForm = () => {
                     {(formData.seo.title || '').length} of 70 characters used
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-[13px] font-medium text-slate-700 mb-1">
                     Meta description
