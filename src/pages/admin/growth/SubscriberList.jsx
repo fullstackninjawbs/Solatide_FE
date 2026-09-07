@@ -73,7 +73,7 @@ const SubscriberList = () => {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in text-left">
+        <div className="space-y-6 text-left">
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
@@ -117,11 +117,10 @@ const SubscriberList = () => {
                                             {sub.source}
                                         </td>
                                         <td className="py-4 px-6 text-center">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                sub.status === 'active' 
-                                                    ? 'bg-green-100 text-green-800' 
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${sub.status === 'active'
+                                                    ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
-                                            }`}>
+                                                }`}>
                                                 {sub.status}
                                             </span>
                                         </td>
