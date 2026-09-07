@@ -2,8 +2,9 @@ import React, { Suspense, lazy, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
-import AdminLayout from '../layouts/AdminLayout'
 import { trackEvent } from '../utils/analytics'
+
+const AdminLayout = lazy(() => import('../layouts/AdminLayout'))
 
 const AdminLogin = lazy(() => import('../pages/admin/AdminLogin'))
 const AdminResetPassword = lazy(() => import('../pages/admin/AdminResetPassword'))
@@ -19,6 +20,7 @@ const CoaList = lazy(() => import('../pages/admin/products/CoaList'))
 const CollectionList = lazy(() => import('../pages/admin/products/CollectionList'))
 const CollectionForm = lazy(() => import('../pages/admin/products/CollectionForm'))
 const ReviewList = lazy(() => import('../pages/admin/growth/ReviewList'))
+const SubscriberList = lazy(() => import('../pages/admin/growth/SubscriberList'))
 const FaqList = lazy(() => import('../pages/admin/content/FaqList'))
 const AnalyticsDashboard = lazy(() => import('../pages/admin/analytics/AnalyticsDashboard'))
 const Home = lazy(() => import('../Redirect/home'))
@@ -71,19 +73,21 @@ const PageViewTracker = () => {
     return null;
 };
 
+const appRole = import.meta.env.VITE_APP_ROLE || 'all';
+const isStore = appRole === 'store' || appRole === 'all';
+const isAdmin = appRole === 'admin' || appRole === 'all';
+
 const AppRoutes = () => {
     return (
         <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
             <PageViewTracker />
             <Routes>
-                {/* Admin Auth Route */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/checkout/success" element={<CheckoutSuccess />} />
-                <Route path="/checkout/failure" element={<CheckoutFailure />} />
-                <Route path="/order/:orderId" element={<OrderStatus />} />
-                <Route path="/admin" element={<AdminLayout />}>
+                {/* Admin Routes */}
+                {isAdmin && (
+                    <>
+                        <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
+                        <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<ProductList />} />
                     <Route path="products/new" element={<ProductForm />} />
@@ -121,6 +125,7 @@ const AppRoutes = () => {
                     <Route path="discounts/new" element={<DiscountForm />} />
                     <Route path="discounts/edit/:id" element={<DiscountForm />} />
                     <Route path="growth/reviews" element={<ReviewList />} />
+                    <Route path="growth/subscribers" element={<SubscriberList />} />
                     <Route path="content/pages" element={
                         <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
                             {React.createElement(lazy(() => import('../pages/admin/content/PageList')))}
@@ -149,10 +154,18 @@ const AppRoutes = () => {
                         </React.Suspense>
                     } />
                     <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
-                </Route>
+                    </Route>
+                    </>
+                )}
 
                 {/* Client-Facing Site Routes */}
-                <Route path="/" element={<MainLayout />}>
+                {isStore && (
+                    <>
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                        <Route path="/checkout/failure" element={<CheckoutFailure />} />
+                        <Route path="/order/:orderId" element={<OrderStatus />} />
+                        <Route path="/" element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path="shop" element={<Shop />} />
                     <Route path="about" element={<About />} />
@@ -188,6 +201,8 @@ const AppRoutes = () => {
 
                     <Route path="*" element={<NotFound />} />
                 </Route>
+                </>
+                )}
             </Routes>
         </Suspense>
     )

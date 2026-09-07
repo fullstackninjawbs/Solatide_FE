@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:store": "cross-env VITE_APP_ROLE=store vite build --outDir dist-store",
+    "build:admin": "cross-env VITE_APP_ROLE=admin vite build --outDir dist-admin"
   },
   "dependencies": {
     "@tagadapay/headless-sdk": "^1.6.0",
@@ -36,6 +38,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.5.0",
+    "cross-env": "^10.1.0",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",

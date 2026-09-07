@@ -641,5 +641,19 @@ export const apiService = {
     return customFetch(`${API_URL}/api/v1/pages/${slug}`, {
       method: 'GET',
     });
+  },
+
+  // ─── Growth & Marketing ──────────────────────────────────────────────────
+  getAdminSubscribers: async (queryString = '') => {
+    return customFetch(`${API_URL}/api/admin/growth/subscribers${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  deleteAdminSubscriber: async (id) => {
+    return customFetch(`${API_URL}/api/admin/growth/subscribers/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
   }
 };

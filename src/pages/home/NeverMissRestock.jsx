@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 const NeverMissRestock = () => {
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
+    const [successMsg, setSuccessMsg] = useState('')
 
     const handleEmailSubmit = async (e) => {
         e.preventDefault()
@@ -22,8 +23,9 @@ const NeverMissRestock = () => {
             });
             const data = await res.json();
             if (res.ok) {
-                toast.success(data.message || 'Successfully subscribed!');
+                setSuccessMsg(data.message || 'Successfully subscribed!');
                 setEmail('');
+                setTimeout(() => setSuccessMsg(''), 4000); // Hide tooltip after 4s
             } else {
                 toast.error(data.message || 'Failed to subscribe. Please try again.');
             }
@@ -63,14 +65,27 @@ const NeverMissRestock = () => {
                         disabled={loading}
                         className="w-full sm:flex-1 h-[46px] rounded-[14px] px-5 bg-[#F5F8FC] border border-[#DEF5FF] text-[14px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/10 focus:border-[#00ADEE] transition-all disabled:opacity-70"
                     />
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full sm:w-auto h-[46px] rounded-[14px] px-8 bg-gradient-to-r from-[#00ADEE] to-[#0079CE] text-white font-semibold text-[14px] flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md shadow-[#00ADEE]/10 cursor-pointer focus:outline-none shrink-0 disabled:opacity-70"
-                    >
-                        {loading ? <Loader2 className="w-4.5 h-4.5 text-white animate-spin" /> : <Send className="w-4.5 h-4.5 text-white" />}
-                        <span>{loading ? 'Subscribing...' : 'Signup'}</span>
-                    </button>
+                    <div className="relative w-full sm:w-auto shrink-0">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full h-[46px] rounded-[14px] px-8 bg-gradient-to-r from-[#00ADEE] to-[#0079CE] text-white font-semibold text-[14px] flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md shadow-[#00ADEE]/10 cursor-pointer focus:outline-none disabled:opacity-70"
+                        >
+                            {loading ? <Loader2 className="w-4.5 h-4.5 text-white animate-spin" /> : <Send className="w-4.5 h-4.5 text-white" />}
+                            <span>{loading ? 'Subscribing...' : 'Subscribe'}</span>
+                        </button>
+                        
+                        {/* Success Tooltip */}
+                        {successMsg && (
+                            <div className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 bg-[#2D3748] text-white text-[12px] font-medium px-3 py-1.5 rounded-lg shadow-xl whitespace-nowrap z-20 animate-fade-in flex items-center gap-1.5">
+                                <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                {successMsg}
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-[5px] border-transparent border-b-[#2D3748]"></div>
+                            </div>
+                        )}
+                    </div>
                 </form>
 
 

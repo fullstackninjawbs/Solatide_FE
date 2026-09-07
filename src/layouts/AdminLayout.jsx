@@ -94,8 +94,16 @@ const AdminLayout = () => {
         { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] }
       ]
     },
-    { name: 'Reviews', path: '/admin/growth/reviews', icon: MessageSquare, roles: ['super_admin', 'operations', 'support', 'admin'] },
-    // { name: 'Newsletter', path: '/admin/growth/newsletter-restock', icon: Mail, roles: ['super_admin', 'operations', 'admin'] },
+    {
+      name: 'Growth',
+      path: '/admin/growth/reviews',
+      icon: MessageSquare,
+      roles: ['super_admin', 'operations', 'support', 'admin'],
+      subItems: [
+        { name: 'Reviews', path: '/admin/growth/reviews', roles: ['super_admin', 'operations', 'support', 'admin'] },
+        { name: 'Subscribers', path: '/admin/growth/subscribers', roles: ['super_admin', 'operations', 'admin'] }
+      ]
+    },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart2, roles: ['super_admin', 'operations', 'admin'] },
     { name: 'Admin Users', path: '/admin/settings/admin-users', icon: UserCog, roles: ['super_admin', 'admin'] },
     { name: 'Settings', path: '/admin/settings/store', icon: Settings, roles: ['super_admin', 'admin'] },
