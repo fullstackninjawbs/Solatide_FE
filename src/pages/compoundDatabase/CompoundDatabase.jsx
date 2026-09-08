@@ -81,7 +81,7 @@ const CompoundDatabase = () => {
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">5-Amino-1MQ</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A selective inhibitor of NNMT studied in preclinical laboratory models. Relevant to cellular energy expenditure, methyl-group flux and downstream metabolic signalling. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
-                                <Link to="/product/5-amino-1mq" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/5-amino-1mq" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                                 <Link to="/research-insight/nnmt-article" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">NNMT Research Article</Link>
                             </div>
                         </div>
@@ -98,7 +98,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A stabilised GHRH analogue studied for growth hormone secretion, hypothalamic-pituitary signalling and visceral adipose tissue research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-tesamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Tesamorelin?</Link>
-                                <Link to="/product/tesamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/tesamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -108,7 +108,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A 29-amino-acid GHRH analogue with stabilising substitutions. Used to study GH pulse dynamics and pituitary somatotroph signalling. Frequently combined with Ipamorelin in laboratory research. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/cjc-1295" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is CJC-1295?</Link>
-                                <Link to="/product/cjc-1295" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/cjc-1295" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -118,7 +118,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A selective ghrelin receptor (GHS-R1a) agonist pentapeptide. Studied for GH secretagogue signalling with high receptor selectivity and minimal effect on cortisol or prolactin in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/ipamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Ipamorelin?</Link>
-                                <Link to="/product/ipamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/ipamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A mitochondrial-derived peptide studied for AMPK activation, metabolic regulation, insulin sensitivity and cellular stress response in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-tesamorelin" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is MOTS-c?</Link>
-                                <Link to="/product/mots-c" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/mots-c" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -144,7 +144,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tetrapeptide that selectively accumulates in the inner mitochondrial membrane. Studied for cardiolipin binding, ETC stabilisation and cellular energy production in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/ss-31" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is SS-31?</Link>
-                                <Link to="/product/ss-31" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/ss-31" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -154,7 +154,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A central coenzyme studied for cellular energy metabolism, sirtuin activation, DNA repair and mitochondrial function in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/nad" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is NAD+?</Link>
-                                <Link to="/product/nad" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/nad" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A C-terminal tripeptide fragment of α-MSH studied for anti-inflammatory signalling, melanocortin receptor interactions and gut epithelial research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/kpv" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is KPV?</Link>
-                                <Link to="/product/kpv" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/kpv" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tuftsin analogue heptapeptide studied for GABAergic pathway modulation, BDNF interactions, immune-neuro crosstalk and anxiolytic-related signalling in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-selank" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Selank?</Link>
-                                <Link to="/product/selank" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/selank" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -216,7 +216,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">An ACTH(4-7) analogue heptapeptide studied for BDNF upregulation, dopaminergic modulation, neuroprotective signalling and cognitive pathway research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/research-insight/semax" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Semax?</Link>
-                                <Link to="/product/semax" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/semax" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>

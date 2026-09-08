@@ -171,6 +171,7 @@ const AppRoutes = () => {
                             <Route path="collections/:handle" element={<Shop />} />
                             <Route path="shop" element={<Shop />} />
                             <Route path="pages/about" element={<About />} />
+                            <Route path="products/:id" element={<ProductDetail />} />
                             <Route path="product/:id" element={<ProductDetail />} />
                             <Route path="review/verify/:token" element={<ReviewVerification />} />
                             <Route path="pages/coa-lab-testing" element={<CoaAndTesting />} />

@@ -81,7 +81,7 @@ export const SearchModal = ({ onClose, navigate }) => {
 
   const handleProductClick = (productId) => {
     onClose();
-    navigate(`/product/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   // Format price using global currency hook

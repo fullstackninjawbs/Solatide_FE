@@ -143,7 +143,7 @@ const Bpc157Content = () => (
       <div className="text-[13.5px] space-y-5">
         <p>Solatide Biosciences offers BPC-157 in multiple formats for laboratory research:</p>
         <ul className="list-disc pl-5 space-y-2 text-[#00D1FF]">
-          <li><Link to="/product/1" className="hover:underline">BPC-157 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
+          <li><Link to="/products/1" className="hover:underline">BPC-157 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
         </ul>
         <p>
           All products are shipped with appropriate handling guidelines. For more information about our <Link to="/collections/all" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
@@ -325,7 +325,7 @@ const Tb500Content = () => (
       <div className="text-[13.5px] space-y-5">
         <p>Solatide Biosciences offers TB-500 in multiple formats for laboratory research:</p>
         <ul className="list-disc pl-5 space-y-2 text-[#00D1FF]">
-          <li><Link to="/product/2" className="hover:underline">TB-500 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
+          <li><Link to="/products/2" className="hover:underline">TB-500 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
         </ul>
         <p>
           For more information about our <Link to="/collections/all" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
@@ -497,7 +497,7 @@ const GhkCuContent = () => (
       <div className="text-[13.5px] space-y-5">
         <p>Solatide Biosciences offers GHK-Cu in multiple formats for laboratory research:</p>
         <ul className="list-disc pl-5 space-y-2 text-[#00D1FF]">
-          <li><Link to="/product/ghk-cu-50mg" className="hover:underline">GHK-Cu 50mg</Link> <span className="text-[#777777]">-- Standard format for dermal and matrix research protocols</span></li>
+          <li><Link to="/products/ghk-cu-50mg" className="hover:underline">GHK-Cu 50mg</Link> <span className="text-[#777777]">-- Standard format for dermal and matrix research protocols</span></li>
         </ul>
       </div>
     </section>

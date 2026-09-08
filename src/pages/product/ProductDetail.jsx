@@ -114,7 +114,7 @@ const ProductDetail = () => {
 
                         // SEO Redirect: If product has a URL handle (slug) and current URL doesn't use it, redirect
                         if (fetchedProduct.slug && id !== fetchedProduct.slug) {
-                            navigate(`/product/${fetchedProduct.slug}`, { replace: true });
+                            navigate(`/products/${fetchedProduct.slug}`, { replace: true });
                             return; // Stop rendering this instance, the route change will re-mount/re-fetch
                         }
 
@@ -218,7 +218,6 @@ const ProductDetail = () => {
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
-    const displayCompareAtPrice = selectedVariant ? selectedVariant.compareAtPrice : product.compareAtPrice;
     const isOutOfStock = (() => {
         if (selectedVariant) {
             const hasStock = (selectedVariant.stockQty ?? 0) > 0;
@@ -230,7 +229,6 @@ const ProductDetail = () => {
         return !hasStock && !canContinueSelling;
     })();
 
-    const hasVariantsToSelect = product.variants && product.variants.length > 0 && !(product.variants.length === 1 && product.variants[0].title === 'Default Title');
 
     return (
         <div className="w-full bg-white py-12">
