@@ -10,19 +10,19 @@ const UsefulLinksSection = () => {
                         Useful Links
                     </h3>
                     <div className="flex flex-wrap items-center gap-[8px]">
-                        <Link to="/coa" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/pages/coa-lab-testing" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             COA & Lab Testing
                         </Link>
-                        <Link to="/faq" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/pages/faq" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             FAQ
                         </Link>
-                        <Link to="/contact" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/pages/contact-us" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             Contact Us
                         </Link>
-                        <Link to="/shipping-policy" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/pages/shipping-policy" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             Shipping Policy
                         </Link>
-                        <Link to="/research-use-disclaimer" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
+                        <Link to="/pages/research-use-disclaimer" className="px-[14px] py-[5px] rounded-[20px] bg-[#EAF3FF] border border-[#c0d8f5] text-[13px] text-[#214A9E] font-medium hover:bg-[#214A9E] hover:text-white transition-colors duration-200">
                             Research Use Disclaimer
                         </Link>
                     </div>

@@ -234,7 +234,7 @@ const CheckoutSuccess = () => {
               {/* Actions */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <Link
-                  to="/shop"
+                  to="/collections/all"
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                     width: '100%', padding: '14px',

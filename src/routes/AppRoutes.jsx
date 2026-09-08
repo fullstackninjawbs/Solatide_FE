@@ -88,73 +88,73 @@ const AppRoutes = () => {
                         <Route path="/admin/login" element={<AdminLogin />} />
                         <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
                         <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="products" element={<ProductList />} />
-                    <Route path="products/new" element={<ProductForm />} />
-                    <Route path="products/edit/:id" element={<ProductForm />} />
-                    <Route path="products/import" element={<AdminProductsImportPage />} />
-                    <Route path="products/tagada-sync" element={<TagadaSync />} />
-                    <Route path="products/inventory" element={<InventoryList />} />
-                    <Route path="products/collections" element={<CollectionList />} />
-                    <Route path="products/collections/new" element={<CollectionForm />} />
-                    <Route path="products/collections/edit/:id" element={<CollectionForm />} />
-                    <Route path="batches" element={<BatchList />} />
-                    <Route path="batches/new" element={<BatchForm />} />
-                    <Route path="batches/:id/edit" element={<BatchForm />} />
-                    <Route path="coas" element={<CoaList />} />
+                            <Route index element={<Dashboard />} />
+                            <Route path="products" element={<ProductList />} />
+                            <Route path="products/new" element={<ProductForm />} />
+                            <Route path="products/edit/:id" element={<ProductForm />} />
+                            <Route path="products/import" element={<AdminProductsImportPage />} />
+                            <Route path="products/tagada-sync" element={<TagadaSync />} />
+                            <Route path="products/inventory" element={<InventoryList />} />
+                            <Route path="products/collections" element={<CollectionList />} />
+                            <Route path="products/collections/new" element={<CollectionForm />} />
+                            <Route path="products/collections/edit/:id" element={<CollectionForm />} />
+                            <Route path="batches" element={<BatchList />} />
+                            <Route path="batches/new" element={<BatchForm />} />
+                            <Route path="batches/:id/edit" element={<BatchForm />} />
+                            <Route path="coas" element={<CoaList />} />
 
-                    <Route path="analytics" element={
-                        <React.Suspense fallback={
-                            <div className="flex h-screen items-center justify-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div>
-                            </div>
-                        }>
-                            <AnalyticsDashboard />
-                        </React.Suspense>
-                    } />
+                            <Route path="analytics" element={
+                                <React.Suspense fallback={
+                                    <div className="flex h-screen items-center justify-center">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div>
+                                    </div>
+                                }>
+                                    <AnalyticsDashboard />
+                                </React.Suspense>
+                            } />
 
-                    <Route path="orders" element={<OrderList />} />
-                    <Route path="orders/new" element={<CreateOrder />} />
-                    <Route path="orders/:id" element={<OrderDetail />} />
-                    <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />
-                    <Route path="orders/shipping-labels" element={<ShippingLabels />} />
-                    <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
-                    <Route path="customers" element={<CustomerList />} />
-                    <Route path="customers/:id" element={<CustomerDetail />} />
-                    <Route path="discounts" element={<DiscountList />} />
-                    <Route path="discounts/new" element={<DiscountForm />} />
-                    <Route path="discounts/edit/:id" element={<DiscountForm />} />
-                    <Route path="growth/reviews" element={<ReviewList />} />
-                    <Route path="growth/subscribers" element={<SubscriberList />} />
-                    <Route path="content/pages" element={
-                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                            {React.createElement(lazy(() => import('../pages/admin/content/PageList')))}
-                        </React.Suspense>
-                    } />
-                    <Route path="content/pages/new" element={
-                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                            {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
-                        </React.Suspense>
-                    } />
-                    <Route path="content/pages/edit/:id" element={
-                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                            {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
-                        </React.Suspense>
-                    } />
-                    <Route path="content/faqs" element={<FaqList />} />
-                    <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
-                    <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
-                    <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
-                    <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
-                    <Route path="settings/store" element={<StoreSettings />} />
-                    <Route path="settings/admin-users" element={<AdminUsers />} />
-                    <Route path="settings/shipping-packages" element={
-                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                            {React.createElement(lazy(() => import('../pages/admin/settings/ShippingPackages')))}
-                        </React.Suspense>
-                    } />
-                    <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
-                    </Route>
+                            <Route path="orders" element={<OrderList />} />
+                            <Route path="orders/new" element={<CreateOrder />} />
+                            <Route path="orders/:id" element={<OrderDetail />} />
+                            <Route path="orders/drafts" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Draft Orders (Phase 4)</div>} />
+                            <Route path="orders/shipping-labels" element={<ShippingLabels />} />
+                            <Route path="orders/abandoned" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Abandoned Checkouts (Phase 4)</div>} />
+                            <Route path="customers" element={<CustomerList />} />
+                            <Route path="customers/:id" element={<CustomerDetail />} />
+                            <Route path="discounts" element={<DiscountList />} />
+                            <Route path="discounts/new" element={<DiscountForm />} />
+                            <Route path="discounts/edit/:id" element={<DiscountForm />} />
+                            <Route path="growth/reviews" element={<ReviewList />} />
+                            <Route path="growth/subscribers" element={<SubscriberList />} />
+                            <Route path="content/pages" element={
+                                <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                                    {React.createElement(lazy(() => import('../pages/admin/content/PageList')))}
+                                </React.Suspense>
+                            } />
+                            <Route path="content/pages/new" element={
+                                <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                                    {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                                </React.Suspense>
+                            } />
+                            <Route path="content/pages/edit/:id" element={
+                                <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                                    {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                                </React.Suspense>
+                            } />
+                            <Route path="content/faqs" element={<FaqList />} />
+                            <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
+                            <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
+                            <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
+                            <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
+                            <Route path="settings/store" element={<StoreSettings />} />
+                            <Route path="settings/admin-users" element={<AdminUsers />} />
+                            <Route path="settings/shipping-packages" element={
+                                <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                                    {React.createElement(lazy(() => import('../pages/admin/settings/ShippingPackages')))}
+                                </React.Suspense>
+                            } />
+                            <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
+                        </Route>
                     </>
                 )}
 
@@ -166,42 +166,45 @@ const AppRoutes = () => {
                         <Route path="/checkout/failure" element={<CheckoutFailure />} />
                         <Route path="/order/:orderId" element={<OrderStatus />} />
                         <Route path="/" element={<MainLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="shop" element={<Shop />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="product/:id" element={<ProductDetail />} />
-                    <Route path="review/verify/:token" element={<ReviewVerification />} />
-                    <Route path="coa" element={<CoaAndTesting />} />
-                    <Route path="calculator" element={<ConcentrationCalculator />} />
-                    <Route path="contact" element={<ContactUs />} />
-                    <Route path="/ResearchPage" element={<ResearchPage />} />
-                    <Route path="research-resource" element={<ResearchResource />} />
-                    <Route path="resource" element={<ResearchResource />} />
-                    <Route path="faq" element={<Faq />} />
-                    <Route path="/research-insight" element={<ResearchInsight />} />
-                    <Route path="shipping-policy" element={<ShippingPolicy />} />
-                    <Route path="privacy" element={<PrivacyPolicy />} />
-                    <Route path="/view-document" element={<ViewDocument />} />
-                    <Route path="/affiliate-pro" element={<AffiliatePro />} />
+                            <Route index element={<Home />} />
+                            <Route path="collections/all" element={<Shop />} />
+                            <Route path="shop" element={<Shop />} />
+                            <Route path="pages/about" element={<About />} />
+                            <Route path="product/:id" element={<ProductDetail />} />
+                            <Route path="review/verify/:token" element={<ReviewVerification />} />
+                            <Route path="pages/coa-lab-testing" element={<CoaAndTesting />} />
+                            <Route path="coa" element={<CoaAndTesting />} />
+                            <Route path="pages/concentration-calculator" element={<ConcentrationCalculator />} />
+                            <Route path="pages/contact-us" element={<ContactUs />} />
+                            <Route path="contact" element={<ContactUs />} />
+                            <Route path="/ResearchPage" element={<ResearchPage />} />
+                            <Route path="pages/research-library" element={<ResearchResource />} />
+                            <Route path="pages/faq" element={<Faq />} />
+                            <Route path="faq" element={<Faq />} />
+                            <Route path="/research-insight" element={<ResearchInsight />} />
+                            <Route path="pages/shipping-policy" element={<ShippingPolicy />} />
+                            <Route path="/pages/privacy-policy" element={<PrivacyPolicy />} />
+                            <Route path="/pages/coa" element={<ViewDocument />} />
+                            <Route path="/pages/affiliate-pro" element={<AffiliatePro />} />
 
-                    {/* Missing Footer Routes */}
-                    <Route path="peptides-guide" element={<PeptidesGuide />} />
-                    <Route path="compound-database" element={<CompoundDatabase />} />
-                    <Route path="coa-reports" element={<CoaReports />} />
-                    <Route path="terms" element={<Terms />} />
-                    <Route path="research-use-disclaimer" element={<ResearchUseDisclaimer />} />
-                    <Route path="returns" element={<Returns />} />
+                            {/* Missing Footer Routes */}
+                            <Route path="pages/research-peptides-guide" element={<PeptidesGuide />} />
+                            <Route path="pages/research-compound-database" element={<CompoundDatabase />} />
+                            <Route path="pages/coa" element={<CoaReports />} />
+                            <Route path="pages/terms" element={<Terms />} />
+                            <Route path="pages/research-use-disclaimer" element={<ResearchUseDisclaimer />} />
+                            <Route path="pages/returns" element={<Returns />} />
 
-                    {/* Custom Pages */}
-                    <Route path="page/:slug" element={
-                        <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                            {React.createElement(lazy(() => import('../pages/DynamicPage')))}
-                        </React.Suspense>
-                    } />
+                            {/* Custom Pages */}
+                            <Route path="page/:slug" element={
+                                <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
+                                    {React.createElement(lazy(() => import('../pages/DynamicPage')))}
+                                </React.Suspense>
+                            } />
 
-                    <Route path="*" element={<NotFound />} />
-                </Route>
-                </>
+                            <Route path="*" element={<NotFound />} />
+                        </Route>
+                    </>
                 )}
             </Routes>
         </Suspense>

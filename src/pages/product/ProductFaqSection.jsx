@@ -93,7 +93,7 @@ const ProductFaqSection = () => {
                     </h2>
                 </div>
                 <Link
-                    to="/about"
+                    to="/pages/about"
                     className="text-[#214A9E] hover:underline text-[14px] font-semibold"
                 >
                     For complete information, see our full FAQ page

@@ -216,7 +216,7 @@ const ShippingPolicy = () => {
                             </h2>
                             <div className="space-y-3 text-[#6A6A6A] text-[15px] leading-[1.7]">
                                 <p>
-                                    Once dispatched, you will receive an email with tracking information. Use this to monitor your shipment's progress. For order status questions, <Link to="/contact" className="text-[#00E5FF] font-semibold hover:underline">contact our team</Link>.
+                                    Once dispatched, you will receive an email with tracking information. Use this to monitor your shipment's progress. For order status questions, <Link to="/pages/contact-us" className="text-[#00E5FF] font-semibold hover:underline">contact our team</Link>.
                                 </p>
                             </div>
                         </section>
@@ -243,7 +243,7 @@ const ShippingPolicy = () => {
                                     <li>Legal consequences arising from non-compliance with local regulations</li>
                                 </ul>
                                 <p>
-                                    Review our <Link to="/research-use-disclaimer" className="text-[#00E5FF] font-semibold hover:underline">Research Use Disclaimer</Link> for more information about buyer responsibilities.
+                                    Review our <Link to="/pages/research-use-disclaimer" className="text-[#00E5FF] font-semibold hover:underline">Research Use Disclaimer</Link> for more information about buyer responsibilities.
                                 </p>
                             </div>
                         </section>
@@ -258,7 +258,7 @@ const ShippingPolicy = () => {
                             </h2>
                             <div className="space-y-3 text-[#6A6A6A] text-[15px] leading-[1.7]">
                                 <p>
-                                    If your order arrives damaged or does not arrive within the expected timeframe, refer to our <Link to="/returns" className="text-[#00E5FF] font-semibold hover:underline">Refunds & Returns Policy</Link>.
+                                    If your order arrives damaged or does not arrive within the expected timeframe, refer to our <Link to="/pages/returns" className="text-[#00E5FF] font-semibold hover:underline">Refunds & Returns Policy</Link>.
                                 </p>
                                 <p>
                                     For damaged items, contact us within 40 hours of delivery with your order number and clear photographic evidence of the damaged product and shipping box.
@@ -292,13 +292,13 @@ const ShippingPolicy = () => {
                             <div className="text-[13px] leading-[1.7]">
                                 <ul className="list-disc pl-5 space-y-2 text-[#6A6A6A] font-medium">
                                     <li>
-                                        <Link to="/contact" className="text-[#00E5FF] hover:underline">Contact Us</Link>
+                                        <Link to="/pages/contact-us" className="text-[#00E5FF] hover:underline">Contact Us</Link>
                                     </li>
                                     <li>
-                                        <Link to="/faq" className="text-[#00E5FF] hover:underline">FAQ</Link>
+                                        <Link to="/pages/faq" className="text-[#00E5FF] hover:underline">FAQ</Link>
                                     </li>
                                     <li>
-                                        <Link to="/coa" className="text-[#00E5FF] hover:underline">COA & Lab Testing</Link>
+                                        <Link to="/pages/coa-lab-testing" className="text-[#00E5FF] hover:underline">COA & Lab Testing</Link>
                                     </li>
                                 </ul>
                             </div>

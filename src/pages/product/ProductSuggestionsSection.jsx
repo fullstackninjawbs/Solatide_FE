@@ -66,7 +66,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                     </h2>
                 </div>
                 <Link
-                    to="/shop"
+                    to="/collections/all"
                     className="text-[#008fe2] hover:text-[#007cc5] text-[14px] font-bold flex items-center gap-1.5 transition-colors focus:outline-none mt-2 sm:mt-0"
                 >
                     <span className="whitespace-nowrap">View All Product</span>

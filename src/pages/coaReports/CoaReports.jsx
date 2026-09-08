@@ -19,7 +19,7 @@ const CoaReports = () => {
                         const productName = batch.productId?.name || (batch.products && batch.products.length > 0 ? batch.products[0].name : '');
                         const amountStr = batch.amount ? ` ${batch.amount}${batch.unit || ''}` : '';
                         const titleName = productName ? `${productName}${amountStr}`.trim() : (batch.displayName || batch.batchId);
-                        
+
                         return {
                             id: batch._id,
                             title: titleName,
@@ -112,87 +112,87 @@ const CoaReports = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredData.map(item => (
                             <div key={item.id} className="bg-white rounded-[14px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-                            {/* Image Container */}
-                            {/* Image Container */}
-                            <div className="p-4 pb-0 relative">
-                                <div className="h-[150px] w-full bg-white border border-slate-200 rounded-[10px] overflow-hidden relative">
-                                    {item.imageUrl && item.status === 'Verified' ? (
-                                        <img
-                                            src={item.imageUrl}
-                                            alt={`Certificate of Analysis for ${item.title}`}
-                                            className="w-full h-full object-cover object-top"
-                                        />
-                                    ) : (
-                                        <>
-                                            {/* Simulated Document */}
-                                            <div className={`w-full h-full bg-white shadow-sm p-3 flex flex-col gap-2 ${item.status === 'Pending' ? 'opacity-30 blur-[1px]' : 'opacity-80'}`}>
-                                                <div className="h-1.5 w-1/3 bg-[#ff9999] rounded"></div>
-                                                <div className="h-1 w-1/4 bg-slate-200 rounded"></div>
-                                                <div className="w-full h-px bg-slate-100 my-1"></div>
-                                                <div className="flex gap-2 mb-2">
-                                                    <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
-                                                    <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                {/* Image Container */}
+                                {/* Image Container */}
+                                <div className="p-4 pb-0 relative">
+                                    <div className="h-[150px] w-full bg-white border border-slate-200 rounded-[10px] overflow-hidden relative">
+                                        {item.imageUrl && item.status === 'Verified' ? (
+                                            <img
+                                                src={item.imageUrl}
+                                                alt={`Certificate of Analysis for ${item.title}`}
+                                                className="w-full h-full object-cover object-top"
+                                            />
+                                        ) : (
+                                            <>
+                                                {/* Simulated Document */}
+                                                <div className={`w-full h-full bg-white shadow-sm p-3 flex flex-col gap-2 ${item.status === 'Pending' ? 'opacity-30 blur-[1px]' : 'opacity-80'}`}>
+                                                    <div className="h-1.5 w-1/3 bg-[#ff9999] rounded"></div>
+                                                    <div className="h-1 w-1/4 bg-slate-200 rounded"></div>
+                                                    <div className="w-full h-px bg-slate-100 my-1"></div>
+                                                    <div className="flex gap-2 mb-2">
+                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                                        <div className="h-6 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm"></div>
+                                                    </div>
+                                                    <div className="h-12 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm mt-auto"></div>
                                                 </div>
-                                                <div className="h-12 w-full bg-[#f1f5f9] border border-slate-200 rounded-sm mt-auto"></div>
-                                            </div>
 
-                                            {/* Watermark */}
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] transform -rotate-[25deg] pointer-events-none">
-                                                <span className="text-4xl font-black tracking-widest text-slate-900">PUBLIC COPY</span>
-                                            </div>
-                                        </>
-                                    )}
+                                                {/* Watermark */}
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] transform -rotate-[25deg] pointer-events-none">
+                                                    <span className="text-4xl font-black tracking-widest text-slate-900">PUBLIC COPY</span>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {/* Status Tag overlay */}
+                                    <div className="absolute top-1.5 right-1.5">
+                                        {item.status === 'Verified' ? (
+                                            <span className="bg-[#ebfbf3] text-[#1bb05e] border border-[#a6ebd4] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
+                                                {item.purity}
+                                            </span>
+                                        ) : (
+                                            <span className="bg-[#fff7ed] text-[#f97316] border border-[#ffedd5] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
+                                                Pending
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
-                                {/* Status Tag overlay */}
-                                <div className="absolute top-1.5 right-1.5">
-                                    {item.status === 'Verified' ? (
-                                        <span className="bg-[#ebfbf3] text-[#1bb05e] border border-[#a6ebd4] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
-                                            {item.purity}
-                                        </span>
-                                    ) : (
-                                        <span className="bg-[#fff7ed] text-[#f97316] border border-[#ffedd5] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide shadow-sm">
-                                            Pending
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                                {/* Card Content */}
+                                <div className="p-5 flex flex-col flex-1">
+                                    <div className="mb-4">
+                                        <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
+                                        <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{item.title}</h3>
+                                        <p className="text-slate-500 text-[12px] font-medium mt-1">Batch: {item.batchNumber}</p>
+                                    </div>
 
-                            {/* Card Content */}
-                            <div className="p-5 flex flex-col flex-1">
-                                <div className="mb-4">
-                                    <span className="text-[#01ACEE] font-extrabold text-[9px] uppercase tracking-[0.15em] mb-1.5 block">COA DOCUMENT</span>
-                                    <h3 className="text-[#214A9E] text-[17px] font-bold leading-tight">{item.title}</h3>
-                                    <p className="text-slate-500 text-[12px] font-medium mt-1">Batch: {item.batchNumber}</p>
-                                </div>
-
-                                <div className="mt-auto mb-5 space-y-1.5">
-                                    <p className="text-[13px] font-semibold text-slate-600">
-                                        Purity: {item.purity ? item.purity : <span className="font-normal text-slate-400">TBD</span>}
-                                    </p>
-                                    {item.endotoxin && (
-                                        <p className="text-[12px] text-slate-500 font-medium">
-                                            Endotoxin: {item.endotoxin}
+                                    <div className="mt-auto mb-5 space-y-1.5">
+                                        <p className="text-[13px] font-semibold text-slate-600">
+                                            Purity: {item.purity ? item.purity : <span className="font-normal text-slate-400">TBD</span>}
                                         </p>
+                                        {item.endotoxin && (
+                                            <p className="text-[12px] text-slate-500 font-medium">
+                                                Endotoxin: {item.endotoxin}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {item.status === 'Verified' ? (
+                                        <button
+                                            onClick={() => setSelectedCoa(item)}
+                                            className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white hover:bg-[#0165ab] shadow-sm"
+                                        >
+                                            View COA
+                                        </button>
+                                    ) : (
+                                        <button className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold transition-colors border border-slate-200 bg-[#f8fafc] text-slate-400 cursor-not-allowed">
+                                            View COA
+                                        </button>
                                     )}
                                 </div>
-
-                                {item.status === 'Verified' ? (
-                                    <button
-                                        onClick={() => setSelectedCoa(item)}
-                                        className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white hover:bg-[#0165ab] shadow-sm"
-                                    >
-                                        View COA
-                                    </button>
-                                ) : (
-                                    <button className="w-full text-center py-2.5 rounded-[8px] text-[13px] font-bold transition-colors border border-slate-200 bg-[#f8fafc] text-slate-400 cursor-not-allowed">
-                                        View COA
-                                    </button>
-                                )}
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
                 )}
             </div>
 
@@ -201,10 +201,10 @@ const CoaReports = () => {
                 <div className="bg-[#f8fafd] border border-[#d9e5f3] p-5 rounded-[8px]">
                     <h4 className="text-[#214A9E] font-bold text-[13px] mb-4">Support pages</h4>
                     <div className="flex flex-wrap gap-2.5">
-                        <Link to="/contact" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Contact Us</Link>
-                        <Link to="/faq" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">FAQ</Link>
-                        <Link to="/peptides-guide" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Research Peptides Guide</Link>
-                        <Link to="/compound-database" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Research Compound Database</Link>
+                        <Link to="/pages/contact-us" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Contact Us</Link>
+                        <Link to="/pages/faq" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">FAQ</Link>
+                        <Link to="/pages/research-peptides-guide" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Research Peptides Guide</Link>
+                        <Link to="/pages/research-compound-database" className="bg-[#ebf2fc] text-[#214A9E] border border-[#d1e0f3] px-4 py-1.5 rounded-full text-[12px] hover:bg-[#e1ecfa] transition-colors">Research Compound Database</Link>
                     </div>
                 </div>
             </div>

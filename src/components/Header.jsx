@@ -102,7 +102,7 @@ const Header = () => {
     const isHome = location.pathname === '/'
 
     const navData = [
-        { name: 'Shop', path: '/shop', direct: true },
+        { name: 'Shop', path: '/collections/all', direct: true },
         {
             name: 'COA & Testing',
             mega: [
@@ -110,8 +110,8 @@ const Header = () => {
                     title: 'COA & Testing',
                     icon: ShieldCheck,
                     links: [
-                        { name: 'COA & Third-Party Testing', desc: 'Learn about our testing process, quality standards and batch documentation.', path: '/coa', icon: FileText },
-                        { name: 'COA Library', desc: 'View available Certificates of Analysis, batch reports and documentation.', path: '/view-document', icon: FileText }
+                        { name: 'COA & Third-Party Testing', desc: 'Learn about our testing process, quality standards and batch documentation.', path: '/pages/coa-lab-testing', icon: FileText },
+                        { name: 'COA Library', desc: 'View available Certificates of Analysis, batch reports and documentation.', path: '/pages/coa', icon: FileText }
                     ]
                 }
             ]
@@ -123,11 +123,11 @@ const Header = () => {
                     title: 'Resources',
                     icon: BookOpen,
                     links: [
-                        { name: 'Peptide Guide', desc: 'Educational guide to research peptides, categories, handling and terminology.', path: '/peptides-guide', icon: Book },
-                        { name: 'Compound Index', desc: 'Browse compounds by category and research pathway.', path: '/compound-database', icon: FlaskConical },
-                        { name: 'Research Calculator', desc: 'Laboratory calculator for concentration and dosing calculations.', path: '/calculator', icon: Calculator },
-                        { name: 'FAQ', desc: 'Answers to common questions about orders, shipping, testing and more.', path: '/faq', icon: HelpCircle },
-                        { name: 'All Resources', desc: 'Access all research articles, guides, references and tools.', path: '/research-resource', icon: Folder }
+                        { name: 'Peptide Guide', desc: 'Educational guide to research peptides, categories, handling and terminology.', path: '/pages/research-peptides-guide', icon: Book },
+                        { name: 'Compound Index', desc: 'Browse compounds by category and research pathway.', path: '/pages/research-compound-database', icon: FlaskConical },
+                        { name: 'Research Calculator', desc: 'Laboratory calculator for concentration and dosing calculations.', path: '/pages/concentration-calculator', icon: Calculator },
+                        { name: 'FAQ', desc: 'Answers to common questions about orders, shipping, testing and more.', path: '/pages/faq', icon: HelpCircle },
+                        { name: 'All Resources', desc: 'Access all research articles, guides, references and tools.', path: '/pages/research-library', icon: Folder }
                     ]
                 }
             ]
@@ -139,15 +139,15 @@ const Header = () => {
                     title: 'About',
                     icon: User,
                     links: [
-                        { name: 'About Us', path: '/about', icon: User },
-                        { name: 'Affiliate Program', path: '/affiliate-pro', icon: Users },
-                        { name: 'Shipping Policy', path: '/shipping-policy', icon: Truck },
-                        { name: 'Returns & Refunds', path: '/returns', icon: RotateCcw }
+                        { name: 'About Us', path: '/pages/about', icon: User },
+                        { name: 'Affiliate Program', path: '/pages/affiliate-pro', icon: Users },
+                        { name: 'Shipping Policy', path: '/pages/shipping-policy', icon: Truck },
+                        { name: 'Returns & Refunds', path: '/pages/returns', icon: RotateCcw }
                     ]
                 }
             ]
         },
-        { name: 'Contact Us', path: '/contact', direct: true },
+        { name: 'Contact Us', path: '/pages/contact-us', direct: true },
     ]
 
     const isActive = (path) => location.pathname === path

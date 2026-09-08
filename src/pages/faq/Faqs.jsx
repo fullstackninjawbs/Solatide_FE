@@ -164,19 +164,19 @@ const Faqs = () => {
                             <ul className="space-y-3 pl-1">
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/contact" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Contact Us</Link>
+                                    <Link to="/pages/contact-us" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Contact Us</Link>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/shipping-policy" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link>
+                                    <Link to="/pages/shipping-policy" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Shipping Policy</Link>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/coa" className="text-[14px] text-[#00E5FF] hover:underline font-medium">COA & Lab Testing</Link>
+                                    <Link to="/pages/coa-lab-testing" className="text-[14px] text-[#00E5FF] hover:underline font-medium">COA & Lab Testing</Link>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <div className="w-1 h-1 rounded-full bg-[#00E5FF]"></div>
-                                    <Link to="/research-use-disclaimer" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Research Use Disclaimer</Link>
+                                    <Link to="/pages/research-use-disclaimer" className="text-[14px] text-[#00E5FF] hover:underline font-medium">Research Use Disclaimer</Link>
                                 </li>
                             </ul>
                         </div>

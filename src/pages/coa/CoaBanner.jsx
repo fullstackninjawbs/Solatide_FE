@@ -152,10 +152,10 @@ const CoaBanner = () => {
                         Related Resources
                     </h2>
                     <ul className="list-disc pl-5 text-[14.5px] text-[#00E5FF] leading-[2] font-semibold space-y-1">
-                        <li><Link to="/contact-us" className="hover:underline hover:text-[#00c9e0] transition-colors">Contact Us</Link></li>
-                        <li><Link to="/faq" className="hover:underline hover:text-[#00c9e0] transition-colors">FAQ</Link></li>
-                        <li><Link to="/peptides-guide" className="hover:underline hover:text-[#00c9e0] transition-colors">Research Peptides Guide</Link></li>
-                        <li><Link to="/compound-database" className="hover:underline hover:text-[#00c9e0] transition-colors">Research Compound Database</Link></li>
+                        <li><Link to="/pages/contact-us" className="hover:underline hover:text-[#00c9e0] transition-colors">Contact Us</Link></li>
+                        <li><Link to="/pages/faq" className="hover:underline hover:text-[#00c9e0] transition-colors">FAQ</Link></li>
+                        <li><Link to="/pages/research-peptides-guide" className="hover:underline hover:text-[#00c9e0] transition-colors">Research Peptides Guide</Link></li>
+                        <li><Link to="/pages/research-compound-database" className="hover:underline hover:text-[#00c9e0] transition-colors">Research Compound Database</Link></li>
                     </ul>
                 </section>
 

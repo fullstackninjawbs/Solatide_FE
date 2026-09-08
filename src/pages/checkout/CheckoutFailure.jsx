@@ -73,7 +73,7 @@ const CheckoutFailure = () => {
                 <RefreshCw size={16} /> Try Again
               </Link>
               <Link
-                to="/shop"
+                to="/collections/all"
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                   width: '100%', padding: '14px',

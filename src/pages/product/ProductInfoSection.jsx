@@ -102,7 +102,7 @@ const ProductInfoSection = ({ product }) => {
                                                 </div>
                                             </div>
                                             <p className="text-[11.5px] text-slate-400 leading-[1.6] font-medium mt-5 pt-1">
-                                                Batch-specific third-party documentation available. Reports may include testing from independent laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. View our <Link to="/coa" className="text-[#0079CD] hover:underline font-bold">COA & Lab Testing page</Link> for details.
+                                                Batch-specific third-party documentation available. Reports may include testing from independent laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. View our <Link to="/pages/coa-lab-testing" className="text-[#0079CD] hover:underline font-bold">COA & Lab Testing page</Link> for details.
                                             </p>
                                         </div>
                                     ) : (

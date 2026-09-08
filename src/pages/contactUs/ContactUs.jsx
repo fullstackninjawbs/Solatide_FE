@@ -83,7 +83,7 @@ const ContactUs = () => {
                         <li>Information on use outside legitimate in-vitro research purposes</li>
                     </ul>
                     <p className="text-[14px] text-slate-500 font-sans">
-                        All products are supplied strictly for <strong className="text-slate-700">research use only</strong>. For more information, please read our <Link to="/research-use-disclaimer" className="text-[#00bfef] hover:underline">Research Use Disclaimer</Link>.
+                        All products are supplied strictly for <strong className="text-slate-700">research use only</strong>. For more information, please read our <Link to="/pages/research-use-disclaimer" className="text-[#00bfef] hover:underline">Research Use Disclaimer</Link>.
                     </p>
                 </div>
 
@@ -91,10 +91,10 @@ const ContactUs = () => {
                 <div>
                     <h2 className="text-[26px] md:text-[30px] text-slate-500 mb-5 tracking-tight">Useful Links</h2>
                     <ul className="list-disc pl-5 space-y-1.5 text-[14px] font-sans text-[#00bfef]">
-                        <li><Link to="/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
-                        <li><Link to="/coa" className="hover:underline">COA & Lab Testing</Link></li>
-                        <li><Link to="/faq" className="hover:underline">FAQ</Link></li>
-                        <li><Link to="/research-use-disclaimer" className="hover:underline">Research Use Disclaimer</Link></li>
+                        <li><Link to="/pages/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
+                        <li><Link to="/pages/coa-lab-testing" className="hover:underline">COA & Lab Testing</Link></li>
+                        <li><Link to="/pages/faq" className="hover:underline">FAQ</Link></li>
+                        <li><Link to="/pages/research-use-disclaimer" className="hover:underline">Research Use Disclaimer</Link></li>
                     </ul>
                 </div>
 

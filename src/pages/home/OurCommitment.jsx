@@ -65,10 +65,10 @@ const OurCommitment = () => {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <Link to="/shop">
+                            <Link to="/collections/all">
                                 <CommonButton title="Explore Products" width="180px" showArrow={true} />
                             </Link>
-                            <Link to="/coa" className="text-[#1a4494] font-bold text-[14px] hover:underline px-2 py-2">
+                            <Link to="/pages/coa-lab-testing" className="text-[#1a4494] font-bold text-[14px] hover:underline px-2 py-2">
                                 View documentation process
                             </Link>
                         </div>

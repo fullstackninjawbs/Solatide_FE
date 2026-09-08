@@ -31,10 +31,10 @@ const WhatMakesUsDifferentSection = () => {
                                 Available COA and laboratory documentation is organised through Solatide’s COA & Lab Testing page, helping researchers review batch information at the product or batch level where available.
                             </p>
                             <div className="flex flex-wrap items-center gap-4 mt-auto">
-                                <Link to="/shop">
+                                <Link to="/collections/all">
                                     <CommonButton title="Shop Now" width="160px" showArrow={true} />
                                 </Link>
-                                <Link to="/coa" className="text-[#1a4494] font-bold text-[14px] hover:underline">Verify batch documentation</Link>
+                                <Link to="/pages/coa-lab-testing" className="text-[#1a4494] font-bold text-[14px] hover:underline">Verify batch documentation</Link>
                             </div>
                         </div>
                     </div>

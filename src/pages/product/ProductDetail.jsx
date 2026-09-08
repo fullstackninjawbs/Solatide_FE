@@ -164,7 +164,7 @@ const ProductDetail = () => {
         return (
             <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 text-slate-500 font-medium">
                 <p>Product not found</p>
-                <Link to="/shop" className="mt-4 text-[#214A9E] hover:underline font-semibold">Back to Shop</Link>
+                <Link to="/collections/all" className="mt-4 text-[#214A9E] hover:underline font-semibold">Back to Shop</Link>
             </div>
         );
     }
@@ -239,7 +239,7 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins' }}>
                     <Link to="/" className="text-[#214A9E] hover:underline">Home</Link>
                     <span>/</span>
-                    <Link to="/shop" className="text-[#214A9E] hover:underline">Shop</Link>
+                    <Link to="/collections/all" className="text-[#214A9E] hover:underline">Shop</Link>
                     <span>/</span>
                     <span className="text-slate-700">{product.name}</span>
                 </div>

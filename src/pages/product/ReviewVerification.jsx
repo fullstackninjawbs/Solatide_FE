@@ -68,7 +68,7 @@ const ReviewVerification = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
               <button 
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate('/collections/all')}
                 className="bg-[#008060] hover:bg-[#006e52] text-white px-6 py-2.5 rounded font-medium transition-colors"
               >
                 Continue Shopping
@@ -95,7 +95,7 @@ const ReviewVerification = () => {
               Review already verified.
             </p>
             <button 
-              onClick={() => navigate('/shop')}
+              onClick={() => navigate('/collections/all')}
               className="bg-[#008060] hover:bg-[#006e52] text-white px-6 py-2.5 rounded font-medium transition-colors w-full sm:w-auto"
             >
               Back to Shop
@@ -118,7 +118,7 @@ const ReviewVerification = () => {
             </p>
             <div className="flex flex-col gap-3 w-full sm:w-auto">
               <button 
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate('/collections/all')}
                 className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2.5 rounded font-medium transition-colors w-full"
               >
                 Back to Website

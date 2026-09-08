@@ -158,7 +158,7 @@ const Testimonials = () => {
                             </p>
 
                             <div className="bg-[#ECFDF5]/50 border border-[#D1FAE5] rounded p-4 text-left">
-                                <Link to="/shop" className="text-[14px] text-[#111827] font-medium underline underline-offset-4 hover:text-[#008B74] transition-colors">
+                                <Link to="/collections/all" className="text-[14px] text-[#111827] font-medium underline underline-offset-4 hover:text-[#008B74] transition-colors">
                                     {selectedReview.product}
                                 </Link>
                             </div>

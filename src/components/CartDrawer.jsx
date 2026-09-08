@@ -92,7 +92,7 @@ const CartDrawer = () => {
                             <button
                                 onClick={() => {
                                     setIsCartOpen(false);
-                                    navigate('/shop');
+                                    navigate('/collections/all');
                                 }}
                                 className="mt-2 text-[#008fe2] font-semibold hover:text-[#007cc5] transition-colors"
                             >

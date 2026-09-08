@@ -146,7 +146,7 @@ const Bpc157Content = () => (
           <li><Link to="/product/1" className="hover:underline">BPC-157 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
         </ul>
         <p>
-          All products are shipped with appropriate handling guidelines. For more information about our <Link to="/shop" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
+          All products are shipped with appropriate handling guidelines. For more information about our <Link to="/collections/all" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
         </p>
       </div>
     </section>
@@ -175,7 +175,7 @@ const Bpc157Content = () => (
       </ul>
       
       <p className="mt-8 text-[13px] text-slate-400 italic leading-relaxed">
-        All BPC-157 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/coa" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
+        All BPC-157 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
       </p>
     </section>
   </>
@@ -328,7 +328,7 @@ const Tb500Content = () => (
           <li><Link to="/product/2" className="hover:underline">TB-500 10mg</Link> <span className="text-[#777777]">-- Standard format for research protocols</span></li>
         </ul>
         <p>
-          For more information about our <Link to="/shop" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
+          For more information about our <Link to="/collections/all" className="text-[#00D1FF] hover:underline">research peptide catalogue</Link>, visit our collections page.
         </p>
       </div>
     </section>
@@ -357,7 +357,7 @@ const Tb500Content = () => (
       </ul>
       
       <p className="mt-8 text-[13px] text-slate-400 italic leading-relaxed">
-        All TB-500 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/coa" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
+        All TB-500 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
       </p>
     </section>
   </>

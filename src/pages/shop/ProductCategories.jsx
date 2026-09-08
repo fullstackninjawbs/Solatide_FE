@@ -145,7 +145,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                                                     <span>
                                                         {item}
                                                         {item.includes('GHK-Cu') && (
-                                                            <Link to="/coa" className="text-[#00bfef] hover:underline font-semibold ml-1.5">
+                                                            <Link to="/pages/coa-lab-testing" className="text-[#00bfef] hover:underline font-semibold ml-1.5">
                                                                 Learn more about GHK-Cu
                                                             </Link>
                                                         )}
@@ -224,7 +224,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                         {/* Bottom Link */}
                         <div className="text-left mt-12">
                             <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
-                                New to research peptides? View our <Link to="/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
+                                New to research peptides? View our <Link to="/pages/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
                             </p>
                         </div>
                     </div>
@@ -306,7 +306,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                         {!isHome && (
                             <div className="text-left">
                                 <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
-                                    New to research peptides? View our <Link to="/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
+                                    New to research peptides? View our <Link to="/pages/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
                                 </p>
                             </div>
                         )}

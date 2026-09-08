@@ -175,7 +175,7 @@ const Returns = () => {
                         <section id="contact" className="scroll-mt-32">
                             <h2 className="text-[22px] font-bold text-[#214A9E] mb-6">Contact Support</h2>
                             <div className="text-[14.5px] leading-[1.8] text-slate-600 space-y-4">
-                                <p>For all order enquiries, <Link to="/contact" className="text-[#38bdf8] hover:underline cursor-pointer">contact our team</Link> via Telegram or email. Please have your order number ready for faster processing.</p>
+                                <p>For all order enquiries, <Link to="/pages/contact-us" className="text-[#38bdf8] hover:underline cursor-pointer">contact our team</Link> via Telegram or email. Please have your order number ready for faster processing.</p>
                             </div>
                         </section>
                     </div>

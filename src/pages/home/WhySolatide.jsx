@@ -38,13 +38,13 @@ const WhySolatide = () => {
 
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                             <Link
-                                to="/shop"
+                                to="/collections/all"
                                 className="bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:bg-[#0098d1] text-white text-[14px] font-semibold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 tracking-wide"
                             >
                                 Shop Now <span>→</span>
                             </Link>
                             <Link
-                                to="/view-document"
+                                to="/pages/coa"
                                 className="text-[#1a4494] text-[14px] font-extrabold py-2 px-0 sm:py-3.5 sm:px-4 transition-all hover:opacity-80 w-full text-center sm:text-left sm:w-auto"
                             >
                                 Verify batch documentation

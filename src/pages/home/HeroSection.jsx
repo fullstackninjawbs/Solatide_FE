@@ -150,10 +150,10 @@ const HeroSection = () => {
                                 Solatide Biosciences delivers research grade peptides and laboratory solutions for researchers who demand purity, consistency, and results.
                             </p>
                             <div className="flex flex-row items-center justify-center gap-4 mb-2">
-                                <Link to="/shop" className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px' }}>
+                                <Link to="/collections/all" className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px' }}>
                                     Shop Peptides →
                                 </Link>
-                                <Link to="/view-document" className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 transition-all border w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px', borderColor: '#007DD0' }}>
+                                <Link to="/pages/coa" className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 transition-all border w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px', borderColor: '#007DD0' }}>
                                     <FileText size={18} strokeWidth={2.5} /> View Documents →
                                 </Link>
                             </div>
@@ -181,7 +181,7 @@ const HeroSection = () => {
                                 <div className="flex flex-col sm:flex-row items-start gap-2 min-[360px]:gap-2.5 sm:gap-3.5 mb-2 lg:mb-8">
 
                                     <Link
-                                        to="/shop"
+                                        to="/collections/all"
                                         className="h-[40px] min-[360px]:h-[46px] inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
                                         style={{
                                             borderRadius: '9999px',
@@ -195,7 +195,7 @@ const HeroSection = () => {
                                     </Link>
 
                                     <Link
-                                        to="/view-document"
+                                        to="/pages/coa"
                                         className="h-[40px] min-[360px]:h-[46px] inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 active:bg-slate-100 transition-all duration-200 whitespace-nowrap border w-full sm:w-[210px]"
                                         style={{
                                             borderRadius: '9999px',

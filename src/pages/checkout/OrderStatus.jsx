@@ -45,7 +45,7 @@ const OrderStatus = () => {
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
                 <div className="text-red-500 mb-4 text-lg">{error || 'Order not found'}</div>
-                <Link to="/shop" className="text-blue-600 hover:underline">Return to Shop</Link>
+                <Link to="/collections/all" className="text-blue-600 hover:underline">Return to Shop</Link>
             </div>
         );
     }
@@ -76,7 +76,7 @@ const OrderStatus = () => {
                         </h1>
                         <p className="text-[13px] text-gray-500 mt-1">Confirmed {orderDate}</p>
                     </div>
-                    <Link to="/shop" className="bg-[#102a5c] text-white rounded-lg shadow-md px-6 py-2.5 text-[14px] font-semibold hover:bg-[#0c2048] transition-all duration-200">
+                    <Link to="/collections/all" className="bg-[#102a5c] text-white rounded-lg shadow-md px-6 py-2.5 text-[14px] font-semibold hover:bg-[#0c2048] transition-all duration-200">
                         Buy again
                     </Link>
                 </div>
@@ -203,11 +203,11 @@ const OrderStatus = () => {
             {/* Footer Links */}
             <footer className="mt-16 border-t border-gray-200 py-6 text-center">
                 <div className="flex flex-wrap justify-center gap-4 px-4 text-[13px] text-blue-600">
-                    <Link to="/returns" className="hover:underline">Refund policy</Link>
-                    <Link to="/shipping-policy" className="hover:underline">Shipping</Link>
-                    <Link to="/privacy" className="hover:underline">Privacy policy</Link>
-                    <Link to="/terms" className="hover:underline">Terms of service</Link>
-                    <Link to="/contact" className="hover:underline">Contact information</Link>
+                    <Link to="/pages/returns" className="hover:underline">Refund policy</Link>
+                    <Link to="/pages/shipping-policy" className="hover:underline">Shipping</Link>
+                    <Link to="/pages/privacy-policy" className="hover:underline">Privacy policy</Link>
+                    <Link to="/pages/terms" className="hover:underline">Terms of service</Link>
+                    <Link to="/pages/contact-us" className="hover:underline">Contact information</Link>
                 </div>
             </footer>
         </div>
