@@ -7,7 +7,7 @@ const ProductCategories = () => {
             id: 1,
             title: 'Metabolic Pathway Research',
             description: 'Compounds selected for metabolic pathway research and related studies',
-            path: '/shop/metabolic',
+            path: '/collections/glp-1-metabolic-peptides',
             icon: (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 6.56M20 3v5h-5.586" />
@@ -18,7 +18,7 @@ const ProductCategories = () => {
             id: 2,
             title: 'Tissue & Cellular Research',
             description: 'Research compounds studied in recovery and tissue-response models',
-            path: '/shop/tissue',
+            path: '/collections/tissue-cellular-research-peptides',
             icon: (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 10V21m0-11a5 5 0 015-5h2m-7 5a5 5 0 00-5-5H7" />
@@ -29,7 +29,7 @@ const ProductCategories = () => {
             id: 3,
             title: 'Dermal & Pigmentation Research',
             description: 'Peptides used in dermal and pigmentation-focused research environments',
-            path: '/shop/dermal',
+            path: '/collections/dermal-pigmentation-research',
             icon: (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6L12 3L20 6L12 9L4 6Z" />
@@ -42,7 +42,7 @@ const ProductCategories = () => {
             id: 4,
             title: 'Research Solutions',
             description: 'Supporting compounds and materials for laboratory-based research',
-            path: '/shop/solutions',
+            path: '/collections/research-solutions',
             icon: (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 3h12m-3 0v4l4 9.5a1.5 1.5 0 01-1.38 2.08H6.38A1.5 1.5 0 015 16.5L9 7V3" />

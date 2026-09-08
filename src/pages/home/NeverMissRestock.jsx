@@ -124,7 +124,7 @@ const NeverMissRestock = () => {
 
 
                         <a
-                            href="#"
+                            href="https://t.me/solatidebioscienceschannel"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full sm:w-auto h-[40px] px-6 rounded-[12px] bg-gradient-to-r from-[#00ADEE] to-[#0079CE] hover:opacity-95 text-white font-semibold text-[13.5px] flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#00ADEE]/10 whitespace-nowrap"

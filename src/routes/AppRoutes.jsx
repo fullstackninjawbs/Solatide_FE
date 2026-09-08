@@ -168,6 +168,7 @@ const AppRoutes = () => {
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />
                             <Route path="collections/all" element={<Shop />} />
+                            <Route path="collections/:handle" element={<Shop />} />
                             <Route path="shop" element={<Shop />} />
                             <Route path="pages/about" element={<About />} />
                             <Route path="product/:id" element={<ProductDetail />} />

@@ -22,34 +22,34 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
             id: 1,
             title: 'Metabolic Pathway Research',
             description: 'Compounds selected for metabolic pathway research and related studies',
-            path: '/shop?category=glp-1-metabolic-peptides',
+            path: '/collections/glp-1-metabolic-peptides',
             icon: '/g3327 (1).webp'
         },
         {
             id: 2,
             title: 'Tissue & Cellular Research',
             description: 'Research compounds studied in recovery and tissue-response models',
-            path: '/shop?category=tissue-cellular-research-peptides',
+            path: '/collections/tissue-cellular-research-peptides',
             icon: '/Frame.webp'
         },
         {
             id: 3,
             title: 'Dermal & Pigmentation Research',
             description: 'Peptides used in dermal and pigmentation-focused research environments',
-            path: '/shop?category=dermal-pigmentation-research',
+            path: '/collections/dermal-pigmentation-research',
             icon: '/Group.webp'
         },
         {
             id: 4,
             title: 'Research Solutions',
             description: 'Supporting compounds and materials for laboratory-based research',
-            path: '/shop?category=research-solutions',
+            path: '/collections/research-solutions',
             icon: '/Frame (1).webp'
         }
     ];
 
     const categoryDetails = {
-        'metabolic-pathway': {
+        'glp-1-metabolic-peptides': {
             name: 'Metabolic Pathway Research',
             description: 'Metabolic research peptides for laboratory investigation of glucose homeostasis, energy regulation, and incretin receptor pathways. This collection includes selective Metabolic receptor agonists, dual Metabolic/GIP agonists, triple agonist peptides, amylin receptor research compounds, small-molecule metabolic research tools, and laboratory reconstitution solvents used to study metabolic signalling, receptor crosstalk, and integrated pathway regulation in experimental models.',
             featuredTitle: 'Featured Research Compounds',
@@ -64,7 +64,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
             types: 'Selective GIP/GLP-1 receptor agonists, triple receptor agonists (GLP-1/GIP/Glucagon), and amylin receptor antagonists in sterile lyophilized form.',
             resources: 'Refer to the Solatide Peptide Reconstitution Database, HPLC/MS Spectral library, and peer-reviewed journals on molecular endocrinology.'
         },
-        'tissue-cellular': {
+        'tissue-cellular-research-peptides': {
             name: 'Tissue & Cellular Research',
             description: 'Tissue & Cellular Research peptides for laboratory investigation of tissue repair mechanisms, cellular recovery pathways, and regenerative processes. This collection includes peptides used to study wound healing cascades, angiogenesis, growth factor signalling, and extracellular matrix remodelling in experimental models. Research applications include tissue repair studies, cellular migration assays, angiogenesis research, actin-binding investigations, and growth factor pathway analysis. All compounds are supplied as analytical reference standards for in-vitro laboratory use only.',
             featuredTitle: 'Featured Research Compounds',
@@ -77,7 +77,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
             types: 'Repair pentadecapeptides (BPC-157), thymosin fragments (TB-500), and custom research blends.',
             resources: 'Review third-party analytical reports, laboratory cell culture manuals, and literature databases on cellular biology.'
         },
-        'dermal-pigmentation': {
+        'dermal-pigmentation-research': {
             name: 'Dermal & Pigmentation Research',
             description: 'Dermal and pigmentation research peptides for laboratory investigation of melanocortin receptor pathways, copper-peptide complexes, and cellular signalling mechanisms. This collection includes compounds used to study MC1R, MC3R, MC4R, and MC5R receptor activation, melanogenesis pathways, growth factor signalling, and collagen synthesis regulation in experimental models. Research applications include melanocortin receptor binding assays, pigmentation mechanism studies, copper-dependent biological processes, extracellular matrix remodelling, and cellular differentiation research. All compounds are supplied as analytical reference standards for in-vitro laboratory use only.',
             featuredTitle: 'Featured Research Compounds',

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import ShopBanner from '../pages/shop/ShopBanner';
 import ProductCategories from '../pages/shop/ProductCategories';
 import ShopProducts from '../pages/shop/ShopProducts';
@@ -7,22 +7,30 @@ import ShopFaq from '../pages/shop/ShopFaq';
 
 const Shop = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const { handle } = useParams();
+    const navigate = useNavigate();
+    
     const categoryQuery = searchParams.get('category');
 
-    const selectedCategory = categoryQuery || 'all-products';
+    let selectedCategory = 'all-products';
+    if (handle && handle !== 'all') {
+        selectedCategory = handle;
+    } else if (categoryQuery) {
+        selectedCategory = categoryQuery;
+    }
 
     const setSelectedCategory = (categorySlug) => {
         if (categorySlug && categorySlug !== 'all-products') {
-            setSearchParams({ category: categorySlug });
+            navigate(`/collections/${categorySlug}`);
         } else {
-            setSearchParams({});
+            navigate(`/collections/all`);
         }
     };
 
     // Scroll to top when category changes
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [categoryQuery]);
+    }, [handle, categoryQuery]);
 
     return (
         <div className="w-full min-h-screen">
