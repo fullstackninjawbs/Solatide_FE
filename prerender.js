@@ -79,7 +79,10 @@ const server = app.listen(0, async () => {
             // Wait an extra second to guarantee react-helmet has mutated the head
             await new Promise(r => setTimeout(r, 1000));
             
-            const html = await page.content();
+            let html = await page.content();
+            
+            // Clean up: Remove the hardcoded index.html title so we don't have duplicates
+            html = html.replace('<title>Solatide Biosciences – Research Grade Peptides</title>', '');
             
             // Determine file path
             let routeDir;
