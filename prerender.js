@@ -57,7 +57,7 @@ if (!fs.existsSync(distDir)) {
 
 const app = express();
 app.use(express.static(distDir));
-app.get('*', (req, res) => {
+app.use((req, res) => {
     res.sendFile(path.resolve(distDir, 'index.html'));
 });
 
