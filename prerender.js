@@ -65,7 +65,10 @@ const server = app.listen(0, async () => {
     const port = server.address().port;
     console.log(`Started local server on port ${port} for prerendering...`);
     
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({ 
+        headless: 'new',
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     
     for (const route of routes) {
         try {
