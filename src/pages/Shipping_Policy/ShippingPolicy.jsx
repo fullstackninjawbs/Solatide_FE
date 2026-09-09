@@ -258,7 +258,7 @@ const ShippingPolicy = () => {
                             </h2>
                             <div className="space-y-3 text-[#6A6A6A] text-[15px] leading-[1.7]">
                                 <p>
-                                    If your order arrives damaged or does not arrive within the expected timeframe, refer to our <Link to="/pages/returns" className="text-[#00E5FF] font-semibold hover:underline">Refunds & Returns Policy</Link>.
+                                    If your order arrives damaged or does not arrive within the expected timeframe, refer to our <Link to="/pages/refund-policy" className="text-[#00E5FF] font-semibold hover:underline">Refunds & Returns Policy</Link>.
                                 </p>
                                 <p>
                                     For damaged items, contact us within 40 hours of delivery with your order number and clear photographic evidence of the damaged product and shipping box.

@@ -178,7 +178,7 @@ const ResearchUseDisclaimer = () => {
                         <Link to="/pages/shipping-policy" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
                             <span className="text-[14px]">📦</span> Shipping Policy
                         </Link>
-                        <Link to="/pages/returns" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
+                        <Link to="/pages/refund-policy" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
                             <span className="text-[14px]">🔄</span> Refund Policy
                         </Link>
                         <Link to="/pages/coa-lab-testing" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">

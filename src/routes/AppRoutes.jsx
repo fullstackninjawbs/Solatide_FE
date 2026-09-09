@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
+import StaticSEO from '../components/StaticSEO'
 
 const AdminLayout = lazy(() => import('../layouts/AdminLayout'))
 
@@ -81,6 +82,7 @@ const AppRoutes = () => {
     return (
         <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
             <PageViewTracker />
+            <StaticSEO />
             <Routes>
                 {/* Admin Routes */}
                 {isAdmin && (
@@ -195,7 +197,7 @@ const AppRoutes = () => {
                             <Route path="pages/coa" element={<CoaReports />} />
                             <Route path="pages/terms" element={<Terms />} />
                             <Route path="pages/research-use-disclaimer" element={<ResearchUseDisclaimer />} />
-                            <Route path="pages/returns" element={<Returns />} />
+                            <Route path="pages/refund-policy" element={<Returns />} />
 
                             {/* Custom Pages */}
                             <Route path="page/:slug" element={

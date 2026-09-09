@@ -203,7 +203,7 @@ const OrderStatus = () => {
             {/* Footer Links */}
             <footer className="mt-16 border-t border-gray-200 py-6 text-center">
                 <div className="flex flex-wrap justify-center gap-4 px-4 text-[13px] text-blue-600">
-                    <Link to="/pages/returns" className="hover:underline">Refund policy</Link>
+                    <Link to="/pages/refund-policy" className="hover:underline">Refund policy</Link>
                     <Link to="/pages/shipping-policy" className="hover:underline">Shipping</Link>
                     <Link to="/pages/privacy-policy" className="hover:underline">Privacy policy</Link>
                     <Link to="/pages/terms" className="hover:underline">Terms of service</Link>

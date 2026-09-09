@@ -111,7 +111,7 @@ const Terms = () => {
                     {/* Disclaimer Banner */}
                     <div className="bg-[#fff9f2] border-l-[3px] border-[#ea580c] p-7 rounded-r-xl mb-14 shadow-sm">
                         <p className="text-[#9a3412] text-[13.5px] leading-[1.8] font-medium">
-                            <span className="font-bold text-[#ea580c]">Disclaimer:</span> By accessing or using the Services, or by placing an order with Solatide Biosciences ("we", "us", "our"), you agree to be bound by these Terms together with our <Link to="/pages/privacy-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Privacy Policy</Link>, <Link to="/pages/shipping-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Shipping Policy</Link>, <Link to="/pages/returns" className="text-[#38bdf8] hover:underline cursor-pointer">Refund Policy</Link>, <Link to="/pages/research-use-disclaimer" className="text-[#38bdf8] hover:underline cursor-pointer">Research Use Disclaimer</Link>, and any other policies or notices posted on our website from time to time.<br /><br />
+                            <span className="font-bold text-[#ea580c]">Disclaimer:</span> By accessing or using the Services, or by placing an order with Solatide Biosciences ("we", "us", "our"), you agree to be bound by these Terms together with our <Link to="/pages/privacy-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Privacy Policy</Link>, <Link to="/pages/shipping-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Shipping Policy</Link>, <Link to="/pages/refund-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Refund Policy</Link>, <Link to="/pages/research-use-disclaimer" className="text-[#38bdf8] hover:underline cursor-pointer">Research Use Disclaimer</Link>, and any other policies or notices posted on our website from time to time.<br /><br />
                             If you do not agree to these Terms, you must not access or use the Services.
                         </p>
                     </div>
@@ -294,7 +294,7 @@ const Terms = () => {
                         <section id="refunds" className="scroll-mt-32">
                             <h2 className="text-[22px] font-bold text-[#214A9E] mb-6">Refunds, returns, and remedies</h2>
                             <div className="text-[14.5px] leading-[1.8] text-slate-600 space-y-4">
-                                <p>Refunds, returns, and replacements are governed by our <Link to="/pages/returns" className="text-[#38bdf8] hover:underline cursor-pointer">Refund Policy</Link> and by any rights you may have under the Australian Consumer Law or other non-excludable laws.</p>
+                                <p>Refunds, returns, and replacements are governed by our <Link to="/pages/refund-policy" className="text-[#38bdf8] hover:underline cursor-pointer">Refund Policy</Link> and by any rights you may have under the Australian Consumer Law or other non-excludable laws.</p>
                                 <p>Subject to those laws:</p>
                                 <ul className="list-disc pl-5 space-y-2 marker:text-slate-400">
                                     <li>we do not accept change-of-mind returns;</li>
