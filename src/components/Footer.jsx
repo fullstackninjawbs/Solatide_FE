@@ -84,7 +84,7 @@ function Footer() {
                         <p className="text-[14px] text-[#969CA4] leading-[1.6]">
                             Solatide Biosciences supplies analytical reference standards and laboratory consumables for in-vitro laboratory research use only.
                         </p>
-                        <div className="mt-5 text-[14px] text-[#969CA4] text-slate-300 leading-relaxed">
+                        <div className="mt-5 text-[14px] text-slate-300 leading-relaxed">
                             <p>contact@solatidebiosciences.com.au</p>
                             <p>Melbourne, Victoria, Australia</p>
                         </div>
@@ -92,7 +92,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-2">
                         <h4 className="text-[20px] text-white mb-6">Quick Links</h4>
-                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-slate-300">
                             <li><Link to="/" className="hover:text-white transition-colors duration-200">Home</Link></li>
                             <li><Link to="/collections/all" className="hover:text-white transition-colors duration-200">Shop Peptides</Link></li>
                             <li><Link to="/pages/about" className="hover:text-white transition-colors duration-200">About Us</Link></li>
@@ -102,7 +102,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-3">
                         <h4 className="text-[20px] text-white mb-6">Resources</h4>
-                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-slate-300">
                             <li><Link to="/pages/research-library" className="hover:text-white transition-colors duration-200">Research Resources</Link></li>
                             <li><Link to="/pages/research-peptides-guide" className="hover:text-white transition-colors duration-200">Research Peptides Guide</Link></li>
                             <li><Link to="/pages/research-compound-database" className="hover:text-white transition-colors duration-200">Compound Index</Link></li>
@@ -113,7 +113,7 @@ function Footer() {
 
                     <div className="col-span-1 md:col-span-3">
                         <h4 className="text-[20px] text-white mb-6">Support & Policies</h4>
-                        <ul className="space-y-4 text-[14px] text-[#969CA4] text-slate-300">
+                        <ul className="space-y-4 text-[14px] text-slate-300">
                             <li><Link to="/pages/shipping-policy" className="hover:text-white transition-colors duration-200">Shipping Policy</Link></li>
                             <li><Link to="/pages/terms" className="hover:text-white transition-colors duration-200">Terms of Services</Link></li>
                             <li><Link to="/pages/refund-policy" className="hover:text-white transition-colors duration-200">Returns & Refunds</Link></li>
