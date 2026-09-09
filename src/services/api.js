@@ -1,5 +1,7 @@
 const getApiUrl = () => {
-
+  if (import.meta.env.PROD) {
+    return ''; // Relative path so it calls whatever domain the user is currently on!
+  }
   return import.meta.env.VITE_API_URL || 'http://localhost:5001';
 };
 
