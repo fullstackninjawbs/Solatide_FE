@@ -55,10 +55,14 @@ if (!fs.existsSync(distDir)) {
     process.exit(1);
 }
 
+// Save a backup of the pure index.html to use as the template for all routes
+const templatePath = path.resolve(distDir, 'template.html');
+fs.copyFileSync(path.resolve(distDir, 'index.html'), templatePath);
+
 const app = express();
 app.use(express.static(distDir));
 app.use((req, res) => {
-    res.sendFile(path.resolve(distDir, 'index.html'));
+    res.sendFile(templatePath);
 });
 
 const server = app.listen(0, async () => {
@@ -81,8 +85,8 @@ const server = app.listen(0, async () => {
             
             let html = await page.content();
             
-            // Clean up: Remove the hardcoded index.html title so we don't have duplicates
-            html = html.replace('<title>Solatide Biosciences – Research Grade Peptides</title>', '');
+            // Clean up: Aggressively remove the hardcoded index.html title to guarantee no duplicates
+            html = html.replace(/<title>Solatide Biosciences[ \-–|]+Research Grade Peptides.*?<\/title>/gi, '');
             
             // Determine file path
             let routeDir;
@@ -106,5 +110,11 @@ const server = app.listen(0, async () => {
     
     await browser.close();
     server.close();
+    
+    // Clean up our temporary template file
+    if (fs.existsSync(templatePath)) {
+        fs.unlinkSync(templatePath);
+    }
+    
     console.log('🎉 Prerendering complete!');
 });
