@@ -61,6 +61,27 @@ fs.copyFileSync(path.resolve(distDir, 'index.html'), templatePath);
 
 const app = express();
 app.use(express.static(distDir));
+
+// Proxy /api requests to the real backend so the frontend can fetch products during prerendering
+app.use('/api', async (req, res) => {
+    try {
+        const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
+        const fetchRes = await fetch(`${apiUrl}/api${req.url}`, {
+            method: req.method,
+            headers: {
+                ...req.headers,
+                host: new URL(apiUrl).host
+            }
+        });
+        const data = await fetchRes.arrayBuffer();
+        res.status(fetchRes.status);
+        fetchRes.headers.forEach((value, key) => res.setHeader(key, value));
+        res.send(Buffer.from(data));
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
+
 app.use((req, res) => {
     res.sendFile(templatePath);
 });
@@ -116,15 +137,27 @@ const server = app.listen(0, async () => {
                 // 1. Remove dynamically injected GTM scripts so they don't duplicate when a user visits the static page
                 document.querySelectorAll('script[src*="gtm.js"]').forEach(s => s.remove());
                 
-                // 2. react-helmet-async prepends new tags. Keep ONLY the first (newest) tag and delete the old/default ones.
-                const titles = document.querySelectorAll('title');
-                for (let i = 1; i < titles.length; i++) titles[i].remove();
+                // 2. Keep ONLY the tag managed by react-helmet-async (data-rh="true")
+                const titles = Array.from(document.querySelectorAll('title'));
+                if (titles.length > 1) {
+                    const helmetTitle = titles.find(t => t.hasAttribute('data-rh'));
+                    const titleToKeep = helmetTitle || titles[titles.length - 1]; // fallback to last if no helmet
+                    titles.forEach(t => { if (t !== titleToKeep) t.remove(); });
+                }
                 
-                const metas = document.querySelectorAll('meta[name="description"]');
-                for (let i = 1; i < metas.length; i++) metas[i].remove();
+                const metas = Array.from(document.querySelectorAll('meta[name="description"]'));
+                if (metas.length > 1) {
+                    const helmetMeta = metas.find(m => m.hasAttribute('data-rh'));
+                    const metaToKeep = helmetMeta || metas[metas.length - 1];
+                    metas.forEach(m => { if (m !== metaToKeep) m.remove(); });
+                }
                 
-                const canonicals = document.querySelectorAll('link[rel="canonical"]');
-                for (let i = 1; i < canonicals.length; i++) canonicals[i].remove();
+                const canonicals = Array.from(document.querySelectorAll('link[rel="canonical"]'));
+                if (canonicals.length > 1) {
+                    const helmetCanonical = canonicals.find(c => c.hasAttribute('data-rh'));
+                    const canonicalToKeep = helmetCanonical || canonicals[canonicals.length - 1];
+                    canonicals.forEach(c => { if (c !== canonicalToKeep) c.remove(); });
+                }
             });
             
             let html = await page.content();

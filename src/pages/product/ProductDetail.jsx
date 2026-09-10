@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import retatrutideVial from '../../assets/images/retatrutide_vial.webp';
 import { products } from '../../data/products';
 import ProductInfoSection from './ProductInfoSection';
@@ -19,6 +19,8 @@ import { getProductImageAltText } from '../../utils/imageHelpers';
 
 
 
+import { Helmet } from 'react-helmet-async';
+
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -37,42 +39,7 @@ const ProductDetail = () => {
         window.scrollTo(0, 0);
     }, [id]);
 
-    // Dynamic SEO / Head tags update
-    useEffect(() => {
-        if (product) {
-            const originalTitle = document.title;
-            const metaDescEl = document.querySelector('meta[name="description"]');
-            const originalMetaDesc = metaDescEl ? metaDescEl.getAttribute('content') : '';
-
-            // Set Title
-            document.title = product.seo?.title || `${product.name} | Solatide Biosciences`;
-
-            // Set Description
-            let targetDesc = product.seo?.description || product.summaryHtml || '';
-            // Strip HTML tags if any
-            targetDesc = targetDesc.replace(/<[^>]*>/g, '').trim();
-            if (!targetDesc) {
-                targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
-            }
-
-            if (metaDescEl) {
-                metaDescEl.setAttribute('content', targetDesc);
-            } else {
-                const newMeta = document.createElement('meta');
-                newMeta.setAttribute('name', 'description');
-                newMeta.setAttribute('content', targetDesc);
-                document.head.appendChild(newMeta);
-            }
-
-            return () => {
-                document.title = originalTitle;
-                if (metaDescEl && originalMetaDesc) {
-                    metaDescEl.setAttribute('content', originalMetaDesc);
-                }
-            };
-        }
-    }, [product]);
-
+    // Remove manual DOM manipulation for SEO, we will use Helmet instead
     useEffect(() => {
         if (product && product.variants && product.variants.length > 0) {
             setSelectedVariant(product.variants[0]);
@@ -230,8 +197,36 @@ const ProductDetail = () => {
     })();
 
 
+    const location = useLocation();
+    const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith('/') 
+        ? location.pathname.slice(0, -1) 
+        : location.pathname;
+
+    let targetDesc = product?.seo?.description || product?.summaryHtml || '';
+    targetDesc = targetDesc.replace(/<[^>]*>/g, '').trim();
+    if (!targetDesc && product) {
+        targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
+    }
+    
+    const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+        ? 'https://solatidebiosciences.com.au'
+        : window.location.origin;
+    const canonicalUrl = `${origin}${normalizedPath}`;
+
     return (
         <div className="w-full bg-white py-12">
+            {product && (
+                <Helmet>
+                    <title>{product.seo?.title || `${product.name} | Solatide Biosciences`}</title>
+                    <meta name="description" content={targetDesc} />
+                    <link rel="canonical" href={canonicalUrl} />
+                    <meta property="og:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
+                    <meta property="og:description" content={targetDesc} />
+                    <meta property="og:url" content={canonicalUrl} />
+                    <meta name="twitter:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
+                    <meta name="twitter:description" content={targetDesc} />
+                </Helmet>
+            )}
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumbs */}
                 <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins' }}>
