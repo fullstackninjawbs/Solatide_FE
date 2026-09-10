@@ -175,8 +175,12 @@ const StaticSEO = () => {
 
     if (!seo) return null;
 
-    // Use dynamic domain for canonical URL
-    const canonicalUrl = `${window.location.origin}${path}`;
+    // Prevent canonical from capturing localhost during build-time prerendering
+    const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+        ? 'https://solatidebiosciences.com.au'
+        : window.location.origin;
+        
+    const canonicalUrl = `${origin}${path}`;
 
     return (
         <Helmet>

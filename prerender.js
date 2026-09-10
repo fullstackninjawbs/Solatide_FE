@@ -83,10 +83,23 @@ const server = app.listen(0, async () => {
             // Wait an extra second to guarantee react-helmet has mutated the head
             await new Promise(r => setTimeout(r, 1000));
             
-            let html = await page.content();
+            // Clean up the DOM before capturing HTML
+            await page.evaluate(() => {
+                // 1. Remove dynamically injected GTM scripts so they don't duplicate when a user visits the static page
+                document.querySelectorAll('script[src*="gtm.js"]').forEach(s => s.remove());
+                
+                // 2. react-helmet-async prepends new tags. Keep ONLY the first (newest) tag and delete the old/default ones.
+                const titles = document.querySelectorAll('title');
+                for (let i = 1; i < titles.length; i++) titles[i].remove();
+                
+                const metas = document.querySelectorAll('meta[name="description"]');
+                for (let i = 1; i < metas.length; i++) metas[i].remove();
+                
+                const canonicals = document.querySelectorAll('link[rel="canonical"]');
+                for (let i = 1; i < canonicals.length; i++) canonicals[i].remove();
+            });
             
-            // Clean up: Aggressively remove the hardcoded index.html title to guarantee no duplicates
-            html = html.replace(/<title>Solatide Biosciences[ \-–|]+Research Grade Peptides.*?<\/title>/gi, '');
+            let html = await page.content();
             
             // Determine file path
             let routeDir;
