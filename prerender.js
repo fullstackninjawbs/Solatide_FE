@@ -74,6 +74,34 @@ const server = app.listen(0, async () => {
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     
+    // Dynamically fetch product routes from the backend API
+    try {
+        try {
+            process.loadEnvFile(path.resolve(__dirname, '.env'));
+        } catch (e) {}
+        const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
+        
+        console.log(`Fetching dynamic product routes from ${apiUrl}...`);
+        const res = await fetch(`${apiUrl}/api/products`);
+        const data = await res.json();
+        const products = Array.isArray(data) ? data : (data.products || data.data || []);
+        
+        let count = 0;
+        for (const product of products) {
+            if (product.slug) {
+                routes.push(`/products/${product.slug}`);
+                count++;
+            } else if (product.id || product._id) {
+                routes.push(`/products/${product.slug || product.id || product._id}`);
+                count++;
+            }
+        }
+        console.log(`✅ Added ${count} product routes for prerendering!`);
+    } catch (e) {
+        console.error('❌ Failed to fetch dynamic product routes from API:', e.message);
+        console.error('Ensure your backend server is running on port 5000 during the build!');
+    }
+    
     for (const route of routes) {
         try {
             console.log(`Prerendering ${route}...`);
