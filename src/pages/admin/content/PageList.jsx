@@ -56,7 +56,8 @@ const PageList = () => {
   };
 
   const copyUrl = (slug) => {
-    const url = `${window.location.origin}/page/${slug}`;
+    const baseUrl = import.meta.env.VITE_STOREFRONT_URL || window.location.origin;
+    const url = `${baseUrl}/page/${slug}`;
     navigator.clipboard.writeText(url);
     toast.success('Page URL copied');
   };
@@ -173,7 +174,7 @@ const PageList = () => {
                             <LinkIcon className="h-4 w-4" />
                           </button>
                           <a 
-                            href={`/page/${page.slug}`}
+                            href={`${import.meta.env.VITE_STOREFRONT_URL || ''}/page/${page.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex p-1.5 text-slate-400 hover:text-brand-navy hover:bg-slate-100 rounded-lg transition-colors"
