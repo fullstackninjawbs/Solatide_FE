@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Eye, X, CheckCircle2, ShieldCheck, ZoomIn, ZoomOut } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { X, ZoomIn, ZoomOut } from 'lucide-react'
 import { API_URL } from '../../services/api';
 
 const CertificatesAnalysis = () => {
