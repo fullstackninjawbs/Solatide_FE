@@ -105,7 +105,17 @@ const server = app.listen(0, async () => {
         console.log(`Fetching dynamic product routes from ${apiUrl}...`);
         const res = await fetch(`${apiUrl}/api/products`);
         const data = await res.json();
-        const products = Array.isArray(data) ? data : (data.products || data.data || []);
+        
+        let products = [];
+        if (Array.isArray(data)) {
+            products = data;
+        } else if (data.products && Array.isArray(data.products)) {
+            products = data.products;
+        } else if (data.data && Array.isArray(data.data.products)) {
+            products = data.data.products;
+        } else if (data.data && Array.isArray(data.data)) {
+            products = data.data;
+        }
         
         let count = 0;
         for (const product of products) {
