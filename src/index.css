@@ -30,6 +30,24 @@ body,
   }
 }
 
+/* Ensure dynamic page buttons (links) do not get default prose underlines */
+.prose a[class*="bg-"],
+.prose a[class*="border-"],
+.prose a[class*="btn"],
+.prose a[class*="button"],
+.prose a[style*="background"],
+.prose a[style*="border"] {
+  text-decoration: none !important;
+}
+
+/* Remove default link hover styles if it looks like a button */
+.prose a[class*="bg-"]:hover,
+.prose a[class*="border-"]:hover,
+.prose a[class*="btn"]:hover,
+.prose a[class*="button"]:hover {
+  text-decoration: none !important;
+}
+
 @layer utilities {
   .animate-marquee {
     animation: marquee 30s linear infinite;

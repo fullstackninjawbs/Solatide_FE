@@ -4,6 +4,13 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    { pattern: /bg-(blue|slate|brand|red|green|yellow)-(50|100|200|500|600|700|800|900)/ },
+    { pattern: /text-(blue|slate|brand|red|green|yellow)-(50|100|200|500|600|700|800|900)/ },
+    { pattern: /border-(blue|slate|brand|red|green|yellow)-(50|100|200|500|600|700|800|900)/ },
+    'rounded-lg', 'rounded-xl', 'rounded-2xl', 'rounded-full', 'rounded-3xl', 'rounded-[30px]',
+    'p-2', 'p-3', 'p-4', 'p-5', 'p-6', 'p-8', 'px-4', 'py-2', 'px-6', 'py-3'
+  ],
   theme: {
     extend: {
       fontFamily: {

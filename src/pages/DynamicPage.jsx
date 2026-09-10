@@ -70,16 +70,6 @@ const DynamicPage = () => {
     );
   }
 
-  // Ensure HTML is safe before injecting, but allow all standard formatting
-  const createMarkup = (htmlString) => {
-    return {
-      __html: DOMPurify.sanitize(htmlString, {
-        ADD_TAGS: ['style', 'iframe', 'video', 'audio', 'source'],
-        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
-      })
-    };
-  };
-
   return (
     <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
@@ -99,7 +89,7 @@ const DynamicPage = () => {
                    prose-headings:text-slate-900 prose-headings:font-bold
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50"
-        dangerouslySetInnerHTML={createMarkup(page.content?.html || '')}
+        dangerouslySetInnerHTML={{ __html: page.content?.html || '' }}
       />
     </div>
   );
