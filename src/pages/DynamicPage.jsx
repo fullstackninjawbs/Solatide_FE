@@ -70,17 +70,12 @@ const DynamicPage = () => {
     );
   }
 
-  // Ensure HTML is safe before injecting (double layer of security)
+  // Ensure HTML is safe before injecting, but allow all standard formatting
   const createMarkup = (htmlString) => {
     return {
       __html: DOMPurify.sanitize(htmlString, {
-        ALLOWED_TAGS: [
-          'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'a',
-          'ul', 'ol', 'li', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-          'blockquote', 'hr', 'pre', 'code', 'br', 'span', 'div', 'style'
-        ],
-        ALLOWED_ATTR: ['href', 'name', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id', 'style'],
-        FORCE_BODY: true
+        ADD_TAGS: ['style', 'iframe', 'video', 'audio', 'source'],
+        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
       })
     };
   };
