@@ -185,7 +185,6 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
 
     const [productsList, setProductsList] = useState([]);
     const [loading, setLoading] = useState(true);
-    console.log(productsList, "productsList--->");
 
     useEffect(() => {
         const fetchProducts = async () => {

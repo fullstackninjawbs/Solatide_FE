@@ -15,7 +15,6 @@ const CertificatesAnalysis = () => {
 
                 const res = await fetch(`${API_URL}/api/v1/coas`);
                 const data = await res.json();
-                console.log(data, "data---->");
 
                 if (data.success) {
                     const mappedCoas = data.data.batches.map((batch, index) => {
@@ -120,7 +119,7 @@ const CertificatesAnalysis = () => {
                                                         <div className="w-16 h-3 bg-slate-200 rounded-sm"></div>
                                                     </div>
                                                     <div className="w-32 h-3 bg-slate-300 rounded-sm mx-auto mb-2"></div>
-                                                    
+
                                                     <div className="flex justify-between gap-4 mb-1">
                                                         <div className="w-1/3 h-2 bg-slate-200 rounded-sm"></div>
                                                         <div className="w-2/3 h-2 bg-slate-200 rounded-sm"></div>
@@ -133,7 +132,7 @@ const CertificatesAnalysis = () => {
                                                         <div className="w-1/3 h-2 bg-slate-200 rounded-sm"></div>
                                                         <div className="w-2/3 h-2 bg-slate-200 rounded-sm"></div>
                                                     </div>
-                                                    
+
                                                     <div className="w-full h-10 bg-slate-200 rounded-sm mt-2"></div>
                                                 </div>
                                             </>
