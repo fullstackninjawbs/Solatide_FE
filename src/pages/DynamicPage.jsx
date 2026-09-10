@@ -77,9 +77,10 @@ const DynamicPage = () => {
         ALLOWED_TAGS: [
           'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'a',
           'ul', 'ol', 'li', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-          'blockquote', 'hr', 'pre', 'code', 'br', 'span', 'div'
+          'blockquote', 'hr', 'pre', 'code', 'br', 'span', 'div', 'style'
         ],
-        ALLOWED_ATTR: ['href', 'name', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id', 'style']
+        ALLOWED_ATTR: ['href', 'name', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id', 'style'],
+        FORCE_BODY: true
       })
     };
   };
@@ -100,7 +101,6 @@ const DynamicPage = () => {
       */}
       <div
         className="prose prose-slate prose-lg max-w-none 
-                   prose-a:text-brand-cyan prose-a:no-underline hover:prose-a:underline
                    prose-headings:text-slate-900 prose-headings:font-bold
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50"
