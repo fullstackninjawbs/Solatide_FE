@@ -140,7 +140,7 @@ const Header = () => {
                     icon: User,
                     links: [
                         { name: 'About Us', path: '/pages/about', icon: User },
-                        { name: 'Affiliate Program', path: '/pages/affiliate-pro', icon: Users },
+                        { name: 'Affiliate Program', path: '/pages/affiliate-program', icon: Users },
                         { name: 'Shipping Policy', path: '/pages/shipping-policy', icon: Truck },
                         { name: 'Returns & Refunds', path: '/pages/refund-policy', icon: RotateCcw }
                     ]

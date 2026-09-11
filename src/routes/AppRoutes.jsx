@@ -189,7 +189,7 @@ const AppRoutes = () => {
                             <Route path="pages/shipping-policy" element={<ShippingPolicy />} />
                             <Route path="/pages/privacy-policy" element={<PrivacyPolicy />} />
                             <Route path="/pages/coa" element={<ViewDocument />} />
-                            <Route path="/pages/affiliate-pro" element={<AffiliatePro />} />
+                            <Route path="/pages/affiliate-program" element={<AffiliatePro />} />
 
                             {/* Missing Footer Routes */}
                             <Route path="pages/research-peptides-guide" element={<PeptidesGuide />} />
