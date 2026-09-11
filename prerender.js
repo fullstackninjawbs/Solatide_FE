@@ -147,26 +147,35 @@ const server = app.listen(0, async () => {
                 // 1. Remove dynamically injected GTM scripts so they don't duplicate when a user visits the static page
                 document.querySelectorAll('script[src*="gtm.js"]').forEach(s => s.remove());
                 
-                // 2. Keep ONLY the tag managed by react-helmet-async (data-rh="true")
+                // 2. Remove default static tags if helmet injected dynamic ones
                 const titles = Array.from(document.querySelectorAll('title'));
                 if (titles.length > 1) {
-                    const helmetTitle = titles.find(t => t.hasAttribute('data-rh'));
-                    const titleToKeep = helmetTitle || titles[titles.length - 1]; // fallback to last if no helmet
-                    titles.forEach(t => { if (t !== titleToKeep) t.remove(); });
+                    // The default title from index.html
+                    const defaultTitle = titles.find(t => t.textContent.includes('Solatide Biosciences – Research Grade Peptides'));
+                    if (defaultTitle) defaultTitle.remove();
+                    
+                    // If still multiple, keep only the first one
+                    const remainingTitles = Array.from(document.querySelectorAll('title'));
+                    if (remainingTitles.length > 1) {
+                        for (let i = 1; i < remainingTitles.length; i++) {
+                            remainingTitles[i].remove();
+                        }
+                    }
                 }
                 
                 const metas = Array.from(document.querySelectorAll('meta[name="description"]'));
                 if (metas.length > 1) {
-                    const helmetMeta = metas.find(m => m.hasAttribute('data-rh'));
-                    const metaToKeep = helmetMeta || metas[metas.length - 1];
-                    metas.forEach(m => { if (m !== metaToKeep) m.remove(); });
+                    // Keep the first one, remove the rest
+                    for (let i = 1; i < metas.length; i++) {
+                        metas[i].remove();
+                    }
                 }
                 
                 const canonicals = Array.from(document.querySelectorAll('link[rel="canonical"]'));
                 if (canonicals.length > 1) {
-                    const helmetCanonical = canonicals.find(c => c.hasAttribute('data-rh'));
-                    const canonicalToKeep = helmetCanonical || canonicals[canonicals.length - 1];
-                    canonicals.forEach(c => { if (c !== canonicalToKeep) c.remove(); });
+                    for (let i = 1; i < canonicals.length; i++) {
+                        canonicals[i].remove();
+                    }
                 }
             });
             
