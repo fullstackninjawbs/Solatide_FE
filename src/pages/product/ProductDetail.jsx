@@ -198,8 +198,8 @@ const ProductDetail = () => {
 
 
     const location = useLocation();
-    const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith('/') 
-        ? location.pathname.slice(0, -1) 
+    const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith('/')
+        ? location.pathname.slice(0, -1)
         : location.pathname;
 
     let targetDesc = product?.seo?.description || product?.summaryHtml || '';
@@ -207,7 +207,7 @@ const ProductDetail = () => {
     if (!targetDesc && product) {
         targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
     }
-    
+
     const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
         ? 'https://solatidebiosciences.com.au'
         : window.location.origin;
@@ -248,7 +248,7 @@ const ProductDetail = () => {
                                 <img
                                     src={images[activeTab].url}
                                     alt={images[activeTab].isCoa ? "COA Report" : getProductImageAltText(images[activeTab], product.name, activeTab)}
-                                    fetchpriority="high"
+                                    fetchPriority="high"
                                     decoding="sync"
                                     className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                 />
