@@ -1,5 +1,5 @@
-import React from 'react';
-import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, QrCode, BarChart2, Droplet, FlaskConical, CheckSquare, Shield, Hourglass, HelpCircle, ChevronRight, Activity, CircleDot } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, FlaskConical, Hourglass, ChevronRight, Check } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import purityIcon from '../../assets/icons/purity.svg';
 import identityIcon from '../../assets/icons/identity.svg';
@@ -10,6 +10,8 @@ import microbialIcon from '../../assets/icons/microbial.svg';
 import endotoxinIcon from '../../assets/icons/endotoxin.svg';
 
 const CurrentBatchCard = ({ batch, product }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
   const handleOpenCoa = () => {
     const url = batch?.coaFile?.url || batch?.coaUrl;
     if (url) {
@@ -17,10 +19,15 @@ const CurrentBatchCard = ({ batch, product }) => {
     }
   };
 
-  const handleCopyAccessCode = () => {
+  const handleCopyAccessCode = async () => {
     if (batch?.verificationDetails?.coaReportId) {
-      navigator.clipboard.writeText(batch.verificationDetails.coaReportId);
-      // Optional: Add a small toast or visual feedback here if desired
+      try {
+        await navigator.clipboard.writeText(batch.verificationDetails.coaReportId);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
     }
   };
 
@@ -362,7 +369,11 @@ const CurrentBatchCard = ({ batch, product }) => {
                         <span className="text-[12px] font-bold text-[#1a3a7d] font-mono tracking-wide">
                           {batch.verificationDetails.coaReportId}
                         </span>
-                        <Copy className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#1a3a7d] transition-colors" />
+                        {isCopied ? (
+                          <Check className="w-3.5 h-3.5 text-green-500" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#1a3a7d] transition-colors" />
+                        )}
                       </div>
                     </div>
                   )}
