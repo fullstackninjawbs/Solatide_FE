@@ -95,12 +95,13 @@ const server = app.listen(0, async () => {
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
+    try {
+        process.loadEnvFile(path.resolve(__dirname, '.env'));
+    } catch (e) { }
+    const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
+
     // Dynamically fetch product routes from the backend API
     try {
-        try {
-            process.loadEnvFile(path.resolve(__dirname, '.env'));
-        } catch (e) { }
-        const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
 
         console.log(`Fetching dynamic product routes from ${apiUrl}...`);
         const res = await fetch(`${apiUrl}/api/products`);
