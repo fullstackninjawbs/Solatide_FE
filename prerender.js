@@ -64,8 +64,6 @@ const routes = [
     "/pages/what-is-tesamorelin",
     "/pages/what-is-kpv",
     "/pages/data-sharing-opt-out-1",
-    "/pages/tirzepatide-research-overview",
-    "/pages/terms-of-services",
     "/pages/research-use-disclaimer"
 ];
 
