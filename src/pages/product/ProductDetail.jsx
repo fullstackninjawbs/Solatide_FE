@@ -33,6 +33,7 @@ const ProductDetail = () => {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
     const [fetchedReviewCount, setFetchedReviewCount] = useState(null);
+    const [notFound, setNotFound] = useState(false);
 
     // Scroll to top on ID change
     useEffect(() => {
@@ -94,17 +95,21 @@ const ProductDetail = () => {
                             path: window.location.pathname
                         });
                     } else {
-                        const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
-                        setProduct(fallback);
-                        saveToRecentlyViewed(fallback);
+                        // API returned success:false or no product — this slug doesn't exist
+                        setNotFound(true);
                     }
                 }
             } catch (err) {
                 if (err.name !== 'AbortError') {
-                    console.warn('Backend product details API unreachable. Using static fallback.');
-                    const fallback = products.find(p => p.id === parseInt(id)) || products.find(p => p.id === 2) || products[0];
-                    setProduct(fallback);
-                    saveToRecentlyViewed(fallback);
+                    // Network/server unreachable — try static fallback only as last resort
+                    const fallback = products.find(p => p.slug === id) || products.find(p => p.id === parseInt(id));
+                    if (fallback) {
+                        setProduct(fallback);
+                        saveToRecentlyViewed(fallback);
+                    } else {
+                        console.warn('Backend unreachable and no static fallback for slug:', id);
+                        setNotFound(true);
+                    }
                 }
             } finally {
                 if (!signal.aborted) {
@@ -127,9 +132,46 @@ const ProductDetail = () => {
         );
     }
 
+    if (notFound) {
+        return (
+            <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 px-4">
+                <div className="max-w-md w-full text-center">
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#F0F5FB] flex items-center justify-center">
+                        <svg className="w-10 h-10 text-[#214A9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h1 className="text-[28px] font-bold text-[#150F3A] mb-3">Product Not Found</h1>
+                    <p className="text-[14px] text-slate-500 mb-8 leading-relaxed">
+                        We couldn't find the product you're looking for. It may have been removed, renamed, or never existed.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Link
+                            to="/collections/all"
+                            className="bg-[#214A9E] text-white px-6 py-3 rounded-full text-[13.5px] font-semibold hover:bg-[#163678] transition-colors"
+                        >
+                            Browse All Products
+                        </Link>
+                        <Link
+                            to="/"
+                            className="border border-[#214A9E] text-[#214A9E] px-6 py-3 rounded-full text-[13.5px] font-semibold hover:bg-[#F0F5FB] transition-colors"
+                        >
+                            Back to Home
+                        </Link>
+                    </div>
+                    <p className="mt-8 text-[12px] text-slate-400">
+                        Looking for something specific?{' '}
+                        <Link to="/pages/contact-us" className="text-[#3390ec] hover:underline">Contact us</Link>{' '}
+                        and we'll help you find it.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     if (!product) {
         return (
-            <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 text-slate-500 font-medium">
+            <div className="w-full min-h-screen bg-white flex items-center justify-center py-20 text-slate-500 font-medium">
                 <p>Product not found</p>
                 <Link to="/collections/all" className="mt-4 text-[#214A9E] hover:underline font-semibold">Back to Shop</Link>
             </div>
