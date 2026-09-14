@@ -14,11 +14,6 @@ import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackEvent } from '../../utils/analytics';
 import { getProductImageAltText } from '../../utils/imageHelpers';
-
-
-
-
-
 import { Helmet } from 'react-helmet-async';
 
 const ProductDetail = () => {

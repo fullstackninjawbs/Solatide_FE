@@ -8,7 +8,7 @@ import CustomDropdown from '../../components/CustomDropdown';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
-const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
+const SITE_URL = import.meta.env.VITE_STOREFRONT_URL || window.location.origin;
 
 const generateAltText = (title, index) => {
   const baseAltText = (title || 'product')
