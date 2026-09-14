@@ -143,7 +143,7 @@ const ResearchUseDisclaimer = () => {
                     <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Right to Refuse or Cancel Orders</h2>
                     <div className="border-l-[3px] border-slate-200 pl-4 py-1">
                         <p className="text-[14px] text-slate-700 leading-[1.8]">
-                            Solatide Biosciences reserves the right to refuse, cancel, or restrict any order at its sole discretion, including where there are concerns about compliance, misuse, unlawful intent, or suspected non-research use. Orders may also be automatically cancelled for non-payment within specified timeframes as outlined in our <Link to="/pages/terms" className="text-[#3390ec] hover:underline">Terms & Conditions</Link>.
+                            Solatide Biosciences reserves the right to refuse, cancel, or restrict any order at its sole discretion, including where there are concerns about compliance, misuse, unlawful intent, or suspected non-research use. Orders may also be automatically cancelled for non-payment within specified timeframes as outlined in our <Link to="/pages/terms-of-services" className="text-[#3390ec] hover:underline">Terms & Conditions</Link>.
                         </p>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ const ResearchUseDisclaimer = () => {
                 <div className="mb-14">
                     <h2 className="text-[18px] font-bold text-[#150F3A] mb-5 border-b border-slate-200 pb-3">Related Policies & Resources</h2>
                     <div className="flex flex-wrap gap-3">
-                        <Link to="/pages/terms" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
+                        <Link to="/pages/terms-of-services" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">
                             <span className="text-[14px]">📄</span> Terms of Service
                         </Link>
                         <Link to="/pages/privacy-policy" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">

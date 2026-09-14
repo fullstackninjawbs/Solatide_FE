@@ -206,7 +206,7 @@ const OrderStatus = () => {
                     <Link to="/pages/refund-policy" className="hover:underline">Refund policy</Link>
                     <Link to="/pages/shipping-policy" className="hover:underline">Shipping</Link>
                     <Link to="/pages/privacy-policy" className="hover:underline">Privacy policy</Link>
-                    <Link to="/pages/terms" className="hover:underline">Terms of service</Link>
+                    <Link to="/pages/terms-of-services" className="hover:underline">Terms of service</Link>
                     <Link to="/pages/contact-us" className="hover:underline">Contact information</Link>
                 </div>
             </footer>

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
@@ -214,11 +214,10 @@ const AppRoutes = () => {
                             <Route path="pages/research-peptides-guide" element={<PeptidesGuide />} />
                             <Route path="pages/research-compound-database" element={<CompoundDatabase />} />
                             <Route path="pages/coa" element={<CoaReports />} />
-                            <Route path="pages/terms" element={<Terms />} />
+                            <Route path="pages/terms-of-services" element={<Terms />} />
+                            <Route path="pages/terms" element={<Navigate to="/pages/terms-of-services" replace />} />
                             <Route path="pages/research-use-disclaimer" element={<ResearchUseDisclaimer />} />
                             <Route path="pages/refund-policy" element={<Returns />} />
-                            {/* Terms slug alias to match Shopify URL */}
-                            <Route path="pages/terms-of-services" element={<Terms />} />
 
                             {/* New Research Pages */}
                             <Route path="pages/what-is-bpc-157" element={<WhatIsBPC157 />} />
