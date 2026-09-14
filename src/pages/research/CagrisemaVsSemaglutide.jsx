@@ -1,62 +1,104 @@
-﻿import React from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
-const Page = () => (
-    <div className="min-h-screen bg-white font-sans">
-        <Helmet>
-            <title>CagriSema vs Semaglutide | Solatide Biosciences</title>
-            <meta name="description" content="Comparing CagriSema (cagrilintide + semaglutide) and semaglutide alone in metabolic receptor research. Dual vs single receptor engagement examined for laboratory research." />
-            <link rel="canonical" href="https://solatidebiosciences.com.au/pages/cagrisema-vs-semaglutide" />
-        </Helmet>
-        <section className="w-full py-4 text-center border-b border-slate-100 mb-10">
-            <div className="main-container">
-                <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">CagriSema vs Semaglutide</h1>
-            </div>
-        </section>
-        <div className="main-container pb-16">
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-10 rounded-[4px]">
-                <p className="text-[13.5px] text-slate-700 leading-relaxed"><strong className="text-[#150F3A]">Research Use Only:</strong> All compounds discussed are for in-vitro laboratory research only. Not for human consumption or medical use. <Link to="/pages/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link></p>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Overview</h2>
-                <p className="text-[14px] text-slate-700 leading-[1.8]">This page compares CagriSema and semaglutide in the context of laboratory metabolic research. CagriSema is a fixed-ratio combination of cagrilintide and semaglutide, designed to engage both GLP-1 and amylin receptor systems simultaneously. Semaglutide, by contrast, targets only the GLP-1 receptor. Research examines whether dual receptor engagement produces different metabolic signalling outcomes compared with GLP-1 agonism alone.</p>
-            </div>
-            <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="border border-[#E2E8F0] rounded-[8px] p-5 bg-white">
-                    <h3 className="text-[15px] font-bold text-[#214A9E] mb-3">CagriSema</h3>
-                    <ul className="list-disc pl-4 space-y-2 text-[13.5px] text-slate-700">
-                        <li>Combination of cagrilintide + semaglutide</li>
-                        <li>Dual receptor engagement: GLP-1R + amylin receptor</li>
-                        <li>Studied for combined satiety and metabolic pathway effects</li>
-                        <li>Weekly dosing investigated in research models</li>
-                        <li>Novel combination framework for metabolic research</li>
-                    </ul>
-                </div>
-                <div className="border border-[#E2E8F0] rounded-[8px] p-5 bg-white">
-                    <h3 className="text-[15px] font-bold text-[#214A9E] mb-3">Semaglutide</h3>
-                    <ul className="list-disc pl-4 space-y-2 text-[13.5px] text-slate-700">
-                        <li>GLP-1 receptor agonist (single receptor target)</li>
-                        <li>Long-acting GLP-1 analogue with Fc-region modification</li>
-                        <li>Extensively studied in insulin secretion and metabolic models</li>
-                        <li>Weekly research dosing protocols in published literature</li>
-                        <li>Established GLP-1 research reference compound</li>
-                    </ul>
-                </div>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Related Resources</h2>
-                <div className="flex flex-wrap gap-3">
-                    <Link to="/products/cagrisema-10mg" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">CagriSema 10mg</Link>
-                    <Link to="/products/semaglutide-5mg" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">Semaglutide 5mg</Link>
-                    <Link to="/pages/glp-1-research-overview" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">GLP-1 Research Overview</Link>
-                    <Link to="/pages/cagrisema-research-overview" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">CagriSema Overview</Link>
-                </div>
-            </div>
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 rounded-[4px] mb-8">
-                <p className="text-[13.5px] text-slate-700 leading-relaxed"><strong className="text-[#150F3A]">Research Use Only:</strong> All products are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications.</p>
+const CagrisemaVsSemaglutide = () => {
+    return (
+        <div className="bg-white font-sans min-h-screen">
+            <Helmet>
+                <title>CagriSema vs Semaglutide | Solatide Biosciences</title>
+                <meta
+                    name="description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <link rel="canonical" href="https://solatidebiosciences.com.au/pages/cagrisema-vs-semaglutide" />
+            </Helmet>
+
+            <div className="shopify-page-container">
+                <h1 className="shopify-page-title">CagriSema vs Semaglutide</h1>
+                <p><strong>Research Use Only:</strong> This page compares CagriSema and Semaglutide strictly in the context of laboratory research. All materials referenced are intended for scientific investigation only and are not for human consumption, medical treatment, or veterinary use.</p>
+<hr />
+<h2><strong>CagriSema vs Semaglutide: Research Comparison</strong></h2>
+<p>This page provides a research-focused comparison of CagriSema and Semaglutide, two preparations used in laboratory models of GLP-1 receptor signalling and metabolic pathway investigation. CagriSema is a pre-blended combination material containing Semaglutide and <Link to="/products/cagrilintide-5mg">Cagrilintide</Link>, while Semaglutide is a selective GLP-1 receptor agonist used as a single-compound reference tool. Understanding the structural and pathway differences between these two preparations is relevant for researchers designing experiments that involve GLP-1 receptor agonism, amylin receptor agonism, or dual-pathway combination models.</p>
+<p>The key distinction is that CagriSema includes Semaglutide as one of its two components, but adds <Link to="/products/cagrilintide-5mg">Cagrilintide</Link> to engage the amylin receptor system concurrently. Semaglutide alone activates only GLP-1 receptors. This comparison is therefore not between two competing compounds, but between a single-receptor tool and a dual-pathway combination model that incorporates that same single-receptor tool alongside a second compound.</p>
+<hr />
+<h2><strong>Quick Comparison</strong></h2>
+<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc' }}>
+<thead>
+<tr style={{ backgroundColor: '#0d1b4b' }}>
+<th style={{ padding: '12px 15px', textAlign: 'left', color: '#ffffff', fontWeight: 'bold' }}>Parameter</th>
+<th style={{ padding: '12px 15px', textAlign: 'left', color: '#ffffff', fontWeight: 'bold' }}>CagriSema</th>
+<th style={{ padding: '12px 15px', textAlign: 'left', color: '#ffffff', fontWeight: 'bold' }}>Semaglutide</th>
+</tr>
+</thead>
+<tbody>
+<tr style={{ backgroundColor: '#ffffff' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Compound type</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Pre-blended combination (2 components)</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Single peptide compound</td>
+</tr>
+<tr style={{ backgroundColor: '#eef0f4' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Components</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Cagrilintide + Semaglutide</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Semaglutide only</td>
+</tr>
+<tr style={{ backgroundColor: '#ffffff' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Receptor targets</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>GLP-1 receptor + Amylin receptor</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>GLP-1 receptor (selective)</td>
+</tr>
+<tr style={{ backgroundColor: '#eef0f4' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Receptor selectivity</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Dual-pathway (GLP-1 + amylin)</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Single-pathway (GLP-1 only)</td>
+</tr>
+<tr style={{ backgroundColor: '#ffffff' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Research use</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Dual-pathway combination models</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>GLP-1 receptor reference studies</td>
+</tr>
+<tr style={{ backgroundColor: '#eef0f4' }}>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}><strong>Format</strong></td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Lyophilised blend (fixed ratio)</td>
+<td style={{ padding: '12px 15px', color: '#1a1a1a' }}>Lyophilised single peptide</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><strong>Composition and Structural Differences</strong></h2>
+<h3>Semaglutide</h3>
+<p>Semaglutide is a modified GLP-1 analogue with an amino acid substitution at position 8 (conferring DPP-4 resistance) and acylation with a C18 fatty diacid chain that enables albumin binding and extended half-life in experimental models. It is a single molecular entity with a well-characterised structure and a selective GLP-1 receptor activation profile.</p>
+<h3>CagriSema</h3>
+<p>CagriSema is not a single molecular entity. It is a pre-blended lyophilised preparation containing Semaglutide and <Link to="/products/cagrilintide-5mg">Cagrilintide</Link> in a fixed ratio. Cagrilintide is a long-acting amylin analogue with structural modifications that confer extended duration of action and high amylin receptor affinity. The two components retain their individual structural identities within the blend and engage their respective receptor system independently.</p>
+<hr />
+<h2><strong>Pathway and Receptor Context</strong></h2>
+<h3>GLP-1 Receptor Pathway</h3>
+<p>Both CagriSema and Semaglutide engage the GLP-1 receptor. Semaglutide does so as a selective agonist. In CagriSema, the Semaglutide component contributes the same GLP-1 receptor engagement, meaning the GLP-1 pathway is active in both preparations. Researchers using Semaglutide as a comparator to CagriSema are therefore examining the incremental effect of adding amylin receptor agonism to an existing GLP-1 receptor agonist background.</p>
+<h3>Amylin Receptor Pathway</h3>
+<p>The amylin receptor is a heterodimeric complex formed by calcitonin receptors and receptor activity-modifying proteins (RAMPs). It is structurally and functionally distinct from the GLP-1 receptor and engages different downstream signalling cascades. <Link to="/products/cagrilintide-5mg">Cagrilintide</Link>, the second component of CagriSema, activates this receptor system. Semaglutide alone does not engage amylin receptors. This pathway is therefore active only in CagriSema experimental models, not in Semaglutide-only models.</p>
+<hr />
+<h2><strong>Broader Research Framing</strong></h2>
+<p>Researchers comparing CagriSema and Semaglutide are typically investigating one of the following questions: whether concurrent amylin receptor activation modifies the downstream effects of GLP-1 receptor agonism; whether the two receptor systems exhibit additive, synergistic, or independent signalling in a given experimental model; or whether a dual-pathway combination model produces different experimental outcomes compared to a single-receptor reference compound.</p>
+<p>These are distinct research questions from those addressed by comparing GLP-1/GIP dual agonists (such as Tirzepatide) or GLP-1/GIP/glucagon triple agonists (such as Retatrutide) with Semaglutide, because the second receptor system involved is different in each case.</p>
+<p>For a broader overview of how CagriSema compares to multiple compounds in this research space, see the <Link to="/pages/cagrisema-comparison-guide">CagriSema comparison guide</Link>.</p>
+<hr />
+<h2><strong>Related Research Resources</strong></h2>
+<ul>
+<li><Link to="/products/cagrisema-10mg">CagriSema 10mg research material</Link></li>
+<li><Link to="/products/cagrilintide-5mg">Cagrilintide 5mg research peptide</Link></li>
+<li><Link to="/products/semaglutide-5mg">Semaglutide 5mg research peptide</Link></li>
+<li><Link to="/products/semaglutide-10mg">Semaglutide 10mg research peptide</Link></li>
+<li><Link to="/pages/cagrisema-research-overview">CagriSema research overview</Link></li>
+<li><Link to="/pages/semaglutide-research-overview">Semaglutide research overview</Link></li>
+<li><Link to="/pages/glp-1-research-overview">GLP-1 research overview</Link></li>
+<li><Link to="/pages/cagrisema-comparison-guide">CagriSema comparison guide</Link></li>
+<li><Link to="/collections/glp-1-metabolic-peptides">GLP-1 &amp; Metabolic Peptides collection</Link></li>
+</ul>
+<hr />
+<p><strong>Research Use Only:</strong> CagriSema and Semaglutide are laboratory research materials not approved for human consumption, medical treatment, or veterinary use.</p>
             </div>
         </div>
-    </div>
-);
-export default Page;
+    );
+};
+
+export default CagrisemaVsSemaglutide;

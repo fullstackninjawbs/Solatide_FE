@@ -1,0 +1,400 @@
+/* ==========================================================================
+   Shopify Page Styles (Solatide Biosciences)
+   Pixel-perfect match with solatidebiosciences.com.au
+   ========================================================================== */
+
+/* Main page layout */
+.shopify-page-container {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 32px 20px 64px 20px;
+}
+
+.shopify-page-title {
+  font-size: 2.25rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #1a3a6b;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: inherit;
+}
+
+@media (min-width: 640px) {
+  .shopify-page-title {
+    font-size: 2.75rem;
+  }
+}
+
+/* ==========================================================================
+   What Is Pages (.wi-wrap)
+   ========================================================================== */
+.wi-wrap {
+  font-family: inherit;
+  color: #222;
+}
+
+.wi-wrap h1 {
+  font-size: 2em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  margin-bottom: 16px !important;
+}
+
+.wi-wrap h2 {
+  font-size: 1.35em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  border-bottom: 2px solid #dce6f5;
+  padding-bottom: 8px;
+  margin-top: 44px !important;
+  margin-bottom: 16px !important;
+}
+
+.wi-wrap h3 {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #1a3a6b !important;
+  margin-top: 22px !important;
+  margin-bottom: 8px !important;
+}
+
+.wi-wrap p {
+  line-height: 1.75;
+  margin-bottom: 14px !important;
+  color: #333;
+}
+
+.wi-wrap a {
+  color: #2a7de1 !important;
+  text-decoration: none;
+}
+
+.wi-wrap a:hover {
+  text-decoration: underline;
+}
+
+.wi-callout {
+  background: #eef3fc;
+  border-left: 4px solid #1a3a6b;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 36px;
+}
+
+.wi-callout p {
+  margin: 0 !important;
+  font-size: 0.9em;
+  color: #1a3a6b;
+  line-height: 1.6;
+}
+
+.wi-tag {
+  display: inline-block;
+  background: #dce6f5;
+  color: #1a3a6b;
+  font-size: 0.78em;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wi-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.wi-wrap a.wi-btn,
+.wi-wrap button.wi-btn {
+  display: inline-block !important;
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: none !important;
+  line-height: 1.4 !important;
+  transition: opacity 0.2s !important;
+}
+
+.wi-wrap a.wi-btn:hover,
+.wi-wrap button.wi-btn:hover {
+  opacity: 0.85 !important;
+  text-decoration: none !important;
+}
+
+.wi-wrap a.wi-btn-outline,
+.wi-wrap button.wi-btn-outline {
+  display: inline-block !important;
+  background-color: transparent !important;
+  color: #1F54A1 !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: 2px solid #1F54A1 !important;
+  line-height: 1.4 !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+
+.wi-wrap a.wi-btn-outline:hover,
+.wi-wrap button.wi-btn-outline:hover {
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.wi-utility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.wi-utility a {
+  font-size: 0.9em;
+  color: #2a7de1 !important;
+  border: 1px solid #c5d3ee !important;
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-decoration: none !important;
+  background-color: #f5f8ff !important;
+}
+
+.wi-utility a:hover {
+  background-color: #eef3fc !important;
+}
+
+.wi-divider {
+  border: none;
+  border-top: 2px solid #dce6f5;
+  margin: 48px 0 0;
+}
+
+/* ==========================================================================
+   Comparison Pages (.cmp-wrap)
+   ========================================================================== */
+.cmp-wrap {
+  font-family: inherit;
+  color: #222;
+}
+
+.cmp-wrap h1 {
+  font-size: 2em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  margin-bottom: 16px !important;
+}
+
+.cmp-wrap h2 {
+  font-size: 1.35em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  border-bottom: 2px solid #dce6f5;
+  padding-bottom: 8px;
+  margin-top: 44px !important;
+  margin-bottom: 16px !important;
+}
+
+.cmp-wrap h3 {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #1a3a6b !important;
+  margin-top: 22px !important;
+  margin-bottom: 8px !important;
+}
+
+.cmp-wrap p {
+  line-height: 1.75;
+  margin-bottom: 14px !important;
+  color: #333;
+}
+
+.cmp-wrap a {
+  color: #2a7de1 !important;
+  text-decoration: none;
+}
+
+.cmp-wrap a:hover {
+  text-decoration: underline;
+}
+
+.cmp-callout {
+  background: #eef3fc;
+  border-left: 4px solid #1a3a6b;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 36px;
+}
+
+.cmp-callout p {
+  margin: 0 !important;
+  font-size: 0.9em;
+  color: #1a3a6b;
+  line-height: 1.6;
+}
+
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.cmp-table th {
+  background: #1a3a6b;
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.cmp-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #dce6f5;
+  font-size: 0.9em;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.cmp-table tr:nth-child(even) td {
+  background: #f5f8ff;
+}
+
+.cmp-table td:first-child {
+  font-weight: 600;
+  color: #1a3a6b;
+  width: 30%;
+}
+
+.cmp-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.cmp-wrap a.cmp-btn,
+.cmp-wrap button.cmp-btn {
+  display: inline-block !important;
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: none !important;
+  line-height: 1.4 !important;
+  transition: opacity 0.2s !important;
+}
+
+.cmp-wrap a.cmp-btn:hover,
+.cmp-wrap button.cmp-btn:hover {
+  opacity: 0.85 !important;
+  text-decoration: none !important;
+}
+
+.cmp-wrap a.cmp-btn-outline,
+.cmp-wrap button.cmp-btn-outline {
+  display: inline-block !important;
+  background-color: transparent !important;
+  color: #1F54A1 !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: 2px solid #1F54A1 !important;
+  line-height: 1.4 !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+
+.cmp-wrap a.cmp-btn-outline:hover,
+.cmp-wrap button.cmp-btn-outline:hover {
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.cmp-utility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cmp-utility a {
+  font-size: 0.9em;
+  color: #2a7de1 !important;
+  border: 1px solid #c5d3ee !important;
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-decoration: none !important;
+  background-color: #f5f8ff !important;
+}
+
+.cmp-utility a:hover {
+  background-color: #eef3fc !important;
+}
+
+.cmp-divider {
+  border: none;
+  border-top: 2px solid #dce6f5;
+  margin: 48px 0 0;
+}
+
+/* ==========================================================================
+   Solatide Guide / Disclaimer (.sb-guide)
+   ========================================================================== */
+.sb-guide {
+  font-family: inherit;
+  color: #222;
+}
+
+.sb-guide h2 {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  border-bottom: 2px solid #dce6f5;
+  padding-bottom: 8px;
+  margin-top: 40px !important;
+  margin-bottom: 14px !important;
+}
+
+.sb-guide p {
+  line-height: 1.75;
+  margin-bottom: 14px !important;
+  color: #333;
+}
+
+.sb-guide a {
+  color: #2a7de1 !important;
+  text-decoration: none;
+}
+
+.sb-guide a:hover {
+  text-decoration: underline;
+}
+
+.sb-guide ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+  list-style-type: disc;
+}
+
+.sb-guide li {
+  line-height: 1.7;
+  margin-bottom: 6px;
+}

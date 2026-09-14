@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Anek+Telugu:wght@300..800&display=swap');
+@import './styles/shopify-pages.css';
 
 @tailwind base;
 @tailwind components;

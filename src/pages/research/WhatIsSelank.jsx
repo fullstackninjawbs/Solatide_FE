@@ -1,81 +1,60 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-const WhatIsSelank = () => (
-    <div className="min-h-screen bg-white font-sans">
-        <Helmet>
-            <title>What Is Selank? | Neuropeptide Research | Solatide Biosciences</title>
-            <meta name="description" content="Selank is a heptapeptide studied for anxiolytic-like effects, BDNF expression, and immune modulation in laboratory research models. For in-vitro research use only." />
-            <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-selank" />
-        </Helmet>
-        <section className="w-full py-4 text-center border-b border-slate-100 mb-10">
-            <div className="main-container">
-                <h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">What Is Selank?</h1>
-            </div>
-        </section>
-        <div className="main-container pb-16">
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-10 rounded-[4px]">
-                <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                    <strong className="text-[#150F3A]">Research Use Only:</strong> All peptides discussed are for in-vitro laboratory research only. Not for human consumption, medical treatment, or veterinary use.{' '}
-                    <Link to="/pages/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link>
-                </p>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Overview</h2>
-                <div className="space-y-4 text-[14px] text-slate-700 leading-[1.8]">
-                    <p>Selank is a synthetic heptapeptide and tuftsin analogue developed in Russia at the Institute of Molecular Genetics. It has attracted scientific interest in both neuropeptide research and immunology laboratory settings. Selank is often studied alongside Semax, another nootropic neuropeptide, in comparative research frameworks.</p>
-                    <p>The peptide sequence of Selank (Thr-Lys-Pro-Arg-Pro-Gly-Pro) is derived from the naturally occurring immunomodulatory peptide tuftsin, extended with additional amino acids to improve stability. This structural modification is the subject of laboratory investigations into how minor sequence changes affect peptide stability, binding, and receptor interactions.</p>
-                    <p>Selank is primarily studied in the context of neuropeptide biology, examining its potential effects on GABA-A receptor systems, monoamine regulation, and neurotrophic factor expression in controlled in-vitro and animal model settings.</p>
-                </div>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Research Applications</h2>
-                <div className="space-y-3">
-                    {[
-                        { title: 'GABA receptor modulation', desc: 'Selank research examines its potential effects on GABA-A receptor activity and the GABA-ergic system, particularly in anxiety-related and inhibitory signalling pathway models.' },
-                        { title: 'BDNF expression', desc: 'Laboratory studies investigate whether Selank influences BDNF (Brain-Derived Neurotrophic Factor) expression and its downstream signalling, a pathway studied in neuroplasticity research.' },
-                        { title: 'Monoamine modulation', desc: 'Research examines Selank interactions with dopamine, serotonin, and noradrenaline signalling systems in experimental neuropharmacology contexts.' },
-                        { title: 'Immune modulation', desc: 'As a tuftsin analogue, Selank has been studied in immunology research, examining effects on cytokine profiles, immune cell activity, and immunoglobulin levels in laboratory models.' },
-                        { title: 'Peptide stability research', desc: 'Laboratory investigations study how Selank resists enzymatic degradation, comparing it with tuftsin and examining structure-stability relationships in peptide research.' },
-                    ].map((item) => (
-                        <div key={item.title} className="border border-[#E2E8F0] rounded-[8px] p-4 bg-white">
-                            <p className="text-[14px] font-semibold text-[#214A9E] mb-1">{item.title}</p>
-                            <p className="text-[13.5px] text-slate-600 leading-[1.7]">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Key Characteristics</h2>
-                <ul className="list-disc pl-5 space-y-2 text-[14px] text-slate-700">
-                    <li>Synthetic heptapeptide (7 amino acids)</li>
-                    <li>Tuftsin analogue with enhanced stability</li>
-                    <li>Studied in neuropeptide and immunology research contexts</li>
-                    <li>Closely related to Semax in research applications</li>
-                    <li>Research-grade purity ≥99%</li>
-                </ul>
-            </div>
-            <div className="mb-10">
-                <h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Related Compounds and Comparisons</h2>
-                <div className="flex flex-wrap gap-3">
-                    {[
-                        { label: 'Selank & Semax Blend 20mg', to: '/products/selank-semax-20mg' },
-                        { label: 'Selank vs Semax', to: '/pages/selank-vs-semax' },
-                        { label: 'What Is Semax?', to: '/pages/what-is-semax' },
-                        { label: 'Compound Index', to: '/pages/research-compound-database' },
-                    ].map((link) => (
-                        <Link key={link.to} to={link.to} className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">{link.label}</Link>
-                    ))}
-                </div>
-            </div>
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 rounded-[4px] mb-8">
-                <p className="text-[13.5px] text-slate-700 leading-relaxed">
-                    <strong className="text-[#150F3A]">Research Use Only:</strong> All products are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications.
-                </p>
+const WhatIsSelank = () => {
+    return (
+        <div className="bg-white font-sans min-h-screen">
+            <Helmet>
+                <title>What Is Selank? | Solatide Biosciences</title>
+                <meta
+                    name="description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-selank" />
+            </Helmet>
+
+            <div className="shopify-page-container">
+                
+                <div className="wi-wrap">
+<div className="wi-callout"><p><strong>Research Use Only:</strong> Selank is intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/pages/research-use-disclaimer">Read our full disclaimer</Link>.</p></div>
+<span className="wi-tag">Synthetic Heptapeptide - Neuropeptide &amp; Anxiolytic Research</span><h1 style={{ fontSize: '2em', fontWeight: 700, color: '#1a3a6b', marginBottom: '16px' }}>What Is Selank?</h1>
+<p style={{ fontSize: '1.05em', lineHeight: 1.75, color: '#444' }}>Selank is a synthetic heptapeptide analogue of the endogenous tetrapeptide tuftsin (Thr-Lys-Pro-Arg), extended with a Pro-Gly-Pro sequence to improve metabolic stability. In laboratory research, Selank is studied for its interactions with GABAergic signalling pathways, BDNF expression modulation and anxiolytic-related mechanisms in neuronal cell models and in vivo experimental systems.</p>
+<div className="wi-cta-row">
+<Link to="/products/selank-10mg" className="wi-btn">View Product</Link><Link to="/pages/research-compound-database" className="wi-btn-outline">Compound Index</Link>
+</div>
+<h2>Mechanism of Action</h2>
+<p>Selank's mechanism in laboratory models involves modulation of GABAergic neurotransmission and influence on BDNF expression in neuronal systems. Unlike classical benzodiazepines, Selank does not bind directly to GABA-A receptor benzodiazepine sites but appears to modulate GABAergic tone through indirect mechanisms studied in experimental neuronal models.</p>
+<h3>GABAergic Modulation</h3>
+<p>Laboratory studies examine Selank's effects on GABA-A receptor function and GABAergic neurotransmission in neuronal cell models. Its anxiolytic-related profile in experimental systems is associated with GABAergic pathway modulation without direct benzodiazepine site binding, making it a mechanistically distinct tool compound for neuropeptide research.</p>
+<h3>BDNF Expression</h3>
+<p>Selank has been studied for its effects on brain-derived neurotrophic factor (BDNF) expression in neuronal models. Laboratory investigations examine how Selank influences BDNF mRNA and protein levels, and the downstream effects on neuronal survival, plasticity-related signalling and synaptic protein expression in vitro.</p>
+<h2>Research Applications</h2>
+<h3>Anxiolytic Pathway Research</h3>
+<p>Selank is used in laboratory models to study anxiolytic-related signalling mechanisms, particularly GABAergic pathway modulation and its relationship to anxiety-related behavioural endpoints in experimental systems. It provides a mechanistically distinct tool from classical benzodiazepines for studying GABAergic neurotransmission.</p>
+<h3>Neuropeptide Research</h3>
+<p>As a synthetic neuropeptide analogue, Selank is used to study how small peptides interact with neuronal signalling systems. Laboratory investigations examine receptor interactions, signal transduction and gene expression changes in neuronal cell models following Selank treatment.</p>
+<h3>BDNF and Neurotrophin Research</h3>
+<p>Selank's effects on BDNF expression make it relevant to research examining neurotrophin signalling, synaptic plasticity-related mechanisms and neuroprotective pathway modulation in vitro. It is used alongside other BDNF-modulating compounds such as <Link to="/pages/what-is-semax">Semax</Link> in comparative neuropeptide studies.</p>
+<h2>Structural Characteristics</h2>
+<p>Selank has the sequence Thr-Lys-Pro-Arg-Pro-Gly-Pro (MW approximately 751 Da). The Pro-Gly-Pro C-terminal extension relative to tuftsin confers resistance to enzymatic degradation, improving stability in experimental systems. Its heptapeptide structure is small enough for straightforward cell culture work while retaining the receptor interaction profile of the parent tuftsin sequence.</p>
+<h2>Storage &amp; Handling</h2>
+<p>Store lyophilised Selank at -20°C, protected from light and moisture. Reconstitute with sterile water or appropriate buffer prior to use. Use the <Link to="/pages/concentration-calculator">Concentration Calculator</Link> to determine the correct volume for your target concentration. Follow institutional laboratory protocols for handling and disposal.</p>
+<h2>Quality &amp; Documentation</h2>
+<p>Solatide Biosciences Selank is independently third-party tested to &ge;99% purity, verified by HPLC and mass spectrometry. A Certificate of Analysis is available on the product page.</p>
+<div className="wi-cta-row">
+<Link to="/products/selank-10mg" className="wi-btn">View Product &amp; COA</Link><Link to="/pages/coa-lab-testing" className="wi-btn-outline">COA &amp; Lab Testing</Link>
+</div>
+<h2>Related Compounds</h2>
+<div className="wi-utility">
+<Link to="/pages/what-is-semax">Semax</Link><Link to="/pages/selank-vs-semax">Selank vs Semax</Link><Link to="/pages/research-compound-database">Compound Index</Link><Link to="/pages/research-library">Resource Hub</Link>
+</div>
+<hr className="wi-divider" />
+<div className="wi-callout" style={{ marginTop: '32px', marginBottom: 0 }}><p><strong>Research Use Only:</strong> All compounds are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/pages/research-use-disclaimer">Full disclaimer</Link>.</p></div>
+</div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default WhatIsSelank;

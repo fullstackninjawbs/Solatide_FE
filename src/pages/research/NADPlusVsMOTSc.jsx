@@ -1,34 +1,107 @@
-﻿import React from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-const Page = () => (
-    <div className="min-h-screen bg-white font-sans">
-        <Helmet>
-            <title>NAD+ vs MOTS-c | Solatide Biosciences</title>
-            <meta name="description" content="Comparing NAD+ coenzyme and MOTS-c mitochondria-derived peptide in metabolic and mitochondrial research. Different mechanisms but related research contexts." />
-            <link rel="canonical" href="https://solatidebiosciences.com.au/pages/nad-plus-vs-mots-c" />
-        </Helmet>
-        <section className="w-full py-4 text-center border-b border-slate-100 mb-10"><div className="main-container"><h1 className="text-[48px] md:text-[46px] font-bold text-center text-[#214A9E] leading-tight">NAD+ vs MOTS-c</h1></div></section>
-        <div className="main-container pb-16">
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 mb-10 rounded-[4px]"><p className="text-[13.5px] text-slate-700 leading-relaxed"><strong className="text-[#150F3A]">Research Use Only:</strong> All compounds discussed are for in-vitro laboratory research only. <Link to="/pages/research-use-disclaimer" className="text-[#3390ec] hover:underline">Read our full disclaimer.</Link></p></div>
-            <div className="mb-10"><h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Overview</h2><p className="text-[14px] text-slate-700 leading-[1.8]">NAD+ and MOTS-c are both studied in mitochondrial and metabolic research contexts, but they represent entirely different molecular classes. NAD+ is a coenzyme central to redox reactions and sirtuin activation research, while MOTS-c is a mitochondria-derived peptide that acts as a retrograde signalling molecule affecting nuclear gene expression and AMPK pathways.</p></div>
-            <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="border border-[#E2E8F0] rounded-[8px] p-5 bg-white"><h3 className="text-[15px] font-bold text-[#214A9E] mb-3">NAD+ (Nicotinamide Adenine Dinucleotide)</h3><ul className="list-disc pl-4 space-y-2 text-[13.5px] text-slate-700"><li>Coenzyme found in all living cells</li>
-                        <li>Central to cellular energy metabolism (redox)</li>
-                        <li>Sirtuin (SIRT1-7) activation research</li>
-                        <li>DNA repair pathway and ageing model studies</li></ul></div>
-                <div className="border border-[#E2E8F0] rounded-[8px] p-5 bg-white"><h3 className="text-[15px] font-bold text-[#214A9E] mb-3">MOTS-c</h3><ul className="list-disc pl-4 space-y-2 text-[13.5px] text-slate-700"><li>Mitochondria-derived peptide (16 amino acids)</li>
-                        <li>Retrograde mitochondria-to-nucleus signalling</li>
-                        <li>AMPK pathway activation research</li>
-                        <li>Exercise response and glucose metabolism models</li></ul></div>
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
+const NADPlusVsMOTSc = () => {
+    return (
+        <div className="bg-white font-sans min-h-screen">
+            <Helmet>
+                <title>NAD+ vs MOTS-c | Solatide Biosciences</title>
+                <meta
+                    name="description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <link rel="canonical" href="https://solatidebiosciences.com.au/pages/nad-plus-vs-mots-c" />
+            </Helmet>
+
+            <div className="shopify-page-container">
+                
+                <div className="cmp-wrap">
+<div className="cmp-callout"><p><strong>Research Use Only:</strong> All compounds referenced on this page are intended strictly for in-vitro laboratory research purposes only. Not for human consumption, medical treatment, or veterinary use. <Link to="/pages/research-use-disclaimer">Read our full disclaimer</Link>.</p></div>
+<h1 style={{ fontSize: '2em', fontWeight: 700, color: '#1a3a6b', marginBottom: '16px' }}>NAD+ vs MOTS-c | Research Comparison</h1>
+<p style={{ fontSize: '1.05em', lineHeight: 1.75, color: '#444' }}>NAD+ and MOTS-c are both used in mitochondrial and metabolic research, but they represent fundamentally different classes of research material. NAD+ is a coenzyme — a small molecule essential to cellular redox reactions and energy metabolism. MOTS-c is a mitochondrial-derived peptide — a signalling molecule encoded in the mitochondrial genome that regulates nuclear gene expression and AMPK activation. Understanding their distinct roles helps researchers select the appropriate tool for their experimental question.</p>
+<div className="cmp-cta-row">
+<Link to="/products/nad-500mg" className="cmp-btn">View NAD+</Link><Link to="/products/mots-c-10mg" className="cmp-btn-outline">View MOTS-c</Link>
+</div>
+<h2>At a Glance</h2>
+<table className="cmp-table">
+<thead><tr>
+<th>Property</th>
+<th>NAD+</th>
+<th>MOTS-c</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Compound class</td>
+<td>Coenzyme (dinucleotide)</td>
+<td>Mitochondrial-derived peptide (16 AA)</td>
+</tr>
+<tr>
+<td>Origin</td>
+<td>Universal cellular coenzyme; not mitochondrially encoded</td>
+<td>Encoded in mitochondrial 12S rRNA gene</td>
+</tr>
+<tr>
+<td>Primary role</td>
+<td>Electron carrier in oxidative phosphorylation; redox reactions</td>
+<td>Retrograde mitochondrial-nuclear signalling; AMPK activation</td>
+</tr>
+<tr>
+<td>Key pathway</td>
+<td>ETC, TCA cycle, sirtuin activation, PARP activity</td>
+<td>AMPK via AICAR; folate cycle modulation</td>
+</tr>
+<tr>
+<td>Sirtuin activation</td>
+<td>Direct — sirtuins are NAD+-dependent</td>
+<td>Indirect — via AMPK-mediated metabolic reprogramming</td>
+</tr>
+<tr>
+<td>DNA repair</td>
+<td>Yes — PARP enzymes consume NAD+ during repair</td>
+<td>No direct role</td>
+</tr>
+<tr>
+<td>Insulin sensitivity</td>
+<td>Indirect — via improved mitochondrial function</td>
+<td>Direct — AMPK-driven GLUT4 expression and glucose uptake</td>
+</tr>
+<tr>
+<td>Research focus</td>
+<td>Redox biology, sirtuin research, DNA repair, bioenergetics</td>
+<td>Metabolic regulation, AMPK signalling, exercise mimetics, ageing</td>
+</tr>
+</tbody>
+</table>
+<h2>Mechanism of Action</h2>
+<h3>NAD+</h3>
+<p>NAD+ functions as an electron carrier in glycolysis, the TCA cycle and oxidative phosphorylation, accepting hydride ions to form NADH during substrate oxidation. Beyond its role in energy metabolism, NAD+ is the obligate substrate for sirtuin deacylases (SIRT1–7) and PARP enzymes involved in DNA damage repair. In laboratory models, NAD+ availability directly regulates sirtuin activity, mitochondrial biogenesis and cellular stress responses.</p>
+<h3>MOTS-c</h3>
+<p>MOTS-c translocates from the mitochondria to the nucleus in response to metabolic stress, where it regulates gene expression involved in metabolic adaptation. Its primary mechanism involves modulation of the folate cycle, leading to AICAR accumulation and downstream AMPK activation. AMPK then drives glucose uptake, fatty acid oxidation and mitochondrial biogenesis. Unlike NAD+, MOTS-c acts as a signalling peptide rather than a metabolic substrate.</p>
+<h2>Key Research Differences</h2>
+<h3>Substrate vs Signalling Molecule</h3>
+<p>The most fundamental distinction is compound class. NAD+ is a metabolic substrate — it is directly consumed and regenerated in cellular reactions. MOTS-c is a signalling peptide — it activates downstream pathways without being consumed. For experiments studying redox reactions, electron transport or sirtuin enzyme kinetics, NAD+ is the appropriate tool. For experiments studying AMPK signalling, metabolic gene regulation or mitochondrial-nuclear crosstalk, MOTS-c is preferred.</p>
+<h3>Sirtuin Research</h3>
+<p>NAD+ is the direct tool for sirtuin research — sirtuins require NAD+ as a co-substrate and their activity is directly regulated by NAD+ availability. MOTS-c influences sirtuin-related pathways only indirectly through AMPK-mediated metabolic reprogramming. For sirtuin-focused experiments, NAD+ is the appropriate compound.</p>
+<h3>Insulin Sensitivity &amp; Glucose Metabolism</h3>
+<p>Both compounds influence glucose metabolism in laboratory models, but through different mechanisms. MOTS-c directly activates AMPK, driving GLUT4 expression and insulin-stimulated glucose uptake in skeletal muscle models. NAD+ improves glucose metabolism indirectly through enhanced mitochondrial function and sirtuin-mediated metabolic regulation. For experiments specifically studying AMPK-driven glucose uptake, MOTS-c provides a more direct mechanistic tool.</p>
+<h2>Combined Use in Research</h2>
+<p>NAD+ and MOTS-c can be used together in laboratory models to study both the substrate-level and signalling-level aspects of mitochondrial metabolic regulation. NAD+ addresses redox balance, sirtuin activity and ETC function, while MOTS-c addresses AMPK-mediated metabolic reprogramming and nuclear gene regulation — providing complementary coverage of mitochondrial biology.</p>
+<h2>Choosing Between Them for Research</h2>
+<p>For redox biology, sirtuin research, PARP activity, DNA repair or ETC function studies, NAD+ is the appropriate tool. For AMPK pathway research, metabolic gene regulation, insulin sensitivity or exercise mimetic studies, MOTS-c is preferred. Both are available from Solatide Biosciences, independently third-party tested to ≥99% purity.</p>
+<div className="cmp-cta-row">
+<Link to="/products/nad-500mg" className="cmp-btn">View NAD+</Link><Link to="/products/mots-c-10mg" className="cmp-btn-outline">View MOTS-c</Link>
+</div>
+<h2>Related Resources</h2>
+<div className="cmp-utility">
+<Link to="/pages/what-is-nad-plus">What Is NAD+?</Link><Link to="/pages/what-is-mots-c">What Is MOTS-c?</Link><Link to="/pages/what-is-ss-31">What Is SS-31?</Link><Link to="/pages/mots-c-vs-ss-31">MOTS-c vs SS-31</Link><Link to="/pages/research-compound-database">Compound Index</Link><Link to="/pages/research-library">Resource Hub</Link>
+</div>
+<hr className="cmp-divider" />
+<div className="cmp-callout" style={{ marginTop: '32px', marginBottom: 0 }}><p><strong>Research Use Only:</strong> All compounds are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications. <Link to="/pages/research-use-disclaimer">Full disclaimer</Link>.</p></div>
+</div>
             </div>
-            <div className="mb-10"><h2 className="text-[18px] font-bold text-[#150F3A] mb-4 border-b border-slate-200 pb-2">Related Resources</h2><div className="flex flex-wrap gap-3"><Link to="/products/nad-500mg" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">NAD+ 500mg</Link>
-                    <Link to="/products/mots-c-10mg" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">MOTS-c 10mg</Link>
-                    <Link to="/pages/what-is-mots-c" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">What Is MOTS-c?</Link>
-                    <Link to="/pages/what-is-nad-plus" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">What Is NAD+?</Link>
-                    <Link to="/pages/research-compound-database" className="inline-flex items-center gap-2 border border-slate-200 bg-white px-4 py-2 rounded-full text-[12.5px] text-[#3390ec] hover:bg-slate-50 transition-colors">Compound Index</Link></div></div>
-            <div className="bg-[#F0F5FB] border-l-[3px] border-[#1a4494] p-5 rounded-[4px] mb-8"><p className="text-[13.5px] text-slate-700 leading-relaxed"><strong className="text-[#150F3A]">Research Use Only:</strong> All products are manufactured for in-vitro laboratory research and are not intended for human consumption, medical use, or veterinary applications.</p></div>
         </div>
-    </div>
-);
-export default Page;
+    );
+};
+
+export default NADPlusVsMOTSc;

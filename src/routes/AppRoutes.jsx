@@ -78,6 +78,7 @@ const TesaMorelinVsIpamorelin = lazy(() => import('../pages/research/TesaMorelin
 const WhatIsTesamorelin = lazy(() => import('../pages/research/WhatIsTesamorelin'))
 const WhatIsKPV = lazy(() => import('../pages/research/WhatIsKPV'))
 const DataSharingOptOut = lazy(() => import('../pages/SitePolicies/DataSharingOptOut'))
+const TirzepatideResearchOverview = lazy(() => import('../pages/research/TirzepatideResearchOverview'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
 // Fires page_view on every route change. Rendered inside BrowserRouter so
@@ -238,6 +239,7 @@ const AppRoutes = () => {
                             <Route path="pages/what-is-tesamorelin" element={<WhatIsTesamorelin />} />
                             <Route path="pages/what-is-kpv" element={<WhatIsKPV />} />
                             <Route path="pages/data-sharing-opt-out-1" element={<DataSharingOptOut />} />
+                            <Route path="pages/tirzepatide-research-overview" element={<TirzepatideResearchOverview />} />
 
                             {/* Custom Pages */}
                             <Route path="page/:slug" element={
