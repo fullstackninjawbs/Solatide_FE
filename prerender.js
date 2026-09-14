@@ -58,6 +58,7 @@ if (!fs.existsSync(distDir)) {
 // Save a backup of the pure index.html to use as the template for all routes
 const templatePath = path.resolve(distDir, 'template.html');
 fs.copyFileSync(path.resolve(distDir, 'index.html'), templatePath);
+const template = fs.readFileSync(templatePath, 'utf-8');
 
 const app = express();
 app.use(express.static(distDir));
