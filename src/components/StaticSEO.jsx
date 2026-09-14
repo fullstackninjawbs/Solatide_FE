@@ -154,46 +154,107 @@ const seoData = {
   "/pages/what-is-ipamorelin": {
     title: "What Is Ipamorelin? | Solatide Biosciences Research",
     description: "A research-use overview of Ipamorelin — a selective GHS-R agonist pentapeptide studied for growth hormone secretagogue signalling, ghrelin receptor research and GH pulse dynamics in laboratory models."
-  }
+  },
+  "/pages/what-is-bpc-157": {
+    title: "What Is BPC-157? | Research Peptide Guide | Solatide Biosciences",
+    description: "BPC-157 is a synthetic pentadecapeptide studied in laboratory settings for tissue-response mechanisms, angiogenesis-related signalling, and cellular repair pathways. For in-vitro research use only."
+  },
+  "/pages/what-is-ghk-cu": {
+    title: "What Is GHK-Cu? | Copper Peptide Research | Solatide Biosciences",
+    description: "GHK-Cu is a copper peptide studied in laboratory settings for dermal biology, extracellular matrix remodelling, and collagen synthesis. For in-vitro research use only."
+  },
+  "/pages/what-is-mots-c": {
+    title: "What Is MOTS-c? | Mitochondrial Peptide Research | Solatide Biosciences",
+    description: "MOTS-c is a mitochondria-derived peptide studied for metabolic regulation, cellular energy, and AMPK pathway activation. For in-vitro research use only."
+  },
+  "/pages/what-is-selank": {
+    title: "What Is Selank? | Neuropeptide Research | Solatide Biosciences",
+    description: "Selank is a heptapeptide studied for anxiolytic-like effects, BDNF expression, and immune modulation in laboratory research models. For in-vitro research use only."
+  },
+  "/pages/glp-1-research-overview": {
+    title: "GLP-1 Research Overview | Metabolic Peptide Research | Solatide Biosciences",
+    description: "Overview of GLP-1 receptor agonist research, including semaglutide, tirzepatide, retatrutide, and amylin receptor pathways. For in-vitro laboratory use only."
+  },
+  "/pages/cagrisema-vs-semaglutide": {
+    title: "CagriSema vs Semaglutide | Research Comparison | Solatide Biosciences",
+    description: "Comparing CagriSema (cagrilintide + semaglutide) and semaglutide alone in metabolic receptor research. Dual vs single receptor engagement examined for laboratory research."
+  },
+  "/pages/cagrisema-vs-tirzepatide": {
+    title: "CagriSema vs Tirzepatide | Research Comparison | Solatide Biosciences",
+    description: "Comparing CagriSema dual receptor combination and tirzepatide (GLP-1/GIP dual agonist) in metabolic research. For in-vitro research use only."
+  },
+  "/pages/cagrisema-vs-retatrutide": {
+    title: "CagriSema vs Retatrutide | Research Comparison | Solatide Biosciences",
+    description: "Comparing CagriSema dual receptor combination and retatrutide triple receptor agonist in metabolic research models. For in-vitro research use only."
+  },
+  "/pages/cjc-1295-vs-ipamorelin": {
+    title: "CJC-1295 vs Ipamorelin | GH Secretagogue Research | Solatide Biosciences",
+    description: "Comparing CJC-1295 and Ipamorelin as growth hormone secretagogues in research. Different receptor mechanisms and half-lives examined in laboratory models."
+  },
+  "/pages/cjc-1295-vs-tesamorelin": {
+    title: "CJC-1295 vs Tesamorelin | GHRH Analogue Research | Solatide Biosciences",
+    description: "Comparing CJC-1295 and Tesamorelin as GHRH analogues in research. Different half-lives and research applications examined in laboratory settings."
+  },
+  "/pages/selank-vs-semax": {
+    title: "Selank vs Semax | Neuropeptide Research Comparison | Solatide Biosciences",
+    description: "Comparing Selank and Semax as neuropeptides in laboratory research. Different receptor mechanisms, structures and research applications explored."
+  },
+  "/pages/mots-c-vs-ss-31": {
+    title: "MOTS-c vs SS-31 | Mitochondrial Peptide Research | Solatide Biosciences",
+    description: "Comparing MOTS-c and SS-31 (Elamipretide) as mitochondria-related research peptides. Energy metabolism vs membrane stabilisation approaches in laboratory research."
+  },
+  "/pages/bpc-157-vs-kpv": {
+    title: "BPC-157 vs KPV | Tissue Research Peptide Comparison | Solatide Biosciences",
+    description: "Comparing BPC-157 and KPV as tissue and cellular research peptides in laboratory settings. Mechanism, applications and research context differences."
+  },
+  "/pages/nad-plus-vs-mots-c": {
+    title: "NAD+ vs MOTS-c | Metabolic Research Comparison | Solatide Biosciences",
+    description: "Comparing NAD+ coenzyme and MOTS-c mitochondria-derived peptide in metabolic and mitochondrial research. Different mechanisms but related research contexts."
+  },
+  "/pages/tesamorelin-vs-ipamorelin": {
+    title: "Tesamorelin vs Ipamorelin | GH Secretagogue Research | Solatide Biosciences",
+    description: "Comparing Tesamorelin (GHRH analogue) and Ipamorelin (ghrelin mimetic) as growth hormone secretagogues in research. Different receptor mechanisms and profiles."
+  },
+
 };
 
 const StaticSEO = () => {
-    const location = useLocation();
-    
-    // Normalize path (remove trailing slash if present, unless it's just '/')
-    let path = location.pathname;
-    if (path.length > 1 && path.endsWith('/')) {
-        path = path.slice(0, -1);
-    }
+  const location = useLocation();
 
-    // Do not inject static SEO for product detail pages - rely on their own dynamic Helmet
-    if (path.startsWith('/product/') || path.startsWith('/products/')) {
-        return null;
-    }
+  // Normalize path (remove trailing slash if present, unless it's just '/')
+  let path = location.pathname;
+  if (path.length > 1 && path.endsWith('/')) {
+    path = path.slice(0, -1);
+  }
 
-    const seo = seoData[path];
+  // Do not inject static SEO for product detail pages - rely on their own dynamic Helmet
+  if (path.startsWith('/product/') || path.startsWith('/products/')) {
+    return null;
+  }
 
-    if (!seo) return null;
+  const seo = seoData[path];
 
-    // Prevent canonical from capturing localhost during build-time prerendering
-    const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-        ? 'https://solatidebiosciences.com.au'
-        : window.location.origin;
-        
-    const canonicalUrl = `${origin}${path}`;
+  if (!seo) return null;
 
-    return (
-        <Helmet>
-            <title>{seo.title}</title>
-            <meta name="description" content={seo.description} />
-            <link rel="canonical" href={canonicalUrl} />
-            <meta property="og:title" content={seo.title} />
-            <meta property="og:description" content={seo.description} />
-            <meta property="og:url" content={canonicalUrl} />
-            <meta name="twitter:title" content={seo.title} />
-            <meta name="twitter:description" content={seo.description} />
-        </Helmet>
-    );
+  // Prevent canonical from capturing localhost during build-time prerendering
+  const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+    ? 'https://solatidebiosciences.com.au'
+    : window.location.origin;
+
+  const canonicalUrl = `${origin}${path}`;
+
+  return (
+    <Helmet>
+      <title>{seo.title}</title>
+      <meta name="description" content={seo.description} />
+      <link rel="canonical" href={canonicalUrl} />
+      <meta property="og:title" content={seo.title} />
+      <meta property="og:description" content={seo.description} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:description" content={seo.description} />
+    </Helmet>
+  );
 };
 
 export default StaticSEO;

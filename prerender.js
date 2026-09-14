@@ -45,7 +45,24 @@ const routes = [
     "/pages/what-is-semax",
     "/pages/cagrisema-comparison-guide",
     "/pages/cagrisema-research-overview",
-    "/pages/what-is-ipamorelin"
+    "/pages/what-is-ipamorelin",
+    "/pages/what-is-bpc-157",
+    "/pages/what-is-ghk-cu",
+    "/pages/what-is-mots-c",
+    "/pages/what-is-selank",
+    "/pages/glp-1-research-overview",
+    "/pages/cagrisema-vs-semaglutide",
+    "/pages/cagrisema-vs-tirzepatide",
+    "/pages/cagrisema-vs-retatrutide",
+    "/pages/cjc-1295-vs-ipamorelin",
+    "/pages/cjc-1295-vs-tesamorelin",
+    "/pages/selank-vs-semax",
+    "/pages/mots-c-vs-ss-31",
+    "/pages/bpc-157-vs-kpv",
+    "/pages/nad-plus-vs-mots-c",
+    "/pages/tesamorelin-vs-ipamorelin",
+    "/pages/terms-of-services",
+    "/pages/research-use-disclaimer"
 ];
 
 const distDir = path.resolve(__dirname, 'dist-store');

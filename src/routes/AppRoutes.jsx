@@ -60,6 +60,21 @@ const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
 const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
 const ResearchPage = lazy(() => import('../pages/research/ResearchPage'))
+const WhatIsBPC157 = lazy(() => import('../pages/research/WhatIsBPC157'))
+const WhatIsGHKCu = lazy(() => import('../pages/research/WhatIsGHKCu'))
+const WhatIsMOTSc = lazy(() => import('../pages/research/WhatIsMOTSc'))
+const WhatIsSelank = lazy(() => import('../pages/research/WhatIsSelank'))
+const GLP1ResearchOverview = lazy(() => import('../pages/research/GLP1ResearchOverview'))
+const CagrisemaVsSemaglutide = lazy(() => import('../pages/research/CagrisemaVsSemaglutide'))
+const CagrisemaVsTirzepatide = lazy(() => import('../pages/research/CagrisemaVsTirzepatide'))
+const CagrisemaVsRetatrutide = lazy(() => import('../pages/research/CagrisemaVsRetatrutide'))
+const CJC1295VsIpamorelin = lazy(() => import('../pages/research/CJC1295VsIpamorelin'))
+const CJC1295VsTesamorelin = lazy(() => import('../pages/research/CJC1295VsTesamorelin'))
+const SelankVsSemax = lazy(() => import('../pages/research/SelankVsSemax'))
+const MOTScVsSS31 = lazy(() => import('../pages/research/MOTScVsSS31'))
+const BPC157VsKPV = lazy(() => import('../pages/research/BPC157VsKPV'))
+const NADPlusVsMOTSc = lazy(() => import('../pages/research/NADPlusVsMOTSc'))
+const TesaMorelinVsIpamorelin = lazy(() => import('../pages/research/TesaMorelinVsIpamorelin'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
 // Fires page_view on every route change. Rendered inside BrowserRouter so
@@ -198,6 +213,25 @@ const AppRoutes = () => {
                             <Route path="pages/terms" element={<Terms />} />
                             <Route path="pages/research-use-disclaimer" element={<ResearchUseDisclaimer />} />
                             <Route path="pages/refund-policy" element={<Returns />} />
+                            {/* Terms slug alias to match Shopify URL */}
+                            <Route path="pages/terms-of-services" element={<Terms />} />
+
+                            {/* New Research Pages */}
+                            <Route path="pages/what-is-bpc-157" element={<WhatIsBPC157 />} />
+                            <Route path="pages/what-is-ghk-cu" element={<WhatIsGHKCu />} />
+                            <Route path="pages/what-is-mots-c" element={<WhatIsMOTSc />} />
+                            <Route path="pages/what-is-selank" element={<WhatIsSelank />} />
+                            <Route path="pages/glp-1-research-overview" element={<GLP1ResearchOverview />} />
+                            <Route path="pages/cagrisema-vs-semaglutide" element={<CagrisemaVsSemaglutide />} />
+                            <Route path="pages/cagrisema-vs-tirzepatide" element={<CagrisemaVsTirzepatide />} />
+                            <Route path="pages/cagrisema-vs-retatrutide" element={<CagrisemaVsRetatrutide />} />
+                            <Route path="pages/cjc-1295-vs-ipamorelin" element={<CJC1295VsIpamorelin />} />
+                            <Route path="pages/cjc-1295-vs-tesamorelin" element={<CJC1295VsTesamorelin />} />
+                            <Route path="pages/selank-vs-semax" element={<SelankVsSemax />} />
+                            <Route path="pages/mots-c-vs-ss-31" element={<MOTScVsSS31 />} />
+                            <Route path="pages/bpc-157-vs-kpv" element={<BPC157VsKPV />} />
+                            <Route path="pages/nad-plus-vs-mots-c" element={<NADPlusVsMOTSc />} />
+                            <Route path="pages/tesamorelin-vs-ipamorelin" element={<TesaMorelinVsIpamorelin />} />
 
                             {/* Custom Pages */}
                             <Route path="page/:slug" element={
