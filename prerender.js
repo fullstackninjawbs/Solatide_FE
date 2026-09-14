@@ -67,16 +67,22 @@ app.use(express.static(distDir));
 app.use('/api', async (req, res) => {
     try {
         const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
+        const proxyHeaders = { ...req.headers };
+        delete proxyHeaders['accept-encoding'];
+        proxyHeaders.host = new URL(apiUrl).host;
+
         const fetchRes = await fetch(`${apiUrl}/api${req.url}`, {
             method: req.method,
-            headers: {
-                ...req.headers,
-                host: new URL(apiUrl).host
-            }
+            headers: proxyHeaders
         });
         const data = await fetchRes.arrayBuffer();
         res.status(fetchRes.status);
-        fetchRes.headers.forEach((value, key) => res.setHeader(key, value));
+        fetchRes.headers.forEach((value, key) => {
+            const k = key.toLowerCase();
+            if (k !== 'content-encoding' && k !== 'content-length' && k !== 'transfer-encoding') {
+                res.setHeader(key, value);
+            }
+        });
         res.send(Buffer.from(data));
     } catch (e) {
         res.status(500).send(e.message);
