@@ -83,7 +83,9 @@ app.use('/api', async (req, res) => {
 });
 
 app.use((req, res) => {
-    res.sendFile(templatePath);
+    // Serve the pristine template from memory instead of reading from disk, 
+    // because dist-store/index.html gets overwritten by the prerendered '/' route!
+    res.send(template);
 });
 
 const server = app.listen(0, async () => {
@@ -176,10 +178,10 @@ const server = app.listen(0, async () => {
                     const defaultTitle = titles.find(t => t.textContent.includes('Solatide Biosciences – Research Grade Peptides'));
                     if (defaultTitle) defaultTitle.remove();
 
-                    // If still multiple, keep only the first one
+                    // If still multiple, keep only the LAST one (which Helmet injects at the end)
                     const remainingTitles = Array.from(document.querySelectorAll('title'));
                     if (remainingTitles.length > 1) {
-                        for (let i = 1; i < remainingTitles.length; i++) {
+                        for (let i = 0; i < remainingTitles.length - 1; i++) {
                             remainingTitles[i].remove();
                         }
                     }
@@ -187,15 +189,15 @@ const server = app.listen(0, async () => {
 
                 const metas = Array.from(document.querySelectorAll('meta[name="description"]'));
                 if (metas.length > 1) {
-                    // Keep the first one, remove the rest
-                    for (let i = 1; i < metas.length; i++) {
+                    // Keep the LAST one (which Helmet injects), remove the rest
+                    for (let i = 0; i < metas.length - 1; i++) {
                         metas[i].remove();
                     }
                 }
 
                 const canonicals = Array.from(document.querySelectorAll('link[rel="canonical"]'));
                 if (canonicals.length > 1) {
-                    for (let i = 1; i < canonicals.length; i++) {
+                    for (let i = 0; i < canonicals.length - 1; i++) {
                         canonicals[i].remove();
                     }
                 }
