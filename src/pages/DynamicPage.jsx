@@ -82,13 +82,19 @@ const DynamicPage = () => {
 
       {/* 
         Tailwind Prose class ensures that the raw HTML inherits nice styles 
-        (line height, heading sizes, list bullets, etc.)
+        (line height, heading sizes, list bullets, etc.). 
+        Removed prose-lg and tailored it to match the Jodit editor's exact look and feel.
       */}
       <div
-        className="prose prose-slate prose-lg max-w-none 
-                   prose-headings:text-slate-900 prose-headings:font-bold
+        className="prose max-w-none 
+                   prose-p:text-[14.5px] prose-p:leading-[1.65] prose-p:text-[#1e293b]
+                   prose-headings:text-[#1a3a6b] prose-headings:font-bold prose-headings:mb-4
+                   prose-h1:text-[2em] prose-h2:text-[1.35em] prose-h3:text-[1.05em]
+                   prose-li:text-[14.5px] prose-li:leading-[1.65] prose-li:text-[#1e293b]
+                   prose-a:text-[#2a7de1] prose-a:font-medium prose-a:no-underline hover:prose-a:underline
                    prose-img:rounded-xl prose-img:shadow-md
-                   prose-pre:bg-slate-800 prose-pre:text-slate-50"
+                   prose-pre:bg-slate-800 prose-pre:text-slate-50
+                   jodit-content-wrapper"
         dangerouslySetInnerHTML={{ __html: page.content?.html || '' }}
       />
     </div>
