@@ -398,3 +398,72 @@
   line-height: 1.7;
   margin-bottom: 6px;
 }
+
+/* ==========================================================================
+   Jodit Content Wrapper Styles
+   (Ensures pasted generic HTML matches Shopify component styles both in editor and frontend)
+   ========================================================================== */
+.jodit-content-wrapper table,
+.jodit-wysiwyg table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 20px 0 !important;
+}
+
+.jodit-content-wrapper thead th,
+.jodit-content-wrapper th,
+.jodit-wysiwyg thead th,
+.jodit-wysiwyg th {
+  background: #1a3a6b !important;
+  color: #fff !important;
+  padding: 12px 16px !important;
+  text-align: left !important;
+  font-size: 0.9em !important;
+  font-weight: 700 !important;
+  border: none !important;
+}
+
+.jodit-content-wrapper tbody td,
+.jodit-content-wrapper td,
+.jodit-wysiwyg tbody td,
+.jodit-wysiwyg td {
+  padding: 11px 16px !important;
+  border-bottom: 1px solid #dce6f5 !important;
+  font-size: 0.9em !important;
+  vertical-align: top !important;
+  line-height: 1.55 !important;
+  color: #222 !important;
+}
+
+.jodit-content-wrapper tbody tr:nth-child(even) td,
+.jodit-wysiwyg tbody tr:nth-child(even) td {
+  background: #f5f8ff !important;
+}
+
+.jodit-content-wrapper tbody td:first-child,
+.jodit-wysiwyg tbody td:first-child {
+  font-weight: 600 !important;
+  color: #1a3a6b !important;
+  width: 30% !important;
+}
+
+.jodit-content-wrapper blockquote,
+.jodit-wysiwyg blockquote {
+  background: #eef3fc !important;
+  border-left: 4px solid #1a3a6b !important;
+  border-radius: 4px !important;
+  padding: 14px 18px !important;
+  margin-bottom: 36px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  font-style: normal !important;
+  color: #1a3a6b !important;
+}
+
+.jodit-content-wrapper blockquote p,
+.jodit-wysiwyg blockquote p {
+  color: #1a3a6b !important;
+  margin: 0 !important;
+  font-size: 0.9em !important;
+}
+
