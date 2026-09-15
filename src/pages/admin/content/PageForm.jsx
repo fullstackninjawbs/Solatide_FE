@@ -91,7 +91,7 @@ const PageForm = () => {
 
   const handleSave = async (statusOverride) => {
     if (!validate()) return;
-    
+
     const finalStatus = statusOverride || page.status;
     const payload = {
       ...page,
@@ -108,20 +108,20 @@ const PageForm = () => {
       } else {
         res = await apiService.createAdminPage(payload);
       }
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         const err = new Error(errorData.message || 'Failed to save');
         err.response = { data: errorData };
         throw err;
       }
-      
+
       if (finalStatus === 'published') {
         toast.success('Page published successfully.');
       } else {
         toast.success('Page saved as draft.');
       }
-      
+
       navigate('/admin/content/pages');
     } catch (err) {
       if (err.response?.data?.message?.includes('already in use')) {
@@ -178,8 +178,8 @@ const PageForm = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link 
-            to="/admin/content/pages" 
+          <Link
+            to="/admin/content/pages"
             className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors bg-white text-slate-500 hover:text-brand-navy"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -189,10 +189,10 @@ const PageForm = () => {
               {isEditing ? 'Edit Page' : 'Create Page'}
             </h2>
             {isEditing && (
-              <a 
+              <a
                 href={`/pages/${page.slug}`}
                 target="_blank"
-                rel="noopener noreferrer" 
+                rel="noopener noreferrer"
                 className="text-[13px] text-[#0079CD] hover:underline mt-1 inline-flex items-center gap-1 font-semibold"
               >
                 /pages/{page.slug}
@@ -200,7 +200,7 @@ const PageForm = () => {
             )}
           </div>
         </div>
-        
+
         <div className="flex gap-3">
           <button
             onClick={() => handleSave('draft')}
@@ -224,7 +224,7 @@ const PageForm = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 space-y-6">
-          
+
           <div className="bg-white p-6 rounded-[16px] border border-slate-200 shadow-sm space-y-6">
             <div>
               <label className="block text-[13px] font-bold text-slate-800 mb-2">
@@ -239,13 +239,13 @@ const PageForm = () => {
                 className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-navy outline-none transition-all text-[14px]"
               />
             </div>
-            
+
             <div>
               <label className="block text-[13px] font-bold text-slate-800 mb-1">
                 Content
               </label>
               <p className="text-[12px] text-slate-500 mb-3">
-                Use the "Source" button to safely embed raw HTML or code snippets.
+                Safely embed raw HTML or code snippets.
               </p>
               <div className="prose-editor-container border border-slate-200 rounded-lg overflow-hidden">
                 {memoizedEditor}
@@ -263,7 +263,7 @@ const PageForm = () => {
               <input
                 type="text"
                 value={page.seoTitle}
-                onChange={(e) => setPage({...page, seoTitle: e.target.value})}
+                onChange={(e) => setPage({ ...page, seoTitle: e.target.value })}
                 placeholder={page.title || 'Defaults to page title'}
                 className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-navy outline-none text-[14px]"
               />
@@ -274,7 +274,7 @@ const PageForm = () => {
               </label>
               <textarea
                 value={page.metaDescription}
-                onChange={(e) => setPage({...page, metaDescription: e.target.value})}
+                onChange={(e) => setPage({ ...page, metaDescription: e.target.value })}
                 placeholder="Brief description for search results"
                 rows={3}
                 className="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-navy outline-none resize-none text-[14px]"
@@ -287,16 +287,15 @@ const PageForm = () => {
         <div className="w-full lg:w-[350px] shrink-0 space-y-6">
           <div className="bg-white p-6 rounded-[16px] border border-slate-200 shadow-sm space-y-6">
             <h3 className="text-[16px] font-bold text-slate-800 pb-2 border-b border-slate-100">Settings</h3>
-            
+
             <div>
               <label className="block text-[13px] font-bold text-slate-800 mb-2">
                 Status
               </label>
-              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
-                page.status === 'published' 
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border ${page.status === 'published'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                   : 'bg-amber-50 border-amber-200 text-amber-700'
-              }`}>
+                }`}>
                 {page.status === 'published' ? <Globe className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 <span className="font-bold text-[13px] capitalize">{page.status}</span>
               </div>
