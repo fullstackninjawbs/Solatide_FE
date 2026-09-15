@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ChevronLeft, Save, Globe, EyeOff, LayoutTemplate } from 'lucide-react';
+import { ChevronLeft, Save, Globe, EyeOff } from 'lucide-react';
 import JoditEditor from 'jodit-react';
 import { apiService } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
@@ -293,8 +293,8 @@ const PageForm = () => {
                 Status
               </label>
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border ${page.status === 'published'
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                  : 'bg-amber-50 border-amber-200 text-amber-700'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                : 'bg-amber-50 border-amber-200 text-amber-700'
                 }`}>
                 {page.status === 'published' ? <Globe className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 <span className="font-bold text-[13px] capitalize">{page.status}</span>
