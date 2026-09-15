@@ -26,7 +26,7 @@ const DynamicPage = () => {
 
         // Handle redirect if the backend says the slug moved
         if (data.redirect) {
-          window.location.replace(`/page/${data.targetSlug}`);
+          window.location.replace(`/pages/${data.targetSlug}`);
           return;
         }
 
@@ -77,7 +77,7 @@ const DynamicPage = () => {
         {page.metaDescription && (
           <meta name="description" content={page.metaDescription} />
         )}
-        <link rel="canonical" href={`${window.location.origin}/page/${page.slug}`} />
+        <link rel="canonical" href={`${window.location.origin}/pages/${page.slug}`} />
       </Helmet>
 
       {/* 

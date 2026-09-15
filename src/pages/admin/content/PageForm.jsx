@@ -190,12 +190,12 @@ const PageForm = () => {
             </h2>
             {isEditing && (
               <a 
-                href={`/page/${page.slug}`}
+                href={`/pages/${page.slug}`}
                 target="_blank"
                 rel="noopener noreferrer" 
                 className="text-[13px] text-[#0079CD] hover:underline mt-1 inline-flex items-center gap-1 font-semibold"
               >
-                /page/{page.slug}
+                /pages/{page.slug}
               </a>
             )}
           </div>
@@ -308,7 +308,7 @@ const PageForm = () => {
               </label>
               <div className="flex items-center">
                 <span className="px-3 py-2 bg-slate-50 border border-r-0 border-slate-300 rounded-l-lg text-slate-500 text-[14px]">
-                  /page/
+                  /pages/
                 </span>
                 <input
                   type="text"

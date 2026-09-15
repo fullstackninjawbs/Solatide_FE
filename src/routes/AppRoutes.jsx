@@ -241,7 +241,7 @@ const AppRoutes = () => {
                             <Route path="pages/tirzepatide-research-overview" element={<TirzepatideResearchOverview />} />
 
                             {/* Custom Pages */}
-                            <Route path="page/:slug" element={
+                            <Route path="pages/:slug" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
                                     {React.createElement(lazy(() => import('../pages/DynamicPage')))}
                                 </React.Suspense>

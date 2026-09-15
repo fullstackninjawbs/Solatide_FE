@@ -57,7 +57,7 @@ const PageList = () => {
 
   const copyUrl = (slug) => {
     const baseUrl = import.meta.env.VITE_STOREFRONT_URL || window.location.origin;
-    const url = `${baseUrl}/page/${slug}`;
+    const url = `${baseUrl}/pages/${slug}`;
     navigator.clipboard.writeText(url);
     toast.success('Page URL copied');
   };
@@ -141,7 +141,7 @@ const PageList = () => {
                       {page.title}
                     </td>
                     <td className="py-4 px-6 text-slate-500 font-mono text-[12px]">
-                      /page/{page.slug}
+                      /pages/{page.slug}
                     </td>
                     <td className="py-4 px-6">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
@@ -174,7 +174,7 @@ const PageList = () => {
                             <LinkIcon className="h-4 w-4" />
                           </button>
                           <a 
-                            href={`${import.meta.env.VITE_STOREFRONT_URL || ''}/page/${page.slug}`}
+                            href={`${import.meta.env.VITE_STOREFRONT_URL || ''}/pages/${page.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex p-1.5 text-slate-400 hover:text-brand-navy hover:bg-slate-100 rounded-lg transition-colors"

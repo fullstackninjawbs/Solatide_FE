@@ -172,7 +172,7 @@ const server = app.listen(0, async () => {
             if (Array.isArray(pages)) {
                 for (const page of pages) {
                     if (page.slug) {
-                        routes.push(`/page/${page.slug}`);
+                        routes.push(`/pages/${page.slug}`);
                         count++;
                     }
                 }
