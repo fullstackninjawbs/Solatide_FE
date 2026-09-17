@@ -265,16 +265,16 @@ const AnalyticsDashboard = () => {
               {revenueByProduct.length === 0 ? (
                 <div className="absolute inset-0 flex items-center justify-center text-slate-400">No data for this period</div>
               ) : (
-                <ResponsiveContainer width="100%" height={300 + revenueByProduct.length * 20}>
+                <ResponsiveContainer width="100%" height={150 + revenueByProduct.length * 70}>
                   <BarChart
                     layout="vertical"
                     data={revenueByProduct}
-                    margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
-                    barSize={24}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    barSize={20}
                   >
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
                     <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748B' }} tickFormatter={(val) => `$${val}`} />
-                    <YAxis type="category" dataKey="productTitle" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} width={150} />
+                    <YAxis type="category" dataKey="productTitle" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} width={220} />
                     <Tooltip
                       cursor={{ fill: '#F1F5F9' }}
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
@@ -297,16 +297,16 @@ const AnalyticsDashboard = () => {
               {topCustomers.length === 0 ? (
                 <div className="absolute inset-0 flex items-center justify-center text-slate-400">No data for this period</div>
               ) : (
-                <ResponsiveContainer width="100%" height={300 + topCustomers.length * 20}>
+                <ResponsiveContainer width="100%" height={150 + topCustomers.length * 60}>
                   <BarChart
                     layout="vertical"
                     data={topCustomers}
-                    margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
-                    barSize={24}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    barSize={20}
                   >
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
                     <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748B' }} tickFormatter={(val) => `$${val}`} />
-                    <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} width={120} />
+                    <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} width={160} />
                     <Tooltip
                       cursor={{ fill: '#F1F5F9' }}
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
