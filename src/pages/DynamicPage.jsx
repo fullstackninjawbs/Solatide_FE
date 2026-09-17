@@ -95,7 +95,7 @@ const DynamicPage = () => {
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50
                    jodit-content-wrapper"
-        dangerouslySetInnerHTML={{ __html: page.content?.html || '' }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(page.content?.html || '') }}
       />
     </div>
   );
