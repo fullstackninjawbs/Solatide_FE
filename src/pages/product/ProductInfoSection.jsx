@@ -25,7 +25,7 @@ const ProductInfoSection = ({ product }) => {
 
                     {/* Left Column */}
                     {(hasOverview || hasApplications) && (
-                        <div className="lg:col-span-6 flex flex-col gap-2.5">
+                        <div className={`flex flex-col gap-2.5 ${hasSpecs ? 'lg:col-span-6' : 'lg:col-span-8 lg:col-start-3'}`}>
 
                         {/* Box 1: Product Overview Description */}
                         {hasOverview && (

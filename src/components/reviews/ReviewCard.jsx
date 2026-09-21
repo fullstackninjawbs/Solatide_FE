@@ -65,7 +65,7 @@ const ReviewCard = ({ review, index }) => {
         )}
 
         <p className="text-[#6A6A6A] text-[13px] leading-[1.6] whitespace-pre-wrap font-medium">
-          "{review.content || review.comment}"
+          {review.content || review.comment}
         </p>
 
         {/* Attached Images */}
