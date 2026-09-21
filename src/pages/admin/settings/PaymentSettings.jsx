@@ -195,7 +195,7 @@ const PaymentSettings = () => {
             Use <strong>Sandbox</strong> for testing. Switch to <strong>Production</strong> only when go-live ready.
           </p>
           <div style={s.envToggle}>
-            {['sandbox', 'prod'].map((env) => (
+            {['sandbox', 'production'].map((env) => (
               <button
                 key={env}
                 id={`tagada-env-${env}`}
