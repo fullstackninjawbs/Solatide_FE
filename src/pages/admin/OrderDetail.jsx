@@ -766,18 +766,11 @@ const OrderDetail = () => {
                           setRefundType('full');
                           setIsRefundModalOpen(true);
                         }}
-                        disabled={order.tagadaEnv && order.tagadaEnv !== 'sandbox'}
                         className="!bg-orange-600 hover:!bg-orange-700 !shadow-none"
                       >
                         Refund Full Amount
                       </AdminPrimaryButton>
                     </div>
-                  )}
-
-                  {order.tagadaEnv && order.tagadaEnv !== 'sandbox' && order.refundStatus !== 'refunded' && (
-                    <p className="text-xs text-red-500 font-medium text-right mt-3">
-                      Refunds can only be initiated for sandbox/test orders.
-                    </p>
                   )}
                 </div>
               </div>
@@ -1253,15 +1246,27 @@ const OrderDetail = () => {
               Refund Full Amount
             </h3>
 
-            <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
-              <p className="text-sm font-semibold text-orange-800 mb-1 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                TEST MODE WARNING
-              </p>
-              <p className="text-xs text-orange-700">
-                You are about to process a refund in the TEST Tagada funnel. No real money will be affected. Do you want to continue?
-              </p>
-            </div>
+            {order?.tagadaEnv === 'sandbox' ? (
+              <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
+                <p className="text-sm font-semibold text-orange-800 mb-1 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                  TEST MODE WARNING
+                </p>
+                <p className="text-xs text-orange-700">
+                  You are about to process a refund in the TEST Tagada funnel. No real money will be affected. Do you want to continue?
+                </p>
+              </div>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                <p className="text-sm font-semibold text-red-800 mb-1 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                  LIVE PRODUCTION WARNING
+                </p>
+                <p className="text-xs text-red-700">
+                  You are about to process a LIVE refund. Real funds will be returned to the customer's bank account. This action is irreversible. Do you want to continue?
+                </p>
+              </div>
+            )}
 
             <div className="space-y-4 mb-8">
               <div>
