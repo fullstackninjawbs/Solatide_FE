@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { apiService } from '../../services/api';
-import { Activity, TrendingUp, Users, DollarSign, BarChart2 } from 'lucide-react';
+import { Activity, DollarSign, BarChart2 } from 'lucide-react';
 
 const AnalyticsDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const AnalyticsDashboard = () => {
           <p className="text-slate-500 text-[14px]">Order Attribution & Conversion Summary</p>
         </div>
       </div>
-      
+
       {loading ? (
         <div className="bg-white border border-slate-200 rounded-[24px] p-12 shadow-[0_4px_20px_rgba(0,0,0,0.015)] text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue mx-auto"></div>
@@ -63,7 +63,7 @@ const AnalyticsDashboard = () => {
               </div>
               <p className="text-2xl font-bold text-brand-navy">{totalOrders}</p>
             </div>
-            
+
             <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.015)]">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
