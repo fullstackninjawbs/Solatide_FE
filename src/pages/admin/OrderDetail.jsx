@@ -894,7 +894,6 @@ const OrderDetail = () => {
 
             {/* Notes */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 relative group">
-              <button className="absolute top-6 right-6 text-slate-300 hover:text-brand-blue transition-colors opacity-0 group-hover:opacity-100"><Edit2 size={16} /></button>
               <h3 className="text-[15px] font-bold text-brand-navy mb-3 flex items-center gap-2">
                 Notes
               </h3>
