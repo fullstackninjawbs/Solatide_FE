@@ -42,7 +42,6 @@ const CheckoutSuccess = () => {
             trackEvent('purchase', {
               orderId: ord._id,
               cartValue: ord.grandTotal || ord.totalAmount,
-              country: ord.shippingAddress?.country || ord.tagadaShipping?.address?.countryCode || undefined,
             });
 
             // Fire GTM DataLayer Purchase Event
