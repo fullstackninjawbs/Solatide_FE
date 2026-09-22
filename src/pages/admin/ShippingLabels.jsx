@@ -235,7 +235,7 @@ export default function ShippingLabels() {
               ) : (
                 orders.map((order) => {
                   const labelUrl = generatedLabels[order._id] || order.labelUrl;
-                  const isProcessed = !!labelUrl || order.status === 'shipped';
+                  const isProcessed = !!labelUrl || order.status === 'shipped' || !!order.starshipitOrderId;
 
                   return (
                     <tr
