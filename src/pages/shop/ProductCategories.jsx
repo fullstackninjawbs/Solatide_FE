@@ -252,9 +252,6 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                                         This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
                                     </p>
                                     <p>
-                                        This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
-                                    </p>
-                                    <p>
                                         Where a topic-specific page is more useful than a broad catalogue view, the site's overview pages and comparison resources provide more structured scientific context.
                                     </p>
                                 </div>
