@@ -367,31 +367,33 @@ const ProductDetail = () => {
                             {/* Price is moved down next to Add to Cart in the new design, but we'll leave it here if variants exist or handle it below */}
 
                             {/* Product Summary */}
-                            <div
-                                className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
-                                style={{ fontWeight: 400 }}
-                                dangerouslySetInnerHTML={{
-                                    __html: (product.description || product.summaryHtml || '').replace(
-                                        // Match "Learn more about <Something> here" or typo "her" - handles &nbsp; and variable whitespace
-                                        /Learn\s+more\s+abou?o?t\s+([^<\|]+?)\s*(?:&nbsp;|\s)\s*here?/gi,
-                                        (match, compoundName) => {
-                                            // clean name from any weird spaces
-                                            const cleanName = compoundName.replace(/&nbsp;/g, ' ').trim();
-                                            // Pass the compound name to ResearchPage via query string
-                                            return `<span class="text-[#214A9E] cursor-pointer font-medium hover:underline research-link-dynamic" data-href="/ResearchPage?compound=${encodeURIComponent(cleanName.toLowerCase())}">Learn more about ${cleanName} here</span>`;
+                            {(product.description || product.summaryHtml) && (product.description || product.summaryHtml).trim() !== '<p></p>' && (product.description || product.summaryHtml).trim() !== '<p><br></p>' && (
+                                <div
+                                    className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
+                                    style={{ fontWeight: 400 }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: (product.description || product.summaryHtml || '').replace(
+                                            // Match "Learn more about <Something> here" or typo "her" - handles &nbsp; and variable whitespace
+                                            /Learn\s+more\s+abou?o?t\s+([^<\|]+?)\s*(?:&nbsp;|\s)\s*here?/gi,
+                                            (match, compoundName) => {
+                                                // clean name from any weird spaces
+                                                const cleanName = compoundName.replace(/&nbsp;/g, ' ').trim();
+                                                // Pass the compound name to ResearchPage via query string
+                                                return `<span class="text-[#214A9E] cursor-pointer font-medium hover:underline research-link-dynamic" data-href="/ResearchPage?compound=${encodeURIComponent(cleanName.toLowerCase())}">Learn more about ${cleanName} here</span>`;
+                                            }
+                                        )
+                                    }}
+                                    onClick={(e) => {
+                                        if (e.target.classList.contains('research-link-dynamic')) {
+                                            e.preventDefault();
+                                            // Also prevent it from bubbling up to any wrapping <a> tags from Shopify
+                                            e.stopPropagation();
+                                            const href = e.target.getAttribute('data-href');
+                                            if (href) navigate(href);
                                         }
-                                    )
-                                }}
-                                onClick={(e) => {
-                                    if (e.target.classList.contains('research-link-dynamic')) {
-                                        e.preventDefault();
-                                        // Also prevent it from bubbling up to any wrapping <a> tags from Shopify
-                                        e.stopPropagation();
-                                        const href = e.target.getAttribute('data-href');
-                                        if (href) navigate(href);
-                                    }
-                                }}
-                            />
+                                    }}
+                                />
+                            )}
                         </div>
 
                         {/* Current Batch Info (moved inline above selector and quantity!) */}

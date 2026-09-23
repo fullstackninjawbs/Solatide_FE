@@ -402,13 +402,16 @@ const OrderDetail = () => {
   };
 
   const timelineEvents = [];
+  let eventIndex = 0;
   const addEvent = (text, date, hasEmailButton = false) => {
-    timelineEvents.push({ text, date, hasEmailButton });
+    timelineEvents.push({ text, date, hasEmailButton, index: eventIndex++ });
   };
 
   // Base created event
+  const isMissingCustomer = customerName === 'No customer name';
+  
   addEvent(
-    <span><span className="font-bold text-brand-navy">{customerName}</span> placed this order on Tagadacrm.</span>,
+    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on Tagadacrm.</span>,
     order.createdAt
   );
 
@@ -434,8 +437,16 @@ const OrderDetail = () => {
       <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.</span>,
       order.createdAt
     );
+    
+    let emailText = 'Confirmation email was sent.';
+    if (customerEmail && !isMissingCustomer) {
+      emailText = `Confirmation email was sent to ${customerName} (${customerEmail}).`;
+    } else if (customerEmail) {
+      emailText = `Confirmation email was sent to ${customerEmail}.`;
+    }
+    
     addEvent(
-      <span>Tagadacrm sent an order confirmation email to {customerName} ({customerEmail}).</span>,
+      <span>{emailText}</span>,
       order.createdAt,
       true
     );
@@ -484,7 +495,11 @@ const OrderDetail = () => {
     });
   }
 
-  timelineEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+  timelineEvents.sort((a, b) => {
+    const timeDiff = new Date(b.date) - new Date(a.date);
+    if (timeDiff !== 0) return timeDiff;
+    return b.index - a.index;
+  });
 
   const groupedEvents = {};
   timelineEvents.forEach(ev => {
