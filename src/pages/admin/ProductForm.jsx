@@ -37,6 +37,7 @@ const ProductForm = () => {
   const [batchesList, setBatchesList] = useState([]);
   const [collectionsList, setCollectionsList] = useState([]);
   const [packagesList, setPackagesList] = useState([]);
+  const [packagesLoaded, setPackagesLoaded] = useState(false);
 
   // Interactive tags list state
   const [tagInput, setTagInput] = useState('');
@@ -247,6 +248,8 @@ const ProductForm = () => {
         }
       } catch (err) {
         console.error('Failed to load shipping packages', err);
+      } finally {
+        setPackagesLoaded(true);
       }
     };
 
@@ -1156,7 +1159,7 @@ const ProductForm = () => {
                             ? `Store default • ${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
                             : `${p.name} - ${p.dimensions?.length} × ${p.dimensions?.width} × ${p.dimensions?.height} ${p.dimensions?.unit}, ${p.weight?.value} ${p.weight?.unit}`
                         }))
-                        : [{ value: 'default', label: 'Loading packages...' }]
+                        : [{ value: 'default', label: packagesLoaded ? 'No packages found!' : 'Loading packages...' }]
                       }
                       value={formData.packageTemplate || (packagesList.find(p => p.isDefault)?._id || 'default')}
                       onChange={(val) => setFormData(prev => ({ ...prev, packageTemplate: val }))}
