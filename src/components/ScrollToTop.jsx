@@ -6,8 +6,17 @@ export default function ScrollToTop() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant'
+      });
+    }, 100); // Small delay to allow Suspense/lazy components to mount
+    
     captureAttribution();
+    
+    return () => clearTimeout(timer);
   }, [pathname, search]);
 
   return null;
