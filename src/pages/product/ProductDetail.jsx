@@ -250,6 +250,10 @@ const ProductDetail = () => {
         : window.location.origin;
     const canonicalUrl = `${origin}${normalizedPath}`;
 
+    const rawDescription = product?.description || product?.summaryHtml || '';
+    const hasDescriptionContent = rawDescription.replace(/&nbsp;/g, '').replace(/<[^>]*>/g, '').trim().length > 0 || /<(img|iframe|video|audio)/i.test(rawDescription);
+
+
     return (
         <div className="w-full bg-white py-12">
             {product && (
@@ -367,12 +371,12 @@ const ProductDetail = () => {
                             {/* Price is moved down next to Add to Cart in the new design, but we'll leave it here if variants exist or handle it below */}
 
                             {/* Product Summary */}
-                            {(product.description || product.summaryHtml) && (product.description || product.summaryHtml).trim() !== '<p></p>' && (product.description || product.summaryHtml).trim() !== '<p></p>' && (
+                            {hasDescriptionContent && (
                                 <div
                                     className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
                                     style={{ fontWeight: 400 }}
                                     dangerouslySetInnerHTML={{
-                                        __html: (product.description || product.summaryHtml || '').replace(
+                                        __html: rawDescription.replace(
                                             // Match "Learn more about <Something> here" or typo "her" - handles &nbsp; and variable whitespace
                                             /Learn\s+more\s+abou?o?t\s+([^<\|]+?)\s*(?:&nbsp;|\s)\s*here?/gi,
                                             (match, compoundName) => {
