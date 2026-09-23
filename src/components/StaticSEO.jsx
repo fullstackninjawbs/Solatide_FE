@@ -11,10 +11,6 @@ const seoData = {
     title: "Dermal & Pigmentation Research Peptides MT2 GHK-Cu Australia – Solatide Biosciences",
     description: "Solatide Biosciences dermal and pigmentation research peptides, including MT2 and GHK-Cu. Melanocortin receptor and copper peptide compounds with COA."
   },
-  "/pages/affiliate-program": {
-    title: "Affiliate Program | Earn with Solatide Biosciences",
-    description: "Join the Solatide Biosciences Affiliate Program and earn commissions by promoting trusted research compounds and laboratory products."
-  },
   "/pages/research-peptides-guide": {
     title: "Research Peptide Guide | Solatide Biosciences",
     description: "A plain-language guide to research peptides — covering common categories, laboratory use, handling, quality documentation and research-use terminology. For in-vitro research use only."

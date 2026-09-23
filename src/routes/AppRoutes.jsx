@@ -37,7 +37,6 @@ const About = lazy(() => import('../Redirect/About'))
 const ShippingPolicy = lazy(() => import('../pages/Shipping_Policy/ShippingPolicy'))
 const PrivacyPolicy = lazy(() => import('../pages/SitePolicies/SitePolicy'))
 const ViewDocument = lazy(() => import('../Redirect/ViewDocument'))
-const AffiliatePro = lazy(() => import('../Redirect/AffiliatePro'))
 const ResearchInsight = lazy(() => import('../Redirect/ResearchInsight'))
 const Checkout = lazy(() => import('../pages/checkout/Checkout'))
 const PeptidesGuide = lazy(() => import('../pages/peptidesGuide/PeptidesGuide'))
@@ -165,7 +164,6 @@ const AppRoutes = () => {
                             <Route path="content/faqs" element={<FaqList />} />
                             <Route path="reviews" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Reviews Moderation (Phase 4)</div>} />
                             <Route path="cms" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Static Pages & CMS Editor (Phase 4)</div>} />
-                            <Route path="affiliates" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Affiliates Program (Phase 4)</div>} />
                             <Route path="settings" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">System Configuration (Phase 4)</div>} />
                             <Route path="settings/store" element={<StoreSettings />} />
                             <Route path="settings/admin-users" element={<AdminUsers />} />
@@ -208,7 +206,6 @@ const AppRoutes = () => {
                             <Route path="pages/shipping-policy" element={<ShippingPolicy />} />
                             <Route path="/pages/privacy-policy" element={<PrivacyPolicy />} />
                             <Route path="/pages/coa" element={<ViewDocument />} />
-                            <Route path="/pages/affiliate-program" element={<AffiliatePro />} />
 
                             {/* Missing Footer Routes */}
                             <Route path="pages/research-peptides-guide" element={<PeptidesGuide />} />
