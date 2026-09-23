@@ -5,80 +5,101 @@ import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
 import StaticSEO from '../components/StaticSEO'
 
-const AdminLayout = lazy(() => import('../layouts/AdminLayout'))
+// Wrapper to handle Vite chunk load errors when deploying new versions
+const lazyWithRetry = (componentImport) =>
+    lazy(async () => {
+        const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+            window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+        );
+        try {
+            const component = await componentImport();
+            window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+            return component;
+        } catch (error) {
+            if (!pageHasAlreadyBeenForceRefreshed) {
+                window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+                window.location.reload();
+                // Return an unresolved promise to halt React while the browser reloads
+                return new Promise(() => {});
+            }
+            throw error;
+        }
+    });
 
-const AdminLogin = lazy(() => import('../pages/admin/AdminLogin'))
-const AdminResetPassword = lazy(() => import('../pages/admin/AdminResetPassword'))
-const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
-const ProductList = lazy(() => import('../pages/admin/ProductList'))
-const ProductForm = lazy(() => import('../pages/admin/ProductForm'))
-const AdminProductsImportPage = lazy(() => import('../pages/admin/AdminProductsImportPage'))
-const TagadaSync = lazy(() => import('../pages/admin/products/TagadaSync'))
-const InventoryList = lazy(() => import('../pages/admin/products/InventoryList'))
-const BatchList = lazy(() => import('../pages/admin/products/BatchList'))
-const BatchForm = lazy(() => import('../pages/admin/products/BatchForm'))
-const CoaList = lazy(() => import('../pages/admin/products/CoaList'))
-const CollectionList = lazy(() => import('../pages/admin/products/CollectionList'))
-const CollectionForm = lazy(() => import('../pages/admin/products/CollectionForm'))
-const ReviewList = lazy(() => import('../pages/admin/growth/ReviewList'))
-const SubscriberList = lazy(() => import('../pages/admin/growth/SubscriberList'))
-const FaqList = lazy(() => import('../pages/admin/content/FaqList'))
-const AnalyticsDashboard = lazy(() => import('../pages/admin/analytics/AnalyticsDashboard'))
-const Home = lazy(() => import('../Redirect/home'))
-const Shop = lazy(() => import('../Redirect/Shop'))
-const ProductDetail = lazy(() => import('../pages/product/ProductDetail'))
-const ReviewVerification = lazy(() => import('../pages/product/ReviewVerification'))
-const CoaAndTesting = lazy(() => import('../Redirect/CoaAndTesting'))
-const ConcentrationCalculator = lazy(() => import('../Redirect/ConcentrationCalculator'))
-const ContactUs = lazy(() => import('../Redirect/ContactUs'))
-const ResearchResource = lazy(() => import('../pages/researchResource/ResearchResource'))
-const Faq = lazy(() => import('../Redirect/Faq'))
-const About = lazy(() => import('../Redirect/About'))
-const ShippingPolicy = lazy(() => import('../pages/Shipping_Policy/ShippingPolicy'))
-const PrivacyPolicy = lazy(() => import('../pages/SitePolicies/SitePolicy'))
-const ViewDocument = lazy(() => import('../Redirect/ViewDocument'))
-const ResearchInsight = lazy(() => import('../Redirect/ResearchInsight'))
-const Checkout = lazy(() => import('../pages/checkout/Checkout'))
-const PeptidesGuide = lazy(() => import('../pages/peptidesGuide/PeptidesGuide'))
-const CompoundDatabase = lazy(() => import('../pages/compoundDatabase/CompoundDatabase'))
-const CoaReports = lazy(() => import('../pages/coaReports/CoaReports'))
-const Terms = lazy(() => import('../pages/terms/Terms'))
-const ResearchUseDisclaimer = lazy(() => import('../pages/researchUse/ResearchUseDisclaimer'))
-const Returns = lazy(() => import('../pages/returns/Returns'))
-const CheckoutSuccess = lazy(() => import('../pages/checkout/CheckoutSuccess'))
-const CheckoutFailure = lazy(() => import('../pages/checkout/CheckoutFailure'))
-const OrderList = lazy(() => import('../pages/admin/OrderList'))
-const CreateOrder = lazy(() => import('../pages/admin/CreateOrder'))
-const OrderDetail = lazy(() => import('../pages/admin/OrderDetail'))
-const ShippingLabels = lazy(() => import('../pages/admin/ShippingLabels'))
-const OrderStatus = lazy(() => import('../pages/checkout/OrderStatus'))
-const CustomerList = lazy(() => import('../pages/admin/CustomerList'))
-const CustomerDetail = lazy(() => import('../pages/admin/CustomerDetail'))
-const StoreSettings = lazy(() => import('../pages/admin/settings/StoreSettings'))
-const DiscountList = lazy(() => import('../pages/admin/DiscountList'))
-const DiscountForm = lazy(() => import('../pages/admin/DiscountForm'))
-const AdminUsers = lazy(() => import('../pages/admin/settings/AdminUsers'))
-const ResearchPage = lazy(() => import('../pages/research/ResearchPage'))
-const WhatIsBPC157 = lazy(() => import('../pages/research/WhatIsBPC157'))
-const WhatIsGHKCu = lazy(() => import('../pages/research/WhatIsGHKCu'))
-const WhatIsMOTSc = lazy(() => import('../pages/research/WhatIsMOTSc'))
-const WhatIsSelank = lazy(() => import('../pages/research/WhatIsSelank'))
-const GLP1ResearchOverview = lazy(() => import('../pages/research/GLP1ResearchOverview'))
-const CagrisemaVsSemaglutide = lazy(() => import('../pages/research/CagrisemaVsSemaglutide'))
-const CagrisemaVsTirzepatide = lazy(() => import('../pages/research/CagrisemaVsTirzepatide'))
-const CagrisemaVsRetatrutide = lazy(() => import('../pages/research/CagrisemaVsRetatrutide'))
-const CJC1295VsIpamorelin = lazy(() => import('../pages/research/CJC1295VsIpamorelin'))
-const CJC1295VsTesamorelin = lazy(() => import('../pages/research/CJC1295VsTesamorelin'))
-const SelankVsSemax = lazy(() => import('../pages/research/SelankVsSemax'))
-const MOTScVsSS31 = lazy(() => import('../pages/research/MOTScVsSS31'))
-const BPC157VsKPV = lazy(() => import('../pages/research/BPC157VsKPV'))
-const NADPlusVsMOTSc = lazy(() => import('../pages/research/NADPlusVsMOTSc'))
-const TesaMorelinVsIpamorelin = lazy(() => import('../pages/research/TesaMorelinVsIpamorelin'))
-const WhatIsTesamorelin = lazy(() => import('../pages/research/WhatIsTesamorelin'))
-const WhatIsKPV = lazy(() => import('../pages/research/WhatIsKPV'))
-const DataSharingOptOut = lazy(() => import('../pages/SitePolicies/DataSharingOptOut'))
-const TirzepatideResearchOverview = lazy(() => import('../pages/research/TirzepatideResearchOverview'))
-const NotFound = lazy(() => import('../pages/NotFound'))
+const AdminLayout = lazyWithRetry(() => import('../layouts/AdminLayout'))
+
+const AdminLogin = lazyWithRetry(() => import('../pages/admin/AdminLogin'))
+const AdminResetPassword = lazyWithRetry(() => import('../pages/admin/AdminResetPassword'))
+const Dashboard = lazyWithRetry(() => import('../pages/admin/Dashboard'))
+const ProductList = lazyWithRetry(() => import('../pages/admin/ProductList'))
+const ProductForm = lazyWithRetry(() => import('../pages/admin/ProductForm'))
+const AdminProductsImportPage = lazyWithRetry(() => import('../pages/admin/AdminProductsImportPage'))
+const TagadaSync = lazyWithRetry(() => import('../pages/admin/products/TagadaSync'))
+const InventoryList = lazyWithRetry(() => import('../pages/admin/products/InventoryList'))
+const BatchList = lazyWithRetry(() => import('../pages/admin/products/BatchList'))
+const BatchForm = lazyWithRetry(() => import('../pages/admin/products/BatchForm'))
+const CoaList = lazyWithRetry(() => import('../pages/admin/products/CoaList'))
+const CollectionList = lazyWithRetry(() => import('../pages/admin/products/CollectionList'))
+const CollectionForm = lazyWithRetry(() => import('../pages/admin/products/CollectionForm'))
+const ReviewList = lazyWithRetry(() => import('../pages/admin/growth/ReviewList'))
+const SubscriberList = lazyWithRetry(() => import('../pages/admin/growth/SubscriberList'))
+const FaqList = lazyWithRetry(() => import('../pages/admin/content/FaqList'))
+const AnalyticsDashboard = lazyWithRetry(() => import('../pages/admin/analytics/AnalyticsDashboard'))
+const Home = lazyWithRetry(() => import('../Redirect/home'))
+const Shop = lazyWithRetry(() => import('../Redirect/Shop'))
+const ProductDetail = lazyWithRetry(() => import('../pages/product/ProductDetail'))
+const ReviewVerification = lazyWithRetry(() => import('../pages/product/ReviewVerification'))
+const CoaAndTesting = lazyWithRetry(() => import('../Redirect/CoaAndTesting'))
+const ConcentrationCalculator = lazyWithRetry(() => import('../Redirect/ConcentrationCalculator'))
+const ContactUs = lazyWithRetry(() => import('../Redirect/ContactUs'))
+const ResearchResource = lazyWithRetry(() => import('../pages/researchResource/ResearchResource'))
+const Faq = lazyWithRetry(() => import('../Redirect/Faq'))
+const About = lazyWithRetry(() => import('../Redirect/About'))
+const ShippingPolicy = lazyWithRetry(() => import('../pages/Shipping_Policy/ShippingPolicy'))
+const PrivacyPolicy = lazyWithRetry(() => import('../pages/SitePolicies/SitePolicy'))
+const ViewDocument = lazyWithRetry(() => import('../Redirect/ViewDocument'))
+const ResearchInsight = lazyWithRetry(() => import('../Redirect/ResearchInsight'))
+const Checkout = lazyWithRetry(() => import('../pages/checkout/Checkout'))
+const PeptidesGuide = lazyWithRetry(() => import('../pages/peptidesGuide/PeptidesGuide'))
+const CompoundDatabase = lazyWithRetry(() => import('../pages/compoundDatabase/CompoundDatabase'))
+const CoaReports = lazyWithRetry(() => import('../pages/coaReports/CoaReports'))
+const Terms = lazyWithRetry(() => import('../pages/terms/Terms'))
+const ResearchUseDisclaimer = lazyWithRetry(() => import('../pages/researchUse/ResearchUseDisclaimer'))
+const Returns = lazyWithRetry(() => import('../pages/returns/Returns'))
+const CheckoutSuccess = lazyWithRetry(() => import('../pages/checkout/CheckoutSuccess'))
+const CheckoutFailure = lazyWithRetry(() => import('../pages/checkout/CheckoutFailure'))
+const OrderList = lazyWithRetry(() => import('../pages/admin/OrderList'))
+const CreateOrder = lazyWithRetry(() => import('../pages/admin/CreateOrder'))
+const OrderDetail = lazyWithRetry(() => import('../pages/admin/OrderDetail'))
+const ShippingLabels = lazyWithRetry(() => import('../pages/admin/ShippingLabels'))
+const OrderStatus = lazyWithRetry(() => import('../pages/checkout/OrderStatus'))
+const CustomerList = lazyWithRetry(() => import('../pages/admin/CustomerList'))
+const CustomerDetail = lazyWithRetry(() => import('../pages/admin/CustomerDetail'))
+const StoreSettings = lazyWithRetry(() => import('../pages/admin/settings/StoreSettings'))
+const DiscountList = lazyWithRetry(() => import('../pages/admin/DiscountList'))
+const DiscountForm = lazyWithRetry(() => import('../pages/admin/DiscountForm'))
+const AdminUsers = lazyWithRetry(() => import('../pages/admin/settings/AdminUsers'))
+const ResearchPage = lazyWithRetry(() => import('../pages/research/ResearchPage'))
+const WhatIsBPC157 = lazyWithRetry(() => import('../pages/research/WhatIsBPC157'))
+const WhatIsGHKCu = lazyWithRetry(() => import('../pages/research/WhatIsGHKCu'))
+const WhatIsMOTSc = lazyWithRetry(() => import('../pages/research/WhatIsMOTSc'))
+const WhatIsSelank = lazyWithRetry(() => import('../pages/research/WhatIsSelank'))
+const GLP1ResearchOverview = lazyWithRetry(() => import('../pages/research/GLP1ResearchOverview'))
+const CagrisemaVsSemaglutide = lazyWithRetry(() => import('../pages/research/CagrisemaVsSemaglutide'))
+const CagrisemaVsTirzepatide = lazyWithRetry(() => import('../pages/research/CagrisemaVsTirzepatide'))
+const CagrisemaVsRetatrutide = lazyWithRetry(() => import('../pages/research/CagrisemaVsRetatrutide'))
+const CJC1295VsIpamorelin = lazyWithRetry(() => import('../pages/research/CJC1295VsIpamorelin'))
+const CJC1295VsTesamorelin = lazyWithRetry(() => import('../pages/research/CJC1295VsTesamorelin'))
+const SelankVsSemax = lazyWithRetry(() => import('../pages/research/SelankVsSemax'))
+const MOTScVsSS31 = lazyWithRetry(() => import('../pages/research/MOTScVsSS31'))
+const BPC157VsKPV = lazyWithRetry(() => import('../pages/research/BPC157VsKPV'))
+const NADPlusVsMOTSc = lazyWithRetry(() => import('../pages/research/NADPlusVsMOTSc'))
+const TesaMorelinVsIpamorelin = lazyWithRetry(() => import('../pages/research/TesaMorelinVsIpamorelin'))
+const WhatIsTesamorelin = lazyWithRetry(() => import('../pages/research/WhatIsTesamorelin'))
+const WhatIsKPV = lazyWithRetry(() => import('../pages/research/WhatIsKPV'))
+const DataSharingOptOut = lazyWithRetry(() => import('../pages/SitePolicies/DataSharingOptOut'))
+const TirzepatideResearchOverview = lazyWithRetry(() => import('../pages/research/TirzepatideResearchOverview'))
+const NotFound = lazyWithRetry(() => import('../pages/NotFound'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
 // Fires page_view on every route change. Rendered inside BrowserRouter so
 // useLocation works. Admin routes are excluded (no admin tracking).
@@ -148,17 +169,17 @@ const AppRoutes = () => {
                             <Route path="growth/subscribers" element={<SubscriberList />} />
                             <Route path="content/pages" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                                    {React.createElement(lazy(() => import('../pages/admin/content/PageList')))}
+                                    {React.createElement(lazyWithRetry(() => import('../pages/admin/content/PageList')))}
                                 </React.Suspense>
                             } />
                             <Route path="content/pages/new" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                                    {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                                    {React.createElement(lazyWithRetry(() => import('../pages/admin/content/PageForm')))}
                                 </React.Suspense>
                             } />
                             <Route path="content/pages/edit/:id" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                                    {React.createElement(lazy(() => import('../pages/admin/content/PageForm')))}
+                                    {React.createElement(lazyWithRetry(() => import('../pages/admin/content/PageForm')))}
                                 </React.Suspense>
                             } />
                             <Route path="content/faqs" element={<FaqList />} />
@@ -169,7 +190,7 @@ const AppRoutes = () => {
                             <Route path="settings/admin-users" element={<AdminUsers />} />
                             <Route path="settings/shipping-packages" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                                    {React.createElement(lazy(() => import('../pages/admin/settings/ShippingPackages')))}
+                                    {React.createElement(lazyWithRetry(() => import('../pages/admin/settings/ShippingPackages')))}
                                 </React.Suspense>
                             } />
                             <Route path="*" element={<div className="text-white text-left text-lg font-semibold bg-[#1e293b] p-8 rounded-[20px] border border-slate-800">Coming Soon</div>} />
@@ -240,7 +261,7 @@ const AppRoutes = () => {
                             {/* Custom Pages */}
                             <Route path="pages/:slug" element={
                                 <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-navy"></div></div>}>
-                                    {React.createElement(lazy(() => import('../pages/DynamicPage')))}
+                                    {React.createElement(lazyWithRetry(() => import('../pages/DynamicPage')))}
                                 </React.Suspense>
                             } />
 
