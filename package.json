@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:store": "cross-env VITE_APP_ROLE=store vite build --outDir dist-store && node prerender.js",
+    "build:store": "cross-env VITE_APP_ROLE=store NODE_ENV=production vite build --outDir dist-store && cross-env NODE_ENV=production node prerender.js",
     "build:admin": "cross-env VITE_APP_ROLE=admin vite build --outDir dist-admin"
   },
   "dependencies": {
