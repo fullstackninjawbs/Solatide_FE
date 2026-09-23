@@ -339,7 +339,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             {productsList.map((product) => (
                                 <div
                                     key={product.slug || product._id || product.id}
-                                    onClick={() => navigate(`/products/${product.slug || product._id || product.id}`)}
+                                    onClick={(e) => {
+                                        if (e.target.closest('a') || e.target.closest('button')) return;
+                                        navigate(`/products/${product.slug || product._id || product.id}`);
+                                    }}
                                     className={`group bg-white rounded-[16px] sm:rounded-[24px] border border-slate-100 shadow-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-md hover:border-slate-200/60 cursor-pointer ${viewMode === 'list' ? 'flex flex-row gap-4 sm:gap-6 items-center text-left' : 'flex flex-col'}`}
                                 >
                                     {/* Product Vial Image */}
