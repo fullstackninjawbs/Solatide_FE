@@ -86,6 +86,8 @@ const OrderDetail = () => {
   const [addressModalMode, setAddressModalMode] = useState('edit'); // 'edit' | 'suggested'
   const [editAddressForm, setEditAddressForm] = useState({ name: '', company: '', street1: '', street2: '', city: '', state: '', zip: '', country: '' });
 
+  const [isEditContactModalOpen, setIsEditContactModalOpen] = useState(false);
+  const [editContactForm, setEditContactForm] = useState({ firstName: '', lastName: '', email: '', phone: '' });
   // Refund modal states
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [refundType, setRefundType] = useState('full'); // 'full' | 'partial'
@@ -312,6 +314,36 @@ const OrderDetail = () => {
       toast.error('Error connecting to server for refund');
     } finally {
       setRefunding(false);
+    }
+  };
+
+  const openContactModal = () => {
+    setEditContactForm({
+      firstName: order.customer?.firstName || '',
+      lastName: order.customer?.lastName || '',
+      email: order.customer?.email || order.customerEmail || '',
+      phone: order.customer?.phone || ''
+    });
+    setIsEditContactModalOpen(true);
+  };
+
+  const handleSaveContact = async () => {
+    const updatedCustomer = {
+       ...(order.customer || {}),
+       firstName: editContactForm.firstName,
+       lastName: editContactForm.lastName,
+       email: editContactForm.email,
+       phone: editContactForm.phone
+    };
+    
+    const payload = { 
+       customer: updatedCustomer,
+       customerEmail: editContactForm.email 
+    };
+
+    const success = await updateOrderField(payload, 'Customer information updated');
+    if (success) {
+       setIsEditContactModalOpen(false);
     }
   };
 
@@ -941,7 +973,10 @@ const OrderDetail = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-[12px] font-bold tracking-wider uppercase text-slate-400 mb-2.5">Contact info</h4>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-[12px] font-bold tracking-wider uppercase text-slate-400">Contact info</h4>
+                    <button onClick={openContactModal} className="text-slate-300 hover:text-brand-blue transition-colors"><Edit2 size={14} /></button>
+                  </div>
                   {customerEmail ? (
                     <a href={`mailto:${customerEmail}`} className="flex items-center gap-2 text-[14px] font-medium text-brand-blue hover:underline break-all mb-1.5">
                       <Mail size={14} className="text-brand-blue/60" /> {customerEmail}
@@ -1312,6 +1347,74 @@ const OrderDetail = () => {
         </div>,
         document.body
       )}
+
+      {/* Edit Contact Modal */}
+      {isEditContactModalOpen && createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden p-7 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-brand-navy">Edit Customer</h3>
+              <button onClick={() => setIsEditContactModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[12px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">First name</label>
+                  <input
+                    type="text"
+                    value={editContactForm.firstName}
+                    onChange={(e) => setEditContactForm({...editContactForm, firstName: e.target.value})}
+                    className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[12px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Last name</label>
+                  <input
+                    type="text"
+                    value={editContactForm.lastName}
+                    onChange={(e) => setEditContactForm({...editContactForm, lastName: e.target.value})}
+                    className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[12px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Email</label>
+                <input
+                  type="email"
+                  value={editContactForm.email}
+                  onChange={(e) => setEditContactForm({...editContactForm, email: e.target.value})}
+                  className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-[12px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Phone</label>
+                <input
+                  type="tel"
+                  value={editContactForm.phone}
+                  onChange={(e) => setEditContactForm({...editContactForm, phone: e.target.value})}
+                  className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-8">
+                <AdminSecondaryButton onClick={() => setIsEditContactModalOpen(false)}>
+                  Cancel
+                </AdminSecondaryButton>
+                <AdminPrimaryButton
+                  onClick={handleSaveContact}
+                  disabled={updating}
+                >
+                  {updating ? 'Saving...' : 'Save Changes'}
+                </AdminPrimaryButton>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
     </div>
   );
 };
