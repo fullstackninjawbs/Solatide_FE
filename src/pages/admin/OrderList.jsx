@@ -66,10 +66,10 @@ function Badge({ text, styleMap, fallback = 'bg-slate-100 text-slate-500 border 
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 const TABS = [
-  { label: 'All', filter: {} },
-  { label: 'Unfulfilled', filter: { fulfilmentStatus: 'unfulfilled' } },
-  { label: 'Paid', filter: { paymentStatus: 'paid' } },
-  // { label: 'Refunded', filter: { paymentStatus: 'refunded' } },
+  { label: 'All', filter: { hasCustomer: true } },
+  { label: 'Unfulfilled', filter: { fulfilmentStatus: 'unfulfilled', hasCustomer: true } },
+  { label: 'Paid', filter: { paymentStatus: 'paid', hasCustomer: true } },
+  { label: 'Abandoned Checkouts', filter: { hasCustomer: false } },
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
