@@ -73,6 +73,7 @@ const OrderDetail = () => {
   const [addingNote, setAddingNote] = useState(false);
   const [showTechDetails, setShowTechDetails] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [shipmentError, setShipmentError] = useState(null);
   const [creatingLabel, setCreatingLabel] = useState(false);
   const [refunding, setRefunding] = useState(false);
   const [revalidating, setRevalidating] = useState(false);
@@ -213,6 +214,7 @@ const OrderDetail = () => {
   const handleCreateLabel = async () => {
     if (creatingLabel) return;
     setCreatingLabel(true);
+    setShipmentError(null);
     try {
       const res = await apiService.createAdminShipment(id);
       const data = await res.json();
@@ -226,10 +228,12 @@ const OrderDetail = () => {
         }
       } else {
         toast.error(data.message || 'Failed to create shipping label');
+        setShipmentError(data.message || 'Failed to create shipping label');
       }
     } catch (err) {
       console.error(err);
       toast.error('Network error while creating label');
+      setShipmentError(err.message || 'Network error while creating label');
     } finally {
       setCreatingLabel(false);
     }
@@ -688,24 +692,39 @@ const OrderDetail = () => {
                     </div>
                   ) : (
                     <>
-                      {order.addressValidation?.needsReview && (
-                        <p className="text-[12px] font-medium text-red-500 mr-auto flex items-center gap-1">
-                          ⚠️ Verify address before creating label
-                        </p>
-                      )}
-                      <AdminSecondaryButton
-                        onClick={handleFulfill}
-                        disabled={fulfilling || !isUnfulfilled}
-                        className="shadow-sm"
-                      >
-                        {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                      </AdminSecondaryButton>
-                      <AdminPrimaryButton
-                        onClick={handleCreateLabel}
-                        disabled={creatingLabel || order.refundStatus === 'refunded'}
-                      >
-                        {creatingLabel ? 'Generating...' : 'Create shipping label'}
-                      </AdminPrimaryButton>
+                      <div className="flex flex-col items-end gap-2 ml-auto">
+                        {order.addressValidation?.needsReview && (
+                          <p className="text-[12px] font-medium text-red-500 flex items-center gap-1">
+                            ⚠️ Verify address before creating label
+                          </p>
+                        )}
+                        {shipmentError && (
+                          <div className="group relative">
+                            <p className="text-[12px] font-medium text-red-500 flex items-center gap-1 cursor-help">
+                              ⚠️ Shipment failed (hover for details)
+                            </p>
+                            <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 break-words pointer-events-none">
+                              {shipmentError}
+                              <div className="absolute top-full right-4 border-4 border-transparent border-t-slate-900"></div>
+                            </div>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-3">
+                          <AdminSecondaryButton
+                            onClick={handleFulfill}
+                            disabled={fulfilling || !isUnfulfilled}
+                            className="shadow-sm"
+                          >
+                            {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
+                          </AdminSecondaryButton>
+                          <AdminPrimaryButton
+                            onClick={handleCreateLabel}
+                            disabled={creatingLabel || order.refundStatus === 'refunded'}
+                          >
+                            {creatingLabel ? 'Generating...' : 'Create shipping label'}
+                          </AdminPrimaryButton>
+                        </div>
+                      </div>
                     </>
                   )}
                 </div>
