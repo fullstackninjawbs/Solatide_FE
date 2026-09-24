@@ -36,6 +36,7 @@ const RatingStars = ({
   onRatingChange,
   size = 24,
   color = '#008060', // Shopify deep green
+  hoverColor = '#FABB00', // Yellow for hover
   emptyColor = '#e3e3e3'
 }) => {
   const [hover, setHover] = useState(null);
@@ -48,6 +49,9 @@ const RatingStars = ({
         
         let isFilled = currentRating >= starValue;
         let isHalf = !isFilled && currentRating > index && currentRating < starValue;
+        
+        // Use hoverColor if the star is currently being filled by a hover action
+        const displayColor = (hover !== null && starValue <= hover) ? hoverColor : color;
 
         return (
           <label
@@ -88,7 +92,7 @@ const RatingStars = ({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className="absolute inset-0"
-                    style={{ color: color }}
+                    style={{ color: displayColor }}
                   >
                      <StarIcon filled={isFilled} half={isHalf} className="w-full h-full" />
                   </motion.div>
