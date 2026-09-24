@@ -228,7 +228,7 @@ const Header = () => {
                                                 {/* Caret */}
                                                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-t border-l border-slate-100 rotate-45 z-10"></div>
 
-                                                <div className="relative bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-w-[320px] z-20">
+                                                <div className="relative bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-w-[320px] max-h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden z-20">
                                                     {item.mega.map((section, idx) => (
                                                         <div key={idx} className="flex flex-col gap-5">
                                                             <div className="flex items-center gap-3 pb-3 border-b-2 border-slate-100">
