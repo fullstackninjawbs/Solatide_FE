@@ -1,22 +1,19 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { captureAttribution } from '../utils/attribution';
 
 export default function ScrollToTop() {
   const { pathname, search } = useLocation();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant'
-      });
-    }, 100); // Small delay to allow Suspense/lazy components to mount
+  useLayoutEffect(() => {
+    // Scroll instantly before the browser paints the new page
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
     
     captureAttribution();
-    
-    return () => clearTimeout(timer);
   }, [pathname, search]);
 
   return null;
