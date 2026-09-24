@@ -393,12 +393,13 @@ const OrderDetail = () => {
   const getTimeString = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
 
-    if (diffMins < 60) return `${diffMins || 1} minutes ago`;
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    return date.toLocaleTimeString('en-US', {
+      timeZone: 'Australia/Sydney',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   const timelineEvents = [];
@@ -409,7 +410,7 @@ const OrderDetail = () => {
 
   // Base created event
   const isMissingCustomer = customerName === 'No customer name';
-  
+
   addEvent(
     <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on Tagadacrm.</span>,
     order.createdAt
@@ -437,14 +438,14 @@ const OrderDetail = () => {
       <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.</span>,
       order.createdAt
     );
-    
+
     let emailText = 'Confirmation email was sent.';
     if (customerEmail && !isMissingCustomer) {
       emailText = `Confirmation email was sent to ${customerName} (${customerEmail}).`;
     } else if (customerEmail) {
       emailText = `Confirmation email was sent to ${customerEmail}.`;
     }
-    
+
     addEvent(
       <span>{emailText}</span>,
       order.createdAt,
