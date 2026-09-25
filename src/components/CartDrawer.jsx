@@ -18,9 +18,9 @@ const CartDrawer = () => {
     const navigate = useNavigate();
     const drawerRef = useRef(null);
     const { formatPrice } = useCurrency();
-    const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
+    const { initiateCheckout, isCheckingOut, checkoutError, setCheckoutError } = useTagadaCheckout();
 
-    // Close when clicking outside
+    // Close when clicking outside and clear errors when closing
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (drawerRef.current && !drawerRef.current.contains(event.target)) {
@@ -34,13 +34,14 @@ const CartDrawer = () => {
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
+            setCheckoutError(null); // Clear error when closed
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
         };
-    }, [isCartOpen, setIsCartOpen]);
+    }, [isCartOpen, setIsCartOpen, setCheckoutError]);
 
     // Deleted local formatPrice helper in favor of context-level formatting
 

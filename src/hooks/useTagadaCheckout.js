@@ -52,5 +52,5 @@ export const useTagadaCheckout = () => {
     }
   };
 
-  return { initiateCheckout, isCheckingOut, checkoutError };
+  return { initiateCheckout, isCheckingOut, checkoutError, setCheckoutError };
 };
