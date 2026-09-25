@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { trackEvent } from '../utils/analytics';
+import { toast } from 'react-hot-toast';
 
 const CartContext = createContext();
 
@@ -48,7 +49,7 @@ export const CartProvider = ({ children }) => {
         
         if (inventoryPolicy !== 'continue' && !continueSelling) {
             if (currentQty + quantity > (availableStock || 0)) {
-                import('react-hot-toast').then(({ toast }) => toast.error(`You can't add more than ${availableStock || 0} units to the cart`));
+                toast.error(`You can't add more than ${availableStock || 0} units to the cart`);
                 return; // Do not update cart or open cart drawer
             }
         }
@@ -106,7 +107,7 @@ export const CartProvider = ({ children }) => {
 
                 if (inventoryPolicy !== 'continue' && !continueSelling) {
                     if (newQuantity > (availableStock || 0)) {
-                        import('react-hot-toast').then(({ toast }) => toast.error(`Only ${availableStock || 0} units available in stock`));
+                        toast.error(`Only ${availableStock || 0} units available in stock`);
                         return prevItems; // Prevent update
                     }
                 }
