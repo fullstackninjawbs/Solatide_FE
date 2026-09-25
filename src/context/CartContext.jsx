@@ -33,16 +33,29 @@ export const CartProvider = ({ children }) => {
     }, [cartItems]);
 
     const addToCart = (product, quantity = 1, selectedVariant = null) => {
-        setCartItems(prevItems => {
-            // Resolve the variant if it's not explicitly provided but the product has variants
-            const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
-            const variantSku = resolvedVariant?.sku || '';
-            const cartItemId = resolvedVariant
-                ? `${product._id || product.id || ''}-${variantSku}`
-                : `${product._id || product.id || ''}`;
+        const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
+        const variantSku = resolvedVariant?.sku || '';
+        const cartItemId = resolvedVariant
+            ? `${product._id || product.id || ''}-${variantSku}`
+            : `${product._id || product.id || ''}`;
+            
+        const inventoryPolicy = resolvedVariant?.inventoryPolicy || product.inventoryPolicy;
+        const continueSelling = product.continueSellingWhenOutOfStock;
+        const availableStock = resolvedVariant ? resolvedVariant.stockQty : product.stockQuantity;
 
-            const existingItem = prevItems.find(item => item.cartItemId === cartItemId);
-            if (existingItem) {
+        const existingItem = cartItems.find(item => item.cartItemId === cartItemId);
+        const currentQty = existingItem ? existingItem.quantity : 0;
+        
+        if (inventoryPolicy !== 'continue' && !continueSelling) {
+            if (currentQty + quantity > (availableStock || 0)) {
+                import('react-hot-toast').then(({ toast }) => toast.error(`You can't add more than ${availableStock || 0} units to the cart`));
+                return; // Do not update cart or open cart drawer
+            }
+        }
+
+        setCartItems(prevItems => {
+            const existingInPrev = prevItems.find(item => item.cartItemId === cartItemId);
+            if (existingInPrev) {
                 return prevItems.map(item =>
                     item.cartItemId === cartItemId
                         ? { ...item, quantity: item.quantity + quantity }
@@ -59,6 +72,7 @@ export const CartProvider = ({ children }) => {
                 image: product.imageUrl || product.image
             }];
         });
+        
         setIsCartOpen(true);
         // Analytics: fire add_to_cart
         try {
@@ -82,13 +96,28 @@ export const CartProvider = ({ children }) => {
 
     const updateQuantity = (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
-        setCartItems(prevItems =>
-            prevItems.map(item =>
-                (item.cartItemId === cartItemId || item.id === cartItemId || item._id === cartItemId)
-                    ? { ...item, quantity: newQuantity }
-                    : item
-            )
-        );
+        
+        setCartItems(prevItems => {
+            const item = prevItems.find(i => i.cartItemId === cartItemId || i.id === cartItemId || i._id === cartItemId);
+            if (item) {
+                const inventoryPolicy = item.selectedVariant?.inventoryPolicy || item.inventoryPolicy;
+                const continueSelling = item.continueSellingWhenOutOfStock;
+                const availableStock = item.selectedVariant ? item.selectedVariant.stockQty : item.stockQuantity;
+
+                if (inventoryPolicy !== 'continue' && !continueSelling) {
+                    if (newQuantity > (availableStock || 0)) {
+                        import('react-hot-toast').then(({ toast }) => toast.error(`Only ${availableStock || 0} units available in stock`));
+                        return prevItems; // Prevent update
+                    }
+                }
+            }
+
+            return prevItems.map(i =>
+                (i.cartItemId === cartItemId || i.id === cartItemId || i._id === cartItemId)
+                    ? { ...i, quantity: newQuantity }
+                    : i
+            );
+        });
     };
 
     const cartTotalCount = cartItems.reduce((total, item) => total + item.quantity, 0);
