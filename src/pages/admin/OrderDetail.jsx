@@ -186,29 +186,43 @@ const OrderDetail = () => {
   };
 
   const handleSaveAddress = async () => {
+    const isSuggested = addressModalMode === 'suggested';
     const payload = addressTypeToEdit === 'shipping'
-      ? { shippingAddressObj: editAddressForm }
+      ? { shippingAddressObj: editAddressForm, ...(isSuggested && { skipRevalidation: true }) }
       : { billingAddressObj: editAddressForm };
 
-    const success = await updateOrderField(payload, 'Address updated');
+    const success = await updateOrderField(payload, isSuggested ? 'Suggested address applied ✓' : 'Address updated');
     if (success) setIsEditAddressModalOpen(false);
   };
 
-  const handleUseSuggestedAddress = () => {
-    setAddressTypeToEdit('shipping');
-    setAddressModalMode('suggested');
-    const addr = order.addressValidation.suggestedAddress;
-    setEditAddressForm({
+  const handleSaveAddressVerified = async () => {
+    // Save the manually-corrected address and mark it as verified (skip Google re-validation)
+    // Use this when the address is correct but Google keeps flagging it (e.g. international orders)
+    const payload = { shippingAddressObj: editAddressForm, skipRevalidation: true };
+    const success = await updateOrderField(payload, 'Address saved & marked as verified ✓');
+    if (success) setIsEditAddressModalOpen(false);
+  };
+
+  const handleUseSuggestedAddress = async () => {
+    const addr = order.addressValidation?.suggestedAddress;
+    if (!addr) return;
+
+    const mergedAddr = {
       name: order.shippingAddressObj?.name || '',
       company: order.shippingAddressObj?.company || '',
-      street1: addr?.street1 || '',
-      street2: addr?.street2 || '',
-      city: addr?.city || '',
-      state: addr?.state || '',
-      zip: addr?.zip || '',
-      country: addr?.country || ''
-    });
-    setIsEditAddressModalOpen(true);
+      phone: order.shippingAddressObj?.phone || '',
+      street1: addr.street1 || '',
+      street2: addr.street2 || '',
+      city: addr.city || '',
+      state: addr.state || '',
+      zip: addr.zip || '',
+      country: addr.country || order.shippingAddressObj?.country || ''
+    };
+
+    await updateOrderField(
+      { shippingAddressObj: mergedAddr, skipRevalidation: true },
+      'Suggested address applied ✓'
+    );
   };
 
   const handleCreateLabel = async () => {
@@ -243,18 +257,17 @@ const OrderDetail = () => {
     if (revalidating) return;
     setRevalidating(true);
     try {
-      toast.loading('Re-running address validation...', { id: 'revalidate' });
       const res = await apiService.revalidateAdminOrderAddress(id);
       const data = await res.json();
       if (data.success) {
-        toast.success('Re-validation triggered! Refreshing...', { id: 'revalidate' });
-        // Wait 3 seconds then reload order to show new result
+        toast.success('Address re-validated! Refreshing order...', { id: 'revalidate' });
+        // Wait 1 second then reload order to show new result
         setTimeout(async () => {
           const orderRes = await apiService.getAdminOrderById(id);
           const orderData = await orderRes.json();
           if (orderData.success) setOrder(orderData.data.order);
           setRevalidating(false);
-        }, 3000);
+        }, 1500);
       } else {
         toast.error(data.message || 'Re-validation failed', { id: 'revalidate' });
         setRevalidating(false);
@@ -333,21 +346,21 @@ const OrderDetail = () => {
 
   const handleSaveContact = async () => {
     const updatedCustomer = {
-       ...(order.customer || {}),
-       firstName: editContactForm.firstName,
-       lastName: editContactForm.lastName,
-       email: editContactForm.email,
-       phone: editContactForm.phone
+      ...(order.customer || {}),
+      firstName: editContactForm.firstName,
+      lastName: editContactForm.lastName,
+      email: editContactForm.email,
+      phone: editContactForm.phone
     };
-    
-    const payload = { 
-       customer: updatedCustomer,
-       customerEmail: editContactForm.email 
+
+    const payload = {
+      customer: updatedCustomer,
+      customerEmail: editContactForm.email
     };
 
     const success = await updateOrderField(payload, 'Customer information updated');
     if (success) {
-       setIsEditContactModalOpen(false);
+      setIsEditContactModalOpen(false);
     }
   };
 
@@ -699,14 +712,30 @@ const OrderDetail = () => {
                           </p>
                         )}
                         {shipmentError && (
-                          <div className="group relative">
-                            <p className="text-[12px] font-medium text-red-500 flex items-center gap-1 cursor-help">
-                              ⚠️ Shipment failed (hover for details)
-                            </p>
-                            <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 break-words pointer-events-none">
-                              {shipmentError}
-                              <div className="absolute top-full right-4 border-4 border-transparent border-t-slate-900"></div>
+                          <div className="flex flex-col items-end gap-1.5">
+                            <div className="group relative">
+                              <p className="text-[12px] font-medium text-red-500 flex items-center gap-1 cursor-help">
+                                ⚠️ Shipment failed (hover for details)
+                              </p>
+                              <div className="absolute bottom-full right-0 mb-2 w-max max-w-sm lg:max-w-md p-3 bg-slate-800 text-white text-[13px] rounded-lg shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 pointer-events-none text-left leading-relaxed">
+                                {shipmentError}
+                                <div className="absolute top-full right-4 border-[5px] border-transparent border-t-slate-800"></div>
+                              </div>
                             </div>
+                            <div className="flex items-center gap-1 mt-1">
+                              <span className="text-[11.5px] text-slate-500 font-medium">Stuck?</span>
+                              <a
+                                href="https://next.starshipit.com/orders?tab=new"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[12px] font-bold text-[#0275d8] hover:text-[#025aa5] hover:underline flex items-center gap-1 transition-colors"
+                              >
+                                Resolve manually in Starshipit ↗
+                              </a>
+                            </div>
+                            <p className="text-[10.5px] text-slate-400 max-w-[280px] text-right mt-0.5 leading-snug">
+                              If you process the label there, Solatide will automatically sync the tracking details via webhook.
+                            </p>
                           </div>
                         )}
                         <div className="flex items-center gap-3">
@@ -717,12 +746,22 @@ const OrderDetail = () => {
                           >
                             {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
                           </AdminSecondaryButton>
-                          <AdminPrimaryButton
-                            onClick={handleCreateLabel}
-                            disabled={creatingLabel || order.refundStatus === 'refunded'}
+                          <div
+                            title={
+                              order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'
+                                ? 'Payment is pending from tagada, refresh to update..'
+                                : (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : '')
+                            }
+                            className={order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
                           >
-                            {creatingLabel ? 'Generating...' : 'Create shipping label'}
-                          </AdminPrimaryButton>
+                            <AdminPrimaryButton
+                              onClick={handleCreateLabel}
+                              disabled={creatingLabel || order.refundStatus === 'refunded' || order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview}
+                              className={order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
+                            >
+                              {creatingLabel ? 'Generating...' : 'Create shipping label'}
+                            </AdminPrimaryButton>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -909,55 +948,62 @@ const OrderDetail = () => {
 
             {/* Address Validation Warning */}
             {order.addressValidation?.needsReview && (
-              <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-200 p-6 relative group overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                <h3 className="text-[15px] font-bold text-red-700 mb-3 flex items-center gap-2">
+              <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-amber-200 p-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+                <h3 className="text-[15px] font-bold text-amber-700 mb-2 flex items-center gap-2">
                   ⚠️ Address Needs Review
                 </h3>
                 <p className="text-[13px] text-slate-600 leading-relaxed mb-4">
                   {order.addressValidation.validationMessage || 'Address has unconfirmed or replaced/inferred components. Please review.'}
                 </p>
-                <div className={`grid gap-4 mb-4 ${order.addressValidation.suggestedAddress ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                  <div className="bg-white p-3 rounded-xl border border-slate-200 overflow-hidden">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Original Address</span>
-                    <address className="not-italic text-[13px] font-medium text-slate-700">
-                      {order.shippingAddressObj?.street1}<br />
-                      {order.shippingAddressObj?.street2 && <>{order.shippingAddressObj.street2}<br /></>}
-                      {order.shippingAddressObj?.city} {order.shippingAddressObj?.state} {order.shippingAddressObj?.zip}
-                    </address>
-                  </div>
-                  {order.addressValidation.suggestedAddress && (
-                    <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-100 overflow-hidden">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 block mb-1">Suggested Correction</span>
-                      <address className="not-italic text-[13px] font-medium text-emerald-800">
-                        {order.addressValidation.suggestedAddress.street1}<br />
-                        {order.addressValidation.suggestedAddress.street2 && <>{order.addressValidation.suggestedAddress.street2}<br /></>}
-                        {order.addressValidation.suggestedAddress.city} {order.addressValidation.suggestedAddress.state} {order.addressValidation.suggestedAddress.zip}
-                      </address>
-                    </div>
-                  )}
-                </div>
+
                 {order.addressValidation.suggestedAddress ? (
+                  /* Has a real correction — show side-by-side comparison */
                   <>
-                    <button onClick={handleUseSuggestedAddress} className="w-full bg-[#0275d8] hover:bg-[#025aa5] text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center mb-2">
-                      Use Suggested Address
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Current Address</span>
+                        <address className="not-italic text-[12px] font-medium text-slate-600 leading-relaxed">
+                          {order.shippingAddressObj?.street1}<br />
+                          {order.shippingAddressObj?.street2 && <>{order.shippingAddressObj.street2}<br /></>}
+                          {order.shippingAddressObj?.city} {order.shippingAddressObj?.state} {order.shippingAddressObj?.zip}
+                        </address>
+                      </div>
+                      <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block mb-1.5">✓ Suggested Fix</span>
+                        <address className="not-italic text-[12px] font-medium text-emerald-800 leading-relaxed">
+                          {order.addressValidation.suggestedAddress.street1}<br />
+                          {order.addressValidation.suggestedAddress.street2 && <>{order.addressValidation.suggestedAddress.street2}<br /></>}
+                          {order.addressValidation.suggestedAddress.city} {order.addressValidation.suggestedAddress.state} {order.addressValidation.suggestedAddress.zip}
+                        </address>
+                      </div>
+                    </div>
+                    <button onClick={handleUseSuggestedAddress} disabled={updating} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center mb-2 disabled:opacity-60 gap-2">
+                      {updating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></span> Applying...</> : '✓ Apply Suggested Address'}
                     </button>
-                    <button onClick={handleRevalidateAddress} disabled={revalidating} className="w-full bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors shadow-sm rounded-xl text-[13px] py-2 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
-                      {revalidating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-400 border-t-transparent"></span> Validating...</> : 'Re-validate Address'}
-                    </button>
+                    <div className="flex gap-2">
+                      <button onClick={() => openAddressModal('shipping')} className="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors rounded-xl text-[13px] py-2 flex justify-center items-center">
+                        Edit Manually
+                      </button>
+                      <button onClick={handleRevalidateAddress} disabled={revalidating} className="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors rounded-xl text-[13px] py-2 flex justify-center items-center gap-1.5 disabled:opacity-60">
+                        {revalidating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-400 border-t-transparent"></span> Validating...</> : 'Re-validate'}
+                      </button>
+                    </div>
                   </>
                 ) : (
+                  /* No real correction available — just offer edit / re-validate */
                   <div className="flex gap-2">
                     <button onClick={() => openAddressModal('shipping')} className="flex-1 bg-brand-navy hover:bg-brand-blue text-white font-bold transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center">
                       Edit Address
                     </button>
-                    <button onClick={handleRevalidateAddress} disabled={revalidating} className="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors shadow-sm rounded-xl text-[13px] py-2.5 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <button onClick={handleRevalidateAddress} disabled={revalidating} className="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-semibold border border-slate-200 transition-colors rounded-xl text-[13px] py-2.5 flex justify-center items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed">
                       {revalidating ? <><span className="inline-block animate-spin rounded-full h-3.5 w-3.5 border-2 border-slate-400 border-t-transparent"></span> Validating...</> : 'Re-validate'}
                     </button>
                   </div>
                 )}
               </div>
             )}
+
 
             {/* Notes */}
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 relative group">
@@ -1287,20 +1333,33 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                onClick={() => setIsEditAddressModalOpen(false)}
-                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveAddress}
-                disabled={updating}
-                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-              >
-                {updating ? 'Saving...' : 'Save'}
-              </button>
+            <div className="flex flex-col gap-3 pt-2">
+              {/* Primary action row */}
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setIsEditAddressModalOpen(false)}
+                  className="px-4 py-2 rounded-lg text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveAddress}
+                  disabled={updating}
+                  className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {updating ? 'Saving...' : 'Save & Re-validate'}
+                </button>
+              </div>
+              {/* Override row — useful for international addresses Google can't fully validate */}
+              {addressTypeToEdit === 'shipping' && (
+                <button
+                  onClick={handleSaveAddressVerified}
+                  disabled={updating}
+                  className="w-full py-2 rounded-lg text-[12px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
+                >
+                  ✓ Save & Mark as Verified (skip re-validation)
+                </button>
+              )}
             </div>
           </div>
         </div>,
@@ -1384,7 +1443,7 @@ const OrderDetail = () => {
                   <input
                     type="text"
                     value={editContactForm.firstName}
-                    onChange={(e) => setEditContactForm({...editContactForm, firstName: e.target.value})}
+                    onChange={(e) => setEditContactForm({ ...editContactForm, firstName: e.target.value })}
                     className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
                   />
                 </div>
@@ -1393,7 +1452,7 @@ const OrderDetail = () => {
                   <input
                     type="text"
                     value={editContactForm.lastName}
-                    onChange={(e) => setEditContactForm({...editContactForm, lastName: e.target.value})}
+                    onChange={(e) => setEditContactForm({ ...editContactForm, lastName: e.target.value })}
                     className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
                   />
                 </div>
@@ -1403,7 +1462,7 @@ const OrderDetail = () => {
                 <input
                   type="email"
                   value={editContactForm.email}
-                  onChange={(e) => setEditContactForm({...editContactForm, email: e.target.value})}
+                  onChange={(e) => setEditContactForm({ ...editContactForm, email: e.target.value })}
                   className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
                 />
               </div>
@@ -1412,7 +1471,7 @@ const OrderDetail = () => {
                 <input
                   type="tel"
                   value={editContactForm.phone}
-                  onChange={(e) => setEditContactForm({...editContactForm, phone: e.target.value})}
+                  onChange={(e) => setEditContactForm({ ...editContactForm, phone: e.target.value })}
                   className="w-full text-[14px] px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
                 />
               </div>

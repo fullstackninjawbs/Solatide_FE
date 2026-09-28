@@ -477,6 +477,18 @@ export const apiService = {
     });
   },
 
+  searchAddressAutocomplete: async (query) => {
+    return customFetch(`${API_URL}/api/admin/order/address/autocomplete?q=${encodeURIComponent(query)}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
+  getAddressPlaceDetails: async (placeId) => {
+    return customFetch(`${API_URL}/api/admin/order/address/place-details?place_id=${encodeURIComponent(placeId)}`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
   // ─── Customers (Admin) ─────────────────────────────────────────────────────────
   getAdminCustomers: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/customer${queryString ? `?${queryString}` : ''}`, {

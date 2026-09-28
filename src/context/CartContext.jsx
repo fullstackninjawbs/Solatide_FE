@@ -48,8 +48,15 @@ export const CartProvider = ({ children }) => {
         const currentQty = existingItem ? existingItem.quantity : 0;
         
         if (inventoryPolicy !== 'continue' && !continueSelling) {
-            if (currentQty + quantity > (availableStock || 0)) {
-                toast.error(`You can't add more than ${availableStock || 0} units to the cart`);
+            const stock = availableStock || 0;
+            if (currentQty + quantity > stock) {
+                if (stock === 0) {
+                    toast.error(`This item is currently out of stock`);
+                } else if (currentQty >= stock) {
+                    toast.error(`You already have the maximum available stock (${stock}) in your cart`);
+                } else {
+                    toast.error(`Only ${stock} units are currently available`);
+                }
                 return; // Do not update cart or open cart drawer
             }
         }
@@ -106,8 +113,13 @@ export const CartProvider = ({ children }) => {
                 const availableStock = item.selectedVariant ? item.selectedVariant.stockQty : item.stockQuantity;
 
                 if (inventoryPolicy !== 'continue' && !continueSelling) {
-                    if (newQuantity > (availableStock || 0)) {
-                        toast.error(`Only ${availableStock || 0} units available in stock`);
+                    const stock = availableStock || 0;
+                    if (newQuantity > stock) {
+                        if (stock === 0) {
+                            toast.error(`This item is currently out of stock`);
+                        } else {
+                            toast.error(`Only ${stock} units are currently available`);
+                        }
                         return prevItems; // Prevent update
                     }
                 }

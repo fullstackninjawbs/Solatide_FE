@@ -8,10 +8,12 @@ import { CurrencyProvider } from './context/CurrencyContext'
 import './App.css'
 
 import { HelmetProvider } from 'react-helmet-async'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   return (
     <HelmetProvider>
+      <Toaster position="top-center" />
       <CartProvider>
         <CurrencyProvider>
           <BrowserRouter>
