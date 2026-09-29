@@ -7,7 +7,9 @@ import {
   Package,
   ExternalLink,
   RefreshCw,
-  Download
+  Download,
+  Trash2,
+  RotateCcw
 } from 'lucide-react';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
@@ -70,6 +72,7 @@ const TABS = [
   { label: 'Unfulfilled', filter: { fulfilmentStatus: 'unfulfilled', hasCustomer: true } },
   { label: 'Paid', filter: { paymentStatus: 'paid', hasCustomer: true } },
   { label: 'Abandoned Checkouts', filter: { hasCustomer: false } },
+  { label: 'Deleted Orders', filter: { isDeleted: 'true' } },
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -87,6 +90,10 @@ const OrderList = () => {
   const [searchValue, setSearchValue] = useState(urlQ);
   const debounceRef = useRef(null);
   const toast = useToast();
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Sync search input with browser back/forward URL changes
   useEffect(() => {
@@ -153,6 +160,42 @@ const OrderList = () => {
     nextParams.set('page', String(newPage));
     nextParams.set('limit', String(newLimit));
     setSearchParams(nextParams);
+  };
+
+  const handleSoftDelete = async () => {
+    if (!orderToDelete) return;
+    setIsDeleting(true);
+    try {
+      const res = await apiService.softDeleteAdminOrder(orderToDelete._id);
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Order moved to deleted orders list');
+        setDeleteModalOpen(false);
+        setOrderToDelete(null);
+        fetchOrders();
+      } else {
+        throw new Error(data.message || 'Failed to delete order');
+      }
+    } catch (err) {
+      toast.error(getUserFriendlyErrorMessage(err, 'deleteOrder'));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleRestore = async (orderId) => {
+    try {
+      const res = await apiService.restoreAdminOrder(orderId);
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Order restored successfully');
+        fetchOrders();
+      } else {
+        throw new Error(data.message || 'Failed to restore order');
+      }
+    } catch (err) {
+      toast.error(getUserFriendlyErrorMessage(err, 'restoreOrder'));
+    }
   };
 
   const customerName = (o) => {
@@ -278,15 +321,15 @@ const OrderList = () => {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Payment</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Fulfilment</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Items</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Delivery</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Shipping Method</th>
+                <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap"></th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
-                    {Array.from({ length: 11 }).map((__, j) => (
+                    {Array.from({ length: 10 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
@@ -295,7 +338,7 @@ const OrderList = () => {
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="px-4 py-20 text-center">
+                  <td colSpan={10} className="px-4 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
@@ -375,18 +418,33 @@ const OrderList = () => {
                       {itemCount(order)}
                     </td>
 
-                    {/* Delivery */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      {order.deliveryStatus ? (
-                        <Badge text={order.deliveryStatus} styleMap={DELIVERY_BADGE} />
-                      ) : (
-                        <span className="text-slate-400 text-[12px]">—</span>
-                      )}
-                    </td>
-
                     {/* Shipping Method */}
                     <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[180px] truncate">
                       {order.shippingMethodName ?? '—'}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-3 whitespace-nowrap text-right">
+                      {activeTab === 4 ? (
+                        <button
+                          onClick={() => handleRestore(order._id)}
+                          className="text-slate-400 hover:text-emerald-500 transition-colors p-1 rounded hover:bg-emerald-50"
+                          title="Restore Order"
+                        >
+                          <RotateCcw size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setOrderToDelete(order);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50"
+                          title="Delete Order"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -405,6 +463,37 @@ const OrderList = () => {
           />
         )}
       </div>
+
+      {/* Delete Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 !m-0">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+            <h3 className="text-lg font-bold text-slate-800 mb-2">Delete Order</h3>
+            <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
+              Are you sure you want to delete this order? It will be moved to the <strong>Deleted Orders</strong> tab and can be viewed there later.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setOrderToDelete(null);
+                }}
+                className="px-4 py-2 rounded-xl text-[14px] font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSoftDelete}
+                className="px-4 py-2 rounded-xl text-[14px] font-semibold bg-red-500 text-white hover:bg-red-600 shadow-sm transition-colors flex items-center gap-2"
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

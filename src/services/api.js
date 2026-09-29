@@ -429,6 +429,18 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  softDeleteAdminOrder: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/soft-delete`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+  },
+  restoreAdminOrder: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/restore`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+    });
+  },
   getAdminOrderById: async (id) => {
     return customFetch(`${API_URL}/api/admin/order/${id}`, {
       method: 'GET',
