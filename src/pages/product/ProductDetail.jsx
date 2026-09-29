@@ -69,6 +69,7 @@ const ProductDetail = () => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
+                setNotFound(false); // Reset notFound state when URL changes!
                 const response = await apiService.getProductById(id, { signal });
                 const result = await response.json();
                 if (!signal.aborted) {
