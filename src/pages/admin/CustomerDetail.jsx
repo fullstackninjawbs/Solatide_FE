@@ -369,74 +369,74 @@ const CustomerDetail = () => {
                     {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
 
-                        {/* Last Order Placed */}
+                        {/* Order History */}
                         <div className={cardClass}>
-                            <div className="p-5">
-                                <h2 className="text-[15px] font-bold text-gray-900 mb-4">Last order placed</h2>
-
-                                {lastOrder ? (
-                                    <>
-                                        <div className="flex justify-between items-start mb-6">
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <Link to={`/admin/orders/${lastOrder._id}`} className="font-bold text-[16px] text-gray-900 hover:underline">
-                                                        #{lastOrder.orderNumber}
-                                                    </Link>
-                                                    <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[12px] font-medium flex items-center gap-1">
-                                                        <div className={`w-1.5 h-1.5 rounded-full ${lastOrder.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                                                        {lastOrder.paymentStatus}
-                                                    </span>
-                                                    <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[12px] font-medium flex items-center gap-1">
-                                                        <div className={`w-1.5 h-1.5 rounded-full ${lastOrder.fulfilmentStatus === 'fulfilled' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                                                        {lastOrder.fulfilmentStatus || 'Unfulfilled'}
-                                                    </span>
+                            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+                                <h2 className="text-[15px] font-bold text-gray-900">Order history</h2>
+                            </div>
+                            <div className="p-0">
+                                {orders && orders.length > 0 ? (
+                                    <div className="divide-y divide-gray-100">
+                                        {orders.map((order) => (
+                                            <div 
+                                                key={order._id} 
+                                                className="p-5 hover:bg-slate-50 transition-colors group cursor-pointer"
+                                                onClick={() => navigate(`/admin/orders/${order._id}`)}
+                                            >
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="font-bold text-[15px] text-gray-900 group-hover:text-blue-600 transition-colors">
+                                                                #{order.orderNumber}
+                                                            </span>
+                                                            <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[11px] font-medium flex items-center gap-1">
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${order.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                                                                {order.paymentStatus}
+                                                            </span>
+                                                            <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[11px] font-medium flex items-center gap-1">
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${order.fulfilmentStatus === 'fulfilled' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                                                                {order.fulfilmentStatus || 'Unfulfilled'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-[12px] text-gray-500">
+                                                            {formatDate(order.createdAt, true)} from Web
+                                                        </p>
+                                                    </div>
+                                                    <div className="text-right flex flex-col items-end gap-1">
+                                                        <p className="text-[14px] font-bold text-gray-900">{formatCurrency(order.grandTotal)}</p>
+                                                        <p className="text-[12px] text-gray-500 font-medium">{order.lineItems?.length || 0} item(s)</p>
+                                                    </div>
                                                 </div>
-                                                <p className="text-[13px] text-gray-500">
-                                                    {formatDate(lastOrder.createdAt, true)} from Web
-                                                </p>
-                                            </div>
-                                            <p className="text-[15px] font-bold text-gray-900">{formatCurrency(lastOrder.grandTotal)}</p>
-                                        </div>
-
-                                        <div className="space-y-4 pt-4 border-t border-gray-100">
-                                            {lastOrder.lineItems?.map((item, idx) => (
-                                                <div key={idx} className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-lg border border-gray-200 bg-white flex items-center justify-center overflow-hidden">
+                                                <div className="flex items-center gap-2 overflow-hidden">
+                                                    {order.lineItems?.slice(0, 5).map((item, idx) => (
+                                                        <div key={idx} className="w-8 h-8 rounded border border-gray-200 bg-white flex items-center justify-center overflow-hidden shrink-0" title={item.title}>
                                                             {item.productImageUrl ? (
-                                                                <img src={item.productImageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                                                <img src={item.productImageUrl} alt="" className="w-full h-full object-cover" />
                                                             ) : (
-                                                                <ShoppingBag className="w-5 h-5 text-gray-300" />
+                                                                <ShoppingBag className="w-3.5 h-3.5 text-gray-300" />
                                                             )}
                                                         </div>
-                                                        <div>
-                                                            <p className="text-[14px] font-medium text-blue-750 hover:underline cursor-pointer">{item.title}</p>
-                                                            {item.variantTitle && <p className="text-[13px] text-gray-500">{item.variantTitle}</p>}
+                                                    ))}
+                                                    {(order.lineItems?.length || 0) > 5 && (
+                                                        <div className="w-8 h-8 rounded border border-gray-200 bg-gray-50 flex items-center justify-center text-[10px] font-bold text-gray-500 shrink-0">
+                                                            +{(order.lineItems?.length || 0) - 5}
                                                         </div>
-                                                    </div>
-                                                    <div className="text-right flex items-center gap-4">
-                                                        <p className="text-[13px] text-gray-500 font-medium">{formatCurrency(item.unitPrice)} × {item.quantity}</p>
-                                                        <p className="text-[14px] font-medium text-gray-900 w-20">{formatCurrency(item.unitPrice * item.quantity)}</p>
-                                                    </div>
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="mt-6 pt-5 border-t border-gray-100 flex justify-end gap-3">
-                                            <AdminSecondaryButton to={`/admin/orders?q=${encodeURIComponent(customer.email)}`} className="!py-1.5 !px-4 !text-[13px]">
-                                                View all orders
-                                            </AdminSecondaryButton>
-                                            <AdminPrimaryButton className="hidden !py-1.5 !px-4 !text-[13px]">
-                                                Create order
-                                            </AdminPrimaryButton>
-                                        </div> 
-                                    </>
+                                            </div>
+                                        ))}
+                                    </div>
                                 ) : (
-                                    <div className="py-8 text-center">
+                                    <div className="py-12 text-center">
                                         <ShoppingBag className="w-8 h-8 text-gray-300 mx-auto mb-3" />
                                         <p className="text-[14px] font-medium text-gray-700 mb-1">No orders yet</p>
                                     </div>
                                 )}
+                            </div>
+                            <div className="p-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
+                                <AdminSecondaryButton to={`/admin/orders?q=${encodeURIComponent(customer.email)}`} className="!py-1.5 !px-4 !text-[13px]">
+                                    View in Orders page
+                                </AdminSecondaryButton>
                             </div>
                         </div>
 
