@@ -441,6 +441,20 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  bulkSoftDeleteAdminOrders: async (ids) => {
+    return customFetch(`${API_URL}/api/admin/order/bulk-soft-delete`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
+  },
+  bulkRestoreAdminOrders: async (ids) => {
+    return customFetch(`${API_URL}/api/admin/order/bulk-restore`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
+  },
   getAdminOrderById: async (id) => {
     return customFetch(`${API_URL}/api/admin/order/${id}`, {
       method: 'GET',

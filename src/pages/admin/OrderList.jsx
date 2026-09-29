@@ -92,8 +92,11 @@ const OrderList = () => {
   const toast = useToast();
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalMode, setDeleteModalMode] = useState('single');
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
 
   // Sync search input with browser back/forward URL changes
   useEffect(() => {
@@ -149,6 +152,7 @@ const OrderList = () => {
   }, [fetchOrders]);
 
   const handleTabChange = (idx) => {
+    setSelectedOrders([]);
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('tab', String(idx));
     nextParams.set('page', '1');
@@ -195,6 +199,62 @@ const OrderList = () => {
       }
     } catch (err) {
       toast.error(getUserFriendlyErrorMessage(err, 'restoreOrder'));
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedOrders(orders.map((o) => o._id));
+    } else {
+      setSelectedOrders([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    setSelectedOrders((prev) =>
+      prev.includes(id) ? prev.filter((_id) => _id !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkSoftDelete = async () => {
+    if (selectedOrders.length === 0) return;
+    
+    setIsDeleting(true);
+    try {
+      const res = await apiService.bulkSoftDeleteAdminOrders(selectedOrders);
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`${selectedOrders.length} orders moved to deleted list`);
+        setDeleteModalOpen(false);
+        setSelectedOrders([]);
+        fetchOrders();
+      } else {
+        throw new Error(data.message || 'Failed to bulk delete orders');
+      }
+    } catch (err) {
+      toast.error(getUserFriendlyErrorMessage(err, 'deleteOrder'));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleBulkRestore = async () => {
+    if (selectedOrders.length === 0) return;
+    setIsBulkProcessing(true);
+    try {
+      const res = await apiService.bulkRestoreAdminOrders(selectedOrders);
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`${selectedOrders.length} orders restored successfully`);
+        setSelectedOrders([]);
+        fetchOrders();
+      } else {
+        throw new Error(data.message || 'Failed to bulk restore orders');
+      }
+    } catch (err) {
+      toast.error(getUserFriendlyErrorMessage(err, 'restoreOrder'));
+    } finally {
+      setIsBulkProcessing(false);
     }
   };
 
@@ -292,18 +352,53 @@ const OrderList = () => {
             ))}
           </div>
 
-          {/* Search */}
-          <div className="px-4 py-3">
-            <div className="relative max-w-sm">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search order # or email…"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-[13px] border border-slate-200 rounded-xl focus:outline-none focus:border-brand-blue bg-slate-50 text-slate-700 placeholder-slate-400"
-              />
-            </div>
+          {/* Search and Bulk Actions */}
+          <div className="px-4 py-3 flex items-center justify-between min-h-[56px]">
+            {selectedOrders.length > 0 ? (
+              <div className="flex items-center gap-3 w-full bg-brand-navy text-white px-4 py-2 rounded-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <span className="text-[13px] font-semibold">{selectedOrders.length} selected</span>
+                <div className="flex-1" />
+                {activeTab === 4 ? (
+                  <button
+                    onClick={handleBulkRestore}
+                    disabled={isBulkProcessing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[13px] font-medium transition-colors disabled:opacity-50"
+                  >
+                    <RotateCcw size={14} />
+                    Restore Selected
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setDeleteModalMode('bulk');
+                      setDeleteModalOpen(true);
+                    }}
+                    disabled={isBulkProcessing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 rounded-lg text-[13px] font-medium transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 size={14} />
+                    Delete Selected
+                  </button>
+                )}
+                <button
+                  onClick={() => setSelectedOrders([])}
+                  className="px-2 py-1.5 hover:bg-white/10 rounded-lg text-[13px] font-medium transition-colors ml-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="relative max-w-sm w-full">
+                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search order # or email…"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-[13px] border border-slate-200 rounded-xl focus:outline-none focus:border-brand-blue bg-slate-50 text-slate-700 placeholder-slate-400"
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -312,6 +407,14 @@ const OrderList = () => {
           <table className="w-full text-[13px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/60">
+                <th className="px-4 py-3 w-10">
+                  <input
+                    type="checkbox"
+                    checked={orders.length > 0 && selectedOrders.length === orders.length}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+                  />
+                </th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Order</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Date</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Customer</th>
@@ -329,7 +432,7 @@ const OrderList = () => {
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
-                    {Array.from({ length: 10 }).map((__, j) => (
+                    {Array.from({ length: 12 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
@@ -338,7 +441,7 @@ const OrderList = () => {
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-20 text-center">
+                  <td colSpan={12} className="px-4 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
@@ -350,8 +453,18 @@ const OrderList = () => {
                 orders.map((order) => (
                   <tr
                     key={order._id}
-                    className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors group"
+                    className={`border-b border-slate-50 hover:bg-slate-50/60 transition-colors group ${selectedOrders.includes(order._id) ? 'bg-slate-50' : ''}`}
                   >
+                    {/* Checkbox */}
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedOrders.includes(order._id)}
+                        onChange={() => handleSelectOne(order._id)}
+                        className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+                      />
+                    </td>
+
                     {/* Order # */}
                     <td className="px-4 py-3 whitespace-nowrap">
                       <Link
@@ -437,6 +550,7 @@ const OrderList = () => {
                         <button
                           onClick={() => {
                             setOrderToDelete(order);
+                            setDeleteModalMode('single');
                             setDeleteModalOpen(true);
                           }}
                           className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50"
@@ -468,9 +582,14 @@ const OrderList = () => {
       {deleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 !m-0">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-800 mb-2">Delete Order</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-2">
+              {deleteModalMode === 'bulk' ? 'Delete Orders' : 'Delete Order'}
+            </h3>
             <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
-              Are you sure you want to delete this order? It will be moved to the <strong>Deleted Orders</strong> tab and can be viewed there later.
+              {deleteModalMode === 'bulk'
+                ? `Are you sure you want to delete ${selectedOrders.length} orders? They will be moved to the `
+                : 'Are you sure you want to delete this order? It will be moved to the '}
+              <strong>Deleted Orders</strong> tab and can be viewed there later.
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -484,7 +603,7 @@ const OrderList = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSoftDelete}
+                onClick={deleteModalMode === 'bulk' ? handleBulkSoftDelete : handleSoftDelete}
                 className="px-4 py-2 rounded-xl text-[14px] font-semibold bg-red-500 text-white hover:bg-red-600 shadow-sm transition-colors flex items-center gap-2"
                 disabled={isDeleting}
               >
