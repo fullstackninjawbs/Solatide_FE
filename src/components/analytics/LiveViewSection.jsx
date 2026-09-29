@@ -193,7 +193,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
         {/* Card 2: Total sales */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
           <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-            Total sales
+            Total sales (Last 24h)
           </span>
           <div className="flex items-end justify-between mt-2 gap-1">
             <div>
@@ -216,7 +216,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
         {/* Card 3: Sessions */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
           <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-            Sessions
+            Sessions (Last 24h)
           </span>
           <div className="flex items-end justify-between mt-2 gap-1">
             <div>
@@ -239,7 +239,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
         {/* Card 4: Orders */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex flex-col justify-between overflow-hidden">
           <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-            Orders
+            Orders (Last 24h)
           </span>
           <div className="flex items-end justify-between mt-2 gap-1">
             <div>
@@ -264,7 +264,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
           <div>
             <span className="text-[12px] font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1">
               <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
-              Abandoned Value
+              Abandoned Value (Last 24h)
             </span>
             <div className="text-2xl font-bold text-amber-900 mt-2">
               {loading && !data ? '—' : formatCurrency(data?.abandonedCartValue)}
