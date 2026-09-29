@@ -502,6 +502,30 @@ const OrderDetail = () => {
     );
   }
 
+  // Shipments
+  if (order.shippedAt || !isUnfulfilled) {
+    const shippedDate = order.shippedAt || order.updatedAt;
+    const carrier = order.trackingCarrier || 'a carrier';
+    
+    addEvent(
+      <span>A shipping label was generated via <span className="font-bold text-brand-navy">{carrier}</span>.</span>,
+      shippedDate
+    );
+
+    let shipEmailText = 'Shipment confirmation email was sent.';
+    if (customerEmail && !isMissingCustomer) {
+      shipEmailText = `Shipment confirmation email was sent to ${customerName} (${customerEmail}).`;
+    } else if (customerEmail) {
+      shipEmailText = `Shipment confirmation email was sent to ${customerEmail}.`;
+    }
+
+    addEvent(
+      <span>{shipEmailText}</span>,
+      shippedDate,
+      true
+    );
+  }
+
   // Refunds
   if (refunds && refunds.length > 0) {
     const uniqueRefunds = [];
