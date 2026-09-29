@@ -71,7 +71,7 @@ const DynamicPage = () => {
   }
 
   return (
-    <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500 max-w-4xl">
+    <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
         <title>{page.seoTitle || page.title} - Solatide Biosciences</title>
         {page.metaDescription && (
