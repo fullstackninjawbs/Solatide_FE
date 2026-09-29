@@ -144,13 +144,13 @@ const PageForm = () => {
           toolbarButtonSize: 'middle',
           buttons: [
             'source', '|',
-            'bold', 'italic', 'underline', '|',
+            'bold', 'italic', 'underline', 'strikethrough', '|',
             'ul', 'ol', '|',
-            'outdent', 'indent', '|',
-            'font', 'fontsize', 'brush', 'paragraph', '|',
+            'outdent', 'indent', 'align', '|',
+            'font', 'fontsize', 'brush', 'paragraph', 'classSpan', '|',
             'table', 'link', 'image', '|',
             'hr', 'eraser', 'copyformat', '|',
-            'undo', 'redo'
+            'fullsize', 'undo', 'redo'
           ],
           height: 600,
           width: '100%',

@@ -71,7 +71,7 @@ const DynamicPage = () => {
   }
 
   return (
-    <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
+    <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500 max-w-4xl">
       <Helmet>
         <title>{page.seoTitle || page.title} - Solatide Biosciences</title>
         {page.metaDescription && (
@@ -80,18 +80,22 @@ const DynamicPage = () => {
         <link rel="canonical" href={`${window.location.origin}/pages/${page.slug}`} />
       </Helmet>
 
+      {/* Render the page title as an H1 heading at the top */}
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-navy mb-8 text-center">
+        {page.title}
+      </h1>
+
       {/* 
         Tailwind Prose class ensures that the raw HTML inherits nice styles 
         (line height, heading sizes, list bullets, etc.). 
-        Removed prose-lg and tailored it to match the Jodit editor's exact look and feel.
       */}
       <div
-        className="prose max-w-none 
-                   prose-p:text-[14.5px] prose-p:leading-[1.65] prose-p:text-[#1e293b]
-                   prose-headings:text-[#1a3a6b] prose-headings:font-bold prose-headings:mb-4
-                   prose-h1:text-[2em] prose-h2:text-[1.35em] prose-h3:text-[1.05em]
-                   prose-li:text-[14.5px] prose-li:leading-[1.65] prose-li:text-[#1e293b]
-                   prose-a:text-[#2a7de1] prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+        className="prose prose-lg max-w-none 
+                   prose-p:text-slate-700 prose-p:leading-relaxed
+                   prose-headings:text-brand-navy prose-headings:font-bold prose-headings:mb-4
+                   prose-h1:text-[2em] prose-h2:text-[1.5em] prose-h3:text-[1.25em]
+                   prose-li:text-slate-700 prose-li:leading-relaxed
+                   prose-a:text-brand-cyan prose-a:font-medium prose-a:no-underline hover:prose-a:underline hover:prose-a:text-brand-blue
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50
                    jodit-content-wrapper"
