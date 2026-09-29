@@ -42,10 +42,11 @@ function fmtAUD(v) {
 function fmtDate(dateStr) {
   if (!dateStr) return '—';
   const d = new Date(dateStr);
-  const options = { month: 'long', day: 'numeric', year: 'numeric' };
-  const datePart = d.toLocaleDateString('en-US', options);
-  const timePart = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-  return `${datePart} at ${timePart.toLowerCase()}`;
+  const dateOptions = { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Australia/Sydney' };
+  const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' };
+  const datePart = d.toLocaleDateString('en-US', dateOptions);
+  const timePart = d.toLocaleTimeString('en-US', timeOptions);
+  return `${datePart} at ${timePart.toLowerCase()} AEST`;
 }
 
 function formatAddress(addr) {
@@ -452,26 +453,35 @@ const OrderDetail = () => {
   const getGroupKey = (dateStr) => {
     if (!dateStr) return 'Past';
     const date = new Date(dateStr);
+    
     const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const tz = 'Australia/Sydney';
+    
+    // Get AEST date strings (e.g. "9/29/2026")
+    const dateAestStr = date.toLocaleDateString('en-US', { timeZone: tz });
+    const todayAestStr = today.toLocaleDateString('en-US', { timeZone: tz });
+    
+    const yesterday = new Date(today.getTime());
+    yesterday.setDate(today.getDate() - 1);
+    const yesterdayAestStr = yesterday.toLocaleDateString('en-US', { timeZone: tz });
 
-    if (date.toDateString() === today.toDateString()) return 'Today';
-    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    if (dateAestStr === todayAestStr) return 'Today';
+    if (dateAestStr === yesterdayAestStr) return 'Yesterday';
 
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: tz });
   };
 
   const getTimeString = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
 
-    return date.toLocaleTimeString('en-US', {
+    const time = date.toLocaleTimeString('en-US', {
       timeZone: 'Australia/Sydney',
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
     });
+    return `${time} AEST`;
   };
 
   const timelineEvents = [];

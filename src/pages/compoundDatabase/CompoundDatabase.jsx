@@ -38,7 +38,7 @@ const CompoundDatabase = () => {
                             <span className="inline-block bg-[#e6effc] text-[#214A9E] text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">GLP-1 AGONIST</span>
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Semaglutide</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A long-acting GLP-1 receptor agonist used in metabolic research. Structural modifications enable extended half-life and sustained receptor activation in experimental models.</p>
-                            <Link to="/research-insight/semaglutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
+                            <Link to="/pages/semaglutide-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
                         </div>
 
                         <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">
@@ -73,7 +73,7 @@ const CompoundDatabase = () => {
                             <span className="inline-block bg-[#e6effc] text-[#214A9E] text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">AMYLIN RECEPTOR AGONIST</span>
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Cagrilintide</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">An amylin receptor agonist studied as an emerging metabolic research compound. Used alongside GLP-1 agonists to investigate dual-pathway receptor activation.</p>
-                            <Link to="/research-insight/cagrilintide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
+                            <Link to="/pages/cagrilintide-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
                         </div>
 
                         <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">

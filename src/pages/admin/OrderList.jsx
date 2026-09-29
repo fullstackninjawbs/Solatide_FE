@@ -14,20 +14,15 @@ import {
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
-// ─── Helper: format date like Shopify ("Today at 2:31 pm") ────────────────────
 function formatOrderDate(dateStr) {
   if (!dateStr) return '—';
   const date = new Date(dateStr);
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const isYesterday = date.toDateString() === yesterday.toDateString();
-
-  const timeStr = date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true });
-  if (isToday) return `Today at ${timeStr}`;
-  if (isYesterday) return `Yesterday at ${timeStr}`;
-  return date.toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' }) + ` at ${timeStr}`;
+  
+  // Format for Australia/Sydney
+  const timeStr = date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' });
+  const datePart = date.toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'Australia/Sydney' });
+  
+  return `${datePart} at ${timeStr} AEST`;
 }
 
 function fmtAUD(amount) {
