@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const CustomDropdown = ({ value, options, onChange, placeholder = "Select an option", align = "left", className, fullWidth = false }) => {
+const CustomDropdown = ({ value, options, onChange, placeholder = "Select an option", align = "left", className, fullWidth = false, searchable = false }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        setSearchQuery('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -25,7 +27,10 @@ const CustomDropdown = ({ value, options, onChange, placeholder = "Select an opt
     <div className={`relative shrink-0 ${fullWidth ? 'w-full' : ''}`} ref={dropdownRef}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (isOpen) setSearchQuery('');
+        }}
         className={className || `${fullWidth ? 'w-full' : 'w-full sm:w-auto min-w-[150px]'} flex items-center justify-between gap-3 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-[13.5px] font-medium focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm`}
       >
         <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
@@ -34,12 +39,26 @@ const CustomDropdown = ({ value, options, onChange, placeholder = "Select an opt
 
       {isOpen && (
         <div className={`absolute z-50 mt-1 w-full min-w-[200px] bg-white border border-slate-200 rounded-lg shadow-lg p-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 ${alignmentClasses}`}>
-          {options.map((option) => (
+          {searchable && (
+            <div className="sticky top-0 bg-white z-10 px-2 py-1.5 pb-2">
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-2.5 py-1.5 text-[13px] border border-slate-200 rounded-md focus:outline-none focus:border-brand-blue"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+          {options.filter(opt => opt.label.toLowerCase().includes(searchQuery.toLowerCase())).map((option) => (
             <button
               key={option.value}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
+                setSearchQuery('');
               }}
               className={`w-full text-left px-2.5 py-2 text-[13.5px] flex items-center gap-2.5 rounded-md transition-colors ${value === option.value ? 'bg-slate-100 font-semibold text-brand-navy' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
             >
@@ -49,6 +68,9 @@ const CustomDropdown = ({ value, options, onChange, placeholder = "Select an opt
               <span className="truncate">{option.label}</span>
             </button>
           ))}
+          {options.filter(opt => opt.label.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+            <div className="px-3 py-2 text-xs text-slate-400 text-center">No results found</div>
+          )}
         </div>
       )}
     </div>

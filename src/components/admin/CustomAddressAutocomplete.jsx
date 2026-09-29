@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export const CustomAddressAutocomplete = ({ value, onChange, onSelect }) => {
+export const CustomAddressAutocomplete = ({ value, onChange, onSelect, countryCode, stateName, disabled, placeholder }) => {
   const [query, setQuery] = useState(value || '');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,15 @@ export const CustomAddressAutocomplete = ({ value, onChange, onSelect }) => {
     }
     setLoading(true);
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=25`);
+      let searchStr = q;
+      if (stateName) {
+        searchStr = `${q}, ${stateName}`;
+      }
+      let url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchStr)}&format=json&addressdetails=1&limit=25`;
+      if (countryCode) {
+        url += `&countrycodes=${countryCode.toLowerCase()}`;
+      }
+      const res = await fetch(url);
       const data = await res.json();
       setResults(data || []);
     } catch (err) {
@@ -54,9 +62,10 @@ export const CustomAddressAutocomplete = ({ value, onChange, onSelect }) => {
         onChange={handleInputChange}
         onFocus={() => { if (results.length > 0) setShow(true); }}
         onBlur={() => setTimeout(() => setShow(false), 200)}
-        placeholder="Start typing your street address..."
-        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue"
+        placeholder={placeholder || "Start typing your street address..."}
+        className={`w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue ${disabled ? 'bg-slate-50 cursor-not-allowed opacity-70' : ''}`}
         required
+        disabled={disabled}
       />
       {loading && (
         <span className="absolute right-3.5 top-2.5 inline-block animate-spin rounded-full h-4 w-4 border-2 border-brand-blue border-t-transparent"></span>

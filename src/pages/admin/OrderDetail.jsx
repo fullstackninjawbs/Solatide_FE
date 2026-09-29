@@ -141,6 +141,28 @@ const OrderDetail = () => {
     }
   };
 
+  const handleMarkPaid = async () => {
+    try {
+      setUpdating(true);
+      const res = await apiService.updateAdminOrderStatus(id, { paymentStatus: 'paid', status: 'processing' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success('Order marked as paid');
+        return true;
+      } else {
+        toast.error(data.message || 'Update failed');
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
+      return false;
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const handleAddComment = async () => {
     if (!commentText.trim()) return;
     const newComment = { text: commentText.trim(), createdAt: new Date() };
@@ -423,6 +445,7 @@ const OrderDetail = () => {
 
   const isPaid = paymentStatus === 'paid';
   const isUnfulfilled = fulfilStatus === 'unfulfilled';
+  const isManual = order.source === 'admin_manual';
 
   // ─── Timeline Events Logic ───────────────────────────────────────────────────
 
@@ -461,7 +484,7 @@ const OrderDetail = () => {
   const isMissingCustomer = customerName === 'No customer name';
 
   addEvent(
-    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on Tagadacrm.</span>,
+    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on {isManual ? 'Admin' : 'Tagadacrm'}.</span>,
     order.createdAt
   );
 
@@ -476,7 +499,7 @@ const OrderDetail = () => {
   // Admin note
   if (order.adminNotes) {
     addEvent(
-      <span>Tagadacrm added a note to this order.</span>,
+      <span>{isManual ? 'An admin' : 'Tagadacrm'} added a note to this order.</span>,
       order.updatedAt || order.createdAt
     );
   }
@@ -484,7 +507,7 @@ const OrderDetail = () => {
   // Payment
   if (isPaid || grandTotal > 0) {
     addEvent(
-      <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed on Tagada Pay.</span>,
+      <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed {order.source === 'admin_manual' ? 'manually by admin' : 'on Tagada Pay'}.</span>,
       order.createdAt
     );
 
@@ -542,17 +565,17 @@ const OrderDetail = () => {
 
     uniqueRefunds.forEach(refund => {
       addEvent(
-        <span>Tagadacrm refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span> to Tagada Pay.</span>,
+        <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span>{isManual ? '.' : ' to Tagada Pay.'}</span>,
         refund.createdAt
       );
       if (refund.type === 'full') {
         addEvent(
-          <span>Tagadacrm refunded shipping.</span>,
+          <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded shipping.</span>,
           refund.createdAt
         );
       }
       addEvent(
-        <span>Tagadacrm sent a refund notification email to {customerName} ({customerEmail}).</span>,
+        <span>{isManual ? 'An admin' : 'Tagadacrm'} sent a refund notification email to {customerName} ({customerEmail}).</span>,
         refund.createdAt,
         true
       );
@@ -598,13 +621,25 @@ const OrderDetail = () => {
 
                 <div className="flex items-center gap-2 mt-1">
                   {/* Payment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${isPaid
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
-                    }`}>
-                    {isPaid ? <Check size={14} /> : <Clock size={14} />}
-                    {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${isPaid
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}>
+                      {isPaid ? <Check size={14} /> : <Clock size={14} />}
+                      {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
+                    </span>
+                    {!isPaid && isManual && (
+                      <button
+                        onClick={handleMarkPaid}
+                        disabled={updating}
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-blue-50 text-brand-blue border-blue-200 hover:bg-blue-100 transition-colors disabled:opacity-50"
+                      >
+                        <Check size={14} />
+                        Mark Paid
+                      </button>
+                    )}
+                  </div>
 
                   {/* Fulfillment Badge */}
                   <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${!isUnfulfilled
@@ -618,7 +653,7 @@ const OrderDetail = () => {
               </h1>
             </div>
             <p className="text-[14px] text-slate-500 ml-[52px] font-medium">
-              {fmtDate(order.createdAt)} from Tagadacrm
+              {fmtDate(order.createdAt)} from {isManual ? 'Admin' : 'Tagadacrm'}
             </p>
           </div>
 
@@ -772,16 +807,16 @@ const OrderDetail = () => {
                           </AdminSecondaryButton>
                           <div
                             title={
-                              order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'
+                              (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
                                 ? 'Payment is pending from tagada, refresh to update..'
                                 : (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : '')
                             }
-                            className={order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
+                            className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
                           >
                             <AdminPrimaryButton
                               onClick={handleCreateLabel}
-                              disabled={creatingLabel || order.refundStatus === 'refunded' || order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview}
-                              className={order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending' || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
+                              disabled={creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
+                              className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
                             >
                               {creatingLabel ? 'Generating...' : 'Create shipping label'}
                             </AdminPrimaryButton>
@@ -803,7 +838,9 @@ const OrderDetail = () => {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-brand-navy">Payment</h2>
-                    <p className="text-[13px] text-slate-500 font-medium">Completed via TagadaPay</p>
+                    <p className="text-[13px] text-slate-500 font-medium">
+                      {order.source === 'admin_manual' ? 'Completed via Admin' : 'Completed via TagadaPay'}
+                    </p>
                   </div>
                 </div>
 

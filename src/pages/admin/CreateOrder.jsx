@@ -69,9 +69,10 @@ const CreateOrder = () => {
   const [shippingCost, setShippingCost] = useState('11.00');
 
   // ── 4. Payment & Order Metadata State ─────────────────────────────────────────
-  const [paymentStatus, setPaymentStatus] = useState('pending'); // 'pending' | 'paid'
+  const [paymentStatus, setPaymentStatus] = useState('paid'); // 'pending' | 'paid'
   const [discountTotal, setDiscountTotal] = useState('0.00');
   const [notes, setNotes] = useState('');
+  const [sendEmail, setSendEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -294,7 +295,8 @@ const CreateOrder = () => {
         shippingCost: parsedShipping,
         discountTotal: parsedDiscountTotal,
         notes: notes.trim(),
-        paymentStatus
+        paymentStatus,
+        sendEmail
       };
 
       const res = await apiService.createAdminOrder(payload);
@@ -637,10 +639,57 @@ const CreateOrder = () => {
             </div>
 
             <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Country *</label>
+                  <CustomDropdown
+                    value={shippingAddress.country}
+                    onChange={(val) => {
+                      setShippingAddress(prev => ({ ...prev, country: val, state: '' }));
+                    }}
+                    options={Country.getAllCountries().map(c => ({
+                      label: c.name,
+                      value: c.isoCode
+                    }))}
+                    placeholder="Select Country"
+                    fullWidth
+                    searchable
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">State *</label>
+                  {State.getStatesOfCountry(shippingAddress.country).length > 0 ? (
+                    <CustomDropdown
+                      value={shippingAddress.state}
+                      onChange={(val) => setShippingAddress(prev => ({ ...prev, state: val }))}
+                      options={State.getStatesOfCountry(shippingAddress.country).map(s => ({
+                        label: `${s.isoCode} - ${s.name}`,
+                        value: s.isoCode
+                      }))}
+                      placeholder="Select State"
+                      fullWidth
+                      searchable
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={shippingAddress.state}
+                      onChange={(e) => setShippingAddress(prev => ({ ...prev, state: e.target.value }))}
+                      placeholder="State / Province"
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue"
+                    />
+                  )}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Street Address *</label>
                 <CustomAddressAutocomplete
                   value={shippingAddress.street1}
+                  countryCode={shippingAddress.country}
+                  stateName={shippingAddress.state}
+                  disabled={!shippingAddress.country || (State.getStatesOfCountry(shippingAddress.country).length > 0 && !shippingAddress.state)}
+                  placeholder={(!shippingAddress.country || (State.getStatesOfCountry(shippingAddress.country).length > 0 && !shippingAddress.state)) ? "Please select Country and State first" : "Start typing your street address..."}
                   onChange={(val) => setShippingAddress(prev => ({ ...prev, street1: val }))}
                   onSelect={(place) => {
                     const addr = place.address || {};
@@ -676,44 +725,6 @@ const CreateOrder = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Country *</label>
-                  <CustomDropdown
-                    value={shippingAddress.country}
-                    onChange={(val) => {
-                      setShippingAddress(prev => ({ ...prev, country: val, state: '' }));
-                    }}
-                    options={Country.getAllCountries().map(c => ({
-                      label: c.name,
-                      value: c.isoCode
-                    }))}
-                    placeholder="Select Country"
-                    fullWidth
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">State *</label>
-                  {State.getStatesOfCountry(shippingAddress.country).length > 0 ? (
-                    <CustomDropdown
-                      value={shippingAddress.state}
-                      onChange={(val) => setShippingAddress(prev => ({ ...prev, state: val }))}
-                      options={State.getStatesOfCountry(shippingAddress.country).map(s => ({
-                        label: `${s.isoCode} - ${s.name}`,
-                        value: s.isoCode
-                      }))}
-                      placeholder="Select State"
-                      fullWidth
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={shippingAddress.state}
-                      onChange={(e) => setShippingAddress(prev => ({ ...prev, state: e.target.value }))}
-                      placeholder="State / Province"
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue"
-                    />
-                  )}
-                </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Suburb / City *</label>
                   <input
@@ -880,6 +891,16 @@ const CreateOrder = () => {
                 {paymentStatus === 'paid' ? 'PAID' : 'PENDING'}
               </span>
             </div>
+
+            <label className="flex items-center gap-2 cursor-pointer mt-4">
+              <input 
+                type="checkbox" 
+                checked={sendEmail} 
+                onChange={(e) => setSendEmail(e.target.checked)} 
+                className="w-4 h-4 rounded bg-slate-800 border-slate-700 text-brand-blue focus:ring-brand-blue cursor-pointer"
+              />
+              <span className="text-xs text-slate-300 font-medium">Send order confirmation email to customer</span>
+            </label>
 
             <button
               type="button"
