@@ -158,7 +158,7 @@ const CurrentBatchCard = ({ batch, product }) => {
                   </div>
                   <div>
                     <h5 className="text-[15px] font-bold text-brand-navy group-hover:text-blue-600 transition-colors">View current batch COA</h5>
-                    <p className="text-[13px] text-slate-500 mt-0.5">Includes: HPLC Purity Â· Net content</p>
+                    <p className="text-[13px] text-slate-500 mt-0.5">Includes: HPLC Purity Net content</p>
                   </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
