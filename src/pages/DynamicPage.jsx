@@ -77,7 +77,8 @@ const DynamicPage = () => {
         {page.metaDescription && (
           <meta name="description" content={page.metaDescription} />
         )}
-        <link rel="canonical" href={`${window.location.origin}/pages/${page.slug}`} />
+        <link rel="canonical" href={`https://solatidebiosciences.com.au/pages/${page.slug}`} />
+        <meta property="og:url" content={`https://solatidebiosciences.com.au/pages/${page.slug}`} />
       </Helmet>
 
       {/* Render the page title as an H1 heading at the top */}
