@@ -8,7 +8,7 @@ const Logo = ({ className = "flex items-center gap-2", asColumn = false, onClick
             <img
                 src={logoImg}
                 alt="Solatide Biosciences"
-                className={asColumn ? "h-20 w-auto mx-auto mb-1.5 object-contain" : "h-12 w-auto object-contain"}
+                className={asColumn ? "h-20 w-auto mx-auto mb-1.5 object-contain" : "h-20 w-auto object-contain"}
             />
         </Link>
     );

@@ -101,8 +101,7 @@ const OrderStatus = () => {
                         {order.trackingNumber ? (
                             <>
                                 <p className="text-[14px] text-gray-600 mt-1">
-                                    Your order is on the way! It is being shipped via <span className="font-semibold">{order.trackingCarrier || 'your carrier'}</span>.
-                                </p>
+                                    Your order is on the way!                                </p>
                                 <div className="mt-3 flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
                                     <div>
                                         <p className="text-[12px] text-gray-500 uppercase tracking-wider font-semibold">Tracking Number</p>
@@ -121,7 +120,7 @@ const OrderStatus = () => {
                         ) : (
                             <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
                         )}
-                        <p className="text-[13px] text-gray-400 mt-2">{orderDate}</p>
+                        <p className="text-[13px] text-gray-400 mt-2 hidden">{orderDate}</p>
                     </div>
                 </div>
 
