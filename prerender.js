@@ -231,10 +231,17 @@ const server = app.listen(0, async () => {
 
             let html = await page.content();
 
+            // Sanitize: Replace any localhost URLs that leaked during prerendering
+            // (e.g. canonical tags, og:url) with the production domain
+            const prodOrigin = 'https://solatidebiosciences.com.au';
+            html = html.replace(/http:\/\/localhost:\d+/g, prodOrigin);
+            html = html.replace(/http:\/\/127\.0\.0\.1:\d+/g, prodOrigin);
+
             // Determine file path
             let filePath;
             if (route === '/') {
-                filePath = path.join(distDir, 'index.html');
+                // Save as home.html for Nginx to serve on the exact '/' route
+                filePath = path.join(distDir, 'home.html');
             } else {
                 // Save as clean flat file (e.g. /collections/all -> distDir/collections/all.html)
                 // This prevents Nginx from treating routes as directories and issuing 301 redirects to trailing slashes!
@@ -256,9 +263,14 @@ const server = app.listen(0, async () => {
     await browser.close();
     server.close();
 
-    // Clean up our temporary template file
+    // Restore the clean SPA shell as index.html so that Nginx's try_files fallback
+    // does NOT serve the prerendered homepage (with its baked-in canonical tag)
+    // for unknown/dynamic routes. React Helmet will inject the correct canonical after hydration.
+    // The prerendered homepage was saved as home.html above, which Nginx serves for the exact '/' route.
     if (fs.existsSync(templatePath)) {
+        fs.copyFileSync(templatePath, path.resolve(distDir, 'index.html'));
         fs.unlinkSync(templatePath);
+        console.log('✅ Restored clean SPA shell as index.html (fallback)');
     }
 
     // Generate sitemap.xml

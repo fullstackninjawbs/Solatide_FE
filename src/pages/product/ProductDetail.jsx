@@ -131,6 +131,11 @@ const ProductDetail = () => {
     if (notFound) {
         return (
             <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 px-4">
+                <Helmet>
+                    <title>Product Not Found | Solatide Biosciences</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                    <link rel="canonical" href="" />
+                </Helmet>
                 <div className="max-w-md w-full text-center">
                     <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#F0F5FB] flex items-center justify-center">
                         <svg className="w-10 h-10 text-[#214A9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

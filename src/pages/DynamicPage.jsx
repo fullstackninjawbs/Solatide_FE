@@ -55,6 +55,8 @@ const DynamicPage = () => {
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <Helmet>
           <title>Page Not Found - Solatide Biosciences</title>
+          <meta name="robots" content="noindex, nofollow" />
+          <link rel="canonical" href="" />
         </Helmet>
         <h1 className="text-4xl sm:text-6xl font-bold text-slate-800 mb-4">404</h1>
         <p className="text-lg text-slate-600 mb-8 max-w-md">

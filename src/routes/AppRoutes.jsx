@@ -4,6 +4,7 @@ import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
 import StaticSEO from '../components/StaticSEO'
+import GlobalCanonical from '../components/GlobalCanonical'
 
 // Wrapper to handle Vite chunk load errors when deploying new versions
 const lazyWithRetry = (componentImport) =>
@@ -121,6 +122,7 @@ const AppRoutes = () => {
     return (
         <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
             <PageViewTracker />
+            <GlobalCanonical />
             <StaticSEO />
             <Routes>
                 {/* Admin Routes */}

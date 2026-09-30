@@ -1,10 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Home, ArrowLeft } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const NotFound = () => {
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 py-16 text-center">
+      <Helmet>
+        <title>404 - Page Not Found | Solatide Biosciences</title>
+        <meta name="robots" content="noindex, nofollow" />
+        {/* Override GlobalCanonical — 404 pages must not have a canonical */}
+        <link rel="canonical" href="" />
+      </Helmet>
       <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
         <Search className="w-10 h-10 text-slate-400" />
       </div>
