@@ -5,14 +5,7 @@
 
 /* Main page layout */
 .shopify-page-container {
-  @apply prose prose-lg max-w-[1100px] mx-auto px-5 py-8 pb-16
-         prose-p:text-slate-700 prose-p:leading-relaxed
-         prose-headings:text-brand-navy prose-headings:font-bold prose-headings:mb-4
-         prose-h1:text-[2em] prose-h2:text-[1.5em] prose-h3:text-[1.25em]
-         prose-li:text-slate-700 prose-li:leading-relaxed
-         prose-a:text-brand-cyan prose-a:font-medium prose-a:no-underline hover:prose-a:underline hover:prose-a:text-brand-blue
-         prose-img:rounded-xl prose-img:shadow-md
-         prose-pre:bg-slate-800 prose-pre:text-slate-50;
+  @apply prose prose-lg max-w-[1420px] mx-auto px-5 py-8 pb-16 prose-p:text-slate-700 prose-p:leading-relaxed prose-headings:text-brand-navy prose-headings:font-bold prose-headings:mb-4 prose-h1:text-[2em] prose-h2:text-[1.5em] prose-h3:text-[1.25em] prose-li:text-slate-700 prose-li:leading-relaxed prose-a:text-brand-cyan prose-a:font-medium prose-a:no-underline hover:prose-a:underline hover:prose-a:text-brand-blue prose-img:rounded-xl prose-img:shadow-md prose-pre:bg-slate-800 prose-pre:text-slate-50;
 }
 
 .shopify-page-title {
@@ -470,4 +463,3 @@
   margin: 0 !important;
   font-size: 0.9em !important;
 }
-

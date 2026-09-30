@@ -45,7 +45,7 @@ const CompoundDatabase = () => {
                             <span className="inline-block bg-[#e6effc] text-[#214A9E] text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">DUAL GLP-1/GIP AGONIST</span>
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Tirzepatide</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A dual GLP-1/GIP receptor agonist used to investigate coordinated incretin receptor activation and integrated metabolic responses in laboratory models.</p>
-                            <Link to="/research-insight/tirzepatide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
+                            <Link to="/pages/tirzepatide-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
                         </div>
 
                         <div className="bg-[#f8fafc] border-l-[3px] border-[#3390ec] p-6 rounded-[4px]">
@@ -53,9 +53,9 @@ const CompoundDatabase = () => {
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">Retatrutide</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A triple agonist peptide demonstrating balanced activity at GLP-1, GIP and glucagon receptors. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
-                                <Link to="/research-insight/retatrutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
-                                <Link to="/research-insight/what-is-retatrutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Retatrutide?</Link>
-                                <Link to="/research-insight/retatrutide-vs-semaglutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">vs Semaglutide</Link>
+                                <Link to="/pages/retatrutide-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
+                                <Link to="/pages/what-is-retatrutide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Retatrutide?</Link>
+                                <Link to="/pages/semaglutide-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">vs Semaglutide</Link>
                             </div>
                         </div>
 
@@ -64,8 +64,8 @@ const CompoundDatabase = () => {
                             <h3 className="text-[14.5px] font-bold text-[#150F3A] mb-2">CagriSema</h3>
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A pre-blended lyophilised research material combining Cagrilintide and Semaglutide in a 1:1 ratio (5mg:5mg per 10mg vial). Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
-                                <Link to="/research-insight/cagrisema" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
-                                <Link to="/research-insight/cagrisema-comparison" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Comparison Guide</Link>
+                                <Link to="/pages/cagrisema-research-overview" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Overview</Link>
+                                <Link to="/pages/cagrisema-comparison-guide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Comparison Guide</Link>
                             </div>
                         </div>
 
