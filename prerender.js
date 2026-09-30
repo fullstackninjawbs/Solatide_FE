@@ -232,16 +232,18 @@ const server = app.listen(0, async () => {
             let html = await page.content();
 
             // Determine file path
-            let routeDir;
+            let filePath;
             if (route === '/') {
-                routeDir = distDir;
+                filePath = path.join(distDir, 'index.html');
             } else {
-                // Remove leading slash for joining
-                routeDir = path.join(distDir, route.substring(1));
-                fs.mkdirSync(routeDir, { recursive: true });
+                // Save as clean flat file (e.g. /collections/all -> distDir/collections/all.html)
+                // This prevents Nginx from treating routes as directories and issuing 301 redirects to trailing slashes!
+                const cleanRoute = route.startsWith('/') ? route.substring(1) : route;
+                const parentDir = path.join(distDir, path.dirname(cleanRoute));
+                fs.mkdirSync(parentDir, { recursive: true });
+                filePath = path.join(distDir, `${cleanRoute}.html`);
             }
 
-            const filePath = path.join(routeDir, 'index.html');
             fs.writeFileSync(filePath, html);
             console.log(`✅ Saved ${filePath}`);
 
