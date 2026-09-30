@@ -82,7 +82,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A selective inhibitor of NNMT studied in preclinical laboratory models. Relevant to cellular energy expenditure, methyl-group flux and downstream metabolic signalling. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/products/5-amino-1mq-50mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
-                                <Link to="/research-insight/nnmt-article" className="hidden border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">NNMT Research Article</Link>
+                                <Link to="/research-insight/nnmt-article" className=" border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">NNMT Research Article</Link>
                             </div>
                         </div>
                     </div>
