@@ -426,7 +426,7 @@ const OrderDetail = () => {
   })();
 
   const customerEmail = order.customer?.email || order.customerEmail;
-  const customerPhone = order.customer?.phone;
+  const customerPhone = order.customer?.phone || order.shippingAddressObj?.phone || order.billingAddressObj?.phone;
 
   const shippingLines = formatAddress(order.shippingAddressObj);
   const billingLines = formatAddress(order.billingAddressObj);
@@ -1102,8 +1102,17 @@ const OrderDetail = () => {
                   {customerName !== 'No customer name' ? customerName.charAt(0).toUpperCase() : <User size={20} />}
                 </div>
                 <div>
-                  <a href="#" className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors">{customerName}</a>
-                  <p className="text-[13px] font-medium text-slate-500 mt-0.5">1 order</p>
+                  {order.customer?._id ? (
+                    <Link
+                      to={`/admin/customers/${order.customer._id}`}
+                      className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors"
+                    >
+                      {customerName}
+                    </Link>
+                  ) : (
+                    <span className="block text-[15px] font-bold text-brand-navy">{customerName}</span>
+                  )}
+                  <p className="text-[13px] font-medium text-slate-500 mt-0.5">View order history →</p>
                 </div>
               </div>
 
@@ -1120,8 +1129,13 @@ const OrderDetail = () => {
                   ) : (
                     <p className="text-[14px] text-slate-400 italic">No email provided</p>
                   )}
-                  {customerPhone && (
-                    <p className="text-[14px] font-medium text-slate-600 mt-1 pl-6">{customerPhone}</p>
+                  {customerPhone ? (
+                    <a href={`tel:${customerPhone}`} className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-brand-blue transition-colors mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l1.27-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      {customerPhone}
+                    </a>
+                  ) : (
+                    <p className="text-[14px] text-slate-400 italic mt-1">No phone provided</p>
                   )}
                 </div>
 

@@ -266,6 +266,11 @@ export default function ShippingLabels() {
                         <div className="text-slate-500 text-[13px] mt-0.5">
                           {order.customer?.email}
                         </div>
+                        {(order.customer?.phone || order.shippingAddressObj?.phone) && (
+                          <div className="text-slate-500 text-[13px] mt-0.5">
+                            📞 {order.customer?.phone || order.shippingAddressObj?.phone}
+                          </div>
+                        )}
                       </td>
                       <td className="px-5 py-4">
                         <span className="text-slate-600 text-[14px] font-medium">
