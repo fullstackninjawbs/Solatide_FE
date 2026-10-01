@@ -224,12 +224,7 @@ const StaticSEO = () => {
 
   if (!seo) return null;
 
-  // Prevent canonical from capturing localhost during build-time prerendering
-  const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-    ? 'https://solatidebiosciences.com.au'
-    : window.location.origin;
-
-  const canonicalUrl = `${origin}${path}`;
+  const canonicalUrl = `https://solatidebiosciences.com.au${path === '/' ? '' : path}`;
 
   return (
     <Helmet>
@@ -239,6 +234,8 @@ const StaticSEO = () => {
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
     </Helmet>
