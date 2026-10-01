@@ -27,32 +27,32 @@ const ProductInfoSection = ({ product }) => {
                     {(hasOverview || hasApplications) && (
                         <div className={`flex flex-col gap-2.5 ${hasSpecs ? 'lg:col-span-6' : 'lg:col-span-8 lg:col-start-3'}`}>
 
-                        {/* Box 1: Product Overview Description */}
-                        {hasOverview && (
-                            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] h-full">
-                                <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
-                                    <div
-                                        className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4 [&_a]:no-underline [&_a:hover]:underline"
-                                        dangerouslySetInnerHTML={{ __html: product.overviewHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
-                                    />
+                            {/* Box 1: Product Overview Description */}
+                            {hasOverview && (
+                                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] h-full">
+                                    <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
+                                        <div
+                                            className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4 [&_a]:no-underline [&_a:hover]:underline"
+                                            dangerouslySetInnerHTML={{ __html: product.overviewHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Box 2: Research Applications */}
-                        {hasApplications && (
-                            <div className={`bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] ${hasOverview ? 'mt-6' : ''}`}>
-                                <h3 className="text-[14px] font-bold text-[#0079CD] mb-4">Research Applications</h3>
-                                <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
-                                    <div
-                                        className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-2"
-                                        dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
-                                    />
+                            {/* Box 2: Research Applications */}
+                            {hasApplications && (
+                                <div className={`bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] ${hasOverview ? 'mt-6' : ''}`}>
+                                    <h3 className="text-[14px] font-bold text-[#0079CD] mb-4">Research Applications</h3>
+                                    <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
+                                        <div
+                                            className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-2"
+                                            dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                    </div>
+                        </div>
                     )}
 
                     {/* Right Column */}
@@ -91,7 +91,7 @@ const ProductInfoSection = ({ product }) => {
                                                                 <div className="col-span-5 text-[13px] font-medium text-slate-600">{row.parameter}</div>
                                                                 <div className="col-span-7 text-[13px] font-medium text-slate-500">
                                                                     {isPurity ? (
-                                                                        <span className="text-[#0079CD] font-medium hover:underline cursor-pointer">{row.specification}</span>
+                                                                        <span className="font-medium hover:underline cursor-pointer">{row.specification}</span>
                                                                     ) : (
                                                                         renderSpecification(row.parameter, row.specification)
                                                                     )}

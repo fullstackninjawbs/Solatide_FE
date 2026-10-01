@@ -251,14 +251,79 @@ const ProductDetail = () => {
         targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
     }
 
-    const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-        ? 'https://solatidebiosciences.com.au'
-        : window.location.origin;
-    const canonicalUrl = `${origin}${normalizedPath}`;
+    const canonicalUrl = `https://solatidebiosciences.com.au${normalizedPath}`;
 
     const rawDescription = product?.description || product?.summaryHtml || '';
     const hasDescriptionContent = rawDescription.replace(/&nbsp;/g, '').replace(/<[^>]*>/g, '').trim().length > 0 || /<(img|iframe|video|audio)/i.test(rawDescription);
 
+    // Construct Product & Offer & AggregateRating & Breadcrumb JSON-LD Schema
+    const price = selectedVariant?.price || product?.price || 0;
+    const isAvailable = (selectedVariant?.inventory || product?.inventory || 0) > 0 || (product?.status === 'active');
+    const imageUrl = product?.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : 'https://solatidebiosciences.com.au/assets/logo.webp';
+
+    const productSchema = product ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": imageUrl,
+        "description": targetDesc,
+        "sku": selectedVariant?.sku || product.sku || product._id || product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Solatide Biosciences"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": canonicalUrl,
+            "priceCurrency": "AUD",
+            "price": price.toString(),
+            "priceValidUntil": "2030-12-31",
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Solatide Biosciences"
+            }
+        }
+    } : null;
+
+    const ratingVal = product?.stats?.averageRating || product?.averageRating || 5.0;
+    const reviewCnt = fetchedReviewCount !== null ? fetchedReviewCount : (product?.stats?.totalReviews || product?.totalReviews || product?.reviewCount || 0);
+
+    if (productSchema && reviewCnt > 0) {
+        productSchema.aggregateRating = {
+            "@type": "AggregateRating",
+            "ratingValue": ratingVal.toString(),
+            "reviewCount": reviewCnt.toString(),
+            "bestRating": "5",
+            "worstRating": "1"
+        };
+    }
+
+    const breadcrumbSchema = product ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://solatidebiosciences.com.au"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://solatidebiosciences.com.au/collections/all"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product.name,
+                "item": canonicalUrl
+            }
+        ]
+    } : null;
 
     return (
         <div className="w-full bg-white py-12">
@@ -272,6 +337,16 @@ const ProductDetail = () => {
                     <meta property="og:url" content={canonicalUrl} />
                     <meta name="twitter:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
                     <meta name="twitter:description" content={targetDesc} />
+                    {productSchema && (
+                        <script type="application/ld+json">
+                            {JSON.stringify(productSchema)}
+                        </script>
+                    )}
+                    {breadcrumbSchema && (
+                        <script type="application/ld+json">
+                            {JSON.stringify(breadcrumbSchema)}
+                        </script>
+                    )}
                 </Helmet>
             )}
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">

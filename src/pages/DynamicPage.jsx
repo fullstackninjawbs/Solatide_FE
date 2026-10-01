@@ -75,6 +75,24 @@ const DynamicPage = () => {
   const pageTitle = page.seoTitle || `${page.title} - Solatide Biosciences`;
   const canonicalUrl = `https://solatidebiosciences.com.au/pages/${page.slug}`;
 
+  const articleSchema = page ? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": page.title,
+    "description": page.metaDescription || page.title,
+    "url": canonicalUrl,
+    "datePublished": page.publishedAt || page.createdAt || "2026-01-01T00:00:00Z",
+    "dateModified": page.updatedAt || page.publishedAt || "2026-01-01T00:00:00Z",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Solatide Biosciences",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://solatidebiosciences.com.au/assets/logo.webp"
+      }
+    }
+  } : null;
+
   return (
     <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
@@ -93,6 +111,11 @@ const DynamicPage = () => {
         <meta name="twitter:title" content={pageTitle} />
         {page.metaDescription && (
           <meta name="twitter:description" content={page.metaDescription} />
+        )}
+        {articleSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(articleSchema)}
+          </script>
         )}
       </Helmet>
 

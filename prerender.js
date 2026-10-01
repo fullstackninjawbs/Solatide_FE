@@ -61,7 +61,8 @@ const routes = [
     "/pages/what-is-tesamorelin",
     "/pages/what-is-kpv",
     "/pages/data-sharing-opt-out-1",
-    "/pages/research-use-disclaimer"
+    "/pages/research-use-disclaimer",
+    "/404"
 ];
 
 const distDir = path.resolve(__dirname, 'dist-store');
@@ -282,7 +283,7 @@ const server = app.listen(0, async () => {
         const baseUrl = process.env.VITE_STOREFRONT_URL || 'https://solatidebiosciences.com.au';
         const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map(route => `  <url>
+${routes.filter(r => r !== '/404').map(route => `  <url>
     <loc>${baseUrl}${route === '/' ? '' : route}</loc>
     <changefreq>${route === '/' ? 'daily' : 'weekly'}</changefreq>
     <priority>${route === '/' ? '1.0' : '0.8'}</priority>
