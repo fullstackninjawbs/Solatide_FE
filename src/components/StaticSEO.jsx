@@ -103,14 +103,6 @@ const seoData = {
     title: "Semaglutide Research Overview | Solatide Biosciences",
     description: "A laboratory-focused overview of semaglutide, including GLP-1 receptor selectivity, incretin pathway research, and comparative metabolic peptide context."
   },
-  "/blogs/research-insights/nnmt-inhibition-5-amino-1mq": {
-    title: "NNMT Inhibition & 5-Amino-1MQ | Research Article by Solatide – Solatide Biosciences",
-    description: "A scientific overview of NNMT inhibition, 5-Amino-1MQ in cellular energy and NAD-related pathway research, and its use as a selective lab research tool."
-  },
-  "/blogs/research-insights/retatrutide-vs-semaglutide-research": {
-    title: "Retatrutide vs Semaglutide Research Comparison | Solatide Biosciences",
-    description: "A comparative overview of retatrutide and semaglutide in laboratory research, including receptor selectivity, pathway differences, and experimental context."
-  },
   "/pages/what-is-nad-plus": {
     title: "What Is NAD+? | Solatide Biosciences Research",
     description: "A research-use overview of NAD+ (nicotinamide adenine dinucleotide) — a coenzyme studied for cellular energy metabolism, mitochondrial function and sirtuin activation in laboratory models. For in-vitro research use only."
