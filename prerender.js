@@ -162,7 +162,10 @@ const server = app.listen(0, async () => {
     // Dynamically fetch custom pages from the backend API
     try {
         console.log(`Fetching dynamic custom page routes from ${apiUrl}...`);
-        const res = await fetch(`${apiUrl}/api/pages`);
+        let res = await fetch(`${apiUrl}/api/v1/pages`);
+        if (!res.ok) {
+            res = await fetch(`${apiUrl}/api/pages`);
+        }
         if (res.ok) {
             const pages = await res.json();
             let count = 0;
@@ -175,6 +178,8 @@ const server = app.listen(0, async () => {
                 }
             }
             console.log(`✅ Added ${count} custom page routes for prerendering!`);
+        } else {
+            console.error(`❌ Failed to fetch dynamic page routes from API (Status ${res.status})`);
         }
     } catch (e) {
         console.error('❌ Failed to fetch dynamic page routes from API:', e.message);
