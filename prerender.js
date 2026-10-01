@@ -10,7 +10,6 @@ const __dirname = path.dirname(__filename);
 const routes = [
     "/",
     "/collections/dermal-pigmentation-research",
-    "/pages/affiliate-program",
     "/pages/research-peptides-guide",
     "/collections/all",
     "/collections/research-solutions",
@@ -34,8 +33,6 @@ const routes = [
     "/pages/what-is-retatrutide",
     "/pages/what-is-cjc-1295",
     "/pages/semaglutide-research-overview",
-    "/blogs/research-insights/nnmt-inhibition-5-amino-1mq",
-    "/blogs/research-insights/retatrutide-vs-semaglutide-research",
     "/pages/what-is-nad-plus",
     "/pages/what-is-tb500",
     "/pages/retatrutide-research-overview",
