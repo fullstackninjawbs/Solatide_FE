@@ -21,7 +21,7 @@ const DataSharingOptOut = () => {
                     </h1>
                     <div className="flex flex-col gap-4 text-left">
                         <p className="text-[14.5px] sm:text-[15.5px] text-slate-600 leading-relaxed">
-                            As described in our Privacy Policy, we collect personal information from your interactions with us and our website, including through cookies and similar technologies. We may also share this personal information with third parties, including advertising partners. We do this in order to show you ads on other websites that are more relevant to your interests and for other reasons outlined in our privacy policy.
+                            As described in our <a href="/privacy-policy" className="text-[#214A9E] underline">Privacy Policy</a>, we collect personal information from your interactions with us and our website, including through cookies and similar technologies. We may also share this personal information with third parties, including advertising partners. We do this in order to show you ads on other websites that are more relevant to your interests and for other reasons outlined in our privacy policy.
                         </p>
                         <p className="text-[14.5px] sm:text-[15.5px] text-slate-600 leading-relaxed">
                             Sharing of personal information for targeted advertising based on your interaction on different websites may be considered "sales", "sharing", or "targeted advertising" under certain U.S. state privacy laws. Depending on where you live, you may have the right to opt out of these activities. If you would like to exercise this opt-out right, please follow the instructions below.
