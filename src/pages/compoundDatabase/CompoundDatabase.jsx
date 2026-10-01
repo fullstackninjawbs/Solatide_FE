@@ -239,23 +239,23 @@ const CompoundDatabase = () => {
                 <div className="mb-14">
                     <h2 className="text-[18px] font-bold text-[#150F3A] mb-5 border-b border-slate-200 pb-3">Shop by Category</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                        <Link to="/shop?category=glp-1-metabolic-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/glp-1-metabolic-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">GLP-1 & Metabolic</h4>
                             <p className="text-[11px] text-slate-500">Semaglutide, Tirzepatide, Retatrutide & more</p>
                         </Link>
-                        <Link to="/shop?category=tissue-cellular-research-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/tissue-cellular-research-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Tissue & Cellular</h4>
                             <p className="text-[11px] text-slate-500">BPC-157, TB-500 & repair peptides</p>
                         </Link>
-                        <Link to="/shop?category=dermal-pigmentation-research" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/dermal-pigmentation-research" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Dermal & Pigmentation</h4>
                             <p className="text-[11px] text-slate-500">GHK-Cu & copper peptide complexes</p>
                         </Link>
-                        <Link to="/shop?category=research-solutions" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/research-solutions" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Research Solutions</h4>
                             <p className="text-[11px] text-slate-500">Supporting compounds & tool materials</p>
                         </Link>
-                        <Link to="/shop?category=bundles" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/bundles" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Bundles</h4>
                             <p className="text-[11px] text-slate-500">Multi-compound research sets</p>
                         </Link>
