@@ -72,15 +72,28 @@ const DynamicPage = () => {
     );
   }
 
+  const pageTitle = page.seoTitle || `${page.title} - Solatide Biosciences`;
+  const canonicalUrl = `https://solatidebiosciences.com.au/pages/${page.slug}`;
+
   return (
     <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
-        <title>{page.seoTitle || page.title} - Solatide Biosciences</title>
+        <title>{pageTitle}</title>
         {page.metaDescription && (
           <meta name="description" content={page.metaDescription} />
         )}
-        <link rel="canonical" href={`https://solatidebiosciences.com.au/pages/${page.slug}`} />
-        <meta property="og:url" content={`https://solatidebiosciences.com.au/pages/${page.slug}`} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={pageTitle} />
+        {page.metaDescription && (
+          <meta property="og:description" content={page.metaDescription} />
+        )}
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        {page.metaDescription && (
+          <meta name="twitter:description" content={page.metaDescription} />
+        )}
       </Helmet>
 
       {/* Render the page title as an H1 heading at the top */}
