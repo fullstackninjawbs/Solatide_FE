@@ -234,11 +234,56 @@ const server = app.listen(0, async () => {
 
             let html = await page.content();
 
-            // Sanitize: Replace any localhost URLs that leaked during prerendering
-            // (e.g. canonical tags, og:url) with the production domain
+            // Deduplicate meta tags, title tags, canonicals, and OpenGraph tags
             const prodOrigin = 'https://solatidebiosciences.com.au';
             html = html.replace(/http:\/\/localhost:\d+/g, prodOrigin);
             html = html.replace(/http:\/\/127\.0\.0\.1:\d+/g, prodOrigin);
+
+            // Replace legacy /policies/ URLs with canonical /pages/ URLs
+            html = html
+                .replace(/href="\/policies\/shipping-policy"/gi, 'href="/pages/shipping-policy"')
+                .replace(/href="\/policies\/refund-policy"/gi, 'href="/pages/refund-policy"')
+                .replace(/href="\/policies\/terms-of-service"/gi, 'href="/pages/terms-of-services"')
+                .replace(/href="\/policies\/privacy-policy"/gi, 'href="/pages/privacy-policy"');
+
+            // Deduplicate title tags (keep LAST)
+            const titleMatches = [...html.matchAll(/<title[^>]*>.*?<\/title>/gi)];
+            if (titleMatches.length > 1) {
+                const lastTitle = titleMatches[titleMatches.length - 1][0];
+                html = html.replace(/<title[^>]*>.*?<\/title>/gi, '');
+                html = html.replace('</head>', `  ${lastTitle}\n</head>`);
+            }
+
+            // Deduplicate canonicals and meta tags (keep LAST)
+            const metaPatterns = [
+                /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/gi,
+                /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+name="twitter:title"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/gi,
+                /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/gi,
+            ];
+
+            for (const pattern of metaPatterns) {
+                const matches = [...html.matchAll(pattern)];
+                if (matches.length > 1) {
+                    const lastMatch = matches[matches.length - 1][0];
+                    html = html.replace(pattern, '');
+                    html = html.replace('</head>', `  ${lastMatch}\n</head>`);
+                }
+            }
+
+            // Format HTML head & structural elements with clean newlines for readable View Source (Ctrl + U)
+            html = html.replace(/(<\/(?:title|meta|link|script|style|header|nav|main|section|article|footer|div|p|h1|h2|h3|h4|h5|h6|ul|ol|li)>)(<)/gi, '$1\n$2');
+            html = html.replace(/(<meta[^>]*>)(<)/gi, '$1\n$2');
+            html = html.replace(/(<link[^>]*>)(<)/gi, '$1\n$2');
+            html = html.replace(/(<head[^>]*>)/gi, '$1\n');
+            html = html.replace(/(<\/head>)/gi, '\n$1\n');
+            html = html.replace(/(<body[^>]*>)/gi, '$1\n');
+            html = html.replace(/(<\/body>)/gi, '\n$1\n');
 
             // Determine file path
             let filePath;

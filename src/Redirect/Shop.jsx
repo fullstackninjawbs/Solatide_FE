@@ -64,10 +64,39 @@ const Shop = () => {
         ]
     };
 
+    const collectionTitles = {
+        'all': 'Research Grade Peptides | Solatide Biosciences',
+        'dermal-pigmentation-research': 'Dermal & Pigmentation Research Peptides MT2 GHK-Cu Australia – Solatide Biosciences',
+        'tissue-cellular-research-peptides': 'Tissue & Cellular Research Peptides | BPC-157 TB-500 AU – Solatide Biosciences',
+        'glp-1-metabolic-peptides': 'GLP-1 & Metabolic Research Peptides Australia | Solatide – Solatide Biosciences',
+        'research-solutions': 'Research Solutions | Laboratory Support Materials | Solatide – Solatide Biosciences',
+        'bundles': 'Research Peptides Bundles | Solatide Biosciences'
+    };
+
+    const collectionDescs = {
+        'all': 'Browse research peptides, analytical reference standards and laboratory compounds with batch documentation and COAs. For in-vitro research use only.',
+        'dermal-pigmentation-research': 'Solatide Biosciences dermal and pigmentation research peptides, including MT2 and GHK-Cu. Melanocortin receptor and copper peptide compounds with COA.',
+        'tissue-cellular-research-peptides': 'Browse tissue and cellular research peptides including BPC-157, TB-500, and combined-pathway compounds for in-vitro laboratory research. COA verified.',
+        'glp-1-metabolic-peptides': 'Research-grade GLP-1 receptor agonists, dual agonists, triple agonists, and metabolic research compounds. COA-verified. For in-vitro laboratory use only.',
+        'research-solutions': 'Laboratory support materials and sterile solvents for peptide handling, preparation, and controlled in-vitro research workflows. For laboratory use only.',
+        'bundles': 'Research peptide bundles and multi-vial combinations for comprehensive in-vitro laboratory analysis.'
+    };
+
+    const key = handle && handle !== 'all' ? handle : 'all';
+    const targetTitle = collectionTitles[key] || `${collectionName} | Solatide Biosciences`;
+    const targetDesc = collectionDescs[key] || `Browse ${collectionName} research peptides and laboratory compounds at Solatide Biosciences.`;
+
     return (
         <div className="w-full min-h-screen">
             <Helmet>
+                <title>{targetTitle}</title>
+                <meta name="description" content={targetDesc} />
                 <link rel="canonical" href={canonicalUrl} />
+                <meta property="og:title" content={targetTitle} />
+                <meta property="og:description" content={targetDesc} />
+                <meta property="og:url" content={canonicalUrl} />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
                 <script type="application/ld+json">
                     {JSON.stringify(breadcrumbSchema)}
                 </script>

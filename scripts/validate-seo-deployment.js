@@ -33,6 +33,16 @@ if (fs.existsSync(indexPath)) {
   assert(html.includes('https://solatidebiosciences.com.au'), 'Canonical points to production origin https://solatidebiosciences.com.au');
   assert(!html.includes('http://localhost'), 'Homepage HTML contains ZERO localhost references');
   assert(html.includes('<a href='), 'Homepage HTML contains pre-rendered internal <a href="..."> links');
+
+  const canonicalCount = (html.match(/<link\s+rel="canonical"/gi) || []).length;
+  const titleCount = (html.match(/<title/gi) || []).length;
+  const descCount = (html.match(/<meta\s+name="description"/gi) || []).length;
+  const ogTitleCount = (html.match(/<meta\s+property="og:title"/gi) || []).length;
+
+  assert(canonicalCount === 1, `Homepage HTML contains EXACTLY 1 canonical tag (found: ${canonicalCount})`);
+  assert(titleCount === 1, `Homepage HTML contains EXACTLY 1 title tag (found: ${titleCount})`);
+  assert(descCount === 1, `Homepage HTML contains EXACTLY 1 meta description tag (found: ${descCount})`);
+  assert(ogTitleCount <= 1, `Homepage HTML contains at most 1 og:title tag (found: ${ogTitleCount})`);
 }
 
 // 2. Validate Application Fallback Shells (dist-store/200.html, checkout.html)
@@ -61,6 +71,17 @@ if (fs.existsSync(sitemapPath)) {
 console.log('\n4. Validating Static Assets...');
 assert(fs.existsSync(path.join(distDir, 'favicon.png')), 'dist-store/favicon.png exists for Googlebot compatibility');
 assert(fs.existsSync(path.join(distDir, 'assets/logo.webp')), 'dist-store/assets/logo.webp exists for Schema Organization logo');
+
+// 5. Validate HTML sitemap links (/pages/sitemap)
+console.log('\n5. Validating HTML Sitemap Links...');
+const htmlSitemapPath = path.join(distDir, 'pages/sitemap.html');
+if (fs.existsSync(htmlSitemapPath)) {
+  const htmlContent = fs.readFileSync(htmlSitemapPath, 'utf-8');
+  assert(!htmlContent.includes('/policies/shipping-policy'), 'HTML sitemap contains ZERO legacy /policies/shipping-policy links');
+  assert(!htmlContent.includes('/policies/refund-policy'), 'HTML sitemap contains ZERO legacy /policies/refund-policy links');
+  assert(htmlContent.includes('/pages/shipping-policy'), 'HTML sitemap contains updated /pages/shipping-policy link');
+  assert(htmlContent.includes('/pages/refund-policy'), 'HTML sitemap contains updated /pages/refund-policy link');
+}
 
 console.log('\n==================================================');
 if (errors === 0) {

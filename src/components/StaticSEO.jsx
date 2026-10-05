@@ -218,8 +218,8 @@ const StaticSEO = () => {
     path = path.slice(0, -1);
   }
 
-  // Do not inject static SEO for product detail pages - rely on their own dynamic Helmet
-  if (path.startsWith('/product/') || path.startsWith('/products/')) {
+  // Do not inject static SEO for product or collection pages - rely on their own page components to avoid duplicate canonicals/titles
+  if (path.startsWith('/product/') || path.startsWith('/products/') || path.startsWith('/collections/')) {
     return null;
   }
 

@@ -21,7 +21,7 @@ const lazyWithRetry = (componentImport) =>
                 window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
                 window.location.reload();
                 // Return an unresolved promise to halt React while the browser reloads
-                return new Promise(() => {});
+                return new Promise(() => { });
             }
             throw error;
         }
@@ -216,10 +216,8 @@ const AppRoutes = () => {
                             <Route path="product/:id" element={<ProductDetail />} />
                             <Route path="review/verify/:token" element={<ReviewVerification />} />
                             <Route path="pages/coa-lab-testing" element={<CoaAndTesting />} />
-                            <Route path="coa" element={<CoaAndTesting />} />
                             <Route path="pages/concentration-calculator" element={<ConcentrationCalculator />} />
                             <Route path="pages/contact-us" element={<ContactUs />} />
-                            <Route path="contact" element={<ContactUs />} />
                             <Route path="/ResearchPage" element={<ResearchPage />} />
                             <Route path="pages/research-library" element={<ResearchResource />} />
                             <Route path="pages/faq" element={<Faq />} />
