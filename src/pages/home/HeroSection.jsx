@@ -143,9 +143,9 @@ const HeroSection = () => {
                     {/* Text Content sitting below bottles */}
                     <div className="flex flex-col justify-end w-full relative z-20 pb-0 pt-8 bg-[#e4dbf8] -mt-2">
                         <div className="main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-                            <h1 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
+                            <h2 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
                                 Your Trusted Source For<br />Research Grade Peptides.
-                            </h1>
+                            </h2>
                             <p className="text-[16px] text-[#475569] font-medium leading-relaxed mb-6 w-[90%] max-w-[600px]">
                                 Solatide Biosciences delivers research grade peptides and laboratory solutions for researchers who demand purity, consistency, and results.
                             </p>
