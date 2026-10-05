@@ -355,8 +355,12 @@ const ProductDetail = () => {
                     <meta property="og:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
                     <meta property="og:description" content={targetDesc} />
                     <meta property="og:url" content={canonicalUrl} />
+                    <meta property="og:type" content="product" />
+                    <meta property="og:image" content={imageUrl} />
+                    <meta name="twitter:card" content="summary_large_image" />
                     <meta name="twitter:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
                     <meta name="twitter:description" content={targetDesc} />
+                    <meta name="twitter:image" content={imageUrl} />
                     {productSchema && (
                         <script type="application/ld+json">
                             {JSON.stringify(productSchema)}

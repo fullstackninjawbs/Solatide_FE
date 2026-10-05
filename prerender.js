@@ -335,7 +335,7 @@ const server = app.listen(0, async () => {
     // Generate sitemap.xml
     try {
         console.log('Generating sitemap.xml...');
-        const baseUrl = process.env.VITE_STOREFRONT_URL || 'https://solatidebiosciences.com.au';
+        const baseUrl = 'https://solatidebiosciences.com.au';
 
         // Exclude utility, admin, 404, and non-canonical routes
         const excludedRoutes = new Set(['/404', '/404.html', '/checkout', '/admin', '/order']);

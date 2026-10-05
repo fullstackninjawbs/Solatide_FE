@@ -107,11 +107,13 @@ const DynamicPage = () => {
         )}
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
+        <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         {page.metaDescription && (
           <meta name="twitter:description" content={page.metaDescription} />
         )}
+        <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
         {articleSchema && (
           <script type="application/ld+json">
             {JSON.stringify(articleSchema)}

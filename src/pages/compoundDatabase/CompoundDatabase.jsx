@@ -134,7 +134,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A mitochondrial-derived peptide studied for AMPK activation, metabolic regulation, insulin sensitivity and cellular stress response in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-mots-c" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is MOTS-c?</Link>
-                                <Link to="/products/mots-c-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/mots-c-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -144,7 +144,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tetrapeptide that selectively accumulates in the inner mitochondrial membrane. Studied for cardiolipin binding, ETC stabilisation and cellular energy production in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-ss-31" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is SS-31?</Link>
-                                <Link to="/products/ss-31-elamipretide-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/ss-31-elamipretide-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -190,7 +190,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A C-terminal tripeptide fragment of α-MSH studied for anti-inflammatory signalling, melanocortin receptor interactions and gut epithelial research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-kpv" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is KPV?</Link>
-                                <Link to="/products/kpv-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/kpv-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
