@@ -4,7 +4,6 @@ import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
 import StaticSEO from '../components/StaticSEO'
-import GlobalCanonical from '../components/GlobalCanonical'
 
 // Wrapper to handle Vite chunk load errors when deploying new versions
 const lazyWithRetry = (componentImport) =>
@@ -60,15 +59,12 @@ const ShippingPolicy = lazyWithRetry(() => import('../pages/Shipping_Policy/Ship
 const PrivacyPolicy = lazyWithRetry(() => import('../pages/SitePolicies/SitePolicy'))
 const ViewDocument = lazyWithRetry(() => import('../Redirect/ViewDocument'))
 const ResearchInsight = lazyWithRetry(() => import('../Redirect/ResearchInsight'))
-const Checkout = lazyWithRetry(() => import('../pages/checkout/Checkout'))
 const PeptidesGuide = lazyWithRetry(() => import('../pages/peptidesGuide/PeptidesGuide'))
 const CompoundDatabase = lazyWithRetry(() => import('../pages/compoundDatabase/CompoundDatabase'))
 const CoaReports = lazyWithRetry(() => import('../pages/coaReports/CoaReports'))
 const Terms = lazyWithRetry(() => import('../pages/terms/Terms'))
 const ResearchUseDisclaimer = lazyWithRetry(() => import('../pages/researchUse/ResearchUseDisclaimer'))
 const Returns = lazyWithRetry(() => import('../pages/returns/Returns'))
-const CheckoutSuccess = lazyWithRetry(() => import('../pages/checkout/CheckoutSuccess'))
-const CheckoutFailure = lazyWithRetry(() => import('../pages/checkout/CheckoutFailure'))
 const OrderList = lazyWithRetry(() => import('../pages/admin/OrderList'))
 const CreateOrder = lazyWithRetry(() => import('../pages/admin/CreateOrder'))
 const OrderDetail = lazyWithRetry(() => import('../pages/admin/OrderDetail'))
@@ -202,9 +198,6 @@ const AppRoutes = () => {
                 {/* Client-Facing Site Routes */}
                 {isStore && (
                     <>
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route path="/checkout/success" element={<CheckoutSuccess />} />
-                        <Route path="/checkout/failure" element={<CheckoutFailure />} />
                         <Route path="/order/:orderId" element={<OrderStatus />} />
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />
