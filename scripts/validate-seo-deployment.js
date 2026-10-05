@@ -83,6 +83,22 @@ if (fs.existsSync(htmlSitemapPath)) {
   assert(htmlContent.includes('/pages/refund-policy'), 'HTML sitemap contains updated /pages/refund-policy link');
 }
 
+// 6. Validate Product Schema Offer Prices (Google Search Console & Merchant Listings compliance)
+console.log('\n6. Validating Product Schema Offer Prices...');
+const sampleProductPath = path.join(distDir, 'products/retatrutide-10mg.html');
+if (fs.existsSync(sampleProductPath)) {
+  const htmlContent = fs.readFileSync(sampleProductPath, 'utf-8');
+  const priceMatch = htmlContent.match(/"price":\s*"([^"]+)"/);
+  const currencyMatch = htmlContent.match(/"priceCurrency":\s*"([^"]+)"/);
+  
+  assert(priceMatch !== null, 'Product schema contains "price" field');
+  if (priceMatch) {
+    const priceVal = priceMatch[1];
+    assert(/^\d+\.\d{2}$/.test(priceVal), `Product schema price "${priceVal}" is a pure 2-decimal floating point string`);
+  }
+  assert(currencyMatch !== null && currencyMatch[1] === 'AUD', 'Product schema priceCurrency is "AUD"');
+}
+
 console.log('\n==================================================');
 if (errors === 0) {
   console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');

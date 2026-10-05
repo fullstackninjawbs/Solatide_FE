@@ -256,7 +256,20 @@ const ProductDetail = () => {
     const rawDescription = product?.description || product?.summaryHtml || '';
     const hasDescriptionContent = rawDescription.replace(/&nbsp;/g, '').replace(/<[^>]*>/g, '').trim().length > 0 || /<(img|iframe|video|audio)/i.test(rawDescription);
 
-    // Construct Product & Offer & AggregateRating & Breadcrumb JSON-LD Schema
+    // Format numeric price cleanly for Google Search Console & Schema.org compliance (e.g. "199.95")
+    const formatNumericPrice = (rawPrice) => {
+        if (rawPrice === null || rawPrice === undefined) return "0.00";
+        let val = typeof rawPrice === 'object' ? (rawPrice.amount || rawPrice.value || 0) : rawPrice;
+        let str = String(val).replace(/[^0-9.]/g, '');
+        const parts = str.split('.');
+        if (parts.length > 2) {
+            str = parts[0] + '.' + parts.slice(1).join('');
+        }
+        const num = parseFloat(str);
+        if (isNaN(num) || num < 0) return "0.00";
+        return num.toFixed(2);
+    };
+
     const price = selectedVariant?.price || product?.price || 0;
     
     // Check real stock status based on variant/product stockQty and inventoryPolicy
@@ -283,7 +296,7 @@ const ProductDetail = () => {
             "@type": "Offer",
             "url": canonicalUrl,
             "priceCurrency": "AUD",
-            "price": price.toString(),
+            "price": formatNumericPrice(price),
             "itemCondition": "https://schema.org/NewCondition",
             "availability": isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             "seller": {
