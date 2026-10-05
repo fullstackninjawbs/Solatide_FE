@@ -243,8 +243,9 @@ const server = app.listen(0, async () => {
             // Determine file path
             let filePath;
             if (route === '/') {
-                // Save as home.html for Nginx to serve on the exact '/' route
+                // Save as home.html AND index.html so default Nginx setups serve the full prerendered homepage with internal links
                 filePath = path.join(distDir, 'home.html');
+                fs.writeFileSync(path.join(distDir, 'index.html'), html);
             } else {
                 // Save as clean flat file (e.g. /collections/all -> distDir/collections/all.html)
                 // This prevents Nginx from treating routes as directories and issuing 301 redirects to trailing slashes!
@@ -266,24 +267,41 @@ const server = app.listen(0, async () => {
     await browser.close();
     server.close();
 
-    // Restore the clean SPA shell as index.html so that Nginx's try_files fallback
-    // does NOT serve the prerendered homepage (with its baked-in canonical tag)
-    // for unknown/dynamic routes. React Helmet will inject the correct canonical after hydration.
-    // The prerendered homepage was saved as home.html above, which Nginx serves for the exact '/' route.
+    // Save 200.html, checkout.html, and admin application shells
     if (fs.existsSync(templatePath)) {
-        fs.copyFileSync(templatePath, path.resolve(distDir, 'index.html'));
+        const shellContent = fs.readFileSync(templatePath, 'utf-8');
+        fs.writeFileSync(path.resolve(distDir, '200.html'), shellContent);
+        fs.writeFileSync(path.resolve(distDir, 'checkout.html'), shellContent);
+
+        const adminDir = path.resolve(distDir, 'admin');
+        fs.mkdirSync(adminDir, { recursive: true });
+        fs.writeFileSync(path.resolve(distDir, 'admin.html'), shellContent);
+        fs.writeFileSync(path.resolve(adminDir, 'login.html'), shellContent);
+
         fs.unlinkSync(templatePath);
-        console.log('✅ Restored clean SPA shell as index.html (fallback)');
+        console.log('✅ Created 200.html, checkout.html, and admin shells as SPA fallbacks');
     }
 
     // Generate sitemap.xml
     try {
         console.log('Generating sitemap.xml...');
-        // Fallback to the production URL if the environment variable isn't set (since this runs in Node, not the browser, window.location is unavailable)
         const baseUrl = process.env.VITE_STOREFRONT_URL || 'https://solatidebiosciences.com.au';
+
+        // Exclude utility, admin, 404, and non-canonical routes
+        const excludedRoutes = new Set(['/404', '/404.html', '/checkout', '/admin', '/order']);
+        
+        // Deduplicate and filter canonical routes
+        const canonicalRoutes = Array.from(new Set(routes)).filter(route => {
+            if (!route || typeof route !== 'string') return false;
+            if (excludedRoutes.has(route) || route.startsWith('/admin') || route.startsWith('/checkout') || route.startsWith('/order')) {
+                return false;
+            }
+            return true;
+        });
+
         const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.filter(r => r !== '/404').map(route => `  <url>
+${canonicalRoutes.map(route => `  <url>
     <loc>${baseUrl}${route === '/' ? '' : route}</loc>
     <changefreq>${route === '/' ? 'daily' : 'weekly'}</changefreq>
     <priority>${route === '/' ? '1.0' : '0.8'}</priority>
@@ -291,7 +309,7 @@ ${routes.filter(r => r !== '/404').map(route => `  <url>
 </urlset>`;
 
         fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
-        console.log('✅ Saved sitemap.xml');
+        console.log(`✅ Saved sitemap.xml with ${canonicalRoutes.length} unique canonical URLs`);
     } catch (e) {
         console.error('❌ Failed to generate sitemap.xml:', e.message);
     }

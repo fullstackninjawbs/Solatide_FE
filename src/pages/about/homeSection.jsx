@@ -17,11 +17,11 @@ const AboutUs = () => {
                                 Who We Are
                             </span>
 
-                            <h2 className="text-[32px] md:text-[54px] font-anek font-bold text-[#1D1D1F] leading-[1.15] tracking-[0px]">
+                            <h1 className="text-[32px] md:text-[54px] font-anek font-bold text-[#1D1D1F] leading-[1.15] tracking-[0px]">
                                 Built for Researchers.
                                 <br />
                                 <span className="text-[#1a4494]">Transparent by Design.</span>
-                            </h2>
+                            </h1>
 
                             <p className="mt-4 text-[15px] text-[#4B5563] leading-[1.6]">
                                 Solatide Biosciences was established to supply analytical reference standards, research peptides, and laboratory consumables for in-vitro research use only. We source exclusively from GMP-certified, ISO 9001:2015 accredited manufacturers, price competitively, and publish documentation openly — so researchers can verify what they're working with.

@@ -258,7 +258,14 @@ const ProductDetail = () => {
 
     // Construct Product & Offer & AggregateRating & Breadcrumb JSON-LD Schema
     const price = selectedVariant?.price || product?.price || 0;
-    const isAvailable = (selectedVariant?.inventory || product?.inventory || 0) > 0 || (product?.status === 'active');
+    
+    // Check real stock status based on variant/product stockQty and inventoryPolicy
+    const isAvailable = product?.status === 'active' && (
+        selectedVariant 
+            ? (selectedVariant.stockQty > 0 || selectedVariant.inventoryPolicy === 'continue')
+            : ((product.stockQty !== undefined ? product.stockQty > 0 : true) || product.inventoryPolicy === 'continue' || product.inStock !== false)
+    );
+
     const imageUrl = product?.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : 'https://solatidebiosciences.com.au/assets/logo.webp';
 
     const productSchema = product ? {
@@ -277,7 +284,6 @@ const ProductDetail = () => {
             "url": canonicalUrl,
             "priceCurrency": "AUD",
             "price": price.toString(),
-            "priceValidUntil": "2030-12-31",
             "itemCondition": "https://schema.org/NewCondition",
             "availability": isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             "seller": {
@@ -287,13 +293,14 @@ const ProductDetail = () => {
         }
     } : null;
 
-    const ratingVal = product?.stats?.averageRating || product?.averageRating || 5.0;
+    // Compute real approved review rating and review count (no default 5.0 fake fallback)
+    const ratingVal = product?.stats?.averageRating || product?.averageRating || product?.rating || null;
     const reviewCnt = fetchedReviewCount !== null ? fetchedReviewCount : (product?.stats?.totalReviews || product?.totalReviews || product?.reviewCount || 0);
 
-    if (productSchema && reviewCnt > 0) {
+    if (productSchema && reviewCnt > 0 && ratingVal) {
         productSchema.aggregateRating = {
             "@type": "AggregateRating",
-            "ratingValue": ratingVal.toString(),
+            "ratingValue": Number(ratingVal).toFixed(1),
             "reviewCount": reviewCnt.toString(),
             "bestRating": "5",
             "worstRating": "1"

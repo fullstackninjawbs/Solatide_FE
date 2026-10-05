@@ -203,7 +203,10 @@ const seoData = {
     title: "Tesamorelin vs Ipamorelin | GH Secretagogue Research | Solatide Biosciences",
     description: "Comparing Tesamorelin (GHRH analogue) and Ipamorelin (ghrelin mimetic) as growth hormone secretagogues in research. Different receptor mechanisms and profiles."
   },
-
+  "/pages/research-use-disclaimer": {
+    title: "Research Use Disclaimer | Solatide Biosciences Australia",
+    description: "Important research-use terms, regulatory positioning, and laboratory compliance guidelines for Solatide Biosciences analytical compounds and peptides."
+  }
 };
 
 const StaticSEO = () => {
@@ -225,6 +228,7 @@ const StaticSEO = () => {
   if (!seo) return null;
 
   const canonicalUrl = `https://solatidebiosciences.com.au${path === '/' ? '' : path}`;
+  const defaultOgImage = "https://solatidebiosciences.com.au/assets/logo.webp";
 
   return (
     <Helmet>
@@ -235,9 +239,11 @@ const StaticSEO = () => {
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content={defaultOgImage} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:image" content={defaultOgImage} />
     </Helmet>
   );
 };

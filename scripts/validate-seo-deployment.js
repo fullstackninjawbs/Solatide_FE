@@ -1,0 +1,72 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distDir = path.resolve(__dirname, '../dist-store');
+
+console.log('🔍 Running Post-Build SEO Deployment Validation Suite...\n');
+
+let errors = 0;
+
+function assert(condition, message) {
+  if (condition) {
+    console.log(`  ✅ ${message}`);
+  } else {
+    console.error(`  ❌ FAIL: ${message}`);
+    errors++;
+  }
+}
+
+// 1. Validate Homepage (dist-store/index.html & home.html)
+console.log('1. Validating Pre-rendered Homepage...');
+const indexPath = path.join(distDir, 'index.html');
+const homePath = path.join(distDir, 'home.html');
+
+assert(fs.existsSync(indexPath), 'dist-store/index.html exists');
+assert(fs.existsSync(homePath), 'dist-store/home.html exists');
+
+if (fs.existsSync(indexPath)) {
+  const html = fs.readFileSync(indexPath, 'utf-8');
+  assert(html.includes('canonical'), 'Homepage HTML contains canonical link tag');
+  assert(html.includes('https://solatidebiosciences.com.au'), 'Canonical points to production origin https://solatidebiosciences.com.au');
+  assert(!html.includes('http://localhost'), 'Homepage HTML contains ZERO localhost references');
+  assert(html.includes('<a href='), 'Homepage HTML contains pre-rendered internal <a href="..."> links');
+}
+
+// 2. Validate Application Fallback Shells (dist-store/200.html, checkout.html)
+console.log('\n2. Validating Application Fallback Shells...');
+assert(fs.existsSync(path.join(distDir, '200.html')), 'dist-store/200.html SPA fallback shell exists');
+assert(fs.existsSync(path.join(distDir, 'checkout.html')), 'dist-store/checkout.html application shell exists');
+
+// 3. Validate Sitemap (dist-store/sitemap.xml)
+console.log('\n3. Validating XML Sitemap...');
+const sitemapPath = path.join(distDir, 'sitemap.xml');
+assert(fs.existsSync(sitemapPath), 'dist-store/sitemap.xml exists');
+
+if (fs.existsSync(sitemapPath)) {
+  const xml = fs.readFileSync(sitemapPath, 'utf-8');
+  const locMatches = xml.match(/<loc>(.*?)<\/loc>/g) || [];
+  const urls = locMatches.map(m => m.replace(/<\/?loc>/g, ''));
+  const uniqueUrls = new Set(urls);
+  
+  assert(urls.length > 0, `Sitemap contains ${urls.length} total URL entries`);
+  assert(urls.length === uniqueUrls.size, 'Sitemap contains ZERO duplicate URLs');
+  assert(!xml.includes('/404'), 'Sitemap excludes /404 utility pages');
+  assert(!xml.includes('/checkout'), 'Sitemap excludes private /checkout pages');
+}
+
+// 4. Validate Asset Resolution (/assets/logo.webp & favicon.png)
+console.log('\n4. Validating Static Assets...');
+assert(fs.existsSync(path.join(distDir, 'favicon.png')), 'dist-store/favicon.png exists for Googlebot compatibility');
+assert(fs.existsSync(path.join(distDir, 'assets/logo.webp')), 'dist-store/assets/logo.webp exists for Schema Organization logo');
+
+console.log('\n==================================================');
+if (errors === 0) {
+  console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');
+  process.exit(0);
+} else {
+  console.error(`🚨 DISCREPANCIES DETECTED: ${errors} check(s) failed.`);
+  process.exit(1);
+}
