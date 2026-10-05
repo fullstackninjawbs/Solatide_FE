@@ -230,6 +230,11 @@ const server = app.listen(0, async () => {
                         canonicals[i].remove();
                     }
                 }
+
+                // Tag all SEO elements with data-rh="true" so React Helmet Async hydrates them in place without creating duplicates!
+                document.querySelectorAll('title, link[rel="canonical"], meta[name="description"], meta[property^="og:"], meta[name^="twitter:"]').forEach(el => {
+                    el.setAttribute('data-rh', 'true');
+                });
             });
 
             let html = await page.content();

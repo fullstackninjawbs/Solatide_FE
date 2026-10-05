@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
 import ScrollToTop from './components/ScrollToTop'
@@ -10,9 +10,19 @@ import './App.css'
 import { HelmetProvider } from 'react-helmet-async'
 import { Toaster } from 'react-hot-toast'
 
+// Removes pre-rendered SSR/prerender tags upon client hydration so React Helmet maintains 100% single tag ownership
+const HelmetHydrationCleaner = () => {
+  useLayoutEffect(() => {
+    const preRenderedTags = document.head.querySelectorAll('[data-rh="true"]');
+    preRenderedTags.forEach(el => el.remove());
+  }, []);
+  return null;
+};
+
 function App() {
   return (
     <HelmetProvider>
+      <HelmetHydrationCleaner />
       <Toaster position="top-center" />
       <CartProvider>
         <CurrencyProvider>

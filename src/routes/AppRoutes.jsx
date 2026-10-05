@@ -118,7 +118,6 @@ const AppRoutes = () => {
     return (
         <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
             <PageViewTracker />
-            <StaticSEO />
             <Routes>
                 {/* Admin Routes */}
                 {isAdmin && (
