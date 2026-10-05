@@ -59,6 +59,9 @@ const ShippingPolicy = lazyWithRetry(() => import('../pages/Shipping_Policy/Ship
 const PrivacyPolicy = lazyWithRetry(() => import('../pages/SitePolicies/SitePolicy'))
 const ViewDocument = lazyWithRetry(() => import('../Redirect/ViewDocument'))
 const ResearchInsight = lazyWithRetry(() => import('../Redirect/ResearchInsight'))
+const Checkout = lazyWithRetry(() => import('../pages/checkout/Checkout'))
+const CheckoutSuccess = lazyWithRetry(() => import('../pages/checkout/CheckoutSuccess'))
+const CheckoutFailure = lazyWithRetry(() => import('../pages/checkout/CheckoutFailure'))
 const PeptidesGuide = lazyWithRetry(() => import('../pages/peptidesGuide/PeptidesGuide'))
 const CompoundDatabase = lazyWithRetry(() => import('../pages/compoundDatabase/CompoundDatabase'))
 const CoaReports = lazyWithRetry(() => import('../pages/coaReports/CoaReports'))
@@ -197,6 +200,9 @@ const AppRoutes = () => {
                 {/* Client-Facing Site Routes */}
                 {isStore && (
                     <>
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                        <Route path="/checkout/failure" element={<CheckoutFailure />} />
                         <Route path="/order/:orderId" element={<OrderStatus />} />
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />
