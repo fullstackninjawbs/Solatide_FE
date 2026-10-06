@@ -4,25 +4,42 @@ import { Loader2 } from 'lucide-react'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
 import StaticSEO from '../components/StaticSEO'
+import Home from '../Redirect/home'
 
-// Wrapper to handle Vite chunk load errors when deploying new versions
+// Wrapper to handle Vite chunk load errors gracefully with retry before hard reloading
 const lazyWithRetry = (componentImport) =>
     lazy(async () => {
-        const pageHasAlreadyBeenForceRefreshed = JSON.parse(
-            window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
-        );
         try {
             const component = await componentImport();
             window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
             return component;
-        } catch (error) {
-            if (!pageHasAlreadyBeenForceRefreshed) {
-                window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
-                window.location.reload();
-                // Return an unresolved promise to halt React while the browser reloads
-                return new Promise(() => { });
+        } catch (firstError) {
+            // Retry once after 300ms to absorb transient network latency
+            try {
+                await new Promise((res) => setTimeout(res, 300));
+                const component = await componentImport();
+                window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+                return component;
+            } catch (retryError) {
+                const isChunkError =
+                    /Failed to fetch dynamically imported module|Loading chunk|error loading dynamically imported module/i.test(
+                        retryError?.message || firstError?.message || ''
+                    );
+
+                const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+                    window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+                );
+
+                // Only perform a hard reload if it's a verified chunk/module error
+                // and we haven't already attempted a force refresh in this session
+                if (isChunkError && !pageHasAlreadyBeenForceRefreshed) {
+                    window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+                    window.location.reload();
+                    return new Promise(() => { });
+                }
+
+                throw retryError || firstError;
             }
-            throw error;
         }
     });
 
@@ -45,7 +62,6 @@ const ReviewList = lazyWithRetry(() => import('../pages/admin/growth/ReviewList'
 const SubscriberList = lazyWithRetry(() => import('../pages/admin/growth/SubscriberList'))
 const FaqList = lazyWithRetry(() => import('../pages/admin/content/FaqList'))
 const AnalyticsDashboard = lazyWithRetry(() => import('../pages/admin/analytics/AnalyticsDashboard'))
-const Home = lazyWithRetry(() => import('../Redirect/home'))
 const Shop = lazyWithRetry(() => import('../Redirect/Shop'))
 const ProductDetail = lazyWithRetry(() => import('../pages/product/ProductDetail'))
 const ReviewVerification = lazyWithRetry(() => import('../pages/product/ReviewVerification'))

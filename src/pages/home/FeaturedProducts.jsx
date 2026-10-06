@@ -16,15 +16,9 @@ const FeaturedProducts = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    const fallbackProducts = [
-        { id: 1, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', inStock: true },
-        { id: 2, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', inStock: true },
-        { id: 3, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', inStock: true },
-        { id: 4, name: 'Bacteriostatic Water 10mL', price: 'Rs. 1,400.00', inStock: true }
-    ];
+    const fallbackProducts = localProducts && localProducts.length > 0 ? localProducts.slice(0, 8) : [];
+    const [products, setProducts] = useState(fallbackProducts);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchFeaturedProducts = async () => {

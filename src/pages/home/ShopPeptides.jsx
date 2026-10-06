@@ -16,10 +16,9 @@ const ShopPeptides = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
     const fallbackProducts = localProducts;
+    const [products, setProducts] = useState(fallbackProducts);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
