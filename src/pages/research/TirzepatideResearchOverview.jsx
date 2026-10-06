@@ -117,7 +117,7 @@ const TirzepatideResearchOverview = () => {
 <ul>
 <li><Link to="/products/tirzepatide-10mg">Tirzepatide 10mg research peptide</Link></li>
 <li><Link to="/products/tirzepatide-5mg">Tirzepatide 5mg research peptide</Link></li>
-<li><Link to="/collections/metabolic-research">GLP-1 &amp; metabolic research peptides</Link></li>
+<li><Link to="/collections/glp-1-metabolic-peptides">GLP-1 &amp; metabolic research peptides</Link></li>
 <li><Link to="/pages/glp-1-research-overview">GLP-1 research overview</Link></li>
 <li><Link to="/pages/retatrutide-research-overview">Retatrutide research overview</Link></li>
 <li><Link to="/pages/cagrisema-research-overview">CagriSema research overview</Link></li>

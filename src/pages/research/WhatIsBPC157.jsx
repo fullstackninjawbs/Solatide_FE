@@ -85,7 +85,7 @@ const WhatIsBPC157 = () => {
 <h2>Related Research Resources</h2>
 <ul>
 <li><Link to="/products/bpc-157-10mg">BPC-157 10mg research peptide</Link></li>
-<li><Link to="/collections/repair-recovery-research">Repair &amp; recovery peptides</Link></li>
+<li><Link to="/collections/tissue-cellular-research-peptides">Tissue &amp; cellular research peptides</Link></li>
 <li><Link to="/pages/what-is-tb500">What is TB-500?</Link></li>
 <li><Link to="/pages/bpc-157-vs-tb-500">BPC-157 vs TB-500 comparison</Link></li>
 </ul>

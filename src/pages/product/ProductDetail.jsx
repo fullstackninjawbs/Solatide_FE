@@ -228,17 +228,46 @@ const ProductDetail = () => {
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
-    const isOutOfStock = (() => {
+
+    // Reconciled stock availability for both the purchase UI and Schema.org
+    const isAvailable = (() => {
+        if (!product) return false;
+        if (product.publishStatus && product.publishStatus !== 'active') return false;
+        if (product.published === false) return false;
+
         if (selectedVariant) {
-            const hasStock = (selectedVariant.stockQty ?? 0) > 0;
-            const canContinueSelling = selectedVariant.inventoryPolicy === 'continue' || selectedVariant.continueSellingWhenOutOfStock || product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
-            return !hasStock && !canContinueSelling;
+            const vStock = Number(selectedVariant.stockQty ?? 0);
+            const vCanContinue = 
+                selectedVariant.inventoryPolicy === 'continue' || 
+                selectedVariant.continueSellingWhenOutOfStock === true ||
+                product.inventoryPolicy === 'continue' || 
+                product.continueSellingWhenOutOfStock === true;
+            return vCanContinue || vStock > 0;
         }
-        const hasStock = product.inStock !== false && ((product.stockQuantity ?? 0) > 0 || (product.stockQty ?? 0) > 0);
-        const canContinueSelling = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
-        return !hasStock && !canContinueSelling;
+
+        const canContinue = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true;
+        if (canContinue) return true;
+
+        const rootStock = Number(product.stockQuantity ?? product.stockQty ?? 0);
+        if (rootStock > 0) return true;
+
+        if (Array.isArray(product.variants) && product.variants.length > 0) {
+            return product.variants.some((v) => {
+                const s = Number(v.stockQty ?? 0);
+                const c = v.inventoryPolicy === 'continue' || v.continueSellingWhenOutOfStock === true;
+                return c || s > 0;
+            });
+        }
+
+        // Secondary fallback for missing/null stock counts
+        if (product.stockQuantity === undefined && product.stockQty === undefined) {
+            if (product.status === 'In Stock' || product.status === 'Sale' || product.inStock === true) return true;
+        }
+
+        return false;
     })();
 
+    const isOutOfStock = !isAvailable;
 
     const location = useLocation();
     const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith('/')
@@ -271,13 +300,6 @@ const ProductDetail = () => {
     };
 
     const price = selectedVariant?.price || product?.price || 0;
-    
-    // Check real stock status based on variant/product stockQty and inventoryPolicy
-    const isAvailable = product?.status === 'active' && (
-        selectedVariant 
-            ? (selectedVariant.stockQty > 0 || selectedVariant.inventoryPolicy === 'continue')
-            : ((product.stockQty !== undefined ? product.stockQty > 0 : true) || product.inventoryPolicy === 'continue' || product.inStock !== false)
-    );
 
     const imageUrl = product?.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : 'https://solatidebiosciences.com.au/assets/logo.webp';
 

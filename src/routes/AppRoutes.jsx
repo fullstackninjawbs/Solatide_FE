@@ -206,6 +206,20 @@ const AppRoutes = () => {
                         <Route path="/order/:orderId" element={<OrderStatus />} />
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />
+                            {/* Legacy URL Client-Side Redirects */}
+                            <Route path="collections/metabolic-research" element={<Navigate to="/collections/glp-1-metabolic-peptides" replace />} />
+                            <Route path="collections/repair-recovery-research" element={<Navigate to="/collections/tissue-cellular-research-peptides" replace />} />
+                            <Route path="products/selank-semax-20mg" element={<Navigate to="/products/selank-10mg" replace />} />
+                            <Route path="products/kpv-10mg-lyophilised-peptide" element={<Navigate to="/products/kpv-10mg" replace />} />
+                            <Route path="products/mots-c-10mg-lyophilised-peptide" element={<Navigate to="/products/mots-c-10mg" replace />} />
+                            <Route path="products/ss-31-elamipretide-10mg-lyophilised-peptide" element={<Navigate to="/products/ss-31-elamipretide-10mg" replace />} />
+                            <Route path="contact" element={<Navigate to="/pages/contact-us" replace />} />
+                            <Route path="coa" element={<Navigate to="/pages/coa" replace />} />
+                            <Route path="research-insight/nnmt-article" element={<Navigate to="/pages/research-library" replace />} />
+                            <Route path="policies/shipping-policy" element={<Navigate to="/pages/shipping-policy" replace />} />
+                            <Route path="policies/refund-policy" element={<Navigate to="/pages/refund-policy" replace />} />
+                            <Route path="policies/privacy-policy" element={<Navigate to="/pages/privacy-policy" replace />} />
+                            <Route path="policies/terms-of-service" element={<Navigate to="/pages/terms-of-services" replace />} />
                             <Route path="collections/all" element={<Shop />} />
                             <Route path="collections/:handle" element={<Shop />} />
                             <Route path="shop" element={<Shop />} />

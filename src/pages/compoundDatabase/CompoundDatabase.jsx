@@ -82,7 +82,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A selective inhibitor of NNMT studied in preclinical laboratory models. Relevant to cellular energy expenditure, methyl-group flux and downstream metabolic signalling. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/products/5-amino-1mq-50mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
-                                <Link to="/research-insight/nnmt-article" className=" border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">NNMT Research Article</Link>
+                                <Link to="/pages/research-library" className=" border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Library</Link>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tuftsin analogue heptapeptide studied for GABAergic pathway modulation, BDNF interactions, immune-neuro crosstalk and anxiolytic-related signalling in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-selank" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Selank?</Link>
-                                <Link to="/products/selank-semax-20mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/selank-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -216,7 +216,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">An ACTH(4-7) analogue heptapeptide studied for BDNF upregulation, dopaminergic modulation, neuroprotective signalling and cognitive pathway research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-semax" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Semax?</Link>
-                                <Link to="/products/selank-semax-20mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/selank-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
