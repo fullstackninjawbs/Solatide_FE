@@ -4,9 +4,11 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const distDir = path.resolve(__dirname, '../dist-store');
+const distDir = process.env.DIST_STORE_DIR
+  ? path.resolve(process.env.DIST_STORE_DIR)
+  : path.resolve(__dirname, '../dist-store');
 
-console.log('🔍 Running Post-Build SEO Deployment Validation Suite...\n');
+console.log(`🔍 Running Post-Build SEO Deployment Validation Suite on: ${distDir}\n`);
 
 let errors = 0;
 

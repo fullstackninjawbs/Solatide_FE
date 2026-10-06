@@ -65,10 +65,10 @@ const routes = [
     "/404"
 ];
 
-const distDir = path.resolve(__dirname, 'dist-store');
+const distDir = path.resolve(__dirname, process.env.DIST_STORE_DIR || 'dist-store');
 
 if (!fs.existsSync(distDir)) {
-    console.error(`Directory ${distDir} does not exist. Run npm run build:store first.`);
+    console.error(`Directory ${distDir} does not exist. Run build first.`);
     process.exit(1);
 }
 
