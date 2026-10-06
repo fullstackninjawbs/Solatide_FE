@@ -405,14 +405,22 @@ const ProductList = () => {
                       </span>
                     </td>
                     <td className="py-3.5">
-                      <span className={`font-semibold ${product.stockQuantity <= 0
-                        ? 'text-red-500'
-                        : product.stockQuantity <= product.lowStockThreshold
-                          ? 'text-amber-600'
-                          : 'text-slate-650'
-                        }`}>
-                        {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
-                      </span>
+                      {(() => {
+                        const totalStock = (Array.isArray(product.variants) && product.variants.length > 0)
+                          ? product.variants.reduce((sum, v) => sum + (Number(v.stockQty) || 0), 0)
+                          : Number(product.stockQuantity ?? product.stockQty ?? 0);
+                        const isLow = product.lowStockThreshold !== undefined && totalStock <= product.lowStockThreshold;
+                        return (
+                          <span className={`font-semibold ${totalStock <= 0
+                            ? 'text-red-500'
+                            : isLow
+                              ? 'text-amber-600'
+                              : 'text-slate-650'
+                            }`}>
+                            {`${totalStock} in stock`}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="py-3.5 text-slate-600">
                       {product.category?.includes(' > ') ? product.category.split(' > ').pop() : (product.category || 'Uncategorized')}
