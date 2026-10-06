@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
+import { products as localProducts } from '../../data/products';
 
 const FilterSidebarContent = ({
     selectedCategory,
@@ -182,8 +183,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         fetchCategories();
     }, []);
 
-    const [productsList, setProductsList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [productsList, setProductsList] = useState(localProducts);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchProducts = async () => {

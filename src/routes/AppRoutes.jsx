@@ -5,6 +5,8 @@ import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
 import StaticSEO from '../components/StaticSEO'
 import Home from '../Redirect/home'
+import Shop from '../Redirect/Shop'
+import ProductDetail from '../pages/product/ProductDetail'
 
 // Wrapper to handle Vite chunk load errors gracefully with retry before hard reloading
 const lazyWithRetry = (componentImport) =>
@@ -62,8 +64,6 @@ const ReviewList = lazyWithRetry(() => import('../pages/admin/growth/ReviewList'
 const SubscriberList = lazyWithRetry(() => import('../pages/admin/growth/SubscriberList'))
 const FaqList = lazyWithRetry(() => import('../pages/admin/content/FaqList'))
 const AnalyticsDashboard = lazyWithRetry(() => import('../pages/admin/analytics/AnalyticsDashboard'))
-const Shop = lazyWithRetry(() => import('../Redirect/Shop'))
-const ProductDetail = lazyWithRetry(() => import('../pages/product/ProductDetail'))
 const ReviewVerification = lazyWithRetry(() => import('../pages/product/ReviewVerification'))
 const CoaAndTesting = lazyWithRetry(() => import('../Redirect/CoaAndTesting'))
 const ConcentrationCalculator = lazyWithRetry(() => import('../Redirect/ConcentrationCalculator'))

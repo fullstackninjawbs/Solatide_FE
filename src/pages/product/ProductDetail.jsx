@@ -19,8 +19,11 @@ import { Helmet } from 'react-helmet-async';
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [product, setProduct] = useState(() => {
+        if (!id) return null;
+        return products.find(p => p.slug === id || String(p.id) === String(id)) || null;
+    });
+    const [loading, setLoading] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState(0);
     const { addToCart } = useCart();
