@@ -38,6 +38,13 @@ atomic_activate() {
         exit 1
     fi
 
+    # Verify that the release has the .release-success marker
+    if [ ! -f "$target_dir/.release-success" ]; then
+        log_error "Refusing to activate release '$release_name': missing .release-success marker!"
+        log_error "This release directory is incomplete or failed validation: $target_dir"
+        exit 1
+    fi
+
     log_info "Preparing atomic symlink activation for: $release_name"
     log_info "Source: $target_dir"
     log_info "Target: $CURRENT_SYMLINK"
@@ -82,7 +89,11 @@ show_status() {
             if [ -L "$CURRENT_SYMLINK" ] && [ "$(readlink -f "$CURRENT_SYMLINK")" = "$RELEASES_DIR/$rel" ]; then
                 marker="* "
             fi
-            echo "  $marker $rel"
+            local status_tag="[unverified]"
+            if [ -f "$RELEASES_DIR/$rel/.release-success" ]; then
+                status_tag="[verified]"
+            fi
+            echo "  $marker $rel $status_tag"
             found=1
         done
         if [ "$found" -eq 0 ]; then
@@ -94,7 +105,7 @@ show_status() {
     echo "=================================================="
 }
 
-# Rollback to the release immediately prior to the current active release
+# Rollback to the previous successful release containing .release-success
 do_rollback() {
     log_info "Initiating rollback procedure..."
 
@@ -115,33 +126,41 @@ do_rollback() {
         exit 1
     fi
 
-    # Collect sorted release list
-    mapfile -t all_releases < <(ls -1 "$RELEASES_DIR" | sort)
-    local count="${#all_releases[@]}"
+    # Filter to only verified releases containing .release-success
+    local verified_releases=()
+    for rel in $(ls -1 "$RELEASES_DIR" | sort); do
+        if [ -d "$RELEASES_DIR/$rel" ] && [ -f "$RELEASES_DIR/$rel/.release-success" ]; then
+            verified_releases+=("$rel")
+        else
+            log_warn "Skipping unverified release from rollback consideration: $rel (missing .release-success)"
+        fi
+    done
+
+    local count="${#verified_releases[@]}"
 
     if [ "$count" -lt 2 ]; then
-        log_error "Cannot rollback: only $count release(s) found in $RELEASES_DIR. Need at least 2."
+        log_error "Cannot rollback: only $count verified release(s) found in $RELEASES_DIR containing .release-success. Need at least 2."
         exit 1
     fi
 
-    # Find the index of the current active release
+    # Find the index of the current active release among verified releases
     local current_idx=-1
-    for i in "${!all_releases[@]}"; do
-        if [ "${all_releases[$i]}" = "$current_name" ]; then
+    for i in "${!verified_releases[@]}"; do
+        if [ "${verified_releases[$i]}" = "$current_name" ]; then
             current_idx="$i"
             break
         fi
     done
 
     if [ "$current_idx" -le 0 ]; then
-        log_error "Cannot rollback: active release '$current_name' is the earliest known release or was not found in $RELEASES_DIR."
+        log_error "Cannot rollback: active release '$current_name' is the earliest known verified release or was not found among verified releases."
         exit 1
     fi
 
-    local prev_release_name="${all_releases[$((current_idx - 1))]}"
+    local prev_release_name="${verified_releases[$((current_idx - 1))]}"
     local prev_release_dir="$RELEASES_DIR/$prev_release_name"
 
-    log_info "Found previous known-good release: $prev_release_name"
+    log_info "Found previous verified release: $prev_release_name"
     atomic_activate "$prev_release_dir"
     log_success "Rollback successfully completed from '$current_name' to '$prev_release_name'!"
 }
@@ -160,7 +179,17 @@ elif [ "${1:-}" = "activate" ]; then
         log_error "Usage: $0 activate <RELEASE_ID>"
         exit 1
     fi
-    atomic_activate "$RELEASES_DIR/$2"
+    target_rel="$RELEASES_DIR/$2"
+    if [ ! -d "$target_rel" ]; then
+        log_error "Target release directory does not exist: $target_rel"
+        exit 1
+    fi
+    if [ ! -f "$target_rel/.release-success" ]; then
+        log_error "Refusing to activate release '$2': missing .release-success marker!"
+        log_error "Only fully verified releases that passed all validation can be activated."
+        exit 1
+    fi
+    atomic_activate "$target_rel"
     exit 0
 elif [ "${1:-}" = "--build-only" ] || [ "${1:-}" = "build" ]; then
     BUILD_ONLY=1
@@ -278,6 +307,12 @@ for p in "${KEY_PAGES[@]}"; do
 done
 
 log_success "All smoke-test file integrity checks passed!"
+
+# Write the .release-success marker file now that ALL validation and smoke tests pass
+echo "verified_at=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > "$RELEASE_DIR/.release-success"
+echo "release_id=$RELEASE_ID" >> "$RELEASE_DIR/.release-success"
+log_success "Created release verification marker: $RELEASE_DIR/.release-success"
+
 log_info "=================================================="
 log_success "🎉 Release $RELEASE_ID is fully built and verified!"
 log_info "=================================================="
