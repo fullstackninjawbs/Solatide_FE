@@ -130,6 +130,47 @@ for (const file of htmlFiles) {
 
 assert(multiH1Pages.length === 0, `All ${htmlFiles.length} pre-rendered pages have at most 1 <h1> tag (violations: ${multiH1Pages.map(p => `${p.file} (${p.count})`).join(', ') || 'none'})`);
 
+// 8. Validate Open Graph & Twitter Metadata on Research Pages
+console.log('\n8. Validating Open Graph & Twitter Metadata on Research Pages...');
+const researchSlugs = [
+  'tirzepatide-research-overview',
+  'what-is-bpc-157',
+  'what-is-ghk-cu',
+  'what-is-mots-c',
+  'what-is-selank',
+  'glp-1-research-overview',
+  'cagrisema-vs-semaglutide',
+  'cagrisema-vs-tirzepatide',
+  'cagrisema-vs-retatrutide',
+  'cjc-1295-vs-ipamorelin',
+  'cjc-1295-vs-tesamorelin',
+  'selank-vs-semax',
+  'mots-c-vs-ss-31',
+  'bpc-157-vs-kpv',
+  'nad-plus-vs-mots-c',
+  'tesamorelin-vs-ipamorelin',
+  'what-is-tesamorelin',
+  'what-is-kpv'
+];
+
+let missingOgPages = [];
+for (const slug of researchSlugs) {
+  const pPath = path.join(distDir, 'pages', `${slug}.html`);
+  if (fs.existsSync(pPath)) {
+    const content = fs.readFileSync(pPath, 'utf-8');
+    const hasOgTitle = content.includes('property="og:title"');
+    const hasOgDesc = content.includes('property="og:description"');
+    const hasOgUrl = content.includes('property="og:url"');
+    const hasOgImage = content.includes('property="og:image"');
+    const hasTwTitle = content.includes('name="twitter:title"');
+    const hasTwCard = content.includes('name="twitter:card"');
+    if (!hasOgTitle || !hasOgDesc || !hasOgUrl || !hasOgImage || !hasTwTitle || !hasTwCard) {
+      missingOgPages.push(slug);
+    }
+  }
+}
+assert(missingOgPages.length === 0, `All 18 research pages have complete Open Graph and Twitter metadata (missing: ${missingOgPages.join(', ') || 'none'})`);
+
 console.log('\n==================================================');
 if (errors === 0) {
   console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');

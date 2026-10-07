@@ -12,6 +12,21 @@ const WhatIsTesamorelin = () => {
                     content="Tesamorelin is a synthetic analogue of growth hormone-releasing hormone (GHRH) used in laboratory research to investigate growth hormone secretion and metabolic regulation."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-tesamorelin" />
+                <meta property="og:title" content="What Is Tesamorelin? | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Tesamorelin is a synthetic analogue of growth hormone-releasing hormone (GHRH) used in laboratory research to investigate growth hormone secretion and metabolic regulation."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/what-is-tesamorelin" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="What Is Tesamorelin? | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Tesamorelin is a synthetic analogue of growth hormone-releasing hormone (GHRH) used in laboratory research to investigate growth hormone secretion and metabolic regulation."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">

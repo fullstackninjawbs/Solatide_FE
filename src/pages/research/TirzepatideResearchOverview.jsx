@@ -12,6 +12,21 @@ const TirzepatideResearchOverview = () => {
                     content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/tirzepatide-research-overview" />
+                <meta property="og:title" content="Tirzepatide Research Overview | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/tirzepatide-research-overview" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Tirzepatide Research Overview | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">

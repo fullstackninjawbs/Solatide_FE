@@ -12,6 +12,21 @@ const MOTScVsSS31 = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/mots-c-vs-ss-31" />
+                <meta property="og:title" content="MOTS-c vs SS-31 | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/mots-c-vs-ss-31" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="MOTS-c vs SS-31 | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">

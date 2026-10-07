@@ -12,6 +12,21 @@ const WhatIsKPV = () => {
                     content="KPV is a tripeptide fragment derived from alpha-MSH studied for melanocortin receptor interactions, inflammatory pathway modulation, and gut epithelial signalling."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-kpv" />
+                <meta property="og:title" content="What Is KPV? | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="KPV is a tripeptide fragment derived from alpha-MSH studied for melanocortin receptor interactions, inflammatory pathway modulation, and gut epithelial signalling."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/what-is-kpv" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="What Is KPV? | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="KPV is a tripeptide fragment derived from alpha-MSH studied for melanocortin receptor interactions, inflammatory pathway modulation, and gut epithelial signalling."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">

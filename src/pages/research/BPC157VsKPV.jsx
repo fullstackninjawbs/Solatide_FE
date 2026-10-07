@@ -12,6 +12,21 @@ const BPC157VsKPV = () => {
                     content="BPC-157 vs KPV research comparison: compare mechanisms, cellular repair signalling, melanocortin receptors, and in-vitro experimental models."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/bpc-157-vs-kpv" />
+                <meta property="og:title" content="BPC-157 vs KPV | Research Comparison | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="BPC-157 vs KPV research comparison: compare mechanisms, cellular repair signalling, melanocortin receptors, and in-vitro experimental models."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/bpc-157-vs-kpv" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="BPC-157 vs KPV | Research Comparison | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="BPC-157 vs KPV research comparison: compare mechanisms, cellular repair signalling, melanocortin receptors, and in-vitro experimental models."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">
