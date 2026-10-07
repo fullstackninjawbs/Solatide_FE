@@ -168,7 +168,7 @@ const Header = () => {
                     <div className={`absolute flex items-center justify-center gap-2 transition-all duration-500 ease-in-out ${announcementIndex === 0 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                         <span className="tracking-wide">Australian owned & operated</span>
                         <span className="flex items-center justify-center overflow-hidden rounded-[2px]" style={{ width: '20px', height: '14px' }}>
-                            <ReactCountryFlag countryCode="AU" svg style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
+                            <ReactCountryFlag countryCode="AU" svg style={{ width: '20px', height: '15px', objectFit: 'cover' }} alt='Australia' />
                         </span>
                     </div>
 

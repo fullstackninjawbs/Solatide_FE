@@ -3,7 +3,8 @@ import puppeteer from 'puppeteer';
 const testUrls = [
   'https://solatidebiosciences.com.au/products/retatrutide-10mg',
   'https://solatidebiosciences.com.au/collections/all',
-  'https://solatidebiosciences.com.au/pages/about'
+  'https://solatidebiosciences.com.au/pages/about',
+  'https://solatidebiosciences.com.au/pages/what-is-cjc-1295'
 ];
 
 async function runHydratedDOMTest() {
