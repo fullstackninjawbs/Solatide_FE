@@ -88,10 +88,19 @@ app.use('/api', async (req, res) => {
         delete proxyHeaders['accept-encoding'];
         proxyHeaders.host = new URL(apiUrl).host;
 
-        const fetchRes = await fetch(`${apiUrl}/api${req.url}`, {
-            method: req.method,
-            headers: proxyHeaders
-        });
+        let fetchRes;
+        try {
+            fetchRes = await fetch(`${apiUrl}/api${req.url}`, {
+                method: req.method,
+                headers: proxyHeaders
+            });
+        } catch (localErr) {
+            // Fallback to production API if local server is unreachable
+            fetchRes = await fetch(`https://solatidebiosciences.com.au/api${req.url}`, {
+                method: req.method
+            });
+        }
+
         const data = await fetchRes.arrayBuffer();
         res.status(fetchRes.status);
         fetchRes.headers.forEach((value, key) => {
@@ -128,9 +137,14 @@ const server = app.listen(0, async () => {
 
     // Dynamically fetch product routes from the backend API
     try {
-
         console.log(`Fetching dynamic product routes from ${apiUrl}...`);
-        const res = await fetch(`${apiUrl}/api/products`);
+        let res;
+        try {
+            res = await fetch(`${apiUrl}/api/products`);
+        } catch {
+            console.warn(`Could not reach ${apiUrl}, falling back to production API for product routes...`);
+            res = await fetch('https://solatidebiosciences.com.au/api/products');
+        }
         const data = await res.json();
 
         let products = [];
@@ -157,7 +171,22 @@ const server = app.listen(0, async () => {
         console.log(`✅ Added ${count} product routes for prerendering!`);
     } catch (e) {
         console.error('❌ Failed to fetch dynamic product routes from API:', e.message);
-        console.error('Ensure your backend server is running on port 5000 during the build!');
+        console.warn('Falling back to local products.js catalog for product routes...');
+        try {
+            const localProductsPath = path.resolve(__dirname, 'src/data/products.js');
+            if (fs.existsSync(localProductsPath)) {
+                const fileContent = fs.readFileSync(localProductsPath, 'utf8');
+                const slugMatches = [...fileContent.matchAll(/slug:\s*['"]([^'"]+)['"]/g)];
+                let count = 0;
+                for (const match of slugMatches) {
+                    routes.push(`/products/${match[1]}`);
+                    count++;
+                }
+                console.log(`✅ Added ${count} product routes from local products catalog fallback!`);
+            }
+        } catch (localErr) {
+            console.error('Local fallback failed:', localErr.message);
+        }
     }
 
     // Dynamically fetch custom pages from the backend API

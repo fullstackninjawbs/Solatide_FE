@@ -93,6 +93,28 @@ const DynamicPage = () => {
     }
   } : null;
 
+  const normalizePageContent = (rawHtml, pageTitle) => {
+    if (!rawHtml) return '';
+    let sanitized = DOMPurify.sanitize(rawHtml);
+
+    // 1. Remove empty or whitespace/<br> only H1 tags
+    sanitized = sanitized.replace(/<h1[^>]*>(\s*|<br\s*\/?>|&nbsp;)*<\/h1>/gi, '');
+
+    // 2. Parse any remaining H1 tags:
+    // If the H1 text is identical, essentially the same as pageTitle, or begins with pageTitle, remove it.
+    // Otherwise convert it to an H2 so the document strictly has 1 H1.
+    sanitized = sanitized.replace(/<h1([^>]*)>([\s\S]*?)<\/h1>/gi, (match, attrs, innerContent) => {
+      const plainText = innerContent.replace(/<[^>]*>/g, '').trim().toLowerCase().replace(/&amp;/g, '&');
+      const cleanTitle = (pageTitle || '').trim().toLowerCase().replace(/&amp;/g, '&');
+      if (!plainText || plainText === cleanTitle || plainText.startsWith(cleanTitle)) {
+        return '';
+      }
+      return `<h2${attrs}>${innerContent}</h2>`;
+    });
+
+    return sanitized;
+  };
+
   return (
     <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
@@ -140,7 +162,7 @@ const DynamicPage = () => {
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50
                    jodit-content-wrapper"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(page.content?.html || '') }}
+        dangerouslySetInnerHTML={{ __html: normalizePageContent(page.content?.html, page.title) }}
       />
     </div>
   );

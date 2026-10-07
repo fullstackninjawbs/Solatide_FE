@@ -101,6 +101,35 @@ if (fs.existsSync(sampleProductPath)) {
   assert(currencyMatch !== null && currencyMatch[1] === 'AUD', 'Product schema priceCurrency is "AUD"');
 }
 
+// 7. Validate Single H1 Across ALL Pre-rendered Pages (Screaming Frog / SEO Best Practice)
+console.log('\n7. Validating Single H1 Heading Across ALL Pre-rendered Pages...');
+function getHtmlFiles(dir) {
+  let results = [];
+  if (!fs.existsSync(dir)) return results;
+  const list = fs.readdirSync(dir, { withFileTypes: true });
+  for (const file of list) {
+    const fullPath = path.join(dir, file.name);
+    if (file.isDirectory()) {
+      results = results.concat(getHtmlFiles(fullPath));
+    } else if (file.name.endsWith('.html') && !file.name.includes('200.html') && !file.name.includes('checkout.html')) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+const htmlFiles = getHtmlFiles(distDir);
+let multiH1Pages = [];
+for (const file of htmlFiles) {
+  const content = fs.readFileSync(file, 'utf-8');
+  const h1Matches = content.match(/<h1[^>]*>/gi) || [];
+  if (h1Matches.length > 1) {
+    multiH1Pages.push({ file: path.relative(distDir, file), count: h1Matches.length });
+  }
+}
+
+assert(multiH1Pages.length === 0, `All ${htmlFiles.length} pre-rendered pages have at most 1 <h1> tag (violations: ${multiH1Pages.map(p => `${p.file} (${p.count})`).join(', ') || 'none'})`);
+
 console.log('\n==================================================');
 if (errors === 0) {
   console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');
