@@ -83,10 +83,7 @@ const seoData = {
     title: "Your Privacy Choices | Solatide Biosciences",
     description: "Manage your privacy choices and data sharing preferences for Solatide Biosciences. Control how your information is used."
   },
-  "/pages/bpc-157-vs-tb-500": {
-    title: "BPC-157 vs TB-500 Comparison | Solatide Biosciences",
-    description: "Compare BPC-157 and TB-500 in laboratory peptide research, including differences in pathway focus, tissue-response models, and migration-related investigation."
-  },
+
   "/pages/research-use-disclaimer": {
     title: "Research Use Disclaimer | Solatide Biosciences Australia",
     description: "Important research-use terms, regulatory positioning, and laboratory compliance guidelines for Solatide Biosciences analytical compounds and peptides."
