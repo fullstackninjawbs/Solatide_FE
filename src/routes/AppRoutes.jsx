@@ -232,6 +232,12 @@ const AppRoutes = () => {
                             <Route path="contact" element={<Navigate to="/pages/contact-us" replace />} />
                             <Route path="coa" element={<Navigate to="/pages/coa" replace />} />
                             <Route path="research-insight/nnmt-article" element={<Navigate to="/pages/research-library" replace />} />
+                            <Route path="cart" element={<Navigate to="/" replace />} />
+                            <Route path="blogs/research-insights" element={<Navigate to="/pages/research-library" replace />} />
+                            <Route path="blogs/research-insights/nnmt-inhibition-5-amino-1mq" element={<Navigate to="/pages/nnmt-inhibition-the-role-of-5-amino-1mq-in-cellular-energy-and-nad-related-pathways" replace />} />
+                            <Route path="blogs/research-insights/retatrutide-vs-semaglutide-research" element={<Navigate to="/pages/retatrutide-vs-semaglutide-research" replace />} />
+                            <Route path="blogs/research-insights/glp1-receptor-pathways" element={<Navigate to="/pages/glp1-receptor-pathways" replace />} />
+                            <Route path="blogs/research-insights/triple-agonist-peptide-research" element={<Navigate to="/pages/triple-agonist-peptide-research" replace />} />
                             <Route path="policies/shipping-policy" element={<Navigate to="/pages/shipping-policy" replace />} />
                             <Route path="policies/refund-policy" element={<Navigate to="/pages/refund-policy" replace />} />
                             <Route path="policies/privacy-policy" element={<Navigate to="/pages/privacy-policy" replace />} />
