@@ -13,25 +13,36 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
-        try {
-            const item = window.localStorage.getItem('solatie_cart');
-            return item ? JSON.parse(item) : [];
-        } catch (error) {
-            console.warn('Error reading localStorage for cart', error);
-            return [];
-        }
-    });
-
+    const [cartItems, setCartItems] = useState([]);
+    const [isCartInitialized, setIsCartInitialized] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
+    // Initial load from localStorage AFTER initial render to ensure deterministic hydration
     useEffect(() => {
+        try {
+            const item = window.localStorage.getItem('solatie_cart');
+            if (item) {
+                const parsed = JSON.parse(item);
+                if (Array.isArray(parsed)) {
+                    setCartItems(parsed);
+                }
+            }
+        } catch (error) {
+            console.warn('Error reading localStorage for cart', error);
+        } finally {
+            setIsCartInitialized(true);
+        }
+    }, []);
+
+    // Persist to localStorage only AFTER the cart has been initialized from storage
+    useEffect(() => {
+        if (!isCartInitialized) return;
         try {
             window.localStorage.setItem('solatie_cart', JSON.stringify(cartItems));
         } catch (error) {
             console.warn('Error setting localStorage for cart', error);
         }
-    }, [cartItems]);
+    }, [cartItems, isCartInitialized]);
 
     const addToCart = (product, quantity = 1, selectedVariant = null) => {
         const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);

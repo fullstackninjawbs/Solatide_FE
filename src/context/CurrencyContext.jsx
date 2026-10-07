@@ -44,35 +44,45 @@ const fallbackRates = {
 };
 
 export const CurrencyProvider = ({ children }) => {
-  const [selectedCountry, setSelectedCountry] = useState(() => {
-    const saved = localStorage.getItem('selectedCountry');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return countriesList.find(c => c.countryCode === 'AU') || countriesList[0]; // Default to Australia (AUD)
-  });
+  const defaultCountry = countriesList.find(c => c.countryCode === 'AU') || countriesList[0];
+  const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
+  const [rates, setRates] = useState(fallbackRates);
 
-  const [rates, setRates] = useState(() => {
+  useEffect(() => {
+    // 1. Load saved country from localStorage after initial render
+    try {
+      const savedCountry = localStorage.getItem('selectedCountry');
+      if (savedCountry) {
+        const parsed = JSON.parse(savedCountry);
+        if (parsed && parsed.code) {
+          setSelectedCountry(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading saved country from localStorage', e);
+    }
+
+    // 2. Load cached exchange rates from localStorage if available and fresh
     const cached = localStorage.getItem('exchangeRates_AUD');
     const cachedTime = localStorage.getItem('exchangeRates_timestamp_AUD');
+    let hasFreshCache = false;
+
     if (cached && cachedTime) {
-      // 24 hour cache duration
-      if (Date.now() - parseInt(cachedTime, 10) < 24 * 60 * 60 * 1000) {
+      const isFresh = Date.now() - parseInt(cachedTime, 10) < 24 * 60 * 60 * 1000;
+      if (isFresh) {
         try {
-          return JSON.parse(cached);
+          const parsedRates = JSON.parse(cached);
+          if (parsedRates && typeof parsedRates === 'object') {
+            setRates(parsedRates);
+            hasFreshCache = true;
+          }
         } catch (e) {
-          console.error('Error parsing cached exchange rates', e);
+          console.warn('Error parsing cached exchange rates', e);
         }
       }
     }
-    return fallbackRates;
-  });
 
-  useEffect(() => {
+    // 3. Fetch fresh rates if cache is missing or older than 24 hours
     const fetchRates = async () => {
       try {
         const response = await fetch('https://open.er-api.com/v6/latest/AUD');
@@ -93,9 +103,7 @@ export const CurrencyProvider = ({ children }) => {
       }
     };
 
-    const cachedTime = localStorage.getItem('exchangeRates_timestamp');
-    const shouldFetch = !cachedTime || (Date.now() - parseInt(cachedTime, 10) > 24 * 60 * 60 * 1000);
-    if (shouldFetch) {
+    if (!hasFreshCache) {
       fetchRates();
     }
   }, []);
