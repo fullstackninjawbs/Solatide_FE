@@ -48,13 +48,13 @@ async function runComprehensiveAudit() {
 
       const isPriceValid = /^\d+\.\d{2}$/.test(price);
       const isAud = currency === 'AUD';
-      const isAvailabilityValid = availability === 'https://schema.org/InStock' || availability === 'https://schema.org/OutOfStock';
+      const isAvailabilityValid = availability === 'https://schema.org/InStock' || availability === 'https://schema.org/OutOfStock' || availability === 'https://schema.org/BackOrder';
 
       if (!isPriceValid || !isAud || !isAvailabilityValid) {
         console.error(`❌ [${file}] Invalid schema values: price="${price}", currency="${currency}", availability="${availability}"`);
         productErrors++;
       } else {
-        const statusBadge = availability.includes('InStock') ? '✅ InStock' : '⚠️ OutOfStock';
+        const statusBadge = availability.includes('InStock') ? '✅ InStock' : (availability.includes('BackOrder') ? '📦 BackOrder' : '⚠️ OutOfStock');
         console.log(`  ${file.replace('.html', '').padEnd(50)} | ${statusBadge.padEnd(12)} | Price: ${price} ${currency}`);
       }
     } catch (e) {

@@ -79,11 +79,6 @@ const seoData = {
     title: "GLP-1 & Metabolic Research Peptides Australia | Solatide – Solatide Biosciences",
     description: "Research-grade GLP-1 receptor agonists, dual agonists, triple agonists, and metabolic research compounds. COA-verified. For in-vitro laboratory use only."
   },
-  "/pages/data-sharing-opt-out": {
-    title: "Your Privacy Choices | Solatide Biosciences",
-    description: "Manage your privacy choices and data sharing preferences for Solatide Biosciences. Control how your information is used."
-  },
-
   "/pages/research-use-disclaimer": {
     title: "Research Use Disclaimer | Solatide Biosciences Australia",
     description: "Important research-use terms, regulatory positioning, and laboratory compliance guidelines for Solatide Biosciences analytical compounds and peptides."

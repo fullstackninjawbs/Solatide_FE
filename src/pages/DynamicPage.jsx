@@ -72,6 +72,12 @@ const DynamicPage = () => {
     );
   }
 
+  const knownPageDescriptions = {
+    'bpc-157-vs-tb-500': 'Compare BPC-157 and TB-500 research peptides. Explore mechanisms of action, tissue repair pathways, and laboratory protocols for research use.',
+    'data-sharing-opt-out': 'Manage your privacy choices and data sharing preferences for Solatide Biosciences. Control how your information is used.'
+  };
+
+  const pageDescription = page.metaDescription || knownPageDescriptions[page.slug] || (page.title ? `${page.title} — Research documentation, laboratory protocols, and reference analysis from Solatide Biosciences Australia.` : '');
   const pageTitle = page.seoTitle || `${page.title} - Solatide Biosciences`;
   const canonicalUrl = `https://solatidebiosciences.com.au/pages/${page.slug}`;
 
@@ -79,7 +85,7 @@ const DynamicPage = () => {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": page.title,
-    "description": page.metaDescription || page.title,
+    "description": pageDescription,
     "url": canonicalUrl,
     "datePublished": page.publishedAt || page.createdAt || "2026-01-01T00:00:00Z",
     "dateModified": page.updatedAt || page.publishedAt || "2026-01-01T00:00:00Z",
@@ -112,6 +118,15 @@ const DynamicPage = () => {
       return `<h2${attrs}>${innerContent}</h2>`;
     });
 
+    // 3. Normalize legacy internal links to canonical targets
+    sanitized = sanitized
+      .replace(/\/products\/semaglutide-5mg-lyophilised-peptide/g, '/products/semaglutide-5mg')
+      .replace(/\/products\/semaglutide-10mg-lyophilised-peptide/g, '/products/semaglutide-10mg')
+      .replace(/\/products\/retatrutide-5mg-lyophilised-peptide/g, '/products/retatrutide-5mg')
+      .replace(/\/products\/retatrutide-10mg-lyophilised-peptide/g, '/products/retatrutide-10mg')
+      .replace(/\/products\/([a-z0-9-]+)-lyophilised-peptide/g, '/products/$1')
+      .replace(/href=["']\/privacy-policy["']/g, 'href="/pages/privacy-policy"');
+
     return sanitized;
   };
 
@@ -119,22 +134,16 @@ const DynamicPage = () => {
     <div className="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 animate-in fade-in duration-500">
       <Helmet>
         <title>{pageTitle}</title>
-        {page.metaDescription && (
-          <meta name="description" content={page.metaDescription} />
-        )}
+        <meta name="description" content={pageDescription} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={pageTitle} />
-        {page.metaDescription && (
-          <meta property="og:description" content={page.metaDescription} />
-        )}
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
-        {page.metaDescription && (
-          <meta name="twitter:description" content={page.metaDescription} />
-        )}
+        <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
         {articleSchema && (
           <script type="application/ld+json">

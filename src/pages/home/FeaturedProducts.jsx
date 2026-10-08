@@ -16,8 +16,21 @@ const FeaturedProducts = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const fallbackProducts = localProducts && localProducts.length > 0 ? localProducts.slice(0, 8) : [];
-    const [products, setProducts] = useState(fallbackProducts);
+    const [products, setProducts] = useState(() => {
+        if (typeof window !== 'undefined') {
+            if (window.__INITIAL_FEATURED_PRODUCTS__ && Array.isArray(window.__INITIAL_FEATURED_PRODUCTS__)) {
+                return window.__INITIAL_FEATURED_PRODUCTS__;
+            }
+            const scriptTag = document.getElementById('__INITIAL_FEATURED_PRODUCTS_DATA__');
+            if (scriptTag && scriptTag.textContent) {
+                try {
+                    const parsed = JSON.parse(scriptTag.textContent);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                } catch (e) {}
+            }
+        }
+        return localProducts && localProducts.length > 0 ? localProducts.slice(0, 8) : [];
+    });
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -28,12 +41,12 @@ const FeaturedProducts = () => {
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
                     setProducts(result.data.products);
-                } else {
-                    setProducts(fallbackProducts);
+                    if (typeof window !== 'undefined') {
+                        window.__INITIAL_FEATURED_PRODUCTS__ = result.data.products;
+                    }
                 }
             } catch (error) {
-                console.warn('Backend featured API unreachable. Using fallback products.');
-                setProducts(fallbackProducts);
+                console.warn('Backend featured API unreachable.');
             } finally {
                 setLoading(false);
             }

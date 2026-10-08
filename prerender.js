@@ -264,6 +264,22 @@ const server = app.listen(0, async () => {
                 document.querySelectorAll('title, link[rel="canonical"], meta[name="description"], meta[property^="og:"], meta[name^="twitter:"]').forEach(el => {
                     el.setAttribute('data-rh', 'true');
                 });
+
+                // Embed initial products for flawless React hydration without mismatch
+                if (window.__INITIAL_PRODUCTS__ && !document.getElementById('__INITIAL_PRODUCTS_DATA__')) {
+                    const script = document.createElement('script');
+                    script.id = '__INITIAL_PRODUCTS_DATA__';
+                    script.type = 'application/json';
+                    script.textContent = JSON.stringify(window.__INITIAL_PRODUCTS__);
+                    document.head.appendChild(script);
+                }
+                if (window.__INITIAL_FEATURED_PRODUCTS__ && !document.getElementById('__INITIAL_FEATURED_PRODUCTS_DATA__')) {
+                    const script = document.createElement('script');
+                    script.id = '__INITIAL_FEATURED_PRODUCTS_DATA__';
+                    script.type = 'application/json';
+                    script.textContent = JSON.stringify(window.__INITIAL_FEATURED_PRODUCTS__);
+                    document.head.appendChild(script);
+                }
             });
 
             let html = await page.content();

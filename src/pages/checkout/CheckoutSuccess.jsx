@@ -125,6 +125,26 @@ const CheckoutSuccess = () => {
             <Loader2 size={36} style={{ color: '#102a5c', animation: 'spin 1s linear infinite' }} />
             <p style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Loading order details...</p>
           </div>
+        ) : !orderId ? (
+          <div style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
+            <div style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', padding: '40px 40px 32px', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>
+              <div style={{ width: '64px', height: '64px', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                <Package size={32} style={{ color: '#475569' }} />
+              </div>
+              <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px' }}>No Order Specified</h1>
+              <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                Direct access to this page requires a valid order reference. If you recently completed a checkout, please verify your email for order confirmation details.
+              </p>
+            </div>
+            <div style={{ padding: '32px 40px', textAlign: 'center' }}>
+              <Link
+                to="/"
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: '#102a5c', color: '#fff', padding: '14px', borderRadius: '12px', fontSize: '15px', fontWeight: '600', textDecoration: 'none' }}
+              >
+                Return to Shop <ArrowRight size={18} />
+              </Link>
+            </div>
+          </div>
         ) : (
           <div style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
             {/* Success Banner */}

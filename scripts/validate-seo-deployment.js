@@ -171,6 +171,44 @@ for (const slug of researchSlugs) {
 }
 assert(missingOgPages.length === 0, `All 18 research pages have complete Open Graph and Twitter metadata (missing: ${missingOgPages.join(', ') || 'none'})`);
 
+// 9. Validate WebP Image Signature for /assets/logo.webp
+console.log('\n9. Validating Binary Format for /assets/logo.webp...');
+const logoPath = path.join(distDir, 'assets/logo.webp');
+if (fs.existsSync(logoPath)) {
+  const buf = fs.readFileSync(logoPath);
+  const isWebP = buf.length >= 12 && buf.slice(0, 4).toString('ascii') === 'RIFF' && buf.slice(8, 12).toString('ascii') === 'WEBP';
+  assert(isWebP, `/assets/logo.webp begins with RIFF/WEBP header (not PNG bytes). File size: ${buf.length} bytes`);
+}
+
+// 10. Validate Policy Page Metadata (Deduplication & Missing Descriptions)
+console.log('\n10. Validating Policy & CMS Page Metadata...');
+const dataSharingPath = path.join(distDir, 'pages/data-sharing-opt-out.html');
+if (fs.existsSync(dataSharingPath)) {
+  const content = fs.readFileSync(dataSharingPath, 'utf-8');
+  const canonicalCount = (content.match(/<link\s+rel="canonical"/gi) || []).length;
+  const titleCount = (content.match(/<title/gi) || []).length;
+  const ogTitleCount = (content.match(/property="og:title"/gi) || []).length;
+  assert(canonicalCount === 1, `/pages/data-sharing-opt-out has EXACTLY 1 canonical tag (found: ${canonicalCount})`);
+  assert(titleCount === 1, `/pages/data-sharing-opt-out has EXACTLY 1 title tag (found: ${titleCount})`);
+  assert(ogTitleCount <= 1, `/pages/data-sharing-opt-out has at most 1 og:title tag (found: ${ogTitleCount})`);
+}
+
+const dataSharing1Path = path.join(distDir, 'pages/data-sharing-opt-out-1.html');
+if (fs.existsSync(dataSharing1Path)) {
+  const content = fs.readFileSync(dataSharing1Path, 'utf-8');
+  assert(content.includes('property="og:title"'), '/pages/data-sharing-opt-out-1 contains og:title');
+  assert(content.includes('property="og:description"'), '/pages/data-sharing-opt-out-1 contains og:description');
+  assert(content.includes('name="twitter:card"'), '/pages/data-sharing-opt-out-1 contains twitter:card');
+}
+
+const bpcTbPath = path.join(distDir, 'pages/bpc-157-vs-tb-500.html');
+if (fs.existsSync(bpcTbPath)) {
+  const content = fs.readFileSync(bpcTbPath, 'utf-8');
+  const descMatch = content.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
+  assert(descMatch && descMatch[1].trim().length > 10, `/pages/bpc-157-vs-tb-500 has non-empty meta description: "${descMatch ? descMatch[1] : 'missing'}"`);
+  assert(content.includes('property="og:description"'), '/pages/bpc-157-vs-tb-500 contains og:description');
+}
+
 console.log('\n==================================================');
 if (errors === 0) {
   console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');

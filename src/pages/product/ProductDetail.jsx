@@ -306,6 +306,34 @@ const ProductDetail = () => {
 
     const imageUrl = product?.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : 'https://solatidebiosciences.com.au/assets/logo.webp';
 
+    // Schema.org Availability (InStock, BackOrder, OutOfStock)
+    const schemaAvailability = (() => {
+        if (!product) return "https://schema.org/OutOfStock";
+        
+        let stock = 0;
+        let canBackorder = false;
+
+        if (selectedVariant) {
+            stock = Number(selectedVariant.stockQty ?? 0);
+            canBackorder = 
+                selectedVariant.inventoryPolicy === 'continue' || 
+                selectedVariant.continueSellingWhenOutOfStock === true ||
+                product.inventoryPolicy === 'continue' || 
+                product.continueSellingWhenOutOfStock === true;
+        } else if (Array.isArray(product.variants) && product.variants.length > 0) {
+            stock = product.variants.reduce((sum, v) => sum + Number(v.stockQty ?? 0), 0);
+            canBackorder = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true || product.variants.some(v => v.inventoryPolicy === 'continue' || v.continueSellingWhenOutOfStock === true);
+        } else {
+            stock = Number(product.stockQuantity ?? product.stockQty ?? 0);
+            canBackorder = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true;
+        }
+
+        if (stock > 0) return "https://schema.org/InStock";
+        if (canBackorder) return "https://schema.org/BackOrder";
+        if (product.inStock === true || product.status === 'In Stock') return "https://schema.org/InStock";
+        return "https://schema.org/OutOfStock";
+    })();
+
     const productSchema = product ? {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -323,7 +351,7 @@ const ProductDetail = () => {
             "priceCurrency": "AUD",
             "price": formatNumericPrice(price),
             "itemCondition": "https://schema.org/NewCondition",
-            "availability": isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "availability": schemaAvailability,
             "seller": {
                 "@type": "Organization",
                 "name": "Solatide Biosciences"

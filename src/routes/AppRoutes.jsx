@@ -225,10 +225,15 @@ const AppRoutes = () => {
                             {/* Legacy URL Client-Side Redirects */}
                             <Route path="collections/metabolic-research" element={<Navigate to="/collections/glp-1-metabolic-peptides" replace />} />
                             <Route path="collections/repair-recovery-research" element={<Navigate to="/collections/tissue-cellular-research-peptides" replace />} />
+                            <Route path="products/retatrutide-10mg-lyophilised-peptide" element={<Navigate to="/products/retatrutide-10mg" replace />} />
+                            <Route path="products/retatrutide-5mg-lyophilised-peptide" element={<Navigate to="/products/retatrutide-5mg" replace />} />
+                            <Route path="products/semaglutide-10mg-lyophilised-peptide" element={<Navigate to="/products/semaglutide-10mg" replace />} />
+                            <Route path="products/semaglutide-5mg-lyophilised-peptide" element={<Navigate to="/products/semaglutide-5mg" replace />} />
                             <Route path="products/selank-semax-20mg" element={<Navigate to="/products/selank-10mg" replace />} />
                             <Route path="products/kpv-10mg-lyophilised-peptide" element={<Navigate to="/products/kpv-10mg" replace />} />
                             <Route path="products/mots-c-10mg-lyophilised-peptide" element={<Navigate to="/products/mots-c-10mg" replace />} />
                             <Route path="products/ss-31-elamipretide-10mg-lyophilised-peptide" element={<Navigate to="/products/ss-31-elamipretide-10mg" replace />} />
+                            <Route path="privacy-policy" element={<Navigate to="/pages/privacy-policy" replace />} />
                             <Route path="contact" element={<Navigate to="/pages/contact-us" replace />} />
                             <Route path="coa" element={<Navigate to="/pages/coa" replace />} />
                             <Route path="research-insight/nnmt-article" element={<Navigate to="/pages/research-library" replace />} />
