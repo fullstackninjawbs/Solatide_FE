@@ -47,7 +47,7 @@ const WhySolatideSection = () => {
                         <p className="mt-3 text-[15px] text-[#4B5563] font-semibold leading-[1.6]">
                             Quality verification follows a rigorous process:
                             <br />
-                            <span className="font-normal">Visit our <a className='text-[#1a4494] font-semibold hover:underline transition-all' href='/coa'>COA & Lab Testing</a> page for more information about our verification process.</span>
+                            <span className="font-normal">Visit our <a className='text-[#1a4494] font-semibold hover:underline transition-all' href='/pages/coa-lab-testing'>COA & Lab Testing</a> page for more information about our verification process.</span>
                         </p>
 
                         <ul className="mt-5 space-y-3 text-[15px] font-semibold text-slate-600 mb-6">
