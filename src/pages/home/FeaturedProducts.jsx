@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/RectangleMadBackground.webp'
-import { products as localProducts } from '../../data/products'
+
 import { useCart } from '../../context/CartContext'
 import { useCurrency } from '../../context/CurrencyContext'
 import { apiService } from '../../services/api'
@@ -36,7 +36,7 @@ const FeaturedProducts = () => {
                 } catch (e) {}
             }
         }
-        return localProducts && localProducts.length > 0 ? localProducts.slice(0, 8) : [];
+        return [];
     });
     const [loading, setLoading] = useState(false);
 

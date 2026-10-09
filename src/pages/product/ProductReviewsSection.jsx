@@ -6,31 +6,7 @@ import ReviewWizard from '../../components/reviews/ReviewWizard';
 import { apiService } from '../../services/api';
 
 const ProductReviewsSection = ({ product, onReviewsFetched }) => {
-    // Initial mock reviews data just in case API fails or is empty
-    const initialReviews = [
-        {
-            id: 1,
-            name: 'Anonymous',
-            role: 'Biotech Researcher',
-            rating: 5,
-            title: 'good Prodects',
-            comment: 'The peptide quality is consistently high, and the detailed batch documentation gives us complete confidence in our research. Solatide Biosciences has become our go-to source.',
-            createdAt: '2026-07-03T12:00:00Z',
-            verified: false
-        },
-        {
-            id: 2,
-            name: 'Michael D',
-            role: 'Biotech Researcher',
-            rating: 5,
-            title: 'Clear and tidy',
-            comment: 'Everything was clear and tidy. Order email, payment email, tracking email.',
-            createdAt: '2026-05-15T12:00:00Z',
-            verified: false
-        }
-    ];
-
-    const [reviews, setReviews] = useState(initialReviews);
+    const [reviews, setReviews] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -38,26 +14,39 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
     const [filterRating, setFilterRating] = useState('All');
     const [sortBy, setSortBy] = useState('newest');
 
+    const productId = product?._id || product?.id;
+
     useEffect(() => {
         const fetchReviews = async () => {
-            if (!product || (!product.id && !product._id)) return;
-            const productId = product._id || product.id;
+            if (!productId) {
+                setIsLoading(false);
+                return;
+            }
             try {
                 setIsLoading(true);
                 const res = await apiService.getProductReviews(productId, 'limit=100');
                 const data = await res.json();
-                if (data.success && data.reviews) {
+                if (data.success && Array.isArray(data.reviews)) {
                     setReviews(data.reviews);
+                    if (onReviewsFetched) {
+                        onReviewsFetched(data.reviews.length);
+                    }
+                } else {
+                    setReviews([]);
+                    if (onReviewsFetched) {
+                        onReviewsFetched(0);
+                    }
                 }
             } catch (err) {
-                console.error("Failed to fetch reviews, using mock data.", err);
+                console.error("Failed to fetch reviews.", err);
+                setReviews([]);
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchReviews();
-    }, [product]);
+    }, [productId]);
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
@@ -113,16 +102,13 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
 
     const processedReviews = getProcessedReviews();
 
-    const totalReviews = processedReviews.length;
+    const productReviewsCount = product?.reviewsCount ?? product?.ratingCount ?? 0;
+    const totalReviews = isLoading ? productReviewsCount : processedReviews.length;
     const averageRating = totalReviews > 0
-        ? (processedReviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1)
+        ? (processedReviews.length > 0
+            ? (processedReviews.reduce((acc, curr) => acc + curr.rating, 0) / processedReviews.length).toFixed(1)
+            : (product?.rating ? Number(product.rating).toFixed(1) : "5.0"))
         : "0.0";
-
-    useEffect(() => {
-        if (onReviewsFetched) {
-            onReviewsFetched(totalReviews);
-        }
-    }, [totalReviews, onReviewsFetched]);
 
     return (
         <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins']">

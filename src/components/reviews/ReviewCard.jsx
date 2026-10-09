@@ -58,7 +58,7 @@ const ReviewCard = ({ review, index }) => {
 
       {/* Bottom Row: Review Content */}
       <div className="text-left flex-grow">
-        {review.title && review.title !== 'good Prodects' && (
+        {review.title && (
           <h4 className="font-bold text-slate-900 text-[14px] mb-2">
             {review.title}
           </h4>
