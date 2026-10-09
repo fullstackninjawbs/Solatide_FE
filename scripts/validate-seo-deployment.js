@@ -193,14 +193,6 @@ if (fs.existsSync(dataSharingPath)) {
   assert(ogTitleCount <= 1, `/pages/data-sharing-opt-out has at most 1 og:title tag (found: ${ogTitleCount})`);
 }
 
-const dataSharing1Path = path.join(distDir, 'pages/data-sharing-opt-out-1.html');
-if (fs.existsSync(dataSharing1Path)) {
-  const content = fs.readFileSync(dataSharing1Path, 'utf-8');
-  assert(content.includes('property="og:title"'), '/pages/data-sharing-opt-out-1 contains og:title');
-  assert(content.includes('property="og:description"'), '/pages/data-sharing-opt-out-1 contains og:description');
-  assert(content.includes('name="twitter:card"'), '/pages/data-sharing-opt-out-1 contains twitter:card');
-}
-
 const bpcTbPath = path.join(distDir, 'pages/bpc-157-vs-tb-500.html');
 if (fs.existsSync(bpcTbPath)) {
   const content = fs.readFileSync(bpcTbPath, 'utf-8');

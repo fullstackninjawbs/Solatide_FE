@@ -60,7 +60,6 @@ const routes = [
     "/pages/tesamorelin-vs-ipamorelin",
     "/pages/what-is-tesamorelin",
     "/pages/what-is-kpv",
-    "/pages/data-sharing-opt-out-1",
     "/pages/research-use-disclaimer",
     "/404"
 ];

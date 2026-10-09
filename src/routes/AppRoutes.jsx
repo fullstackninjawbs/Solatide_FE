@@ -284,6 +284,7 @@ const AppRoutes = () => {
                             {/* <Route path="pages/tesamorelin-vs-ipamorelin" element={<TesaMorelinVsIpamorelin />} /> */}
                             <Route path="pages/what-is-tesamorelin" element={<WhatIsTesamorelin />} />
                             <Route path="pages/what-is-kpv" element={<WhatIsKPV />} />
+                            <Route path="pages/data-sharing-opt-out-1" element={<Navigate to="/pages/data-sharing-opt-out" replace />} />
                             <Route path="pages/tirzepatide-research-overview" element={<TirzepatideResearchOverview />} />
 
                             {/* Custom Pages */}
