@@ -99,6 +99,10 @@ const Shop = () => {
                 <meta property="og:url" content={canonicalUrl} />
                 <meta property="og:type" content="website" />
                 <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={targetTitle} />
+                <meta name="twitter:description" content={targetDesc} />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
                 <script type="application/ld+json">
                     {JSON.stringify(breadcrumbSchema)}
                 </script>
