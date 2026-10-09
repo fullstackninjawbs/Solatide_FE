@@ -96,21 +96,7 @@ const DiscountList = lazyWithRetry(() => import('../pages/admin/DiscountList'))
 const DiscountForm = lazyWithRetry(() => import('../pages/admin/DiscountForm'))
 const AdminUsers = lazyWithRetry(() => import('../pages/admin/settings/AdminUsers'))
 const ResearchPage = lazyWithRetry(() => import('../pages/research/ResearchPage'))
-const WhatIsBPC157 = lazyWithRetry(() => import('../pages/research/WhatIsBPC157'))
-const WhatIsGHKCu = lazyWithRetry(() => import('../pages/research/WhatIsGHKCu'))
-const WhatIsMOTSc = lazyWithRetry(() => import('../pages/research/WhatIsMOTSc'))
-const WhatIsSelank = lazyWithRetry(() => import('../pages/research/WhatIsSelank'))
-const GLP1ResearchOverview = lazyWithRetry(() => import('../pages/research/GLP1ResearchOverview'))
-const CagrisemaVsSemaglutide = lazyWithRetry(() => import('../pages/research/CagrisemaVsSemaglutide'))
-const CagrisemaVsTirzepatide = lazyWithRetry(() => import('../pages/research/CagrisemaVsTirzepatide'))
-const CagrisemaVsRetatrutide = lazyWithRetry(() => import('../pages/research/CagrisemaVsRetatrutide'))
-const CJC1295VsIpamorelin = lazyWithRetry(() => import('../pages/research/CJC1295VsIpamorelin'))
-const CJC1295VsTesamorelin = lazyWithRetry(() => import('../pages/research/CJC1295VsTesamorelin'))
-const SelankVsSemax = lazyWithRetry(() => import('../pages/research/SelankVsSemax'))
-const MOTScVsSS31 = lazyWithRetry(() => import('../pages/research/MOTScVsSS31'))
 const BPC157VsKPV = lazyWithRetry(() => import('../pages/research/BPC157VsKPV'))
-const NADPlusVsMOTSc = lazyWithRetry(() => import('../pages/research/NADPlusVsMOTSc'))
-const TesaMorelinVsIpamorelin = lazyWithRetry(() => import('../pages/research/TesaMorelinVsIpamorelin'))
 const WhatIsTesamorelin = lazyWithRetry(() => import('../pages/research/WhatIsTesamorelin'))
 const WhatIsKPV = lazyWithRetry(() => import('../pages/research/WhatIsKPV'))
 const DataSharingOptOut = lazyWithRetry(() => import('../pages/SitePolicies/DataSharingOptOut'))
@@ -276,21 +262,21 @@ const AppRoutes = () => {
                             <Route path="pages/refund-policy" element={<Returns />} />
 
                             {/* New Research Pages */}
-                            <Route path="pages/what-is-bpc-157" element={<WhatIsBPC157 />} />
-                            <Route path="pages/what-is-ghk-cu" element={<WhatIsGHKCu />} />
-                            <Route path="pages/what-is-mots-c" element={<WhatIsMOTSc />} />
-                            <Route path="pages/what-is-selank" element={<WhatIsSelank />} />
-                            <Route path="pages/glp-1-research-overview" element={<GLP1ResearchOverview />} />
-                            <Route path="pages/cagrisema-vs-semaglutide" element={<CagrisemaVsSemaglutide />} />
-                            <Route path="pages/cagrisema-vs-tirzepatide" element={<CagrisemaVsTirzepatide />} />
-                            <Route path="pages/cagrisema-vs-retatrutide" element={<CagrisemaVsRetatrutide />} />
-                            <Route path="pages/cjc-1295-vs-ipamorelin" element={<CJC1295VsIpamorelin />} />
-                            <Route path="pages/cjc-1295-vs-tesamorelin" element={<CJC1295VsTesamorelin />} />
-                            <Route path="pages/selank-vs-semax" element={<SelankVsSemax />} />
-                            <Route path="pages/mots-c-vs-ss-31" element={<MOTScVsSS31 />} />
+                            {/* <Route path="pages/what-is-bpc-157" element={<WhatIsBPC157 />} /> */}
+                            {/* <Route path="pages/what-is-ghk-cu" element={<WhatIsGHKCu />} /> */}
+                            {/* <Route path="pages/what-is-mots-c" element={<WhatIsMOTSc />} /> */}
+                            {/* <Route path="pages/what-is-selank" element={<WhatIsSelank />} /> */}
+                            {/* <Route path="pages/glp-1-research-overview" element={<GLP1ResearchOverview />} /> */}
+                            {/* <Route path="pages/cagrisema-vs-semaglutide" element={<CagrisemaVsSemaglutide />} /> */}
+                            {/* <Route path="pages/cagrisema-vs-tirzepatide" element={<CagrisemaVsTirzepatide />} /> */}
+                            {/* <Route path="pages/cagrisema-vs-retatrutide" element={<CagrisemaVsRetatrutide />} /> */}
+                            {/* <Route path="pages/cjc-1295-vs-ipamorelin" element={<CJC1295VsIpamorelin />} /> */}
+                            {/* <Route path="pages/cjc-1295-vs-tesamorelin" element={<CJC1295VsTesamorelin />} /> */}
+                            {/* <Route path="pages/selank-vs-semax" element={<SelankVsSemax />} /> */}
+                            {/* <Route path="pages/mots-c-vs-ss-31" element={<MOTScVsSS31 />} /> */}
                             <Route path="pages/bpc-157-vs-kpv" element={<BPC157VsKPV />} />
-                            <Route path="pages/nad-plus-vs-mots-c" element={<NADPlusVsMOTSc />} />
-                            <Route path="pages/tesamorelin-vs-ipamorelin" element={<TesaMorelinVsIpamorelin />} />
+                            {/* <Route path="pages/nad-plus-vs-mots-c" element={<NADPlusVsMOTSc />} /> */}
+                            {/* <Route path="pages/tesamorelin-vs-ipamorelin" element={<TesaMorelinVsIpamorelin />} /> */}
                             <Route path="pages/what-is-tesamorelin" element={<WhatIsTesamorelin />} />
                             <Route path="pages/what-is-kpv" element={<WhatIsKPV />} />
                             <Route path="pages/data-sharing-opt-out-1" element={<DataSharingOptOut />} />
