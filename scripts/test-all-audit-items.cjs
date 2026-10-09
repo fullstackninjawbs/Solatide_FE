@@ -173,6 +173,10 @@ async function runComprehensiveAudit() {
     { label: '301 redirect for /policies/terms-of-service', pattern: /location\s*=\s*\/policies\/terms-of-service\s*\{\s*return\s+301/ },
     { label: '301 redirect for /collections/frontpage', pattern: /location\s*=\s*\/collections\/frontpage\s*\{\s*return\s+301/ },
     { label: '410 handler for legacy .atom feeds', pattern: /location\s+~\*\s+\^\/collections\/.*\.atom\$\s*\{\s*return\s+410/ },
+    { label: 'Security header: Strict-Transport-Security (HSTS)', pattern: /add_header\s+Strict-Transport-Security/ },
+    { label: 'Security header: X-Content-Type-Options', pattern: /add_header\s+X-Content-Type-Options\s+"nosniff"/ },
+    { label: 'Security header: X-Frame-Options', pattern: /add_header\s+X-Frame-Options\s+"SAMEORIGIN"/ },
+    { label: 'Security header: Referrer-Policy', pattern: /add_header\s+Referrer-Policy\s+"strict-origin-when-cross-origin"/ },
   ];
 
   checks.forEach(check => {

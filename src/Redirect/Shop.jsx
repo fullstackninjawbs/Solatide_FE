@@ -66,6 +66,7 @@ const Shop = () => {
 
     const collectionTitles = {
         'all': 'Research Grade Peptides | Solatide Biosciences',
+        'research-grade-peptides': 'Research-Grade Peptides | Solatide Biosciences',
         'dermal-pigmentation-research': 'Dermal & Pigmentation Research Peptides MT2 GHK-Cu Australia – Solatide Biosciences',
         'tissue-cellular-research-peptides': 'Tissue & Cellular Research Peptides | BPC-157 TB-500 AU – Solatide Biosciences',
         'glp-1-metabolic-peptides': 'GLP-1 & Metabolic Research Peptides Australia | Solatide – Solatide Biosciences',
@@ -75,6 +76,7 @@ const Shop = () => {
 
     const collectionDescs = {
         'all': 'Browse research peptides, analytical reference standards and laboratory compounds with batch documentation and COAs. For in-vitro research use only.',
+        'research-grade-peptides': 'Browse Solatide Biosciences’ full catalogue of research grade peptides, analytical compounds and laboratory-use support materials. For in-vitro laboratory research use only.',
         'dermal-pigmentation-research': 'Solatide Biosciences dermal and pigmentation research peptides, including MT2 and GHK-Cu. Melanocortin receptor and copper peptide compounds with COA.',
         'tissue-cellular-research-peptides': 'Browse tissue and cellular research peptides including BPC-157, TB-500, and combined-pathway compounds for in-vitro laboratory research. COA verified.',
         'glp-1-metabolic-peptides': 'Research-grade GLP-1 receptor agonists, dual agonists, triple agonists, and metabolic research compounds. COA-verified. For in-vitro laboratory use only.',

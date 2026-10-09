@@ -67,6 +67,7 @@ if (fs.existsSync(sitemapPath)) {
   assert(urls.length === uniqueUrls.size, 'Sitemap contains ZERO duplicate URLs');
   assert(!xml.includes('/404'), 'Sitemap excludes /404 utility pages');
   assert(!xml.includes('/checkout'), 'Sitemap excludes private /checkout pages');
+  assert(uniqueUrls.has('https://solatidebiosciences.com.au/collections/research-grade-peptides'), 'Sitemap includes /collections/research-grade-peptides');
 }
 
 // 4. Validate Asset Resolution (/assets/logo.webp & favicon.png)

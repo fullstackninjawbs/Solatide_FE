@@ -12,6 +12,7 @@ const routes = [
     "/collections/dermal-pigmentation-research",
     "/pages/research-peptides-guide",
     "/collections/all",
+    "/collections/research-grade-peptides",
     "/collections/research-solutions",
     "/pages/research-library",
     "/pages/research-compound-database",
@@ -213,6 +214,35 @@ const server = app.listen(0, async () => {
         }
     } catch (e) {
         console.error('❌ Failed to fetch dynamic page routes from API:', e.message);
+    }
+
+    // Dynamically fetch collection routes from the backend API
+    try {
+        console.log(`Fetching dynamic collection routes from ${apiUrl}...`);
+        let colRes;
+        try {
+            colRes = await fetch(`${apiUrl}/api/products/collections`);
+        } catch {
+            console.warn(`Could not reach ${apiUrl}, falling back to production API for collections...`);
+            colRes = await fetch('https://solatidebiosciences.com.au/api/products/collections');
+        }
+        if (colRes && colRes.ok) {
+            const colData = await colRes.json();
+            const collections = Array.isArray(colData) ? colData : (colData.data || []);
+            let colCount = 0;
+            for (const col of collections) {
+                if (col.slug) {
+                    const colRoute = `/collections/${col.slug}`;
+                    if (!routes.includes(colRoute)) {
+                        routes.push(colRoute);
+                        colCount++;
+                    }
+                }
+            }
+            console.log(`✅ Added ${colCount} dynamic collection routes for prerendering!`);
+        }
+    } catch (e) {
+        console.error('❌ Failed to fetch dynamic collection routes from API:', e.message);
     }
 
     for (const route of routes) {
