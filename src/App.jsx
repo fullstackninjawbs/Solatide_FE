@@ -20,10 +20,16 @@ const HelmetHydrationCleaner = () => {
 };
 
 function App() {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <HelmetProvider>
       <HelmetHydrationCleaner />
-      <Toaster position="top-center" />
+      {isClient && <Toaster position="top-center" />}
       <CartProvider>
         <CurrencyProvider>
           <BrowserRouter>

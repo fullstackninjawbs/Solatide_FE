@@ -8,8 +8,8 @@ import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
 
 // Wrapper to handle Vite chunk load errors gracefully with retry before hard reloading
-const lazyWithRetry = (componentImport) =>
-    lazy(async () => {
+const lazyWithRetry = (componentImport) => {
+    const LazyComp = lazy(async () => {
         try {
             const component = await componentImport();
             window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
@@ -43,6 +43,13 @@ const lazyWithRetry = (componentImport) =>
             }
         }
     });
+
+    return (props) => (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
+            <LazyComp {...props} />
+        </Suspense>
+    );
+};
 
 const AdminLayout = lazyWithRetry(() => import('../layouts/AdminLayout'))
 
@@ -120,7 +127,7 @@ const isAdmin = appRole === 'admin' || appRole === 'all';
 
 const AppRoutes = () => {
     return (
-        <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#102a5c]" /></div>}>
+        <>
             <PageViewTracker />
             <Routes>
                 {/* Admin Routes */}
@@ -293,7 +300,7 @@ const AppRoutes = () => {
                     </>
                 )}
             </Routes>
-        </Suspense>
+        </>
     )
 }
 

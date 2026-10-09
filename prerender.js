@@ -135,6 +135,8 @@ const server = app.listen(0, async () => {
     } catch (e) { }
     const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000';
 
+    let catalogProducts = [];
+
     // Dynamically fetch product routes from the backend API
     try {
         console.log(`Fetching dynamic product routes from ${apiUrl}...`);
@@ -147,19 +149,18 @@ const server = app.listen(0, async () => {
         }
         const data = await res.json();
 
-        let products = [];
         if (Array.isArray(data)) {
-            products = data;
+            catalogProducts = data;
         } else if (data.products && Array.isArray(data.products)) {
-            products = data.products;
+            catalogProducts = data.products;
         } else if (data.data && Array.isArray(data.data.products)) {
-            products = data.data.products;
+            catalogProducts = data.data.products;
         } else if (data.data && Array.isArray(data.data)) {
-            products = data.data;
+            catalogProducts = data.data;
         }
 
         let count = 0;
-        for (const product of products) {
+        for (const product of catalogProducts) {
             if (product.slug) {
                 routes.push(`/products/${product.slug}`);
                 count++;
@@ -219,6 +220,15 @@ const server = app.listen(0, async () => {
         try {
             console.log(`Prerendering ${route}...`);
             const page = await browser.newPage();
+
+            // For the homepage, pre-inject catalog products so initial React render and prerendered DOM match 100%
+            if (route === '/' && catalogProducts.length > 0) {
+                await page.evaluateOnNewDocument((initialProducts) => {
+                    window.__INITIAL_PRODUCTS__ = initialProducts;
+                    window.__INITIAL_FEATURED_PRODUCTS__ = initialProducts.slice(0, 8);
+                }, catalogProducts);
+            }
+
             await page.goto(`http://localhost:${port}${route}`, { waitUntil: 'networkidle0' });
 
             // Wait an extra second to guarantee react-helmet has mutated the head
@@ -228,6 +238,9 @@ const server = app.listen(0, async () => {
             await page.evaluate(() => {
                 // 1. Remove dynamically injected GTM scripts so they don't duplicate when a user visits the static page
                 document.querySelectorAll('script[src*="gtm.js"]').forEach(s => s.remove());
+
+                // 2. Remove runtime toaster containers so client initial render matches static HTML 1:1
+                document.querySelectorAll('[data-rht-toaster]').forEach(el => el.remove());
 
                 // 2. Remove default static tags if helmet injected dynamic ones
                 const titles = Array.from(document.querySelectorAll('title'));
@@ -284,6 +297,21 @@ const server = app.listen(0, async () => {
 
             let html = await page.content();
 
+            // Guarantee embedded script tags for deterministic client hydration
+            if (route === '/' && catalogProducts.length > 0) {
+                if (!html.includes('id="__INITIAL_PRODUCTS_DATA__"')) {
+                    const productsScript = `<script id="__INITIAL_PRODUCTS_DATA__" type="application/json">${JSON.stringify(catalogProducts)}</script>`;
+                    html = html.replace('</head>', `  ${productsScript}\n</head>`);
+                }
+                if (!html.includes('id="__INITIAL_FEATURED_PRODUCTS_DATA__"')) {
+                    const featuredScript = `<script id="__INITIAL_FEATURED_PRODUCTS_DATA__" type="application/json">${JSON.stringify(catalogProducts.slice(0, 8))}</script>`;
+                    html = html.replace('</head>', `  ${featuredScript}\n</head>`);
+                }
+            }
+
+            // Strip any residual runtime toaster containers from HTML
+            html = html.replace(/<div\s+data-rht-toaster=""[^>]*><\/div>/gi, '');
+
             // Deduplicate meta tags, title tags, canonicals, and OpenGraph tags
             const prodOrigin = 'https://solatidebiosciences.com.au';
             html = html.replace(/http:\/\/localhost:\d+/g, prodOrigin);
@@ -326,14 +354,13 @@ const server = app.listen(0, async () => {
                 }
             }
 
-            // Format HTML head & structural elements with clean newlines for readable View Source (Ctrl + U)
-            html = html.replace(/(<\/(?:title|meta|link|script|style|header|nav|main|section|article|footer|div|p|h1|h2|h3|h4|h5|h6|ul|ol|li)>)(<)/gi, '$1\n$2');
+            // Format HTML head elements with clean newlines for readable View Source (Ctrl + U)
+            // Do NOT insert whitespace between body/root elements to prevent React hydration text-node mismatches
+            html = html.replace(/(<\/(?:title|meta|link|script|style)>)(<)/gi, '$1\n$2');
             html = html.replace(/(<meta[^>]*>)(<)/gi, '$1\n$2');
             html = html.replace(/(<link[^>]*>)(<)/gi, '$1\n$2');
             html = html.replace(/(<head[^>]*>)/gi, '$1\n');
             html = html.replace(/(<\/head>)/gi, '\n$1\n');
-            html = html.replace(/(<body[^>]*>)/gi, '$1\n');
-            html = html.replace(/(<\/body>)/gi, '\n$1\n');
 
             // Determine file path
             let filePath;

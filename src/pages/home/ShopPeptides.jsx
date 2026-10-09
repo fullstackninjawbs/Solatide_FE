@@ -19,13 +19,13 @@ const ShopPeptides = () => {
     const [products, setProducts] = useState(() => {
         if (typeof window !== 'undefined') {
             if (window.__INITIAL_PRODUCTS__ && Array.isArray(window.__INITIAL_PRODUCTS__)) {
-                return window.__INITIAL_PRODUCTS__;
+                return window.__INITIAL_PRODUCTS__.slice(0, 12);
             }
             const scriptTag = document.getElementById('__INITIAL_PRODUCTS_DATA__');
             if (scriptTag && scriptTag.textContent) {
                 try {
                     const parsed = JSON.parse(scriptTag.textContent);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed.slice(0, 12);
                 } catch (e) {}
             }
         }
@@ -67,7 +67,7 @@ const ShopPeptides = () => {
                     </h2>
                 </div>
 
-                <div className="relative w-full">
+                <div className="relative w-full" suppressHydrationWarning>
                     <button
                         className="shop-prev absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none hover:bg-slate-50 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >

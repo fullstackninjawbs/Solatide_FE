@@ -162,7 +162,6 @@ const Header = () => {
                     : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                     }`}
             >
-
                 <div className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
                     }`}>
                     <div className={`absolute flex items-center justify-center gap-2 transition-all duration-500 ease-in-out ${announcementIndex === 0 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>

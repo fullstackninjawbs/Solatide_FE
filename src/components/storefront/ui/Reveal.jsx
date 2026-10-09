@@ -29,7 +29,7 @@ const Reveal = ({ children, delay = 0, direction = 'up', width = '100%', classNa
   };
 
   return (
-    <div style={{ width }} className={className}>
+    <div style={{ width }} className={className} suppressHydrationWarning>
       <motion.div
         variants={getVariants()}
         initial="hidden"
