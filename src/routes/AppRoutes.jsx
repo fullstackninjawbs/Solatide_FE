@@ -105,7 +105,6 @@ const ResearchPage = lazyWithRetry(() => import('../pages/research/ResearchPage'
 const BPC157VsKPV = lazyWithRetry(() => import('../pages/research/BPC157VsKPV'))
 const WhatIsTesamorelin = lazyWithRetry(() => import('../pages/research/WhatIsTesamorelin'))
 const WhatIsKPV = lazyWithRetry(() => import('../pages/research/WhatIsKPV'))
-const DataSharingOptOut = lazyWithRetry(() => import('../pages/SitePolicies/DataSharingOptOut'))
 const TirzepatideResearchOverview = lazyWithRetry(() => import('../pages/research/TirzepatideResearchOverview'))
 const NotFound = lazyWithRetry(() => import('../pages/NotFound'))
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
@@ -285,7 +284,6 @@ const AppRoutes = () => {
                             {/* <Route path="pages/tesamorelin-vs-ipamorelin" element={<TesaMorelinVsIpamorelin />} /> */}
                             <Route path="pages/what-is-tesamorelin" element={<WhatIsTesamorelin />} />
                             <Route path="pages/what-is-kpv" element={<WhatIsKPV />} />
-                            <Route path="pages/data-sharing-opt-out-1" element={<DataSharingOptOut />} />
                             <Route path="pages/tirzepatide-research-overview" element={<TirzepatideResearchOverview />} />
 
                             {/* Custom Pages */}
