@@ -1,45 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { apiService } from '../services/api';
-import DOMPurify from 'dompurify'; // ensure frontend sanitization as well
+import { sanitizeHtml, sanitizedMarkup } from '../utils/sanitize';
+import { getRouteData, sameData, stripInternal } from '../utils/routeData';
+import { ROBOTS_INDEX, ROBOTS_NOINDEX } from '../utils/seo';
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+// CMS page embedded by prerender.js for this slug (same response the prerender rendered).
+const getEmbeddedPage = (slug) => {
+  if (!slug) return null;
+  const body = getRouteData(`/api/v1/pages/${slug}`);
+  return body && typeof body === 'object' && !body.redirect && body.slug ? body : null;
+};
+
+// Legacy /policies/* links in CMS content -> canonical /pages/* URLs (L-3).
+const POLICY_LINKS = [
+  [/href=["']\/policies\/shipping-policy["']/gi, 'href="/pages/shipping-policy"'],
+  [/href=["']\/policies\/refund-policy["']/gi, 'href="/pages/refund-policy"'],
+  [/href=["']\/policies\/terms-of-service["']/gi, 'href="/pages/terms-of-services"'],
+  [/href=["']\/policies\/privacy-policy["']/gi, 'href="/pages/privacy-policy"'],
+];
 
 const DynamicPage = () => {
   const { slug } = useParams();
-  const [page, setPage] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [page, setPage] = useState(() => getEmbeddedPage(slug));
+  const [loading, setLoading] = useState(() => !getEmbeddedPage(slug));
   const [error, setError] = useState(false);
+  // When the slug changes (client navigation), adopt embedded data or show the loader
+  // (adjust-state-during-render pattern instead of a synchronous setState in an effect).
+  const [stateForSlug, setStateForSlug] = useState(slug);
+  if (stateForSlug !== slug) {
+    setStateForSlug(slug);
+    const embedded = getEmbeddedPage(slug);
+    if (embedded) {
+      setPage(prev => (sameData(prev, embedded) ? prev : embedded));
+      setLoading(false);
+    } else if (!page || page.slug !== slug) {
+      setLoading(true);
+    }
+    setError(false);
+  }
 
   useEffect(() => {
+    let cancelled = false;
+    const embedded = getEmbeddedPage(slug);
+
     const fetchPage = async () => {
       try {
-        setLoading(true);
-        setError(false);
+        if (!SLUG_RE.test(slug || '')) {
+          if (!cancelled) setError(true);
+          return;
+        }
         const res = await apiService.getPublicPage(slug);
+        if (cancelled) return;
 
-        if (!res.ok) {
-          setError(true);
+        // Check the status before anything else: 404/410/5xx are "not found" for the visitor.
+        if (res.status === 404 || res.status === 410 || !res.ok) {
+          if (!embedded) setError(true);
           return;
         }
 
         const data = await res.json();
+        if (cancelled) return;
 
-        // Handle redirect if the backend says the slug moved
-        if (data.redirect) {
-          window.location.replace(`/pages/${data.targetSlug}`);
+        // Slug moved: server answers 200 {redirect: true, targetSlug} -> client-side replace.
+        if (data && data.redirect && data.targetSlug && SLUG_RE.test(data.targetSlug)) {
+          navigate(`/pages/${data.targetSlug}`, { replace: true });
           return;
         }
 
-        setPage(data);
-      } catch (err) {
-        setError(true);
+        if (data && data.slug) {
+          const fresh = stripInternal(data);
+          setPage(prev => (sameData(prev, fresh) ? prev : fresh));
+          setError(false);
+        } else if (!embedded) {
+          setError(true);
+        }
+      } catch {
+        if (!cancelled && !embedded) setError(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchPage();
-  }, [slug]);
+    return () => { cancelled = true; };
+  }, [slug, navigate]);
 
   if (loading) {
     return (
@@ -55,8 +104,7 @@ const DynamicPage = () => {
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <Helmet>
           <title>Page Not Found - Solatide Biosciences</title>
-          <meta name="robots" content="noindex, nofollow" />
-          <link rel="canonical" href="" />
+          <meta name="robots" content={ROBOTS_NOINDEX} />
         </Helmet>
         <h1 className="text-4xl sm:text-6xl font-bold text-slate-800 mb-4">404</h1>
         <p className="text-lg text-slate-600 mb-8 max-w-md">
@@ -87,8 +135,9 @@ const DynamicPage = () => {
     "headline": page.title,
     "description": pageDescription,
     "url": canonicalUrl,
-    "datePublished": page.publishedAt || page.createdAt || "2026-01-01T00:00:00Z",
-    "dateModified": page.updatedAt || page.publishedAt || "2026-01-01T00:00:00Z",
+    // Real CMS timestamps only — never a fabricated date.
+    ...((page.publishedAt || page.createdAt) ? { "datePublished": page.publishedAt || page.createdAt } : {}),
+    ...((page.updatedAt || page.publishedAt) ? { "dateModified": page.updatedAt || page.publishedAt } : {}),
     "publisher": {
       "@type": "Organization",
       "name": "Solatide Biosciences",
@@ -101,7 +150,7 @@ const DynamicPage = () => {
 
   const normalizePageContent = (rawHtml, pageTitle) => {
     if (!rawHtml) return '';
-    let sanitized = DOMPurify.sanitize(rawHtml);
+    let sanitized = sanitizeHtml(rawHtml);
 
     // 1. Remove empty or whitespace/<br> only H1 tags
     sanitized = sanitized.replace(/<h1[^>]*>(\s*|<br\s*\/?>|&nbsp;)*<\/h1>/gi, '');
@@ -126,6 +175,9 @@ const DynamicPage = () => {
       .replace(/\/products\/retatrutide-10mg-lyophilised-peptide/g, '/products/retatrutide-10mg')
       .replace(/\/products\/([a-z0-9-]+)-lyophilised-peptide/g, '/products/$1')
       .replace(/href=["']\/privacy-policy["']/g, 'href="/pages/privacy-policy"');
+    for (const [re, replacement] of POLICY_LINKS) {
+      sanitized = sanitized.replace(re, replacement);
+    }
 
     return sanitized;
   };
@@ -136,6 +188,7 @@ const DynamicPage = () => {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <link rel="canonical" href={canonicalUrl} />
+        <meta name="robots" content={ROBOTS_INDEX} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={canonicalUrl} />
@@ -171,7 +224,7 @@ const DynamicPage = () => {
                    prose-img:rounded-xl prose-img:shadow-md
                    prose-pre:bg-slate-800 prose-pre:text-slate-50
                    jodit-content-wrapper"
-        dangerouslySetInnerHTML={{ __html: normalizePageContent(page.content?.html, page.title) }}
+        dangerouslySetInnerHTML={sanitizedMarkup(normalizePageContent(page.content?.html, page.title))}
       />
     </div>
   );

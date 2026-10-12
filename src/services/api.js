@@ -11,6 +11,19 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// Storefront customer authentication (excludes adminToken to avoid pre-filling admin credentials on checkout)
+const getCustomerAuthHeaders = () => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+// Public product GETs stay anonymous on the storefront (cacheable public projection: active
+// products only, no internal fields). Inside the admin panel the same endpoints need the staff
+// token so drafts and internal fields (stock thresholds, cost, sync state…) are returned.
+const adminContextHeaders = () => (
+  typeof window !== 'undefined' && window.location.pathname.startsWith('/admin') ? getAuthHeaders() : {}
+);
+
 const customFetch = async (url, options = {}) => {
   const response = await fetch(url, options);
   if (response.status === 401) {
@@ -27,16 +40,18 @@ const customFetch = async (url, options = {}) => {
 export const apiService = {
   // Products
   getProducts: async (queryParams = '') => {
-    return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`);
+    return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`, {
+      headers: { ...adminContextHeaders() }
+    });
   },
   getPublicCollections: async () => {
     return customFetch(`${API_URL}/api/products/collections`);
   },
   getProductById: async (id, options = {}) => {
-    return customFetch(`${API_URL}/api/products/${id}`, options);
+    return customFetch(`${API_URL}/api/products/${id}`, { ...options, headers: { ...adminContextHeaders(), ...(options.headers || {}) } });
   },
   getProductBySlug: async (slug, options = {}) => {
-    return customFetch(`${API_URL}/api/products/${slug}`, options);
+    return customFetch(`${API_URL}/api/products/${slug}`, { ...options, headers: { ...adminContextHeaders(), ...(options.headers || {}) } });
   },
   getPublicCoas: async () => {
     return customFetch(`${API_URL}/api/v1/coas`);
@@ -178,14 +193,14 @@ export const apiService = {
   createOrder: async (data) => {
     return customFetch(`${API_URL}/api/v1/orders`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
       body: JSON.stringify(data)
     });
   },
   createTagadaPayment: async (data) => {
     return customFetch(`${API_URL}/api/payments/tagada/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
       body: JSON.stringify(data)
     });
   },

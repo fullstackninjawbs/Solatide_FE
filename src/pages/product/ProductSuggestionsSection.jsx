@@ -1,16 +1,28 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
-import { products } from '../../data/products';
 import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
+import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+
+const SUGGESTIONS_KEY = '/api/products?limit=7';
+const pickSuggestions = (list, currentProduct) => (list || [])
+    .filter(p => p._id !== currentProduct?._id && p.id !== currentProduct?.id)
+    .slice(0, 5)
+    .map(toCardDto);
+const getEmbeddedSuggestions = (currentProduct) => {
+    const body = getRouteData(SUGGESTIONS_KEY);
+    return body && body.success && body.data && Array.isArray(body.data.products)
+        ? pickSuggestions(body.data.products, currentProduct)
+        : null;
+};
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
-    const [suggestedProducts, setSuggestedProducts] = useState([]);
+    const [suggestedProducts, setSuggestedProducts] = useState(() => getEmbeddedSuggestions(currentProduct) || []);
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
 
@@ -20,26 +32,20 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 const response = await apiService.getProducts('limit=7');
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
-                    // Filter out current product
-                    const filtered = result.data.products.filter(
-                        p => p._id !== currentProduct._id && p.id !== currentProduct.id
-                    ).slice(0, 5);
-                    setSuggestedProducts(filtered);
-                } else {
-                    const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
-                    setSuggestedProducts(fallback);
+                    // Filter out current product; only update state when the list actually changed
+                    const filtered = pickSuggestions(result.data.products, currentProduct);
+                    setSuggestedProducts(prev => (sameData(prev, filtered) ? prev : filtered));
                 }
-            } catch (error) {
-                console.warn('Backend suggestions API unreachable. Using static fallback.');
-                const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
-                setSuggestedProducts(fallback);
+            } catch {
+                // No static/sample fallback: keep embedded suggestions (if any), otherwise show none.
+                console.warn('Backend suggestions API unreachable.');
             }
         };
 
         if (currentProduct) {
             fetchSuggestions();
         }
-    }, [currentProduct]);
+    }, [currentProduct?._id, currentProduct?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
@@ -116,12 +122,12 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 {/* Badges */}
                                 {product.inStock ? (
                                     <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                        <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                        <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></span>
                                         In Stock
                                     </span>
                                 ) : (
                                     <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                        <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></div>
+                                        <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></span>
                                         Sold Out
                                     </span>
                                 )}

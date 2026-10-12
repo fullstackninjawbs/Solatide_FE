@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const MOTScVsSS31 = () => {
     return (
@@ -12,6 +13,7 @@ const MOTScVsSS31 = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/mots-c-vs-ss-31" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="MOTS-c vs SS-31 | Solatide Biosciences" />
                 <meta
                     property="og:description"

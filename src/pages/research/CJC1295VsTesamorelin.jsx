@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const CJC1295VsTesamorelin = () => {
     return (
@@ -12,6 +13,7 @@ const CJC1295VsTesamorelin = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/cjc-1295-vs-tesamorelin" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="CJC-1295 vs Tesamorelin | Solatide Biosciences" />
                 <meta
                     property="og:description"

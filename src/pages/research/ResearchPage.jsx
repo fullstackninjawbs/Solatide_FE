@@ -14,7 +14,7 @@ const Bpc157Content = () => (
         BPC-157 is a synthetic peptide fragment commonly discussed in laboratory settings that examine tissue-response mechanisms, angiogenesis-related signalling, cellular migration, and experimental models of repair-associated pathways. Within the broader research-peptide landscape, it is usually grouped with compounds used to study how cells respond to injury-related or regeneration-oriented experimental conditions.
       </p>
       <p>
-        As a <Link to="#" className="text-[#00D1FF] hover:underline">research-grade peptide</Link>, BPC-157 is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
+        As a research-grade peptide, BPC-157 is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
       </p>
     </div>
 
@@ -29,7 +29,7 @@ const Bpc157Content = () => (
           Researchers study BPC-157 in contexts related to cellular repair mechanisms, tissue response pathways, and recovery-related signalling. Its appearance in experimental literature reflects interest in understanding how peptide sequences may influence cellular behavior in injury models, migration studies, and tissue integrity investigations.
         </p>
         <p>
-          Unlike metabolic peptides such as <Link to="#" className="text-[#00D1FF] hover:underline">retatrutide</Link>, BPC-157 does not target incretin or glucagon receptors. Instead, it is examined for its potential effects on growth factor pathways, angiogenic signalling, and cellular repair cascades in laboratory models.
+          Unlike metabolic peptides such as retatrutide, BPC-157 does not target incretin or glucagon receptors. Instead, it is examined for its potential effects on growth factor pathways, angiogenic signalling, and cellular repair cascades in laboratory models.
         </p>
       </div>
     </section>
@@ -64,7 +64,7 @@ const Bpc157Content = () => (
           <li><strong className="text-slate-700">Tissue repair models:</strong> Investigating cellular responses in experimental injury models, including wound healing assays and tissue damage protocols</li>
           <li><strong className="text-slate-700">Cellular migration studies:</strong> Examining how BPC-157 affects cell movement and positioning in culture systems and migration assays</li>
           <li><strong className="text-slate-700">Angiogenesis research:</strong> Studying potential effects on blood vessel formation and endothelial cell behavior in controlled settings</li>
-          <li><strong className="text-slate-700">Comparative peptide studies:</strong> Comparing BPC-157 with other repair-associated peptides like <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> to understand distinct versus overlapping mechanisms</li>
+          <li><strong className="text-slate-700">Comparative peptide studies:</strong> Comparing BPC-157 with other repair-associated peptides like TB-500 to understand distinct versus overlapping mechanisms</li>
           <li><strong className="text-slate-700">Signalling pathway research:</strong> Investigating how BPC-157 may interact with growth factor receptors, inflammatory mediators, and other cellular signalling systems</li>
         </ul>
       </div>
@@ -88,7 +88,7 @@ const Bpc157Content = () => (
         <p>
           Researchers frequently compare BPC-157 with other peptides studied in repair and recovery contexts:
         </p>
-        <p><strong className="text-slate-700">TB-500:</strong> Often studied alongside BPC-157, <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> is a thymosin beta-4 fragment that also appears in migration and repair research. Comparative studies help researchers understand whether these peptides work through similar or distinct pathways.</p>
+        <p><strong className="text-slate-700">TB-500:</strong> Often studied alongside BPC-157, TB-500 is a thymosin beta-4 fragment that also appears in migration and repair research. Comparative studies help researchers understand whether these peptides work through similar or distinct pathways.</p>
         <p><strong className="text-slate-700">Growth hormone peptides:</strong> While mechanistically different, BPC-157 is sometimes compared with growth hormone-releasing peptides in research examining tissue response and recovery mechanisms.</p>
         <p><strong className="text-slate-700">Other repair-associated peptides:</strong> BPC-157 may be studied in comparison with other sequences investigated for effects on cellular repair, angiogenesis, or tissue integrity in experimental models.</p>
         <p>
@@ -102,10 +102,10 @@ const Bpc157Content = () => (
       <h2 className="text-[28px] font-light text-[#777777] mb-6">Quality and Documentation</h2>
       <div className="text-[13.5px] space-y-5">
         <p>
-          All <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> supplied by Solatide Biosciences undergoes post-manufacturing quality control before dispatch. Selected batches may also be supported by independent third-party laboratory documentation, which may include reports from laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. Where available, documentation is published on the relevant product page and may include purity results, product identity, and date of analysis.
+          All BPC-157 supplied by Solatide Biosciences undergoes post-manufacturing quality control before dispatch. Selected batches may also be supported by independent third-party laboratory documentation, which may include reports from laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. Where available, documentation is published on the relevant product page and may include purity results, product identity, and date of analysis.
         </p>
         <p>
-          Documentation availability, scope, and format vary by product and testing cycle. BPC-157 is supplied strictly for laboratory research purposes and is not intended for human use, therapeutic applications, or any form of self-administration. Researchers should handle all peptides according to institutional safety protocols and applicable regulations. Visit our <Link to="#" className="text-[#00D1FF] hover:underline">COA & Lab Testing</Link> page for more information.
+          Documentation availability, scope, and format vary by product and testing cycle. BPC-157 is supplied strictly for laboratory research purposes and is not intended for human use, therapeutic applications, or any form of self-administration. Researchers should handle all peptides according to institutional safety protocols and applicable regulations. Visit our COA & Lab Testing page for more information.
         </p>
       </div>
     </section>
@@ -120,15 +120,15 @@ const Bpc157Content = () => (
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">How does BPC-157 differ from TB-500?</h3>
-          <p className="text-[13.5px]">While both BPC-157 and <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> appear in repair-related research, they are distinct peptides with different sequences and potentially different mechanisms. BPC-157 is a gastric peptide fragment, while TB-500 is derived from thymosin beta-4. Researchers often study them comparatively to understand their respective roles in cellular repair models.</p>
+          <p className="text-[13.5px]">While both BPC-157 and TB-500 appear in repair-related research, they are distinct peptides with different sequences and potentially different mechanisms. BPC-157 is a gastric peptide fragment, while TB-500 is derived from thymosin beta-4. Researchers often study them comparatively to understand their respective roles in cellular repair models.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">Is BPC-157 suitable for in-vitro research?</h3>
-          <p className="text-[13.5px]">Yes, BPC-157 is supplied as a <Link to="#" className="text-[#00D1FF] hover:underline">research-grade peptide</Link> for in-vitro and controlled laboratory applications. It is accompanied by analytical documentation where available to support experimental work.</p>
+          <p className="text-[13.5px]">Yes, BPC-157 is supplied as a research-grade peptide for in-vitro and controlled laboratory applications. It is accompanied by analytical documentation where available to support experimental work.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">How should BPC-157 be stored?</h3>
-          <p className="text-[13.5px]">Lyophilised BPC-157 should be stored at -20°C or colder in a sealed container protected from light and moisture. Once reconstituted, solutions should be aliquoted and stored according to your laboratory's peptide handling protocols to maintain stability. For more guidance, see our <Link to="#" className="text-[#00D1FF] hover:underline">FAQ</Link>.</p>
+          <p className="text-[13.5px]">Lyophilised BPC-157 should be stored at -20°C or colder in a sealed container protected from light and moisture. Once reconstituted, solutions should be aliquoted and stored according to your laboratory's peptide handling protocols to maintain stability. For more guidance, see our FAQ.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">What types of research is BPC-157 used for?</h3>
@@ -168,14 +168,14 @@ const Bpc157Content = () => (
     <section className="mb-14">
       <h2 className="text-[28px] font-light text-[#777777] mb-6">Related Research Resources</h2>
       <ul className="list-disc pl-5 space-y-2 text-[13.5px] text-[#00D1FF]">
-        <li><Link to="#" className="hover:underline">BPC-157 10mg research peptide</Link></li>
-        <li><Link to="#" className="hover:underline">Repair & recovery peptides</Link></li>
-        <li><Link to="#" className="hover:underline">What is TB-500?</Link></li>
-        <li><Link to="#" className="hover:underline">BPC-157 vs TB-500 comparison</Link></li>
+        <li>BPC-157 10mg research peptide</li>
+        <li>Repair & recovery peptides</li>
+        <li>What is TB-500?</li>
+        <li>BPC-157 vs TB-500 comparison</li>
       </ul>
       
       <p className="mt-8 text-[13px] text-slate-400 italic leading-relaxed">
-        All BPC-157 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
+        All BPC-157 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on TB-500 or explore our research peptides guide.
       </p>
     </section>
   </>
@@ -194,7 +194,7 @@ const Tb500Content = () => (
         TB-500 is a synthetic thymosin beta-4 fragment commonly referenced in laboratory research involving cellular migration, actin-associated processes, tissue-response modelling, and recovery-oriented pathway investigation. It is often grouped with repair-focused peptides, but its research interest is typically framed more around movement, signalling coordination, and broader response dynamics than around a single isolated mechanism.
       </p>
       <p>
-        As a <Link to="#" className="text-[#00D1FF] hover:underline">research-grade peptide</Link>, TB-500 is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
+        As a research-grade peptide, TB-500 is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
       </p>
     </div>
 
@@ -209,7 +209,7 @@ const Tb500Content = () => (
           Researchers study TB-500 in contexts related to cellular migration, actin regulation, tissue repair pathways, and recovery-related signalling. Its appearance in experimental literature reflects interest in understanding how this peptide sequence may influence cellular behavior in injury models, migration assays, and tissue integrity investigations.
         </p>
         <p>
-          Unlike metabolic peptides such as <Link to="#" className="text-[#00D1FF] hover:underline">retatrutide</Link>, TB-500 does not target incretin or glucagon receptors. Instead, it is examined for its potential effects on cytoskeletal dynamics, cell migration pathways, and tissue repair cascades in laboratory models.
+          Unlike metabolic peptides such as retatrutide, TB-500 does not target incretin or glucagon receptors. Instead, it is examined for its potential effects on cytoskeletal dynamics, cell migration pathways, and tissue repair cascades in laboratory models.
         </p>
       </div>
     </section>
@@ -245,7 +245,7 @@ const Tb500Content = () => (
           <li><strong className="text-slate-700">Wound healing models:</strong> Investigating cellular responses in experimental injury models, including tissue damage protocols and repair assays</li>
           <li><strong className="text-slate-700">Cell migration studies:</strong> Examining how TB-500 affects cell movement, positioning, and migration dynamics in culture systems and experimental models</li>
           <li><strong className="text-slate-700">Angiogenesis research:</strong> Studying potential effects on blood vessel formation and vascular development in controlled settings</li>
-          <li><strong className="text-slate-700">Comparative peptide studies:</strong> Comparing TB-500 with other repair-associated peptides like <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> to understand distinct versus overlapping mechanisms</li>
+          <li><strong className="text-slate-700">Comparative peptide studies:</strong> Comparing TB-500 with other repair-associated peptides like BPC-157 to understand distinct versus overlapping mechanisms</li>
           <li><strong className="text-slate-700">Cytoskeletal research:</strong> Investigating how TB-500's interaction with actin affects cellular structure, movement, and function</li>
           <li><strong className="text-slate-700">Tissue repair pathways:</strong> Examining TB-500's role in various tissue types and repair mechanisms in experimental models</li>
         </ul>
@@ -270,7 +270,7 @@ const Tb500Content = () => (
         <p>
           Researchers frequently compare TB-500 with other peptides studied in repair and recovery contexts:
         </p>
-        <p><strong className="text-slate-700">BPC-157:</strong> Often studied alongside TB-500, <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> is a gastric peptide fragment that also appears in repair and recovery research. Comparative studies help researchers understand whether these peptides work through similar or distinct pathways, with TB-500 focusing more on actin-mediated migration and BPC-157 on growth factor modulation.</p>
+        <p><strong className="text-slate-700">BPC-157:</strong> Often studied alongside TB-500, BPC-157 is a gastric peptide fragment that also appears in repair and recovery research. Comparative studies help researchers understand whether these peptides work through similar or distinct pathways, with TB-500 focusing more on actin-mediated migration and BPC-157 on growth factor modulation.</p>
         <p><strong className="text-slate-700">Thymosin beta-4:</strong> As the parent protein from which TB-500 is derived, thymosin beta-4 is sometimes compared with TB-500 to understand whether the fragment retains the full activity of the complete protein or exhibits distinct properties.</p>
         <p><strong className="text-slate-700">Other migration-related peptides:</strong> TB-500 may be studied in comparison with other sequences investigated for effects on cellular migration, cytoskeletal dynamics, or tissue repair in experimental models.</p>
         <p>
@@ -284,10 +284,10 @@ const Tb500Content = () => (
       <h2 className="text-[28px] font-light text-[#777777] mb-6">Quality and Documentation</h2>
       <div className="text-[13.5px] space-y-5">
         <p>
-          All <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link> supplied by Solatide Biosciences undergoes post-manufacturing quality control before dispatch. Selected batches may also be supported by independent third-party laboratory documentation, which may include reports from laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. Where available, documentation is published on the relevant product page and may include purity results, product identity, and date of analysis.
+          All TB-500 supplied by Solatide Biosciences undergoes post-manufacturing quality control before dispatch. Selected batches may also be supported by independent third-party laboratory documentation, which may include reports from laboratories such as Janoshik, Chromate, and Freedom Diagnostics, depending on the batch. Where available, documentation is published on the relevant product page and may include purity results, product identity, and date of analysis.
         </p>
         <p>
-          Documentation availability, scope, and format vary by product and testing cycle. TB-500 is supplied strictly for laboratory research purposes and is not intended for human use, therapeutic applications, or any form of self-administration. Researchers should handle all peptides according to institutional safety protocols and applicable regulations. Visit our <Link to="#" className="text-[#00D1FF] hover:underline">COA & Lab Testing</Link> page for more information.
+          Documentation availability, scope, and format vary by product and testing cycle. TB-500 is supplied strictly for laboratory research purposes and is not intended for human use, therapeutic applications, or any form of self-administration. Researchers should handle all peptides according to institutional safety protocols and applicable regulations. Visit our COA & Lab Testing page for more information.
         </p>
       </div>
     </section>
@@ -302,15 +302,15 @@ const Tb500Content = () => (
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">How does TB-500 differ from BPC-157?</h3>
-          <p className="text-[13.5px]">While both TB-500 and <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> appear in repair-related research, they are distinct peptides with different origins and mechanisms. TB-500 is derived from thymosin beta-4 and is known for its actin-binding properties and role in cellular migration, while BPC-157 is a gastric peptide fragment studied for growth factor modulation and angiogenic signalling. Researchers often study them comparatively to understand their respective roles in cellular repair models.</p>
+          <p className="text-[13.5px]">While both TB-500 and BPC-157 appear in repair-related research, they are distinct peptides with different origins and mechanisms. TB-500 is derived from thymosin beta-4 and is known for its actin-binding properties and role in cellular migration, while BPC-157 is a gastric peptide fragment studied for growth factor modulation and angiogenic signalling. Researchers often study them comparatively to understand their respective roles in cellular repair models.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">Is TB-500 suitable for in-vitro research?</h3>
-          <p className="text-[13.5px]">Yes, TB-500 is supplied as a <Link to="#" className="text-[#00D1FF] hover:underline">research-grade peptide</Link> for in-vitro and controlled laboratory applications. It is accompanied by analytical documentation where available to support experimental work.</p>
+          <p className="text-[13.5px]">Yes, TB-500 is supplied as a research-grade peptide for in-vitro and controlled laboratory applications. It is accompanied by analytical documentation where available to support experimental work.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">How should TB-500 be stored?</h3>
-          <p className="text-[13.5px]">Lyophilised TB-500 should be stored at -20°C or colder in a sealed container protected from light and moisture. Once reconstituted, solutions should be aliquoted and stored according to your laboratory's peptide handling protocols to maintain stability. For more guidance, see our <Link to="#" className="text-[#00D1FF] hover:underline">FAQ</Link>.</p>
+          <p className="text-[13.5px]">Lyophilised TB-500 should be stored at -20°C or colder in a sealed container protected from light and moisture. Once reconstituted, solutions should be aliquoted and stored according to your laboratory's peptide handling protocols to maintain stability. For more guidance, see our FAQ.</p>
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#214A9E] mb-3">What types of research is TB-500 used for?</h3>
@@ -350,14 +350,14 @@ const Tb500Content = () => (
     <section className="mb-14">
       <h2 className="text-[28px] font-light text-[#777777] mb-6">Related Research Resources</h2>
       <ul className="list-disc pl-5 space-y-2 text-[13.5px] text-[#00D1FF]">
-        <li><Link to="#" className="hover:underline">TB-500 10mg research peptide</Link></li>
-        <li><Link to="#" className="hover:underline">Repair & recovery peptides</Link></li>
-        <li><Link to="#" className="hover:underline">What is BPC-157?</Link></li>
-        <li><Link to="#" className="hover:underline">BPC-157 vs TB-500 comparison</Link></li>
+        <li>TB-500 10mg research peptide</li>
+        <li>Repair & recovery peptides</li>
+        <li>What is BPC-157?</li>
+        <li>BPC-157 vs TB-500 comparison</li>
       </ul>
       
       <p className="mt-8 text-[13px] text-slate-400 italic leading-relaxed">
-        All TB-500 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> or explore our <Link to="#" className="text-[#00D1FF] hover:underline">research peptides guide</Link>.
+        All TB-500 products are for research use only and are not intended for human consumption or therapeutic use. For questions about analytical documentation, storage, or handling, please visit our <Link to="/pages/faq" className="text-[#00D1FF] hover:underline">FAQ page</Link> or review our <Link to="/pages/coa-lab-testing" className="text-[#00D1FF] hover:underline">COA and lab testing information</Link>. To learn about related compounds, see our guide on BPC-157 or explore our research peptides guide.
       </p>
     </section>
   </>
@@ -376,7 +376,7 @@ const GhkCuContent = () => (
         GHK-Cu is one of the most studied copper peptides in dermal and skin biology research. It's a naturally occurring compound found in human plasma, saliva and urine that has attracted significant scientific interest for its role in skin matrix remodelling, collagen synthesis and cellular repair signalling. In laboratory settings, GHK-Cu is used as a research tool to investigate how copper-peptide complexes influence skin biology and extracellular matrix dynamics in controlled experimental models.
       </p>
       <p>
-        As a <Link to="#" className="text-[#00D1FF] hover:underline">research-grade peptide</Link>, GHK-Cu is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
+        As a research-grade peptide, GHK-Cu is supplied for in-vitro use and controlled experimental applications. It is not intended for human consumption, therapeutic use, or self-administration.
       </p>
     </div>
 
@@ -391,7 +391,7 @@ const GhkCuContent = () => (
           Researchers study GHK-Cu in contexts related to dermal biology, extracellular matrix remodelling, cellular differentiation, and tissue repair pathways. Its appearance in experimental literature reflects interest in understanding how copper peptides may influence cellular behaviour in skin models, wound healing assays, and matrix biology investigations.
         </p>
         <p>
-          Unlike metabolic peptides such as <Link to="#" className="text-[#00D1FF] hover:underline">Retatrutide</Link> or repair peptides like BPC-157 and TB-500, GHK-Cu represents a distinct category of peptide research focused on copper-mediated signalling and dermal applications rather than metabolic or migration-based mechanisms.
+          Unlike metabolic peptides such as Retatrutide or repair peptides like BPC-157 and TB-500, GHK-Cu represents a distinct category of peptide research focused on copper-mediated signalling and dermal applications rather than metabolic or migration-based mechanisms.
         </p>
       </div>
     </section>
@@ -451,7 +451,7 @@ const GhkCuContent = () => (
       <div className="text-[13.5px] space-y-5">
         <p><strong className="text-slate-700">Other copper peptides:</strong> GHK-Cu may be compared with other copper-binding peptides to understand how peptide sequence affects copper coordination and biological activity in experimental models.</p>
         <p><strong className="text-slate-700">Matrixyl peptides:</strong> While mechanistically different, GHK-Cu is sometimes compared with palmitoyl peptides (Matrixyl family) in dermal research examining matrix remodelling and collagen synthesis.</p>
-        <p><strong className="text-slate-700">Repair peptides:</strong> Unlike <Link to="#" className="text-[#00D1FF] hover:underline">BPC-157</Link> or <Link to="#" className="text-[#00D1FF] hover:underline">TB-500</Link>, which focus on migration and general tissue repair, GHK-Cu is studied specifically for dermal applications and copper-mediated signalling.</p>
+        <p><strong className="text-slate-700">Repair peptides:</strong> Unlike BPC-157 or TB-500, which focus on migration and general tissue repair, GHK-Cu is studied specifically for dermal applications and copper-mediated signalling.</p>
       </div>
     </section>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const TesaMorelinVsIpamorelin = () => {
     return (
@@ -12,6 +13,7 @@ const TesaMorelinVsIpamorelin = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/tesamorelin-vs-ipamorelin" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="Tesamorelin vs Ipamorelin | Solatide Biosciences" />
                 <meta
                     property="og:description"

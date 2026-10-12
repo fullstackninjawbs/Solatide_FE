@@ -79,7 +79,7 @@ const ProductForm = () => {
     slug: '',
 
     // Shopify Refinements
-    published: true,
+    publishStatus: 'active',
     vendor: 'Solatide Biosciences',
     productType: 'Research Peptides',
     barcode: '',
@@ -307,7 +307,10 @@ const ProductForm = () => {
             slug: product.slug || '',
 
             // Shopify Refinements
-            published: product.published !== false,
+            // publishStatus is the source of truth (storefront + list); legacy `published` only as fallback
+            publishStatus: ['active', 'draft', 'archived'].includes(product.publishStatus)
+              ? product.publishStatus
+              : (product.published === false ? 'draft' : 'active'),
             vendor: product.vendor || 'Solatide Biosciences',
             productType: product.productType || 'Research Peptides',
             barcode: product.barcode || '',
@@ -685,7 +688,8 @@ const ProductForm = () => {
       inStock: parseInt(formData.stockQuantity, 10) > 0,
 
       // Shopify Refinements
-      published: formData.published,
+      publishStatus: formData.publishStatus,
+      published: formData.publishStatus === 'active',
       showPendingResultsSection: formData.showPendingResultsSection,
       vendor: formData.vendor,
       productType: formData.productType,
@@ -757,9 +761,9 @@ const ProductForm = () => {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-brand-navy">{formData.name || 'Unnamed Product'}</h2>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold uppercase ${formData.published ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold uppercase ${formData.publishStatus === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
                 }`}>
-                {formData.published ? 'Active' : 'Draft'}
+                {formData.publishStatus === 'archived' ? 'Archived' : formData.publishStatus === 'draft' ? 'Draft' : 'Active'}
               </span>
             </div>
           </div>
@@ -1391,11 +1395,12 @@ const ProductForm = () => {
 
             <CustomDropdown
               options={[
-                { value: 'true', label: 'Active (Visible in Store)' },
-                { value: 'false', label: 'Draft (Hidden in Store)' }
+                { value: 'active', label: 'Active (Visible in Store)' },
+                { value: 'draft', label: 'Draft (Hidden in Store)' },
+                { value: 'archived', label: 'Archived (Hidden in Store)' }
               ]}
-              value={formData.published ? 'true' : 'false'}
-              onChange={(val) => setFormData(prev => ({ ...prev, published: val === 'true' }))}
+              value={formData.publishStatus}
+              onChange={(val) => setFormData(prev => ({ ...prev, publishStatus: val }))}
               className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px] font-bold cursor-pointer focus:outline-none focus:border-brand-blue"
             />
 

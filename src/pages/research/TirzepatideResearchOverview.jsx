@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const TirzepatideResearchOverview = () => {
     return (
@@ -12,6 +13,7 @@ const TirzepatideResearchOverview = () => {
                     content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/tirzepatide-research-overview" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="Tirzepatide Research Overview | Solatide Biosciences" />
                 <meta
                     property="og:description"

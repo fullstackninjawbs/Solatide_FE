@@ -4,11 +4,21 @@ import ReviewList from '../../components/reviews/ReviewList';
 import ReviewFilter from '../../components/reviews/ReviewFilter';
 import ReviewWizard from '../../components/reviews/ReviewWizard';
 import { apiService } from '../../services/api';
+import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
+
+// Reviews embedded by prerender.js for this product (same response the prerender rendered).
+const getEmbeddedReviews = (productId) => {
+    if (!productId) return null;
+    const body = getRouteData(reviewsKeyFor(productId));
+    if (!body) return null;
+    return body.success && Array.isArray(body.reviews) ? body.reviews : [];
+};
 
 const ProductReviewsSection = ({ product, onReviewsFetched }) => {
-    const [reviews, setReviews] = useState([]);
+    const initialProductId = product?._id || product?.id;
+    const [reviews, setReviews] = useState(() => getEmbeddedReviews(initialProductId) || []);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(() => getEmbeddedReviews(initialProductId) === null);
 
     // Filter and Sort states
     const [filterRating, setFilterRating] = useState('All');
@@ -22,24 +32,31 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
                 setIsLoading(false);
                 return;
             }
+            const embedded = getEmbeddedReviews(productId);
             try {
-                setIsLoading(true);
+                if (embedded) {
+                    setReviews(prev => (sameData(prev, embedded) ? prev : embedded));
+                    setIsLoading(false);
+                } else {
+                    setIsLoading(true);
+                }
                 const res = await apiService.getProductReviews(productId, 'limit=100');
                 const data = await res.json();
                 if (data.success && Array.isArray(data.reviews)) {
-                    setReviews(data.reviews);
+                    const fresh = stripInternal(data.reviews);
+                    setReviews(prev => (sameData(prev, fresh) ? prev : fresh));
                     if (onReviewsFetched) {
                         onReviewsFetched(data.reviews.length);
                     }
                 } else {
-                    setReviews([]);
+                    setReviews(prev => (prev.length ? [] : prev));
                     if (onReviewsFetched) {
                         onReviewsFetched(0);
                     }
                 }
             } catch (err) {
                 console.error("Failed to fetch reviews.", err);
-                setReviews([]);
+                if (!embedded) setReviews([]);
             } finally {
                 setIsLoading(false);
             }

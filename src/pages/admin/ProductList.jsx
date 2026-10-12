@@ -395,14 +395,22 @@ const ProductList = () => {
                       </div>
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${(product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
+                      {(() => {
+                        // Same rule as ProductForm and the storefront: publishStatus wins, legacy `published` is the fallback
+                        const status = ['active', 'draft', 'archived'].includes(product.publishStatus)
+                          ? product.publishStatus
+                          : (product.published === false ? 'draft' : 'active');
+                        return (
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${status === 'active'
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                        : (product.publishStatus === 'archived')
+                        : status === 'archived'
                           ? 'bg-amber-50 text-amber-700 border border-amber-100'
                           : 'bg-slate-100 text-slate-650 border border-slate-200'
                         }`}>
-                        {product.publishStatus === 'archived' ? 'Archived' : product.publishStatus === 'draft' || product.published === false ? 'Draft' : 'Active'}
+                        {status === 'archived' ? 'Archived' : status === 'draft' ? 'Draft' : 'Active'}
                       </span>
+                        );
+                      })()}
                     </td>
                     <td className="py-3.5">
                       {(() => {

@@ -6,7 +6,26 @@ import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
-import { products as localProducts } from '../../data/products';
+import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+
+const COLLECTIONS_KEY = '/api/products/collections';
+const ALL_CATEGORY = { name: 'All Products', slug: 'all-products' };
+
+const buildProductsQuery = (selectedCategory, availability, sortBy) => {
+    let queryStr = `availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`;
+    if (selectedCategory && selectedCategory !== 'all-products') {
+        queryStr += `&collection=${encodeURIComponent(selectedCategory)}`;
+    }
+    return queryStr;
+};
+
+// Data embedded by prerender.js (same responses the prerendered grid was built from).
+const toCategories = (body) => (body && body.success && Array.isArray(body.data)
+    ? [ALL_CATEGORY, ...body.data.map(c => ({ name: c.name, slug: c.slug }))]
+    : null);
+const toProductList = (body) => (body && body.success && body.data && Array.isArray(body.data.products)
+    ? body.data.products.map(toCardDto)
+    : null);
 
 const FilterSidebarContent = ({
     selectedCategory,
@@ -160,21 +179,16 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const [categories, setCategories] = useState([
-        { name: 'All Products', slug: 'all-products' }
-    ]);
+    const [categories, setCategories] = useState(() => toCategories(getRouteData(COLLECTIONS_KEY)) || [ALL_CATEGORY]);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await apiService.getPublicCollections();
                 const result = await response.json();
-                if (result.success && result.data) {
-                    const dynamicCats = result.data.map(c => ({ name: c.name, slug: c.slug }));
-                    setCategories([
-                        { name: 'All Products', slug: 'all-products' },
-                        ...dynamicCats
-                    ]);
+                const next = toCategories(result);
+                if (next) {
+                    setCategories(prev => (sameData(prev, next) ? prev : next));
                 }
             } catch (err) {
                 console.error('Error fetching categories:', err);
@@ -183,21 +197,27 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         fetchCategories();
     }, []);
 
-    const [productsList, setProductsList] = useState(localProducts);
-    const [loading, setLoading] = useState(false);
+    const initialKey = `/api/products?${buildProductsQuery(selectedCategory, 'All', 'Best selling')}`;
+    const [productsList, setProductsList] = useState(() => toProductList(getRouteData(initialKey)) || []);
+    // No spinner when the grid was prerendered from embedded data (hydration must match the HTML).
+    const [loading, setLoading] = useState(() => toProductList(getRouteData(initialKey)) === null);
 
     useEffect(() => {
         const fetchProducts = async () => {
-            try {
+            const queryStr = buildProductsQuery(selectedCategory, availability, sortBy);
+            const embedded = toProductList(getRouteData(`/api/products?${queryStr}`));
+            if (embedded) {
+                setProductsList(prev => (sameData(prev, embedded) ? prev : embedded));
+                setLoading(false);
+            } else {
                 setLoading(true);
-                let queryStr = `availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`;
-                if (selectedCategory && selectedCategory !== 'all-products') {
-                    queryStr += `&collection=${encodeURIComponent(selectedCategory)}`;
-                }
+            }
+            try {
                 const response = await apiService.getProducts(queryStr);
                 const result = await response.json();
-                if (result.success && result.data && result.data.products) {
-                    setProductsList(result.data.products);
+                const next = toProductList(result);
+                if (next) {
+                    setProductsList(prev => (sameData(prev, next) ? prev : next));
                 }
             } catch (err) {
                 console.error('Error fetching products:', err);
@@ -367,13 +387,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
                                             {product.inStock && product.status !== 'Sale' && (
                                                 <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                                    <span className="inline-block w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></span>
                                                     In Stock
                                                 </span>
                                             )}
                                             {!product.inStock && (
                                                 <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                                                    <span className="inline-block w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></span>
                                                     Sold Out
                                                 </span>
                                             )}

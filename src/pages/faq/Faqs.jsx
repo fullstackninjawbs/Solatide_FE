@@ -1,34 +1,45 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { apiService } from '../../services/api'
+import { getRouteData, sameData, stripInternal } from '../../utils/routeData'
+import { sanitizedMarkup } from '../../utils/sanitize'
+
+const FAQS_KEY = '/api/v1/content/faqs'
+const toSections = (body) => (body?.success && Array.isArray(body?.data?.faqSections) ? body.data.faqSections : null)
+// Auto-open the first question of the first section
+const initialOpenItems = (sections) => {
+    const firstQId = sections?.[0]?.questions?.[0]?._id
+    return firstQId ? { [firstQId]: true } : {}
+}
 
 const Faqs = () => {
-    const [faqData, setFaqData] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [openItems, setOpenItems] = useState({})
+    // Initialised from the FAQ payload embedded by prerender.js so hydration matches the HTML.
+    const [faqData, setFaqData] = useState(() => toSections(getRouteData(FAQS_KEY)) || [])
+    const [loading, setLoading] = useState(() => toSections(getRouteData(FAQS_KEY)) === null)
+    const [openItems, setOpenItems] = useState(() => initialOpenItems(toSections(getRouteData(FAQS_KEY))))
 
     useEffect(() => {
+        let cancelled = false
         const fetchFaqs = async () => {
             try {
                 const response = await apiService.getPublicFaqs();
                 const data = await response.json();
-                if (data?.success) {
-                    setFaqData(data.data.faqSections);
-
-                    // Optionally auto-open the first question of the first section
-                    if (data.data.faqSections.length > 0 && data.data.faqSections[0].questions.length > 0) {
-                        const firstQId = data.data.faqSections[0].questions[0]._id;
-                        setOpenItems({ [firstQId]: true });
-                    }
+                const sections = toSections(data)
+                if (!cancelled && sections) {
+                    const fresh = stripInternal(sections)
+                    setFaqData(prev => (sameData(prev, fresh) ? prev : fresh));
+                    // Only set the default open item when nothing was embedded (user may have toggled since).
+                    if (toSections(getRouteData(FAQS_KEY)) === null) setOpenItems(initialOpenItems(fresh));
                 }
             } catch (error) {
                 console.error("Error fetching FAQs:", error);
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
 
         fetchFaqs();
+        return () => { cancelled = true }
     }, []);
 
     const toggleItem = (id) => {
@@ -101,7 +112,7 @@ const Faqs = () => {
                                             <div className={`transition-all duration-300 overflow-hidden ${openItems[item._id] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                 <div className="whitespace-break-spaces px-4 md:px-5 pb-5 pt-0 text-[14.5px] text-[#6A6A6A] leading-relaxed">
                                                     {/* We assume admin might input HTML like <ul> etc. */}
-                                                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                                                    <div dangerouslySetInnerHTML={sanitizedMarkup(item.answer)} />
                                                 </div>
                                             </div>
                                         </div>
@@ -142,7 +153,7 @@ const Faqs = () => {
 
                                         <div className={`transition-all duration-300 overflow-hidden ${openItems[item._id] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                             <div className="whitespace-break-spaces px-4 md:px-5 pb-5 pt-0 text-[14.5px] text-[#6A6A6A] leading-relaxed">
-                                                <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                                                <div dangerouslySetInnerHTML={sanitizedMarkup(item.answer)} />
                                             </div>
                                         </div>
                                     </div>

@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { apiService } from '../../services/api';
+import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
-import { getCheckoutAttributionPayload } from '../../utils/attribution';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotalPrice } = useCart();
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Discount
@@ -40,49 +38,19 @@ const Checkout = () => {
   const fmt = (amount) =>
     new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(amount);
 
+  // Single checkout implementation (variant ids, quantity bounds, access-token storage) shared
+  // with the cart drawer — see hooks/useTagadaCheckout.js.
+  const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
+  const loading = isCheckingOut;
+  const displayError = error || checkoutError || '';
+
   const handleCheckout = async () => {
     if (cartItems.length === 0) {
       setError('Your cart is empty.');
       return;
     }
-
-    setLoading(true);
     setError('');
-
-    try {
-      // 1) Create a placeholder order. Tagada collects shipping & email securely.
-      const orderRes = await apiService.createOrder({
-        products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity ?? 1 })),
-        shippingAddress: 'Provided via TagadaPay',
-        customerEmail: '',
-        customerName: '',
-        paymentMethod: 'tagada',
-      });
-      const orderData = await orderRes.json();
-      if (!orderRes.ok) throw new Error(orderData.message || 'Failed to create order');
-
-      const orderId = orderData.data.order._id;
-
-      // 2) Initiate Tagada Checkout Session
-      const attribution = getCheckoutAttributionPayload();
-      const payRes = await apiService.createTagadaPayment({ orderId, attribution });
-      const payData = await payRes.json();
-
-      if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');
-
-      // 3) Redirect to Tagada Hosted Checkout Page
-      if (payData.checkoutUrl) {
-        // Save orderId so the success page can retrieve it after redirect
-        localStorage.setItem('solatide_last_order_id', orderId);
-        window.location.href = payData.checkoutUrl;
-      } else {
-        throw new Error('No checkout URL returned from TagadaPay');
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'An unexpected error occurred.');
-      setLoading(false);
-    }
+    await initiateCheckout(cartItems);
   };
 
   return (
@@ -107,9 +75,9 @@ const Checkout = () => {
           </div>
 
           <div style={{ padding: '32px 40px' }}>
-            {error && (
+            {displayError && (
               <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: '8px', fontSize: '13px', marginBottom: '24px', border: '1px solid #f87171' }}>
-                {error}
+                {displayError}
               </div>
             )}
 

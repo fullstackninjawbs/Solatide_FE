@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const WhatIsKPV = () => {
     return (
@@ -12,6 +13,7 @@ const WhatIsKPV = () => {
                     content="KPV is a tripeptide fragment derived from alpha-MSH studied for melanocortin receptor interactions, inflammatory pathway modulation, and gut epithelial signalling."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-kpv" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="What Is KPV? | Solatide Biosciences" />
                 <meta
                     property="og:description"

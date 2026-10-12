@@ -8,9 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:store": "cross-env VITE_APP_ROLE=store NODE_ENV=production vite build --outDir dist-store && cross-env NODE_ENV=production node prerender.js && node scripts/validate-seo-deployment.js",
+    "build:store": "cross-env VITE_APP_ROLE=store NODE_ENV=production vite build --outDir dist-store --emptyOutDir && cross-env NODE_ENV=production node prerender.js && node scripts/validate-seo-deployment.js",
     "deploy:store": "bash scripts/deploy-store.sh",
-    "build:admin": "cross-env VITE_APP_ROLE=admin vite build --outDir dist-admin"
+    "build:admin": "cross-env VITE_APP_ROLE=admin vite build --outDir dist-admin --emptyOutDir",
+    "validate:seo": "node scripts/validate-seo-deployment.js",
+    "test:hydration": "node scripts/test-hydration-identity.mjs",
+    "test:cold-load": "node scripts/test-cold-load.mjs"
   },
   "dependencies": {
     "@tagadapay/headless-sdk": "^1.6.0",

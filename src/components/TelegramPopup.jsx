@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { isPrerendering } from '../utils/routeData';
 
 const TelegramPopup = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -6,6 +7,8 @@ const TelegramPopup = () => {
     const exitTimerRef = useRef(null);
 
     useEffect(() => {
+        // Never part of the prerendered HTML: the first client render (hidden) must match it.
+        if (isPrerendering()) return undefined;
         const timer = setTimeout(() => {
             setIsVisible(true);
         }, 5000);

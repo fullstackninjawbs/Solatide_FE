@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { sanitizedMarkup } from '../../utils/sanitize';
+
+// Make relative CMS links root-relative, then sanitise (deterministic: runs during render).
+const fixRelativeLinks = (html) => (html || '').replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"');
 
 const ProductInfoSection = ({ product }) => {
     const hasOverview = !!product.overviewHtml;
@@ -33,7 +37,7 @@ const ProductInfoSection = ({ product }) => {
                                     <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
                                         <div
                                             className="w-full product-overview-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-4 [&_a]:no-underline [&_a:hover]:underline"
-                                            dangerouslySetInnerHTML={{ __html: product.overviewHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
+                                            dangerouslySetInnerHTML={sanitizedMarkup(fixRelativeLinks(product.overviewHtml))}
                                         />
                                     </div>
                                 </div>
@@ -46,7 +50,7 @@ const ProductInfoSection = ({ product }) => {
                                     <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
                                         <div
                                             className="w-full product-applications-content text-[#6A6A6A] [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-2"
-                                            dangerouslySetInnerHTML={{ __html: product.researchApplicationsHtml.replace(/href="(?!\/|http|mailto|#)([^"]+)"/g, 'href="/$1"') }}
+                                            dangerouslySetInnerHTML={sanitizedMarkup(fixRelativeLinks(product.researchApplicationsHtml))}
                                         />
                                     </div>
                                 </div>
@@ -107,7 +111,7 @@ const ProductInfoSection = ({ product }) => {
                                         </div>
                                     ) : (
                                         <div className="text-[14.5px] text-[#6A6A6A] leading-[1.8]">
-                                            <div className="w-full product-specs-content" dangerouslySetInnerHTML={{ __html: product.technicalSpecs?.rawHtml || product.technicalSpecsRawHtml }} />
+                                            <div className="w-full product-specs-content" dangerouslySetInnerHTML={sanitizedMarkup(product.technicalSpecs?.rawHtml || product.technicalSpecsRawHtml)} />
                                         </div>
                                     )}
                                 </div>

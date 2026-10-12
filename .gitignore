@@ -27,3 +27,8 @@ dist-store-current*
 *.njsproj
 *.sln
 *.sw?
+
+release-meta
+dist-admin
+dist-test
+.prerender-report.json

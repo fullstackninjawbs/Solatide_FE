@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../utils/seo';
 
 const seoData = {
   "/": {
@@ -111,6 +112,7 @@ const StaticSEO = () => {
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
       <link rel="canonical" href={canonicalUrl} />
+      <meta name="robots" content={ROBOTS_INDEX} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />

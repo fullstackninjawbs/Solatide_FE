@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../utils/seo';
 import ShopBanner from '../pages/shop/ShopBanner';
 import ProductCategories from '../pages/shop/ProductCategories';
 import ShopProducts from '../pages/shop/ShopProducts';
@@ -94,6 +95,7 @@ const Shop = () => {
                 <title>{targetTitle}</title>
                 <meta name="description" content={targetDesc} />
                 <link rel="canonical" href={canonicalUrl} />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content={targetTitle} />
                 <meta property="og:description" content={targetDesc} />
                 <meta property="og:url" content={canonicalUrl} />

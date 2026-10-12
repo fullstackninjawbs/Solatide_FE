@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const WhatIsTesamorelin = () => {
     return (
@@ -12,6 +13,7 @@ const WhatIsTesamorelin = () => {
                     content="Tesamorelin is a synthetic analogue of growth hormone-releasing hormone (GHRH) used in laboratory research to investigate growth hormone secretion and metabolic regulation."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-tesamorelin" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="What Is Tesamorelin? | Solatide Biosciences" />
                 <meta
                     property="og:description"

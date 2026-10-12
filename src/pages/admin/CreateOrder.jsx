@@ -150,8 +150,8 @@ const CreateOrder = () => {
     try {
       setLoadingProducts(true);
       const queryStr = query ? `search=${encodeURIComponent(query)}&limit=100` : `limit=100`;
-      const res = await apiService.getProducts?.(queryStr) ||
-        await fetch(`/api/products?${queryStr}`);
+      // apiService.getProducts sends the staff token inside /admin (drafts + internal fields).
+      const res = await apiService.getProducts(queryStr);
       const json = await res.json();
       if (json.success || json.data) {
         const prods = json.data?.products || json.data || json.products || [];

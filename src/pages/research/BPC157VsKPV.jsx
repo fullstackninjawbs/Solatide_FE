@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const BPC157VsKPV = () => {
     return (
@@ -12,6 +13,7 @@ const BPC157VsKPV = () => {
                     content="BPC-157 vs KPV research comparison: compare mechanisms, cellular repair signalling, melanocortin receptors, and in-vitro experimental models."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/bpc-157-vs-kpv" />
+                <meta name="robots" content={ROBOTS_INDEX} />
                 <meta property="og:title" content="BPC-157 vs KPV | Research Comparison | Solatide Biosciences" />
                 <meta
                     property="og:description"

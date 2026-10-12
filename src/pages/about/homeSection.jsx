@@ -63,13 +63,10 @@ const AboutUs = () => {
                             </ul>
 
                             <div className="mt-8 flex flex-wrap items-center gap-4">
-                                <Link to="/collections/all">
-                                    <CommonButton
+                                <CommonButton to="/collections/all"
                                         title="Explore Product"
                                         width="180px"
-                                        showArrow={true}
-                                    />
-                                </Link>
+                                        showArrow={true} />
                                 <Link to="/pages/coa-lab-testing" className="text-[#1a4494] font-bold text-[14px] hover:underline">
                                     View documentation process
                                 </Link>

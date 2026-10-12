@@ -1,5 +1,22 @@
+/* global process */
+/**
+ * Post-prerender SEO/deployment validator. Exits non-zero on ANY failure.
+ *
+ * Checks (dist-store or $DIST_STORE_DIR):
+ *  - sitemap.xml: valid, no duplicates, every <loc> has a prerendered file, no URL is the source of an
+ *    nginx `return 301` in ../solatide.nginx.conf, no /404 /checkout /admin /order URLs
+ *  - every indexable prerendered HTML file: exactly 1 <title> (not "Not Found"/404), 1 meta description,
+ *    1 canonical equal to its own URL, 1 robots meta without noindex, exactly 1 <h1>, valid JSON-LD
+ *  - every HTML file: no empty canonical, embedded JSON blobs contain no literal "</script" and parse,
+ *    no localhost references
+ *  - 404.html: exactly one robots meta (noindex), no canonical
+ *  - SPA shells (200.html, checkout.html): noindex; no admin shells in the store build
+ *  - precompressed .gz/.br of each HTML file decompress to the same bytes (no stale pre-prerender shells)
+ *  - expected product/CMS/collection URLs are derived from the files themselves (no hardcoded slugs)
+ */
 import fs from 'fs';
 import path from 'path';
+import zlib from 'zlib';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -7,206 +24,181 @@ const __dirname = path.dirname(__filename);
 const distDir = process.env.DIST_STORE_DIR
   ? path.resolve(process.env.DIST_STORE_DIR)
   : path.resolve(__dirname, '../dist-store');
+const nginxConf = process.env.NGINX_CONF || path.resolve(__dirname, '../../solatide.nginx.conf');
+const ORIGIN = 'https://solatidebiosciences.com.au';
 
-console.log(`🔍 Running Post-Build SEO Deployment Validation Suite on: ${distDir}\n`);
+console.log(`🔍 SEO deployment validation: ${distDir}\n`);
 
 let errors = 0;
+let checks = 0;
+const fail = (msg) => { errors++; console.error(`  ❌ ${msg}`); };
+const assert = (cond, msg) => { checks++; if (!cond) fail(msg); };
 
-function assert(condition, message) {
-  if (condition) {
-    console.log(`  ✅ ${message}`);
-  } else {
-    console.error(`  ❌ FAIL: ${message}`);
-    errors++;
+if (!fs.existsSync(distDir)) {
+  console.error(`dist directory not found: ${distDir}`);
+  process.exit(1);
+}
+
+const all = (re, s) => [...s.matchAll(re)];
+const attr = (tag, name) => {
+  const m = tag.match(new RegExp(`\\s${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'));
+  return m ? (m[2] ?? m[3]) : null;
+};
+const decode = (s) => s && s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+const headOf = (html) => html.split(/<\/head>/i)[0];
+const inspect = (html) => {
+  const head = headOf(html);
+  const metas = all(/<meta\b[^>]*>/gi, head).map((m) => m[0]);
+  return {
+    titles: all(/<title[^>]*>([\s\S]*?)<\/title>/gi, head).map((m) => decode(m[1].trim())),
+    descs: metas.filter((t) => /\sname\s*=\s*["']description["']/i.test(t)).map((t) => attr(t, 'content')),
+    robots: metas.filter((t) => /\sname\s*=\s*["']robots["']/i.test(t)).map((t) => attr(t, 'content')),
+    canon: all(/<link\b[^>]*rel\s*=\s*["']canonical["'][^>]*>/gi, html).map((m) => attr(m[0], 'href')),
+    h1: all(/<h1\b/gi, html).length,
+    ld: all(/<script[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi, html).map((m) => m[1]),
+    json: all(/<script[^>]*type\s*=\s*["']application\/json["'][^>]*>([\s\S]*?)<\/script>/gi, html).map((m) => m[1]),
+  };
+};
+
+// ─── Collect HTML files ─────────────────────────────────────────────────────────
+const htmlFiles = [];
+const walk = (dir) => {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, ent.name);
+    if (ent.isDirectory()) { if (ent.name !== 'assets') walk(full); } else if (ent.name.endsWith('.html')) htmlFiles.push(full);
   }
+};
+walk(distDir);
+const rel = (f) => path.relative(distDir, f).split(path.sep).join('/');
+const SHELLS = new Set(['200.html', 'checkout.html']);
+const urlForFile = (r) => (r === 'index.html' ? ORIGIN : `${ORIGIN}/${r.replace(/\.html$/, '')}`);
+
+// ─── 1. Required files ──────────────────────────────────────────────────────────
+console.log('1. Required files');
+for (const f of ['index.html', '404.html', '200.html', 'checkout.html', 'sitemap.xml', 'robots.txt', 'favicon.png', 'assets/logo.webp']) {
+  assert(fs.existsSync(path.join(distDir, f)), `${f} exists`);
 }
-
-// 1. Validate Homepage (dist-store/index.html & home.html)
-console.log('1. Validating Pre-rendered Homepage...');
-const indexPath = path.join(distDir, 'index.html');
-const homePath = path.join(distDir, 'home.html');
-
-assert(fs.existsSync(indexPath), 'dist-store/index.html exists');
-assert(fs.existsSync(homePath), 'dist-store/home.html exists');
-
-if (fs.existsSync(indexPath)) {
-  const html = fs.readFileSync(indexPath, 'utf-8');
-  assert(html.includes('canonical'), 'Homepage HTML contains canonical link tag');
-  assert(html.includes('https://solatidebiosciences.com.au'), 'Canonical points to production origin https://solatidebiosciences.com.au');
-  assert(!html.includes('http://localhost'), 'Homepage HTML contains ZERO localhost references');
-  assert(html.includes('<a href='), 'Homepage HTML contains pre-rendered internal <a href="..."> links');
-
-  const canonicalCount = (html.match(/<link\s+rel="canonical"/gi) || []).length;
-  const titleCount = (html.match(/<title/gi) || []).length;
-  const descCount = (html.match(/<meta\s+name="description"/gi) || []).length;
-  const ogTitleCount = (html.match(/<meta\s+property="og:title"/gi) || []).length;
-
-  assert(canonicalCount === 1, `Homepage HTML contains EXACTLY 1 canonical tag (found: ${canonicalCount})`);
-  assert(titleCount === 1, `Homepage HTML contains EXACTLY 1 title tag (found: ${titleCount})`);
-  assert(descCount === 1, `Homepage HTML contains EXACTLY 1 meta description tag (found: ${descCount})`);
-  assert(ogTitleCount <= 1, `Homepage HTML contains at most 1 og:title tag (found: ${ogTitleCount})`);
-}
-
-// 2. Validate Application Fallback Shells (dist-store/200.html, checkout.html)
-console.log('\n2. Validating Application Fallback Shells...');
-assert(fs.existsSync(path.join(distDir, '200.html')), 'dist-store/200.html SPA fallback shell exists');
-assert(fs.existsSync(path.join(distDir, 'checkout.html')), 'dist-store/checkout.html application shell exists');
-
-// 3. Validate Sitemap (dist-store/sitemap.xml)
-console.log('\n3. Validating XML Sitemap...');
-const sitemapPath = path.join(distDir, 'sitemap.xml');
-assert(fs.existsSync(sitemapPath), 'dist-store/sitemap.xml exists');
-
-if (fs.existsSync(sitemapPath)) {
-  const xml = fs.readFileSync(sitemapPath, 'utf-8');
-  const locMatches = xml.match(/<loc>(.*?)<\/loc>/g) || [];
-  const urls = locMatches.map(m => m.replace(/<\/?loc>/g, ''));
-  const uniqueUrls = new Set(urls);
-  
-  assert(urls.length > 0, `Sitemap contains ${urls.length} total URL entries`);
-  assert(urls.length === uniqueUrls.size, 'Sitemap contains ZERO duplicate URLs');
-  assert(!xml.includes('/404'), 'Sitemap excludes /404 utility pages');
-  assert(!xml.includes('/checkout'), 'Sitemap excludes private /checkout pages');
-  assert(uniqueUrls.has('https://solatidebiosciences.com.au/collections/research-grade-peptides'), 'Sitemap includes /collections/research-grade-peptides');
-}
-
-// 4. Validate Asset Resolution (/assets/logo.webp & favicon.png)
-console.log('\n4. Validating Static Assets...');
-assert(fs.existsSync(path.join(distDir, 'favicon.png')), 'dist-store/favicon.png exists for Googlebot compatibility');
-assert(fs.existsSync(path.join(distDir, 'assets/logo.webp')), 'dist-store/assets/logo.webp exists for Schema Organization logo');
-
-// 5. Validate HTML sitemap links (/pages/sitemap)
-console.log('\n5. Validating HTML Sitemap Links...');
-const htmlSitemapPath = path.join(distDir, 'pages/sitemap.html');
-if (fs.existsSync(htmlSitemapPath)) {
-  const htmlContent = fs.readFileSync(htmlSitemapPath, 'utf-8');
-  assert(!htmlContent.includes('/policies/shipping-policy'), 'HTML sitemap contains ZERO legacy /policies/shipping-policy links');
-  assert(!htmlContent.includes('/policies/refund-policy'), 'HTML sitemap contains ZERO legacy /policies/refund-policy links');
-  assert(htmlContent.includes('/pages/shipping-policy'), 'HTML sitemap contains updated /pages/shipping-policy link');
-  assert(htmlContent.includes('/pages/refund-policy'), 'HTML sitemap contains updated /pages/refund-policy link');
-}
-
-// 6. Validate Product Schema Offer Prices (Google Search Console & Merchant Listings compliance)
-console.log('\n6. Validating Product Schema Offer Prices...');
-const sampleProductPath = path.join(distDir, 'products/retatrutide-10mg.html');
-if (fs.existsSync(sampleProductPath)) {
-  const htmlContent = fs.readFileSync(sampleProductPath, 'utf-8');
-  const priceMatch = htmlContent.match(/"price":\s*"([^"]+)"/);
-  const currencyMatch = htmlContent.match(/"priceCurrency":\s*"([^"]+)"/);
-  
-  assert(priceMatch !== null, 'Product schema contains "price" field');
-  if (priceMatch) {
-    const priceVal = priceMatch[1];
-    assert(/^\d+\.\d{2}$/.test(priceVal), `Product schema price "${priceVal}" is a pure 2-decimal floating point string`);
-  }
-  assert(currencyMatch !== null && currencyMatch[1] === 'AUD', 'Product schema priceCurrency is "AUD"');
-}
-
-// 7. Validate Single H1 Across ALL Pre-rendered Pages (Screaming Frog / SEO Best Practice)
-console.log('\n7. Validating Single H1 Heading Across ALL Pre-rendered Pages...');
-function getHtmlFiles(dir) {
-  let results = [];
-  if (!fs.existsSync(dir)) return results;
-  const list = fs.readdirSync(dir, { withFileTypes: true });
-  for (const file of list) {
-    const fullPath = path.join(dir, file.name);
-    if (file.isDirectory()) {
-      results = results.concat(getHtmlFiles(fullPath));
-    } else if (file.name.endsWith('.html') && !file.name.includes('200.html') && !file.name.includes('checkout.html')) {
-      results.push(fullPath);
-    }
-  }
-  return results;
-}
-
-const htmlFiles = getHtmlFiles(distDir);
-let multiH1Pages = [];
-for (const file of htmlFiles) {
-  const content = fs.readFileSync(file, 'utf-8');
-  const h1Matches = content.match(/<h1[^>]*>/gi) || [];
-  if (h1Matches.length > 1) {
-    multiH1Pages.push({ file: path.relative(distDir, file), count: h1Matches.length });
-  }
-}
-
-assert(multiH1Pages.length === 0, `All ${htmlFiles.length} pre-rendered pages have at most 1 <h1> tag (violations: ${multiH1Pages.map(p => `${p.file} (${p.count})`).join(', ') || 'none'})`);
-
-// 8. Validate Open Graph & Twitter Metadata on Research Pages
-console.log('\n8. Validating Open Graph & Twitter Metadata on Research Pages...');
-const researchSlugs = [
-  'tirzepatide-research-overview',
-  'what-is-bpc-157',
-  'what-is-ghk-cu',
-  'what-is-mots-c',
-  'what-is-selank',
-  'glp-1-research-overview',
-  'cagrisema-vs-semaglutide',
-  'cagrisema-vs-tirzepatide',
-  'cagrisema-vs-retatrutide',
-  'cjc-1295-vs-ipamorelin',
-  'cjc-1295-vs-tesamorelin',
-  'selank-vs-semax',
-  'mots-c-vs-ss-31',
-  'bpc-157-vs-kpv',
-  'nad-plus-vs-mots-c',
-  'tesamorelin-vs-ipamorelin',
-  'what-is-tesamorelin',
-  'what-is-kpv'
-];
-
-let missingOgPages = [];
-for (const slug of researchSlugs) {
-  const pPath = path.join(distDir, 'pages', `${slug}.html`);
-  if (fs.existsSync(pPath)) {
-    const content = fs.readFileSync(pPath, 'utf-8');
-    const hasOgTitle = content.includes('property="og:title"');
-    const hasOgDesc = content.includes('property="og:description"');
-    const hasOgUrl = content.includes('property="og:url"');
-    const hasOgImage = content.includes('property="og:image"');
-    const hasTwTitle = content.includes('name="twitter:title"');
-    const hasTwCard = content.includes('name="twitter:card"');
-    if (!hasOgTitle || !hasOgDesc || !hasOgUrl || !hasOgImage || !hasTwTitle || !hasTwCard) {
-      missingOgPages.push(slug);
-    }
-  }
-}
-assert(missingOgPages.length === 0, `All 18 research pages have complete Open Graph and Twitter metadata (missing: ${missingOgPages.join(', ') || 'none'})`);
-
-// 9. Validate WebP Image Signature for /assets/logo.webp
-console.log('\n9. Validating Binary Format for /assets/logo.webp...');
+assert(!fs.existsSync(path.join(distDir, 'admin.html')) && !fs.existsSync(path.join(distDir, 'admin')), 'no admin shells in the store build (M-19)');
+const adminChunks = fs.existsSync(path.join(distDir, 'assets')) ? fs.readdirSync(path.join(distDir, 'assets')).filter((f) => /^(AdminLayout|AdminRoutes|Dashboard|ProductForm|OrderList)-/.test(f)) : [];
+assert(adminChunks.length === 0, `no admin chunks in assets (found: ${adminChunks.join(', ') || 'none'})`);
+assert(!fs.existsSync(path.join(distDir, 'mock_import.csv')), 'mock_import.csv is not published (L-7)');
 const logoPath = path.join(distDir, 'assets/logo.webp');
 if (fs.existsSync(logoPath)) {
   const buf = fs.readFileSync(logoPath);
-  const isWebP = buf.length >= 12 && buf.slice(0, 4).toString('ascii') === 'RIFF' && buf.slice(8, 12).toString('ascii') === 'WEBP';
-  assert(isWebP, `/assets/logo.webp begins with RIFF/WEBP header (not PNG bytes). File size: ${buf.length} bytes`);
+  assert(buf.slice(0, 4).toString('ascii') === 'RIFF' && buf.slice(8, 12).toString('ascii') === 'WEBP', '/assets/logo.webp is a real WebP');
 }
 
-// 10. Validate Policy Page Metadata (Deduplication & Missing Descriptions)
-console.log('\n10. Validating Policy & CMS Page Metadata...');
-const dataSharingPath = path.join(distDir, 'pages/data-sharing-opt-out.html');
-if (fs.existsSync(dataSharingPath)) {
-  const content = fs.readFileSync(dataSharingPath, 'utf-8');
-  const canonicalCount = (content.match(/<link\s+rel="canonical"/gi) || []).length;
-  const titleCount = (content.match(/<title/gi) || []).length;
-  const ogTitleCount = (content.match(/property="og:title"/gi) || []).length;
-  assert(canonicalCount === 1, `/pages/data-sharing-opt-out has EXACTLY 1 canonical tag (found: ${canonicalCount})`);
-  assert(titleCount === 1, `/pages/data-sharing-opt-out has EXACTLY 1 title tag (found: ${titleCount})`);
-  assert(ogTitleCount <= 1, `/pages/data-sharing-opt-out has at most 1 og:title tag (found: ${ogTitleCount})`);
+// ─── 2. nginx 301 sources ───────────────────────────────────────────────────────
+const redirectSources = new Set();
+if (fs.existsSync(nginxConf)) {
+  // Only the storefront server block (the hub block redirects "/" to /admin on its own host).
+  const conf = fs.readFileSync(nginxConf, 'utf8').split(/\n\s*server\s*\{/).find((b) => b.includes('dist-store-current')) || '';
+  for (const m of conf.matchAll(/location\s*=\s*(\S+)\s*\{\s*return\s+30[18]\b/g)) redirectSources.add(m[1]);
+} else {
+  console.warn(`  ⚠️  nginx config not found at ${nginxConf}; skipping redirect-source check`);
 }
 
-const bpcTbPath = path.join(distDir, 'pages/bpc-157-vs-tb-500.html');
-if (fs.existsSync(bpcTbPath)) {
-  const content = fs.readFileSync(bpcTbPath, 'utf-8');
-  const descMatch = content.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
-  assert(descMatch && descMatch[1].trim().length > 10, `/pages/bpc-157-vs-tb-500 has non-empty meta description: "${descMatch ? descMatch[1] : 'missing'}"`);
-  assert(content.includes('property="og:description"'), '/pages/bpc-157-vs-tb-500 contains og:description');
+// ─── 3. Sitemap ─────────────────────────────────────────────────────────────────
+console.log('2. sitemap.xml');
+let sitemapUrls = [];
+const sitemapPath = path.join(distDir, 'sitemap.xml');
+if (fs.existsSync(sitemapPath)) {
+  const xml = fs.readFileSync(sitemapPath, 'utf8');
+  assert(/^<\?xml[^>]*\?>\s*<urlset\b/.test(xml) && /<\/urlset>\s*$/.test(xml), 'sitemap.xml is a urlset document');
+  sitemapUrls = all(/<loc>([^<]+)<\/loc>/g, xml).map((m) => m[1].trim());
+  const lastmods = all(/<lastmod>([^<]+)<\/lastmod>/g, xml).map((m) => m[1]);
+  assert(sitemapUrls.length > 0, `sitemap has URLs (${sitemapUrls.length})`);
+  assert(new Set(sitemapUrls).size === sitemapUrls.length, 'sitemap has no duplicate URLs');
+  assert(lastmods.every((d) => /^\d{4}-\d{2}-\d{2}/.test(d)), 'every <lastmod> is an ISO date');
+  for (const u of sitemapUrls) {
+    if (!u.startsWith(ORIGIN)) { fail(`sitemap URL not on ${ORIGIN}: ${u}`); continue; }
+    const p = u.slice(ORIGIN.length) || '/';
+    if (/^\/(404|checkout|admin|order)(\/|$)/.test(p)) fail(`sitemap contains private/utility URL ${u}`);
+    const file = p === '/' ? path.join(distDir, 'index.html') : path.join(distDir, `${p.slice(1)}.html`);
+    if (!fs.existsSync(file)) fail(`sitemap URL has no prerendered file: ${u}`);
+    if (redirectSources.has(p)) fail(`sitemap URL is an nginx 301 source: ${u}`);
+  }
+  checks += sitemapUrls.length * 3;
+}
+
+// ─── 4. Per-file checks ─────────────────────────────────────────────────────────
+console.log('3. Prerendered HTML files');
+const sitemapSet = new Set(sitemapUrls);
+let indexableCount = 0;
+for (const file of htmlFiles) {
+  const r = rel(file);
+  if (r === 'home.html') continue; // legacy duplicate of index.html (nginx 301s /home.html → /)
+  const html = fs.readFileSync(file, 'utf8');
+  const info = inspect(html);
+  checks++;
+  if (html.includes('http://localhost') || html.includes('http://127.0.0.1')) fail(`${r}: contains localhost URL`);
+  if (info.canon.some((c) => !c)) fail(`${r}: empty canonical href`);
+  for (const blob of info.json) {
+    if (/<\/script/i.test(blob)) fail(`${r}: embedded JSON contains a literal "</script"`);
+    try { JSON.parse(blob); } catch { fail(`${r}: embedded JSON does not parse`); }
+  }
+
+  if (SHELLS.has(r)) {
+    if (!(info.robots.length === 1 && /noindex/i.test(info.robots[0]))) fail(`${r}: SPA shell must have exactly one noindex robots meta (${JSON.stringify(info.robots)})`);
+    if (/<div id="root"[^>]*>\s*<[a-z]/i.test(html)) fail(`${r}: SPA shell must have an empty #root`);
+    continue;
+  }
+  if (r === '404.html') {
+    if (!(info.robots.length === 1 && /noindex/i.test(info.robots[0]))) fail(`404.html: expected exactly one noindex robots meta (${JSON.stringify(info.robots)})`);
+    if (info.canon.length !== 0) fail('404.html: must not have a canonical link');
+    if (info.titles.length !== 1) fail(`404.html: ${info.titles.length} titles`);
+    continue;
+  }
+
+  // Indexable page
+  indexableCount++;
+  const url = urlForFile(r);
+  if (info.titles.length !== 1) fail(`${r}: ${info.titles.length} <title> tags`);
+  if (info.titles.some((t) => /not found|\b404\b/i.test(t))) fail(`${r}: "Not Found" title "${info.titles[0]}"`);
+  if (info.descs.length !== 1 || !(info.descs[0] || '').trim()) fail(`${r}: ${info.descs.length} meta descriptions (need exactly 1 non-empty)`);
+  if (info.canon.length !== 1) fail(`${r}: ${info.canon.length} canonical links`);
+  else if (info.canon[0] !== url) fail(`${r}: canonical ${info.canon[0]} != ${url}`);
+  if (info.robots.length !== 1) fail(`${r}: ${info.robots.length} robots metas`);
+  else if (/noindex/i.test(info.robots[0])) fail(`${r}: robots noindex on an indexable page`);
+  if (info.h1 !== 1) fail(`${r}: ${info.h1} <h1> tags`);
+  for (const ld of info.ld) {
+    try {
+      const j = JSON.parse(ld);
+      const items = Array.isArray(j) ? j : [j];
+      for (const it of items) {
+        if (!it['@context'] || !it['@type']) fail(`${r}: JSON-LD missing @context/@type`);
+        if (it['@type'] === 'Product' && it.offers) {
+          if (!/^\d+\.\d{2}$/.test(String(it.offers.price)) || Number(it.offers.price) <= 0) fail(`${r}: Product offer price invalid (${it.offers.price})`);
+          if (it.offers.priceCurrency !== 'AUD') fail(`${r}: Product priceCurrency ${it.offers.priceCurrency}`);
+        }
+      }
+    } catch { fail(`${r}: invalid JSON-LD`); }
+  }
+  if (sitemapUrls.length && !sitemapSet.has(url)) fail(`${r}: indexable page missing from sitemap (${url})`);
+  // Legacy policy links must point at canonical /pages/* (L-3)
+  if (/href="\/policies\//.test(html)) fail(`${r}: links to legacy /policies/* URLs`);
+}
+console.log(`  checked ${htmlFiles.length} HTML files (${indexableCount} indexable)`);
+
+// ─── 5. Precompressed variants are fresh (L-13) ─────────────────────────────────
+console.log('4. Precompressed HTML');
+for (const file of htmlFiles) {
+  const src = fs.readFileSync(file);
+  for (const [ext, fn] of [['.gz', zlib.gunzipSync], ['.br', zlib.brotliDecompressSync]]) {
+    const p = `${file}${ext}`;
+    if (!fs.existsSync(p)) continue;
+    checks++;
+    try {
+      if (!fn(fs.readFileSync(p)).equals(src)) fail(`${rel(p)} is stale (does not match ${rel(file)})`);
+    } catch { fail(`${rel(p)} does not decompress`); }
+  }
 }
 
 console.log('\n==================================================');
 if (errors === 0) {
-  console.log('🎉 ALL SEO DEPLOYMENT VALIDATION CHECKS PASSED 100%!');
+  console.log(`🎉 SEO deployment validation passed (${checks} checks, ${sitemapUrls.length} sitemap URLs, ${indexableCount} indexable files).`);
   process.exit(0);
-} else {
-  console.error(`🚨 DISCREPANCIES DETECTED: ${errors} check(s) failed.`);
-  process.exit(1);
 }
+console.error(`🚨 ${errors} validation failure(s).`);
+process.exit(1);

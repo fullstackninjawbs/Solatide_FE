@@ -7,7 +7,6 @@ Allow: /
 Allow: /products/
 Allow: /collections/
 Allow: /pages/
-Allow: /shop
 
 # Private / transactional
 Disallow: /admin
@@ -22,7 +21,6 @@ User-agent: adsbot-google
 Allow: /products/
 Allow: /collections/
 Allow: /pages/
-Allow: /shop
 Disallow: /admin
 Disallow: /admin/
 Disallow: /checkout

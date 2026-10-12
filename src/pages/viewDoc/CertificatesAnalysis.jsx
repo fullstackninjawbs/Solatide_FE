@@ -1,23 +1,13 @@
 import { useState, useEffect } from 'react'
 import { X, ZoomIn, ZoomOut } from 'lucide-react'
 import { API_URL } from '../../services/api';
+import { getRouteData, sameData } from '../../utils/routeData';
 
-const CertificatesAnalysis = () => {
-    const [activeTab, setActiveTab] = useState('All');
-    const [selectedCoa, setSelectedCoa] = useState(null);
-    const [coaData, setCoaData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [zoom, setZoom] = useState(1);
+const COAS_KEY = '/api/v1/coas';
 
-    useEffect(() => {
-        const fetchCoas = async () => {
-            try {
-
-                const res = await fetch(`${API_URL}/api/v1/coas`);
-                const data = await res.json();
-
-                if (data.success) {
-                    const mappedCoas = data.data.batches.map((batch, index) => {
+const mapCoas = (data) => {
+    if (!data || !data.success || !data.data || !Array.isArray(data.data.batches)) return null;
+    return data.data.batches.map((batch, index) => {
                         const productName = batch.productId?.name || (batch.products && batch.products.length > 0 ? batch.products[0].name : '');
                         return {
                             id: batch._id || index,
@@ -29,7 +19,25 @@ const CertificatesAnalysis = () => {
                             status: batch.coaStatus === 'approved' ? 'Verified' : 'Pending'
                         };
                     });
-                    setCoaData(mappedCoas);
+};
+
+const CertificatesAnalysis = () => {
+    const [activeTab, setActiveTab] = useState('All');
+    const [selectedCoa, setSelectedCoa] = useState(null);
+    // Initialised from the COA payload embedded by prerender.js so hydration matches the HTML.
+    const [coaData, setCoaData] = useState(() => mapCoas(getRouteData(COAS_KEY)) || []);
+    const [loading, setLoading] = useState(() => mapCoas(getRouteData(COAS_KEY)) === null);
+    const [zoom, setZoom] = useState(1);
+
+    useEffect(() => {
+        let cancelled = false;
+        const fetchCoas = async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/v1/coas`);
+                const data = await res.json();
+                const mappedCoas = mapCoas(data);
+                if (!cancelled && mappedCoas) {
+                    setCoaData(prev => (sameData(prev, mappedCoas) ? prev : mappedCoas));
                 }
             } catch (error) {
                 console.error('Error fetching COAs:', error);
@@ -38,6 +46,7 @@ const CertificatesAnalysis = () => {
             }
         };
         fetchCoas();
+        return () => { cancelled = true; };
     }, []);
 
     if (loading) {

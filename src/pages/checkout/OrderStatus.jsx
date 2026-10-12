@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
+
+// GET /api/v1/orders/:id requires the order's access token (?accessToken=). It comes from the
+// link (?accessToken=) or, for the browser that placed the order, from localStorage.
+const readStoredToken = (orderId) => {
+    try {
+        return localStorage.getItem(LAST_ORDER_ID_KEY) === orderId ? localStorage.getItem(LAST_ORDER_TOKEN_KEY) : null;
+    } catch {
+        return null;
+    }
+};
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 
 const OrderStatus = () => {
     const { orderId } = useParams();
+    const [searchParams] = useSearchParams();
+    const accessToken = searchParams.get('accessToken') || readStoredToken(orderId);
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -13,12 +26,17 @@ const OrderStatus = () => {
         const fetchOrder = async () => {
             try {
                 setLoading(true);
-                const res = await apiService.getOrderById(orderId);
+                const query = accessToken ? `?accessToken=${encodeURIComponent(accessToken)}` : '';
+                const res = await apiService.getOrderById(`${encodeURIComponent(orderId)}${query}`);
                 const data = await res.json();
                 if (data.success) {
                     setOrder(data.data.order);
                 } else {
-                    setError('Order not found');
+                    if (!accessToken) {
+                        setError('This order link is missing its access token.');
+                    } else {
+                        setError(data.message || 'Order not found');
+                    }
                 }
             } catch (err) {
                 console.error('Failed to fetch order:', err);
@@ -31,7 +49,7 @@ const OrderStatus = () => {
         if (orderId) {
             fetchOrder();
         }
-    }, [orderId]);
+    }, [orderId, accessToken]);
 
     if (loading) {
         return (
@@ -178,18 +196,18 @@ const OrderStatus = () => {
 
                 {/* Customer Information Card */}
                 <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
-                    <div className="flex px-5 py-4 border-b border-gray-100">
-                        <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium">Contact</div>
-                        <div className="text-[14px] text-gray-900">{order.customerEmail || order.customer?.email}</div>
-                    </div>
+                    {/* Guests receive a minimal projection (no email/phone/street/zip/state). */}
+                    {(order.customerEmail || order.customer?.email) && (
+                        <div className="flex px-5 py-4 border-b border-gray-100">
+                            <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium">Contact</div>
+                            <div className="text-[14px] text-gray-900">{order.customerEmail || order.customer?.email}</div>
+                        </div>
+                    )}
                     <div className="flex px-5 py-4 border-b border-gray-100">
                         <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium pt-1">Ship to</div>
                         <div className="text-[14px] text-gray-900 leading-relaxed">
-                            {order.shippingAddressObj?.name || order.customer?.firstName + ' ' + order.customer?.lastName}<br />
-                            {order.shippingAddressObj?.street1 || ''}<br />
-                            {order.shippingAddressObj?.street2 ? <>{order.shippingAddressObj.street2}<br /></> : null}
-                            {order.shippingAddressObj?.city || ''}, {order.shippingAddressObj?.state || ''} {order.shippingAddressObj?.zip || ''}<br />
-                            {order.shippingAddressObj?.country || ''}
+                            {order.shippingAddressObj?.name || [order.customer?.firstName, order.customer?.lastName].filter(Boolean).join(' ')}<br />
+                            {[order.shippingAddressObj?.city, order.shippingAddressObj?.country].filter(Boolean).join(', ')}
                         </div>
                     </div>
                     <div className="flex px-5 py-4">

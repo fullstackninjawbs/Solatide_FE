@@ -10,6 +10,10 @@
 import { API_URL } from '../services/api';
 const ENDPOINT = `${API_URL}/api/analytics/events`;
 
+// prerender.js sets window.__PRERENDER__ before any script runs: never send analytics or
+// call geo APIs while pages are being captured for the static build.
+const isPrerendering = () => typeof window !== 'undefined' && window.__PRERENDER__ === true;
+
 // ─── Session ID ───────────────────────────────────────────────────────────────
 
 const SESSION_KEY = 'slat_sid';
@@ -154,8 +158,10 @@ async function fetchLocationDetails() {
   }
 }
 
-// Call it immediately (fire and forget)
-fetchLocationDetails().catch(() => {});
+// Call it immediately (fire and forget) — skipped while prerendering
+if (!isPrerendering()) {
+  fetchLocationDetails().catch(() => {});
+}
 
 // ─── Event Tracker ────────────────────────────────────────────────────────────
 
@@ -164,10 +170,27 @@ fetchLocationDetails().catch(() => {});
  * @param {string} eventType - One of: page_view, product_view, add_to_cart, begin_checkout, purchase
  * @param {object} metadata  - Optional: { productId, orderId, country, cartValue, page }
  */
+// Must match Server analytics.controller.ts VALID_EVENT_TYPES / ANALYTICS_MAX_STRING (400 otherwise).
+export const VALID_EVENT_TYPES = ['page_view', 'product_view', 'add_to_cart', 'begin_checkout', 'purchase'];
+const MAX_STRING = 200;
+const clipStrings = (obj) => {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === undefined || v === null) continue;
+    if (typeof v === 'string') out[k] = v.slice(0, MAX_STRING);
+    else if (k === 'cartValue') {
+      if (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1000000) out[k] = v;
+    } else out[k] = v;
+  }
+  return out;
+};
+
 export function trackEvent(eventType, metadata = {}) {
+  if (isPrerendering()) return;
+  if (!VALID_EVENT_TYPES.includes(eventType)) return; // server rejects anything else
   try {
     const loc = locationCache || detectLocationFromTimezone();
-    const payload = JSON.stringify({
+    const payload = JSON.stringify(clipStrings({
       sessionId: getSessionId(),
       eventType,
       timestamp: new Date().toISOString(),
@@ -175,7 +198,7 @@ export function trackEvent(eventType, metadata = {}) {
       region: metadata.region || loc.region,
       city: metadata.city || loc.city,
       ...metadata,
-    });
+    }));
 
     // sendBeacon is non-blocking and survives page unloads
     if (typeof navigator !== 'undefined' && navigator.sendBeacon) {

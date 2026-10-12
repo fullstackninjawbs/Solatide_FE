@@ -7,52 +7,42 @@ import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
+import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
+// Product list embedded by prerender.js (card DTOs) for the given API key.
+const getEmbeddedList = (key) => {
+    const body = getRouteData(key);
+    return body && body.success && body.data && Array.isArray(body.data.products) ? body.data.products.map(toCardDto) : null;
+};
+
 const ShopPeptides = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [products, setProducts] = useState(() => {
-        if (typeof window !== 'undefined') {
-            if (window.__INITIAL_PRODUCTS__ && Array.isArray(window.__INITIAL_PRODUCTS__)) {
-                return window.__INITIAL_PRODUCTS__.slice(0, 12);
-            }
-            const scriptTag = document.getElementById('__INITIAL_PRODUCTS_DATA__');
-            if (scriptTag && scriptTag.textContent) {
-                try {
-                    const parsed = JSON.parse(scriptTag.textContent);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed.slice(0, 12);
-                } catch (e) {}
-            }
-        }
-        return [];
-    });
-    const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState(() => getEmbeddedList('/api/products?limit=12') || []);
 
     useEffect(() => {
-        const fetchFeaturedProducts = async () => {
+        let cancelled = false;
+        const fetchProducts = async () => {
             try {
                 const response = await apiService.getProducts('limit=12');
                 const result = await response.json();
-
-                if (result.success && result.data && result.data.products) {
-                    setProducts(result.data.products);
-                    if (typeof window !== 'undefined') {
-                        window.__INITIAL_PRODUCTS__ = result.data.products;
-                    }
+                if (!cancelled && result.success && result.data && Array.isArray(result.data.products)) {
+                    // Background refresh: only re-render when the list actually changed.
+                    const fresh = result.data.products.map(toCardDto);
+                    setProducts(prev => (sameData(prev, fresh) ? prev : fresh));
                 }
-            } catch (error) {
-                console.warn('Backend server unreachable for homepage.');
-            } finally {
-                setLoading(false);
+            } catch {
+                console.warn('Backend server unreachable for homepage products.');
             }
         };
-
-        fetchFeaturedProducts();
+        fetchProducts();
+        return () => { cancelled = true; };
     }, []);
 
     return (
@@ -102,7 +92,11 @@ const ShopPeptides = () => {
                             <SwiperSlide key={product._id || product.id} className="!h-auto">
                                 <div
                                     key={product.slug || product._id || product.id}
-                                    onClick={() => navigate(`/products/${product.slug || product._id || product.id}`)}
+                                    onClick={(e) => {
+                                        // The title is a real <Link>; avoid a second history entry when it was clicked.
+                                        if (e.target.closest && e.target.closest("a")) return;
+                                        navigate(`/products/${product.slug || product._id || product.id}`);
+                                    }}
                                     className="group flex flex-col h-full bg-white transition-all duration-300 border border-slate-100 rounded-[28px] p-2.5 sm:p-3 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer"
                                 >
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
@@ -121,13 +115,13 @@ const ShopPeptides = () => {
                                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
                                             {product.inStock && product.status !== 'Sale' && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                                    <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></span>
                                                     In Stock
                                                 </span>
                                             )}
                                             {!product.inStock && (
                                                 <span className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                                                    <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></span>
                                                     Sold Out
                                                 </span>
                                             )}

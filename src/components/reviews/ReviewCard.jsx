@@ -11,11 +11,14 @@ const ReviewCard = ({ review, index }) => {
     return name ? name.charAt(0).toUpperCase() : 'A';
   };
 
-  const formattedDate = new Date(review.createdAt || Date.now()).toLocaleDateString('en-GB', {
+  // No "now" fallback: render output must be deterministic (prerender vs hydration).
+  const formattedDate = review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
-  });
+    year: 'numeric',
+    // Fixed timezone so prerender (server TZ) and browser (visitor TZ) render the same date.
+    timeZone: 'Australia/Melbourne'
+  }) : '';
 
   const handleImageClick = (idx) => {
     setLightboxIndex(idx);
