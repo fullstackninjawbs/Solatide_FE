@@ -19,9 +19,8 @@ const buildProductsQuery = (selectedCategory, availability, sortBy) => {
     return queryStr;
 };
 
-// Data embedded by prerender.js (same responses the prerendered grid was built from).
 const toCategories = (body) => (body && body.success && Array.isArray(body.data)
-    ? [ALL_CATEGORY, ...body.data.map(c => ({ name: c.name, slug: c.slug }))]
+    ? [ALL_CATEGORY, ...body.data.filter(c => c.slug !== 'all' && c.slug !== 'all-products').map(c => ({ name: c.name, slug: c.slug }))]
     : null);
 const toProductList = (body) => (body && body.success && body.data && Array.isArray(body.data.products)
     ? body.data.products.map(toCardDto)

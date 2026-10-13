@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ROBOTS_INDEX } from '../utils/seo';
+import { getRouteData, sameData } from '../utils/routeData';
+import { apiService } from '../services/api';
 import ShopBanner from '../pages/shop/ShopBanner';
 import ProductCategories from '../pages/shop/ProductCategories';
 import ShopProducts from '../pages/shop/ShopProducts';
@@ -34,11 +36,41 @@ const Shop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [handle, categoryQuery]);
 
-    const collectionPath = handle && handle !== 'all' ? `/collections/${handle}` : '/collections/all';
-    const canonicalUrl = `https://solatidebiosciences.com.au${collectionPath}`;
-    const collectionName = handle && handle !== 'all' 
-        ? handle.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-        : 'All Products';
+    // Dynamic collections lookup (embedded routeData for SSR/prerender + dynamic fetch)
+    const [collections, setCollections] = useState(() => {
+        const body = getRouteData('/api/products/collections');
+        return (body && body.success && Array.isArray(body.data)) ? body.data : [];
+    });
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchCollections = async () => {
+            try {
+                const response = await apiService.getPublicCollections();
+                const result = await response.json();
+                if (result.success && Array.isArray(result.data) && isMounted) {
+                    setCollections(prev => (sameData(prev, result.data) ? prev : result.data));
+                }
+            } catch (err) {
+                console.error('Error fetching collections in Shop:', err);
+            }
+        };
+        fetchCollections();
+        return () => { isMounted = false; };
+    }, []);
+
+    const key = handle && handle !== 'all' ? handle : 'all';
+    const matchedCol = collections.find(c => c.slug === key);
+
+    const collectionPath = key !== 'all' ? `/collections/${key}` : '/collections/all';
+    const canonicalUrl = (matchedCol?.seo?.canonicalUrl && matchedCol.seo.canonicalUrl.trim()) 
+        || `https://solatidebiosciences.com.au${collectionPath}`;
+
+    const collectionDisplayName = matchedCol?.name || (
+        key !== 'all'
+            ? key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+            : 'All Products'
+    );
 
     const breadcrumbSchema = {
         "@context": "https://schema.org",
@@ -56,11 +88,11 @@ const Shop = () => {
                 "name": "Shop",
                 "item": "https://solatidebiosciences.com.au/collections/all"
             },
-            ...(handle && handle !== 'all' ? [{
+            ...(key !== 'all' ? [{
                 "@type": "ListItem",
                 "position": 3,
-                "name": collectionName,
-                "item": canonicalUrl
+                "name": collectionDisplayName,
+                "item": `https://solatidebiosciences.com.au${collectionPath}`
             }] : [])
         ]
     };
@@ -85,9 +117,16 @@ const Shop = () => {
         'bundles': 'Research peptide bundles and multi-vial combinations for comprehensive in-vitro laboratory analysis.'
     };
 
-    const key = handle && handle !== 'all' ? handle : 'all';
-    const targetTitle = collectionTitles[key] || `${collectionName} | Solatide Biosciences`;
-    const targetDesc = collectionDescs[key] || `Browse ${collectionName} research peptides and laboratory compounds at Solatide Biosciences.`;
+    const targetTitle = (matchedCol?.seo?.title && matchedCol.seo.title.trim()) 
+        || collectionTitles[key] 
+        || `${collectionDisplayName} | Solatide Biosciences`;
+
+    const targetDesc = (matchedCol?.seo?.description && matchedCol.seo.description.trim()) 
+        || collectionDescs[key] 
+        || (matchedCol?.description && matchedCol.description.trim()) 
+        || `Browse ${collectionDisplayName} research peptides and laboratory compounds at Solatide Biosciences.`;
+
+    const ogImage = matchedCol?.bannerImage || "https://solatidebiosciences.com.au/assets/logo.webp";
 
     return (
         <div className="w-full min-h-screen">
@@ -100,11 +139,11 @@ const Shop = () => {
                 <meta property="og:description" content={targetDesc} />
                 <meta property="og:url" content={canonicalUrl} />
                 <meta property="og:type" content="website" />
-                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta property="og:image" content={ogImage} />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={targetTitle} />
                 <meta name="twitter:description" content={targetDesc} />
-                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:image" content={ogImage} />
                 <script type="application/ld+json">
                     {JSON.stringify(breadcrumbSchema)}
                 </script>
