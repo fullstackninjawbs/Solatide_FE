@@ -5,7 +5,7 @@ import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
-import { optimizeCloudinaryUrl, responsiveImageSrcSet, PRODUCT_CARD_SIZES } from '../../utils/imageOptimization';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
 
 const SUGGESTIONS_KEY = '/api/products?limit=7';
@@ -109,9 +109,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
-                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image, 480) || productVialImage}
-                                    srcSet={responsiveImageSrcSet(product.imageUrl || product.image)}
-                                    sizes={PRODUCT_CARD_SIZES}
+                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
                                     loading="lazy"
                                     decoding="async"
                                     className={product.imageUrl || product.image

@@ -1,5 +1,5 @@
 import React, { useId } from 'react';
-import ilsLogo from '../../assets/icons/ils_logo.webp';
+import ilsLogo from '../../assets/icons/ils_logo.png';
 
 const FreedomLogo = () => (
     <div className="flex flex-col items-center justify-center shrink-0 h-[100px]">
@@ -104,7 +104,7 @@ const JanoshikLogo = () => (
 
 const IlsLogo = () => (
     <div className="flex items-center justify-center shrink-0 h-[100px]">
-        <img src={ilsLogo} width={108} height={72} loading="lazy" decoding="async" alt="ILS Laboratories" className="h-[72px] w-auto object-contain" />
+        <img src={ilsLogo} alt="ILS Laboratories" className="h-[72px] w-auto object-contain" />
     </div>
 );
 

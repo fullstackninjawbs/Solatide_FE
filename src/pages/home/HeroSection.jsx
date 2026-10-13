@@ -11,10 +11,6 @@ import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg
 import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
 import { useEffect } from 'react'
 
-// 1×1 transparent GIF: a <picture> <source> pointing here stops the browser downloading a hero
-// image on the breakpoint where it is hidden (display:none images are still fetched otherwise).
-const BLANK_IMG = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-
 const MobileEvidenceSection = () => (
     <section
         className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up rounded-b-[24px]"
@@ -105,8 +101,6 @@ const HeroSection = () => {
 
         <section className="relative w-full overflow-hidden bg-white flex flex-col lg:flex-row items-stretch lg:items-center min-h-0 lg:min-h-[860px] pt-0 lg:pt-[130px] pb-0 lg:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
-                <picture>
-                <source media="(max-width: 1023.98px)" srcSet={BLANK_IMG} />
                 <img
                     src={heroImageWebp}
                     className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
@@ -116,7 +110,6 @@ const HeroSection = () => {
                     fetchPriority="high"
                     decoding="sync"
                 />
-                </picture>
             </div>
 
             {/* Mobile Hero Image & Content Wrapper */}
@@ -124,37 +117,27 @@ const HeroSection = () => {
 
                 {/* Mobile Background Image */}
                 <div className="w-full md:hidden relative z-10">
-                    <picture>
-                    <source media="(min-width: 768px)" srcSet={BLANK_IMG} />
                     <img
                         src={mobileHeroImageWebp}
-                        width={644}
-                        height={803}
                         className="w-full h-auto object-contain select-none pointer-events-none"
                         alt="Solatide Biosciences – Research Grade Peptides"
                         loading="eager"
                         fetchPriority="high"
                         decoding="sync"
                     />
-                    </picture>
                 </div>
 
                 {/* Tablet Dedicated Layout (768px - 1023px) */}
                 <div className="hidden md:flex lg:hidden flex-col w-full relative z-10 flex-1">
                     {/* Tablet Specific Background Image */}
                     <div className="w-full relative z-10">
-                        <picture>
-                        <source media="(max-width: 767.98px), (min-width: 1024px)" srcSet={BLANK_IMG} />
                         <img
                             src={mobileHeroImageWebp}
-                            width={644}
-                            height={803}
                             className="w-full h-auto object-contain select-none pointer-events-none"
                             alt="Solatide Biosciences"
                             loading="eager"
                             fetchPriority="high"
                         />
-                        </picture>
                     </div>
 
                     {/* Text Content sitting below bottles */}

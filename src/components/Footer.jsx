@@ -79,7 +79,7 @@ function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12 mt-2 mb-16 pt-10 border-t border-slate-400/80">
                     <div className="col-span-1 md:col-span-4 pr-6">
                         <Link to="/" className="flex items-center mb-6">
-                            <img src={logo} width={240} height={240} loading="lazy" decoding="async" alt="Solatide Biosciences" className="h-[75px] lg:h-[90px] w-auto object-contain" />
+                            <img src={logo} alt="Solatide Biosciences" className="h-[75px] lg:h-[90px] w-auto object-contain" />
                         </Link>
                         <p className="text-[14px] text-[#969CA4] leading-[1.6]">
                             Solatide Biosciences supplies analytical reference standards and laboratory consumables for in-vitro laboratory research use only.

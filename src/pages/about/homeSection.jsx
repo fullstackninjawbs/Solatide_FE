@@ -75,7 +75,7 @@ const AboutUs = () => {
 
                         <div className="w-full lg:w-[45%] shrink-0 order-1 lg:order-2 relative">
                             <div className="rounded-[20px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.2] lg:aspect-[1.15]">
-                                <img src={drImage} width={1000} height={750} fetchPriority="high" alt="Scientist holding vials" className="w-full h-full object-cover select-none" />
+                                <img src={drImage} alt="Scientist holding vials" className="w-full h-full object-cover select-none" />
                             </div>
                             <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 bg-white rounded-3xl px-3 py-1.5 sm:px-4 sm:py-2 shadow-md flex items-center gap-2 max-w-[85%] sm:max-w-none">
                                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#0ea5e9] shrink-0"></div>

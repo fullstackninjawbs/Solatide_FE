@@ -6,7 +6,7 @@ import productVialImage from '../../assets/images/homePageFirstSection.webp'
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
-import { optimizeCloudinaryUrl, responsiveImageSrcSet, PRODUCT_CARD_SIZES } from '../../utils/imageOptimization';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -101,9 +101,7 @@ const ShopPeptides = () => {
                                 >
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
                                         <img
-                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image, 480) || productVialImage}
-                                            srcSet={responsiveImageSrcSet(product.imageUrl || product.image)}
-                                            sizes={PRODUCT_CARD_SIZES}
+                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
                                             loading="lazy"
                                             decoding="async"
                                             className={product.imageUrl || product.image

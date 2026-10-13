@@ -10,7 +10,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
-import { optimizeCloudinaryUrl, responsiveImageSrcSet } from '../../utils/imageOptimization';
+import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackEvent } from '../../utils/analytics';
 import { getProductImageAltText } from '../../utils/imageHelpers';
 import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
@@ -532,9 +532,7 @@ const ProductDetail = () => {
                         <div className="bg-[#f8fafc] rounded-3xl border border-slate-200/60 p-6 flex items-center justify-center overflow-hidden h-[340px] sm:h-[450px] md:h-[550px] w-full relative group">
                             {images[activeTab] ? (
                                 <img
-                                    src={optimizeCloudinaryUrl(images[activeTab].url, images[activeTab].isCoa ? 1200 : 800)}
-                                    srcSet={responsiveImageSrcSet(images[activeTab].url, images[activeTab].isCoa ? [800, 1200, 1600] : [480, 800, 1200])}
-                                    sizes="(max-width: 1023px) 92vw, 600px"
+                                    src={images[activeTab].url}
                                     alt={images[activeTab].isCoa ? "COA Report" : getProductImageAltText(images[activeTab], product.name, activeTab)}
                                     fetchPriority="high"
                                     decoding="sync"
@@ -561,7 +559,7 @@ const ProductDetail = () => {
                                 >
                                     {idx < dbImages.length ? (
                                         img ? (
-                                            <img src={optimizeCloudinaryUrl(img.url, 200)} alt={getProductImageAltText(img, product.name, idx)} loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                                            <img src={img.url} alt={getProductImageAltText(img, product.name, idx)} loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] rounded-lg border border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px]">
                                                 No Img
@@ -569,7 +567,7 @@ const ProductDetail = () => {
                                         )
                                     ) : (
                                         img ? (
-                                            <img src={optimizeCloudinaryUrl(img.url, 200)} alt="Report Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                                            <img src={img.url} alt="Report Thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="w-full h-full bg-[#f8fafc] flex flex-col items-center justify-center border border-dashed border-slate-300 rounded-lg text-slate-400 text-[8px] font-bold p-1 text-center">
                                                 <span>COA REPORT</span>
