@@ -8,6 +8,50 @@ import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 
+const getProductPrice = (p) => {
+  if (typeof p?.price === 'number') return p.price;
+  if (p?.price && !isNaN(Number(p.price))) return Number(p.price);
+  if (Array.isArray(p?.variants) && p.variants.length > 0) {
+    const vPrice = p.variants[0]?.price;
+    if (typeof vPrice === 'number') return vPrice;
+    if (vPrice && !isNaN(Number(vPrice))) return Number(vPrice);
+  }
+  return 0;
+};
+
+const getProductDate = (p) => {
+  if (p?.createdAt) {
+    const t = new Date(p.createdAt).getTime();
+    if (!isNaN(t)) return t;
+  }
+  if (p?._id && typeof p._id === 'string' && p._id.length === 24) {
+    const t = parseInt(p._id.substring(0, 8), 16) * 1000;
+    if (!isNaN(t)) return t;
+  }
+  return 0;
+};
+
+const sortProducts = (products, sortType = 'alpha-asc') => {
+  if (!Array.isArray(products) || products.length <= 1) return [...(products || [])];
+  const list = [...products];
+  switch (sortType) {
+    case 'alpha-asc':
+      return list.sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), undefined, { numeric: true, sensitivity: 'base' }));
+    case 'alpha-desc':
+      return list.sort((a, b) => String(b?.name || '').localeCompare(String(a?.name || ''), undefined, { numeric: true, sensitivity: 'base' }));
+    case 'price-asc':
+      return list.sort((a, b) => getProductPrice(a) - getProductPrice(b));
+    case 'price-desc':
+      return list.sort((a, b) => getProductPrice(b) - getProductPrice(a));
+    case 'created-desc':
+      return list.sort((a, b) => getProductDate(b) - getProductDate(a));
+    case 'created-asc':
+      return list.sort((a, b) => getProductDate(a) - getProductDate(b));
+    default:
+      return list;
+  }
+};
+
 const CollectionForm = () => {
   const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const { id } = useParams();
@@ -21,6 +65,7 @@ const CollectionForm = () => {
   const [productsCatalog, setProductsCatalog] = useState([]);
   const [productSearch, setProductSearch] = useState('');
   const [showProductSearchDropdown, setShowProductSearchDropdown] = useState(false);
+  const [productSort, setProductSort] = useState('alpha-asc');
   const toast = useToast();
 
   // Collection State
@@ -103,6 +148,8 @@ const CollectionForm = () => {
           const result = await res.json();
           if (result.success && result.data) {
             const { collection, products } = result.data;
+            const currentSort = collection.productSort || 'alpha-asc';
+            setProductSort(currentSort);
             setFormData({
               name: collection.name || '',
               slug: collection.slug || '',
@@ -111,8 +158,9 @@ const CollectionForm = () => {
               status: collection.status || 'active',
               type: 'manual',
               sortOrder: collection.sortOrder || 0,
+              productSort: currentSort,
               displayOptions: collection.displayOptions || { showFaqBlock: false },
-              products: products || [],
+              products: sortProducts(products || [], currentSort),
               publishing: collection.publishing || ['online_store'],
               themeTemplate: collection.themeTemplate || 'default'
             });
@@ -131,15 +179,26 @@ const CollectionForm = () => {
     }
   }, [id, isEditMode]);
 
+  // Product sorting handler
+  const handleSortChange = (newSort) => {
+    setProductSort(newSort);
+    setFormData(prev => ({
+      ...prev,
+      productSort: newSort,
+      products: sortProducts(prev.products, newSort)
+    }));
+  };
+
   // Manual Mode: Products selection helpers
   const handleAddProduct = (product) => {
-    if (formData.products.some(p => p._id === product._id)) {
+    if (formData.products.some(p => (p._id || p) === (product._id || product))) {
       toast.warning('Product is already in this collection.');
       return;
     }
+    const updated = [...formData.products, product];
     setFormData(prev => ({
       ...prev,
-      products: [...prev.products, product]
+      products: sortProducts(updated, productSort)
     }));
     setProductSearch('');
     setShowProductSearchDropdown(false);
@@ -220,6 +279,7 @@ const CollectionForm = () => {
     setLoading(true);
 
     try {
+      const sortedProducts = sortProducts(formData.products, productSort);
       const payload = {
         name: formData.name,
         slug: formData.slug || undefined,
@@ -228,8 +288,9 @@ const CollectionForm = () => {
         status: formData.status,
         type: 'manual',
         sortOrder: Number(formData.sortOrder) || 0,
+        productSort,
         displayOptions: formData.displayOptions,
-        products: formData.products.map(p => p._id || p),
+        products: sortedProducts.map(p => p._id || p),
         publishing: formData.publishing,
         themeTemplate: formData.themeTemplate
       };
@@ -348,8 +409,8 @@ const CollectionForm = () => {
                 </span>
                 <span className="text-slate-200">|</span>
                 <select
-                  value={formData.sortOrder}
-                  onChange={(e) => setFormData(prev => ({ ...prev, sortOrder: e.target.value }))}
+                  value={productSort}
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="bg-transparent border-0 outline-none text-[13px] font-semibold text-[#214A9E] cursor-pointer hover:underline py-1"
                 >
                   <option value="alpha-asc">Sort: Product title A-Z</option>
