@@ -8,6 +8,7 @@
  */
 
 import { API_URL } from '../services/api';
+import { runWhenIdle } from './runWhenIdle';
 const ENDPOINT = `${API_URL}/api/analytics/events`;
 
 // prerender.js sets window.__PRERENDER__ before any script runs: never send analytics or
@@ -158,9 +159,10 @@ async function fetchLocationDetails() {
   }
 }
 
-// Call it immediately (fire and forget) — skipped while prerendering
+// Fire and forget after page load/idle (keeps the geo lookup off the critical path; events sent
+// before it resolves use the timezone fallback) — skipped while prerendering
 if (!isPrerendering()) {
-  fetchLocationDetails().catch(() => {});
+  runWhenIdle(() => { fetchLocationDetails().catch(() => {}); });
 }
 
 // ─── Event Tracker ────────────────────────────────────────────────────────────

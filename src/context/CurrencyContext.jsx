@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { runWhenIdle } from '../utils/runWhenIdle';
 import { Country } from 'country-state-city';
 
 const CurrencyContext = createContext();
@@ -50,11 +51,13 @@ export const CurrencyProvider = ({ children }) => {
 
   useEffect(() => {
     // 1. Load saved country from localStorage after initial render
+    let savedCurrency = 'AUD';
     try {
       const savedCountry = localStorage.getItem('selectedCountry');
       if (savedCountry) {
         const parsed = JSON.parse(savedCountry);
         if (parsed && parsed.code) {
+          savedCurrency = parsed.code;
           setSelectedCountry(parsed);
         }
       }
@@ -103,8 +106,10 @@ export const CurrencyProvider = ({ children }) => {
       }
     };
 
+    // AUD prices need no rates: fetch after load/idle. A saved non-AUD currency needs them now.
     if (!hasFreshCache) {
-      fetchRates();
+      if (savedCurrency === 'AUD') runWhenIdle(fetchRates);
+      else fetchRates();
     }
   }, []);
 

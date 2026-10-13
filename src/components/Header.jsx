@@ -190,6 +190,8 @@ const Header = () => {
                             <Link to="/" className="flex items-center gap-2">
                                 <img
                                     src={logo}
+                                    width={240}
+                                    height={240}
                                     alt="Solatide Biosciences"
                                     fetchPriority="high"
                                     decoding="sync"
