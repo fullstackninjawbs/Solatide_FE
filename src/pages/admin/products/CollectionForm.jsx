@@ -580,13 +580,9 @@ const CollectionForm = () => {
                     name="title"
                     value={formData.seo?.title || ''}
                     onChange={handleSeoChange}
-                    maxLength={70}
                     placeholder={`${formData.name || 'Collection'} | Solatide Biosciences`}
                     className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-800 text-[14px]"
                   />
-                  <div className="text-[12px] text-slate-400 mt-1">
-                    {(formData.seo?.title || '').length} of 70 characters used
-                  </div>
                 </div>
 
                 <div>
@@ -597,14 +593,10 @@ const CollectionForm = () => {
                     name="description"
                     value={formData.seo?.description || ''}
                     onChange={handleSeoChange}
-                    maxLength={320}
                     rows={4}
                     placeholder="Brief description of this collection for search engines..."
                     className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-800 text-[14px] resize-none"
                   />
-                  <div className="text-[12px] text-slate-400 mt-1">
-                    {(formData.seo?.description || '').length} of 320 characters used
-                  </div>
                 </div>
 
                 <div>
