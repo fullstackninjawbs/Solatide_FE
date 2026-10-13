@@ -8,21 +8,9 @@ const seoData = {
     title: "Solatide Biosciences | Research Grade Peptides | COA Verified",
     description: "Solatide Biosciences is a laboratory supply company providing analytical reference standards and chemical compounds for in-vitro research and laboratory analysis. All compounds are independently third-party tested and verified for purity. Not for human or animal consumption, therapeutic, diagnostic, or prophylactic use"
   },
-  "/collections/dermal-pigmentation-research": {
-    title: "Dermal & Pigmentation Research Peptides MT2 GHK-Cu Australia – Solatide Biosciences",
-    description: "Solatide Biosciences dermal and pigmentation research peptides, including MT2 and GHK-Cu. Melanocortin receptor and copper peptide compounds with COA."
-  },
   "/pages/research-peptides-guide": {
     title: "Research Peptide Guide | Solatide Biosciences",
     description: "A plain-language guide to research peptides — covering common categories, laboratory use, handling, quality documentation and research-use terminology. For in-vitro research use only."
-  },
-  "/collections/all": {
-    title: "Research Grade Peptides | Solatide Biosciences",
-    description: "Browse research peptides, analytical compounds and laboratory-use materials with batch documentation, COAs and testing information where available."
-  },
-  "/collections/research-solutions": {
-    title: "Research Solutions | Laboratory Support Materials | Solatide – Solatide Biosciences",
-    description: "Laboratory support materials and sterile solvents for peptide handling, preparation, and controlled in-vitro research workflows. For laboratory use only."
   },
   "/pages/research-library": {
     title: "Research Resource Hub | Solatide Biosciences",
@@ -56,10 +44,6 @@ const seoData = {
     title: "Shipping Policy | Solatide Biosciences Australia",
     description: "Read the Solatide Biosciences Shipping Policy covering order processing, dispatch times, delivery estimates, tracking, customs, and support."
   },
-  "/collections/tissue-cellular-research-peptides": {
-    title: "Tissue & Cellular Research Peptides | BPC-157 TB-500 AU – Solatide Biosciences",
-    description: "Browse tissue and cellular research peptides including BPC-157, TB-500, and combined-pathway compounds for in-vitro laboratory research. COA verified."
-  },
   "/pages/concentration-calculator": {
     title: "Concentration Calculator | Solatide Biosciences",
     description: "Concentration calculator for math conversions and dilution calculations. Educational reference tool for research use only."
@@ -75,10 +59,6 @@ const seoData = {
   "/pages/coa": {
     title: "Certificates of Analysis | Solatide Biosciences",
     description: "Access batch-specific certificates of analysis for Solatide Biosciences research peptides. Third-party analytical documentation by product and batch."
-  },
-  "/collections/glp-1-metabolic-peptides": {
-    title: "GLP-1 & Metabolic Research Peptides Australia | Solatide – Solatide Biosciences",
-    description: "Research-grade GLP-1 receptor agonists, dual agonists, triple agonists, and metabolic research compounds. COA-verified. For in-vitro laboratory use only."
   },
   "/pages/research-use-disclaimer": {
     title: "Research Use Disclaimer | Solatide Biosciences Australia",
