@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+import { repairEditorLinks } from './repairEditorLinks';
 
 /**
  * Single shared sanitiser for every piece of admin/CMS/product-supplied HTML that is
@@ -45,7 +46,9 @@ export const sanitizeHtml = (html) => {
     if (typeof html !== 'string' || html === '') return '';
     if (!DOMPurify.isSupported) return '';
     installHooks();
-    return DOMPurify.sanitize(html, CONFIG);
+    // Repair nested empty links from the editor on the raw string first: DOMPurify's DOM
+    // parse would split them (content saved before the server-side repair existed)
+    return DOMPurify.sanitize(repairEditorLinks(html), CONFIG);
 };
 
 export default sanitizeHtml;
