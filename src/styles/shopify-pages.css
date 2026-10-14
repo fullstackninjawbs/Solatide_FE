@@ -463,3 +463,317 @@
   margin: 0 !important;
   font-size: 0.9em !important;
 }
+/* ==========================================================================
+   Compound Index (.ci-*), Peptide Guide (.pg-*), Sitemap (.sm-*) and extra
+   Guide/Disclaimer (.sb-*) blocks used in CMS page content.
+   Same design as the .wi-* pages. These must live here (not in a <style>
+   block inside the page HTML): the server sanitizer strips <style> on save.
+   ========================================================================== */
+.ci-wrap,
+.pg-wrap,
+.sm-wrap {
+  font-family: inherit;
+  color: #222;
+}
+
+.ci-wrap h1,
+.pg-wrap h1,
+.sm-wrap h1 {
+  font-size: 2em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  margin-bottom: 16px !important;
+}
+
+.ci-wrap h2,
+.pg-wrap h2,
+.sm-wrap h2 {
+  font-size: 1.35em;
+  font-weight: 700;
+  color: #1a3a6b !important;
+  border-bottom: 2px solid #dce6f5;
+  padding-bottom: 8px;
+  margin-top: 44px !important;
+  margin-bottom: 16px !important;
+}
+
+.ci-wrap h3,
+.pg-wrap h3,
+.sm-wrap h3 {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #1a3a6b !important;
+  margin-top: 6px !important;
+  margin-bottom: 8px !important;
+}
+
+.ci-wrap p,
+.pg-wrap p,
+.sm-wrap p {
+  line-height: 1.75;
+  margin-bottom: 14px !important;
+  color: #333;
+}
+
+.ci-wrap a,
+.pg-wrap a,
+.sm-wrap a {
+  color: #2a7de1 !important;
+  text-decoration: none;
+}
+
+.ci-wrap a:hover,
+.pg-wrap a:hover,
+.sm-wrap a:hover {
+  text-decoration: underline;
+}
+
+.ci-wrap ul,
+.pg-wrap ul,
+.sm-wrap ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+  list-style-type: disc;
+}
+
+.ci-wrap li,
+.pg-wrap li,
+.sm-wrap li {
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+/* Callouts */
+.ci-callout,
+.pg-callout,
+.sb-callout {
+  background: #eef3fc;
+  border-left: 4px solid #1a3a6b;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 36px;
+}
+
+.ci-callout p,
+.pg-callout p,
+.sb-callout p {
+  margin: 0 !important;
+  font-size: 0.9em;
+  color: #1a3a6b;
+  line-height: 1.6;
+}
+
+.sb-callout-warn {
+  background: #fff8e6;
+  border-left: 4px solid #d97706;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 36px;
+}
+
+.sb-callout-warn p {
+  margin: 0 !important;
+  font-size: 0.9em;
+  color: #7c4a03;
+  line-height: 1.6;
+}
+
+/* Tag pill */
+.ci-tag {
+  display: inline-block;
+  background: #dce6f5;
+  color: #1a3a6b;
+  font-size: 0.72em;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Button rows + buttons */
+.ci-cta-row,
+.pg-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.ci-wrap a.ci-btn,
+.pg-wrap a.pg-btn {
+  display: inline-block !important;
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: none !important;
+  line-height: 1.4 !important;
+  transition: opacity 0.2s !important;
+}
+
+.ci-wrap a.ci-btn:hover,
+.pg-wrap a.pg-btn:hover {
+  opacity: 0.85 !important;
+  text-decoration: none !important;
+}
+
+.ci-wrap a.ci-btn-outline,
+.pg-wrap a.pg-btn-outline {
+  display: inline-block !important;
+  background-color: transparent !important;
+  color: #1F54A1 !important;
+  text-decoration: none !important;
+  padding: 11px 24px !important;
+  border-radius: 40px !important;
+  font-size: 0.95em !important;
+  font-weight: 600 !important;
+  border: 2px solid #1F54A1 !important;
+  line-height: 1.4 !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+
+.ci-wrap a.ci-btn-outline:hover,
+.pg-wrap a.pg-btn-outline:hover {
+  background-color: #1F54A1 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* Cards (one per compound / guide topic) */
+.ci-card,
+.pg-card {
+  background: #f5f8fd;
+  border-left: 3px solid #1F54A1;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 0 0 14px;
+}
+
+.ci-card p,
+.pg-card p {
+  font-size: 0.92em;
+  margin-bottom: 12px !important;
+}
+
+/* Links inside a card: small outline pills under a separator line */
+.ci-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid #dce6f5;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.ci-links a {
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #1F54A1 !important;
+  border: 1.5px solid #1F54A1;
+  border-radius: 40px;
+  padding: 6px 16px;
+  text-decoration: none !important;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.ci-links a:hover {
+  background-color: #1F54A1;
+  color: #fff !important;
+}
+
+/* Collection shortcuts */
+.ci-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.ci-wrap a.ci-collection-card {
+  display: block;
+  background: #fff;
+  border: 1px solid #dce6f5;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #1a3a6b !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ci-wrap a.ci-collection-card:hover {
+  border-color: #1F54A1;
+  box-shadow: 0 2px 10px rgba(31, 84, 161, 0.12);
+}
+
+/* Quality / documentation note */
+.ci-quality {
+  background: #f5f8ff;
+  border: 1px solid #dce6f5;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+
+/* Utility link pills */
+.ci-utility,
+.pg-utility,
+.sb-utility-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ci-utility a,
+.pg-utility a,
+.sb-utility-links a {
+  font-size: 0.9em;
+  color: #2a7de1 !important;
+  border: 1px solid #c5d3ee !important;
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-decoration: none !important;
+  background-color: #f5f8ff !important;
+}
+
+.ci-utility a:hover,
+.pg-utility a:hover,
+.sb-utility-links a:hover {
+  background-color: #eef3fc !important;
+}
+
+/* Dividers */
+.ci-divider,
+.pg-divider,
+.sb-divider,
+.sm-divider {
+  border: none;
+  border-top: 2px solid #dce6f5;
+  margin: 48px 0 0;
+}
+
+/* Guide / disclaimer extras */
+.sb-meta {
+  font-size: 0.85em;
+  color: #6b7280 !important;
+  margin-bottom: 24px !important;
+}
+
+.sb-section {
+  margin-bottom: 28px;
+}
+
+/* Sitemap intro */
+.sm-intro {
+  font-size: 1.05em;
+  color: #475569 !important;
+  margin-bottom: 24px !important;
+}
