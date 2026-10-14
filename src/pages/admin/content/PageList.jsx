@@ -1,37 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, Eye, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import Pagination from '../../../components/Pagination';
 
 const PageList = () => {
+  // Page, page size, search and status live in the URL (same pattern as admin Orders)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const urlQ = searchParams.get('q') || '';
+  const statusFilter = searchParams.get('status') || 'all';
+
   const [pages, setPages] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  
+  const [searchTerm, setSearchTerm] = useState(urlQ);
+  const debounceRef = useRef(null);
+
   const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
-
+  // useToast() returns a new object on every provider render; keep it out of effect deps
+  const toastRef = useRef(toast);
   useEffect(() => {
-    fetchPages();
-  }, [statusFilter]);
+    toastRef.current = toast;
+  });
 
-  const fetchPages = async () => {
+  // Sync search input with browser back/forward URL changes
+  const [prevUrlQ, setPrevUrlQ] = useState(urlQ);
+  if (urlQ !== prevUrlQ) {
+    setPrevUrlQ(urlQ);
+    setSearchTerm(urlQ);
+  }
+
+  // Debounce search input into the URL (server-side search)
+  useEffect(() => {
+    if (searchTerm === urlQ) return;
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchTerm.trim()) nextParams.set('q', searchTerm.trim());
+      else nextParams.delete('q');
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchTerm, urlQ, searchParams, setSearchParams]);
+
+  const fetchPages = useCallback(async () => {
     try {
       setLoading(true);
-      const queryString = statusFilter !== 'all' ? `status=${statusFilter}` : '';
-      const res = await apiService.getAdminPages(queryString);
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (urlQ) params.set('search', urlQ);
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+      const res = await apiService.getAdminPages(params.toString());
       const data = await res.json();
-      setPages(data);
+      if (!res.ok) throw new Error(data?.message || 'Failed to fetch pages');
+      setPages(data?.data?.pages || []);
+      setTotal(data?.total ?? 0);
     } catch (err) {
-      toast.error('Failed to fetch pages');
+      toastRef.current.error('Failed to fetch pages');
     } finally {
       setLoading(false);
     }
+  }, [page, limit, urlQ, statusFilter]);
+
+  useEffect(() => {
+    fetchPages();
+  }, [fetchPages]);
+
+  const handleStatusChange = (value) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (value === 'all') nextParams.delete('status');
+    else nextParams.set('status', value);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
   };
 
   const handleDelete = async (id, title) => {
@@ -62,10 +118,6 @@ const PageList = () => {
     toast.success('Page URL copied');
   };
 
-  const filteredPages = pages.filter(page => 
-    page.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    page.slug.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-6 text-left font-sans pb-20">
@@ -96,7 +148,7 @@ const PageList = () => {
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => handleStatusChange(e.target.value)}
           className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-navy focus:border-brand-navy outline-none bg-white min-w-[150px] text-[14px]"
         >
           <option value="all">All Status</option>
@@ -128,14 +180,14 @@ const PageList = () => {
                     </div>
                   </td>
                 </tr>
-              ) : filteredPages.length === 0 ? (
+              ) : pages.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="py-12 text-center text-slate-500">
                     No pages found matching your criteria.
                   </td>
                 </tr>
               ) : (
-                filteredPages.map(page => (
+                pages.map(page => (
                   <tr key={page._id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 font-semibold text-slate-800">
                       {page.title}
@@ -199,6 +251,15 @@ const PageList = () => {
             </tbody>
           </table>
         </div>
+
+        {!loading && pages.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

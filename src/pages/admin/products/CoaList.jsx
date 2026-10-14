@@ -1,30 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../../services/api';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
 import { getUserFriendlyErrorMessage } from '../../../utils/getUserFriendlyErrorMessage';
+import Pagination from '../../../components/Pagination';
 
 const CoaList = () => {
+  // Page, page size, search and product filter live in the URL (same pattern as admin Orders)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const urlQ = searchParams.get('q') || '';
+  const filterProductId = searchParams.get('product') || '';
+
   const [batches, setBatches] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-
-  // Filter state
-  const [filterProductId, setFilterProductId] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(urlQ);
+  const debounceRef = useRef(null);
   const toast = useToast();
   const confirm = useConfirm();
 
+  // Sync search input with browser back/forward URL changes
+  const [prevUrlQ, setPrevUrlQ] = useState(urlQ);
+  if (urlQ !== prevUrlQ) {
+    setPrevUrlQ(urlQ);
+    setSearchQuery(urlQ);
+  }
+
+  // Debounce search input into the URL (server-side search)
   useEffect(() => {
-    fetchProducts();
-    fetchBatches();
-  }, []);
+    if (searchQuery === urlQ) return;
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchQuery.trim()) nextParams.set('q', searchQuery.trim());
+      else nextParams.delete('q');
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery, urlQ, searchParams, setSearchParams]);
 
   useEffect(() => {
-    fetchBatches();
-  }, [filterProductId]);
+    fetchProducts();
+  }, []);
+
+  const setFilterProductId = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (val) nextParams.set('product', val);
+    else nextParams.delete('product');
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('q');
+    nextParams.delete('product');
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
+  };
 
   const fetchProducts = async () => {
     try {
@@ -36,27 +83,34 @@ const CoaList = () => {
     }
   };
 
-  const fetchBatches = async () => {
+  const fetchBatches = useCallback(async () => {
     try {
       setLoading(true);
+      // Server-side: only batches with a COA document, paged (previously only the first 50
+      // batches were fetched and then filtered here, so older COAs could go missing)
       const params = new URLSearchParams();
+      params.set('hasCoa', 'true');
+      params.set('page', String(page));
+      params.set('limit', String(limit));
       if (filterProductId) params.set('productId', filterProductId);
-      // We only care about approved or pending COAs that have a file
-      
+      if (urlQ) params.set('search', urlQ);
+
       const res = await apiService.getBatches(params.toString());
       const data = await res.json();
       if (data.success) {
-        // Filter to only batches that have a COA document attached
-        const coaBatches = data.data.batches.filter(b => b.coaFile?.url || b.coaUrl);
-        setBatches(coaBatches);
+        setBatches(data.data.batches);
+        setTotal(data.total ?? 0);
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, limit, filterProductId, urlQ]);
 
+  useEffect(() => {
+    fetchBatches();
+  }, [fetchBatches]);
   const handleDeleteCoa = async (batchId) => {
     const isConfirmed = await confirm({
       title: 'Remove COA Document?',
@@ -85,10 +139,6 @@ const CoaList = () => {
       }
     }
   };
-
-  if (loading) {
-    return <div className="p-8 text-center text-slate-500">Loading COA documents...</div>;
-  }
 
   return (
     <div className="w-full">
@@ -127,7 +177,7 @@ const CoaList = () => {
         </div>
         {(filterProductId || searchQuery) && (
           <button
-            onClick={() => { setFilterProductId(''); setSearchQuery(''); }}
+            onClick={clearFilters}
             className="px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-red-500 text-[13px] font-semibold hover:bg-red-100 transition-all cursor-pointer"
           >
             Clear filters
@@ -149,28 +199,20 @@ const CoaList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {batches.filter(batch => {
-                if (!searchQuery) return true;
-                const query = searchQuery.toLowerCase();
-                const matchBatchId = batch.batchId?.toLowerCase().includes(query);
-                const matchProductName = batch.productId?.name?.toLowerCase().includes(query);
-                const matchDisplayName = batch.displayName?.toLowerCase().includes(query);
-                return matchBatchId || matchProductName || matchDisplayName;
-              }).length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="5" className="px-5 py-10 text-center text-slate-500">
+                    Loading COA documents...
+                  </td>
+                </tr>
+              ) : batches.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-5 py-10 text-center text-slate-400 italic">
                     No COA documents found.
                   </td>
                 </tr>
               ) : (
-                batches.filter(batch => {
-                  if (!searchQuery) return true;
-                  const query = searchQuery.toLowerCase();
-                  const matchBatchId = batch.batchId?.toLowerCase().includes(query);
-                  const matchProductName = batch.productId?.name?.toLowerCase().includes(query);
-                  const matchDisplayName = batch.displayName?.toLowerCase().includes(query);
-                  return matchBatchId || matchProductName || matchDisplayName;
-                }).map((batch) => (
+                batches.map((batch) => (
                   <tr key={batch._id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3.5">
                       <a
@@ -223,6 +265,15 @@ const CoaList = () => {
             </tbody>
           </table>
         </div>
+
+        {!loading && batches.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );
