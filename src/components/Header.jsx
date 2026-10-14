@@ -170,7 +170,7 @@ const Header = () => {
                     <div className={`absolute flex items-center justify-center gap-2 transition-all duration-500 ease-in-out ${announcementIndex === 0 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                         <span className="tracking-wide">Australian owned & operated</span>
                         <span className="flex items-center justify-center overflow-hidden rounded-[2px]" style={{ width: '20px', height: '14px' }}>
-                            <CountryFlag countryCode="AU" alt="" style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
+                            <CountryFlag countryCode="AU" alt="Australian flag" style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
                         </span>
                     </div>
 
@@ -288,7 +288,7 @@ const Header = () => {
                                     onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
                                     className="inline-flex items-center gap-1.5 bg-[#1a4494] text-white px-3 py-[7px] rounded-full text-[12px] font-bold cursor-pointer hover:bg-[#1a4494] transition-colors shrink-0 select-none"
                                 >
-                                    <span className="text-sm leading-none"><CountryFlag countryCode={selectedCountry.countryCode} /></span>
+                                    <span className="text-sm leading-none"><CountryFlag countryCode={selectedCountry.countryCode} alt={`${selectedCountry.name || selectedCountry.countryCode} flag`} /></span>
                                     <span>{selectedCountry.code}</span>
                                     <svg className={`fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
                                         <path d="M5 8l7 8 7-8H5z" />
@@ -326,7 +326,7 @@ const Header = () => {
                                                             : 'hover:bg-white/70 text-[#102a5c]'
                                                             }`}
                                                     >
-                                                        <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} /></span>
+                                                        <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} alt={`${country.name} flag`} /></span>
                                                         <span className="truncate flex-1">{country.name}</span>
                                                         <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                     </button>
@@ -445,7 +445,7 @@ const Header = () => {
                                         className="flex items-center justify-between w-full bg-[#102a5c] text-white px-4 py-3 rounded-xl text-sm font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
                                     >
                                         <div className="flex items-center gap-2.5">
-                                            <span className="text-base leading-none flex items-center shrink-0"><CountryFlag countryCode={selectedCountry.countryCode} /></span>
+                                            <span className="text-base leading-none flex items-center shrink-0"><CountryFlag countryCode={selectedCountry.countryCode} alt={`${selectedCountry.name || selectedCountry.countryCode} flag`} /></span>
                                             <span className="uppercase tracking-wider">{selectedCountry.code}</span>
                                         </div>
                                         <svg className={`fill-white transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
@@ -484,7 +484,7 @@ const Header = () => {
                                                                 : 'hover:bg-white/70 text-[#102a5c]'
                                                                 }`}
                                                         >
-                                                            <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} /></span>
+                                                            <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} alt={`${country.name} flag`} /></span>
                                                             <span className="truncate flex-1">{country.name}</span>
                                                             <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                         </button>

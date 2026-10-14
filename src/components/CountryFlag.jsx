@@ -3,14 +3,16 @@
 // country, and come from a version-pinned npm path (never the unpinned GitHub "latest" path).
 const PINNED_FLAG_CDN = 'https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/';
 
-const CountryFlag = ({ countryCode, alt = '', style, className }) => {
+const CountryFlag = ({ countryCode, alt, style, className }) => {
     if (typeof countryCode !== 'string' || !/^[A-Za-z]{2}$/.test(countryCode)) return null;
     const code = countryCode.toLowerCase();
+    // Default alt text when the caller does not pass one (e.g. "AU flag")
+    const altText = alt ?? `${code.toUpperCase()} flag`;
     const src = code === 'au' ? '/flags/au.svg' : `${PINNED_FLAG_CDN}${code}.svg`;
     return (
         <img
             src={src}
-            alt={alt}
+            alt={altText}
             width={20}
             height={15}
             className={className}
