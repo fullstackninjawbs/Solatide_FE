@@ -58,119 +58,149 @@ export function getSessionId() {
   }
 }
 
+// ─── Location ─────────────────────────────────────────────────────────────────
+// City-level location comes from an IP lookup (ipapi.co). It is approximate by nature (mobile
+// networks often resolve to the carrier's hub city), but it is the only per-visitor source.
+// When it is unavailable we record only what the timezone really tells us — never a guessed city.
+
+const LOC_KEY = 'slat_loc';
+const LOC_TTL_MS = 24 * 60 * 60 * 1000; // re-check daily (visitors move / change network)
+const LOC_WAIT_MS = 2500;               // max time an event waits for the lookup
+
 let locationCache = null;
+let locationPromise = null;
+
+// Timezone -> country (and state for Australia, where zones map to states). No city: e.g. all of
+// India is "Asia/Kolkata", which used to label every Indian visitor "Kolkata, West Bengal".
+const TZ_COUNTRY = [
+  [/^Asia\/(Kolkata|Calcutta)$/, 'India', ''],
+  [/^Australia\/(Sydney|ACT|Canberra|NSW)$/, 'Australia', 'New South Wales'],
+  [/^Australia\/(Melbourne|Victoria)$/, 'Australia', 'Victoria'],
+  [/^Australia\/(Brisbane|Queensland|Lindeman)$/, 'Australia', 'Queensland'],
+  [/^Australia\/(Perth|West)$/, 'Australia', 'Western Australia'],
+  [/^Australia\/(Adelaide|South)$/, 'Australia', 'South Australia'],
+  [/^Australia\/(Hobart|Tasmania)$/, 'Australia', 'Tasmania'],
+  [/^Australia\/(Darwin|North)$/, 'Australia', 'Northern Territory'],
+  [/^Australia\//, 'Australia', ''],
+  [/^Pacific\/Auckland$/, 'New Zealand', ''],
+  [/^Europe\/London$/, 'United Kingdom', ''],
+  [/^America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage)$/, 'United States', ''],
+  [/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax)$/, 'Canada', ''],
+  [/^Asia\/Singapore$/, 'Singapore', ''],
+];
 
 function detectLocationFromTimezone() {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    let country = 'Australia';
-    let region = '';
-    let city = '';
-
-    if (tz.includes('Kolkata') || tz.includes('Calcutta')) {
-      country = 'India';
-      region = 'West Bengal';
-      city = 'Kolkata';
-    } else if (tz.includes('Delhi') || tz.includes('Mumbai') || tz.includes('Asia/Kolkata')) {
-      country = 'India';
-      region = 'Delhi';
-      city = 'Delhi';
-    } else if (tz.includes('Sydney')) {
-      country = 'Australia';
-      region = 'New South Wales';
-      city = 'Sydney';
-    } else if (tz.includes('Melbourne')) {
-      country = 'Australia';
-      region = 'Victoria';
-      city = 'Melbourne';
-    } else if (tz.includes('Brisbane')) {
-      country = 'Australia';
-      region = 'Queensland';
-      city = 'Brisbane';
-    } else if (tz.includes('Perth')) {
-      country = 'Australia';
-      region = 'Western Australia';
-      city = 'Perth';
-    } else if (tz.includes('Adelaide')) {
-      country = 'Australia';
-      region = 'South Australia';
-      city = 'Adelaide';
-    } else if (tz.includes('New_York')) {
-      country = 'United States';
-      region = 'New York';
-      city = 'New York';
-    } else if (tz.includes('Los_Angeles')) {
-      country = 'United States';
-      region = 'California';
-      city = 'Los Angeles';
-    } else if (tz.includes('Chicago')) {
-      country = 'United States';
-      region = 'Illinois';
-      city = 'Chicago';
-    } else if (tz.includes('London')) {
-      country = 'United Kingdom';
-      region = 'England';
-      city = 'London';
-    } else if (tz.includes('Toronto')) {
-      country = 'Canada';
-      region = 'Ontario';
-      city = 'Toronto';
-    } else if (tz.includes('Vancouver')) {
-      country = 'Canada';
-      region = 'British Columbia';
-      city = 'Vancouver';
-    } else {
-      // Split timezone
-      const parts = tz.split('/');
-      if (parts.length > 1) {
-        city = parts[1].replace('_', ' ');
-      }
+    for (const [re, country, region] of TZ_COUNTRY) {
+      if (re.test(tz)) return { country, region, city: '' };
     }
-    return { country, region, city };
   } catch {
-    return { country: 'Australia', region: '', city: '' };
+    // fall through
+  }
+  return { country: 'Unknown', region: '', city: '' };
+}
+
+function readCachedLocation() {
+  try {
+    const raw = localStorage.getItem(LOC_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Entries without a timestamp were written by the old tracker (cached forever): refresh them
+    if (!parsed || !parsed.at || Date.now() - parsed.at > LOC_TTL_MS) return null;
+    return { country: parsed.country || 'Unknown', region: parsed.region || '', city: parsed.city || '' };
+  } catch {
+    return null;
   }
 }
 
-// Initialize location retrieval
 async function fetchLocationDetails() {
+  const cached = readCachedLocation();
+  if (cached) {
+    locationCache = cached;
+    return locationCache;
+  }
   try {
-    // Check localStorage first
-    const cached = localStorage.getItem('slat_loc');
-    if (cached) {
-      locationCache = JSON.parse(cached);
-      return;
-    }
-
     const res = await fetch('https://ipapi.co/json/');
     if (res.ok) {
       const data = await res.json();
-      locationCache = {
-        country: data.country_name || data.country || 'Australia',
-        region: data.region || '',
-        city: data.city || ''
-      };
-      localStorage.setItem('slat_loc', JSON.stringify(locationCache));
-    } else {
-      locationCache = detectLocationFromTimezone();
+      if (data && !data.error && (data.country_name || data.country)) {
+        locationCache = {
+          country: data.country_name || data.country,
+          region: data.region || '',
+          city: data.city || '',
+        };
+        try { localStorage.setItem(LOC_KEY, JSON.stringify({ ...locationCache, at: Date.now() })); } catch { /* ignore */ }
+        return locationCache;
+      }
     }
-  } catch (err) {
-    locationCache = detectLocationFromTimezone();
+  } catch {
+    // network / rate-limit: fall back below (not cached, so the next visit retries)
+  }
+  locationCache = detectLocationFromTimezone();
+  return locationCache;
+}
+
+/** Start the lookup once (on the first event or after page load, whichever comes first). */
+function ensureLocation() {
+  if (!locationPromise) locationPromise = fetchLocationDetails().catch(() => detectLocationFromTimezone());
+  return locationPromise;
+}
+
+/** Location for an event: waits briefly for the lookup so the first page view is not mislabelled. */
+async function getLocation() {
+  if (locationCache) return locationCache;
+  const timeout = new Promise((resolve) => setTimeout(() => resolve(null), LOC_WAIT_MS));
+  return (await Promise.race([ensureLocation(), timeout])) || detectLocationFromTimezone();
+}
+
+// Warm the lookup after page load/idle so it is usually ready by the first interaction —
+// skipped while prerendering
+if (!isPrerendering()) {
+  runWhenIdle(() => { ensureLocation(); });
+}
+
+// ─── Bots & 404s ──────────────────────────────────────────────────────────────
+
+const BOT_UA = /bot\b|crawler|spider|crawling|headless|lighthouse|pagespeed|gtmetrix|pingdom|uptime|monitor|preview|facebookexternalhit|slurp|bingpreview|ahrefs|semrush|mj12|dotbot|petalbot|yandex|baidu|python-requests|curl\/|wget\//i;
+
+function isAutomatedVisitor() {
+  try {
+    if (typeof navigator === 'undefined') return true;
+    if (navigator.webdriver) return true; // Selenium / Puppeteer / Playwright
+    return BOT_UA.test(navigator.userAgent || '');
+  } catch {
+    return false;
   }
 }
 
-// Fire and forget after page load/idle (keeps the geo lookup off the critical path; events sent
-// before it resolves use the timezone fallback) — skipped while prerendering
-if (!isPrerendering()) {
-  runWhenIdle(() => { fetchLocationDetails().catch(() => {}); });
+/**
+ * Called by the 404 screens (generic, unknown CMS page, unknown product) so the page view for a
+ * URL that does not exist is not recorded (crawlers probe random URLs to test 404 handling).
+ */
+/** Location from an order's shipping address (most accurate for purchases); {} if unknown. */
+export function orderLocation(order) {
+  const a = (order && (order.shippingAddressObj || order.tagadaShipping?.address)) || {};
+  const country = a.country || a.countryCode;
+  return country ? { country, region: a.state || a.province || '', city: a.city || '' } : {};
 }
+
+export function markNotFound() {
+  try {
+    if (typeof window !== 'undefined') window.__SLAT_NOT_FOUND_PATH__ = window.location.pathname;
+  } catch {
+    // ignore
+  }
+}
+
+const isNotFoundPage = (path) => typeof window !== 'undefined' && window.__SLAT_NOT_FOUND_PATH__ === path;
 
 // ─── Event Tracker ────────────────────────────────────────────────────────────
 
 /**
  * Track an analytics event.
  * @param {string} eventType - One of: page_view, product_view, add_to_cart, begin_checkout, purchase
- * @param {object} metadata  - Optional: { productId, orderId, country, cartValue, page }
+ * @param {object} metadata  - Optional: { productId, orderId, country, region, city, cartValue, page }
  */
 // Must match Server analytics.controller.ts VALID_EVENT_TYPES / ANALYTICS_MAX_STRING (400 otherwise).
 export const VALID_EVENT_TYPES = ['page_view', 'product_view', 'add_to_cart', 'begin_checkout', 'purchase'];
@@ -187,35 +217,59 @@ const clipStrings = (obj) => {
   return out;
 };
 
+const send = (payload) => {
+  // sendBeacon is non-blocking and survives page unloads
+  if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+    const blob = new Blob([payload], { type: 'application/json' });
+    if (navigator.sendBeacon(ENDPOINT, blob)) return;
+  }
+  // Fetch fallback (keepalive = survives page close)
+  fetch(ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: payload,
+    keepalive: true,
+  }).catch(() => {}); // swallow silently
+};
+
 export function trackEvent(eventType, metadata = {}) {
   if (isPrerendering()) return;
   if (!VALID_EVENT_TYPES.includes(eventType)) return; // server rejects anything else
+  if (isAutomatedVisitor()) return;
   try {
-    const loc = locationCache || detectLocationFromTimezone();
-    const payload = JSON.stringify(clipStrings({
-      sessionId: getSessionId(),
-      eventType,
-      timestamp: new Date().toISOString(),
-      country: metadata.country || loc.country,
-      region: metadata.region || loc.region,
-      city: metadata.city || loc.city,
-      ...metadata,
-    }));
+    // The page the event happened on (add_to_cart / purchase used to be recorded as "/")
+    const path = metadata.path || metadata.page || (typeof window !== 'undefined' ? window.location.pathname : '/');
+    const sessionId = getSessionId();
+    const startedAt = Date.now();
 
-    // sendBeacon is non-blocking and survives page unloads
-    if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-      const blob = new Blob([payload], { type: 'application/json' });
-      const sent = navigator.sendBeacon(ENDPOINT, blob);
-      if (sent) return;
-    }
-
-    // Fetch fallback (keepalive = survives page close)
-    fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: payload,
-      keepalive: true,
-    }).catch(() => {}); // swallow silently
+    (async () => {
+      try {
+        const loc = await getLocation();
+        if (eventType === 'page_view') {
+          // Give a 404 screen time to mark itself before deciding (data-driven 404s render after a fetch)
+          const waited = Date.now() - startedAt;
+          if (waited < 1200) await new Promise((r) => setTimeout(r, 1200 - waited));
+          if (isNotFoundPage(path)) return;
+        }
+        // Location fields come together from one source: the caller's (e.g. an order's shipping
+        // address) or the visitor lookup — never a mix such as an address country with an IP city
+        const callerLoc = metadata.country ? { country: metadata.country, region: metadata.region || '', city: metadata.city || '' } : null;
+        const { country, region, city } = callerLoc || loc;
+        send(JSON.stringify(clipStrings({
+          sessionId,
+          eventType,
+          timestamp: new Date().toISOString(),
+          ...metadata,
+          country,
+          region,
+          city,
+          page: path,
+          path,
+        })));
+      } catch {
+        // Never propagate analytics errors
+      }
+    })();
   } catch {
     // Never propagate analytics errors
   }

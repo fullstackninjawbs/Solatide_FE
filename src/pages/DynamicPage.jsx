@@ -5,6 +5,7 @@ import { apiService } from '../services/api';
 import { sanitizeHtml, sanitizedMarkup } from '../utils/sanitize';
 import { getRouteData, sameData, stripInternal } from '../utils/routeData';
 import { ROBOTS_INDEX, ROBOTS_NOINDEX } from '../utils/seo';
+import NotFoundMarker from '../components/NotFoundMarker';
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -106,6 +107,7 @@ const DynamicPage = () => {
           <title>Page Not Found - Solatide Biosciences</title>
           <meta name="robots" content={ROBOTS_NOINDEX} />
         </Helmet>
+        <NotFoundMarker />
         <h1 className="text-4xl sm:text-6xl font-bold text-slate-800 mb-4">404</h1>
         <p className="text-lg text-slate-600 mb-8 max-w-md">
           The page you are looking for doesn't exist or has been moved.
