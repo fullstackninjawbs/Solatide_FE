@@ -145,23 +145,13 @@ const STATIC_ROUTES = [
     '/',
     '/collections/all',
     '/pages/about',
-    '/pages/coa-lab-testing',
     '/pages/concentration-calculator',
-    '/pages/contact-us',
-    '/pages/research-library',
     '/pages/faq',
     '/pages/shipping-policy',
     '/pages/privacy-policy',
     '/pages/coa',
-    '/pages/research-peptides-guide',
-    '/pages/research-compound-database',
     '/pages/terms-of-services',
-    '/pages/research-use-disclaimer',
     '/pages/refund-policy',
-    '/pages/bpc-157-vs-kpv',
-    '/pages/what-is-tesamorelin',
-    '/pages/what-is-kpv',
-    '/pages/tirzepatide-research-overview',
 ];
 const NOT_FOUND_ROUTE = '/404';
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

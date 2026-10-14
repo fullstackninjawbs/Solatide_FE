@@ -11,24 +11,14 @@ import { lazyWithRetry } from './lazyWithRetry'
 import Home from '../Redirect/home'
 import Shop from '../Redirect/Shop'
 import ProductDetail from '../pages/product/ProductDetail'
-import CoaAndTesting from '../Redirect/CoaAndTesting'
 import ConcentrationCalculator from '../Redirect/ConcentrationCalculator'
-import ContactUs from '../Redirect/ContactUs'
-import ResearchResource from '../pages/researchResource/ResearchResource'
 import Faq from '../Redirect/Faq'
 import About from '../Redirect/About'
 import ShippingPolicy from '../pages/Shipping_Policy/ShippingPolicy'
 import PrivacyPolicy from '../pages/SitePolicies/SitePolicy'
 import ViewDocument from '../Redirect/ViewDocument'
-import PeptidesGuide from '../pages/peptidesGuide/PeptidesGuide'
-import CompoundDatabase from '../pages/compoundDatabase/CompoundDatabase'
 import Terms from '../pages/terms/Terms'
-import ResearchUseDisclaimer from '../pages/researchUse/ResearchUseDisclaimer'
 import Returns from '../pages/returns/Returns'
-import BPC157VsKPV from '../pages/research/BPC157VsKPV'
-import WhatIsTesamorelin from '../pages/research/WhatIsTesamorelin'
-import WhatIsKPV from '../pages/research/WhatIsKPV'
-import TirzepatideResearchOverview from '../pages/research/TirzepatideResearchOverview'
 import DynamicPage from '../pages/DynamicPage'
 import NotFound from '../pages/NotFound'
 
@@ -124,24 +114,14 @@ const AppRoutes = () => {
                             <Route path="products/:id" element={<ProductDetail />} />
                             <Route path="review/verify/:token" element={<ReviewVerification />} />
                             <Route path="pages/about" element={<About />} />
-                            <Route path="pages/coa-lab-testing" element={<CoaAndTesting />} />
                             <Route path="pages/concentration-calculator" element={<ConcentrationCalculator />} />
-                            <Route path="pages/contact-us" element={<ContactUs />} />
-                            <Route path="pages/research-library" element={<ResearchResource />} />
                             <Route path="pages/faq" element={<Faq />} />
                             <Route path="pages/shipping-policy" element={<ShippingPolicy />} />
                             <Route path="pages/privacy-policy" element={<PrivacyPolicy />} />
                             {/* /pages/coa renders the COA library (CertificatesAnalysis) — the live page */}
                             <Route path="pages/coa" element={<ViewDocument />} />
-                            <Route path="pages/research-peptides-guide" element={<PeptidesGuide />} />
-                            <Route path="pages/research-compound-database" element={<CompoundDatabase />} />
                             <Route path="pages/terms-of-services" element={<Terms />} />
-                            <Route path="pages/research-use-disclaimer" element={<ResearchUseDisclaimer />} />
                             <Route path="pages/refund-policy" element={<Returns />} />
-                            <Route path="pages/bpc-157-vs-kpv" element={<BPC157VsKPV />} />
-                            <Route path="pages/what-is-tesamorelin" element={<WhatIsTesamorelin />} />
-                            <Route path="pages/what-is-kpv" element={<WhatIsKPV />} />
-                            <Route path="pages/tirzepatide-research-overview" element={<TirzepatideResearchOverview />} />
 
                             {/* CMS pages */}
                             <Route path="pages/:slug" element={<DynamicPage />} />

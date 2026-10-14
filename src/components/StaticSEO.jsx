@@ -8,25 +8,9 @@ const seoData = {
     title: "Solatide Biosciences | Research Grade Peptides | COA Verified",
     description: "Solatide Biosciences is a laboratory supply company providing analytical reference standards and chemical compounds for in-vitro research and laboratory analysis. All compounds are independently third-party tested and verified for purity. Not for human or animal consumption, therapeutic, diagnostic, or prophylactic use"
   },
-  "/pages/research-peptides-guide": {
-    title: "Research Peptide Guide | Solatide Biosciences",
-    description: "A plain-language guide to research peptides — covering common categories, laboratory use, handling, quality documentation and research-use terminology. For in-vitro research use only."
-  },
-  "/pages/research-library": {
-    title: "Research Resource Hub | Solatide Biosciences",
-    description: "A central directory of research resources from Solatide Biosciences — including the Peptide Guide, Compound Index, COA library, concentration calculator and FAQ."
-  },
-  "/pages/research-compound-database": {
-    title: "Compound Index | Solatide Biosciences Research Compounds",
-    description: "Browse Solatide's research compound index by name, category and receptor pathway. Each entry links to product pages, batch documentation and available COA information. For in-vitro research use only."
-  },
   "/pages/faq": {
     title: "FAQs - Research Peptides | Solatide Biosciences",
     description: "Find answers about dispatch, tracking, documentation, support, restocks, and research-use policies at Solatide Biosciences."
-  },
-  "/pages/contact-us": {
-    title: "Contact Solatide Biosciences | Peptide Enquiries Australia",
-    description: "Contact Solatide Biosciences for order support, shipping updates, documentation requests, and general enquiries. Support & dispatch: Melbourne, VIC 3000."
   },
   "/pages/refund-policy": {
     title: "Refund Policy | Solatide Biosciences Australia",
@@ -48,10 +32,6 @@ const seoData = {
     title: "Concentration Calculator | Solatide Biosciences",
     description: "Concentration calculator for math conversions and dilution calculations. Educational reference tool for research use only."
   },
-  "/pages/coa-lab-testing": {
-    title: "Lab Testing & Analytical Verification | Solatide Biosciences",
-    description: "Learn how Solatide Biosciences verifies research compound purity and identity through independent third-party testing, including HPLC-UV and LC-MS analysis."
-  },
   "/pages/about": {
     title: "About Solatide Biosciences | Quality Research Peptides",
     description: "Learn about Solatide Biosciences, an Australian-operated research supplier focused on third-party verification, documentation, and dependable support."
@@ -59,10 +39,6 @@ const seoData = {
   "/pages/coa": {
     title: "Certificates of Analysis | Solatide Biosciences",
     description: "Access batch-specific certificates of analysis for Solatide Biosciences research peptides. Third-party analytical documentation by product and batch."
-  },
-  "/pages/research-use-disclaimer": {
-    title: "Research Use Disclaimer | Solatide Biosciences Australia",
-    description: "Important research-use terms, regulatory positioning, and laboratory compliance guidelines for Solatide Biosciences analytical compounds and peptides."
   }
 };
 
