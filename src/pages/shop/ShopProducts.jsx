@@ -258,6 +258,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     </span>
                                     <button
                                         onClick={() => setSelectedCategory('all-products')}
+                                        aria-label="Clear category filter"
                                         className="text-[#00ADEE] hover:text-[#008bc7] transition-colors focus:outline-none"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -323,6 +324,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             <div className="flex bg-white border border-slate-200 rounded-full p-1 shadow-sm shrink-0">
                                 <button
                                     onClick={() => setViewMode('grid')}
+                                    aria-label="Grid view"
+                                    aria-pressed={viewMode === 'grid'}
                                     className={`p-1.5 rounded-full transition-all ${viewMode === 'grid' ? 'bg-[#e0eaf5] text-[#1a4494]' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -331,6 +334,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
+                                    aria-label="List view"
+                                    aria-pressed={viewMode === 'list'}
                                     className={`p-1.5 rounded-full transition-all ${viewMode === 'list' ? 'bg-[#e0eaf5] text-[#1a4494]' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -425,6 +430,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
+                                                aria-label={`Add ${product.name} to cart`}
                                                 className={`h-8 w-8 sm:h-11 sm:w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm shrink-0 ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                                             </button>

@@ -76,6 +76,7 @@ const CartDrawer = () => {
                     </div>
                     <button
                         onClick={() => setIsCartOpen(false)}
+                        aria-label="Close cart"
                         className="text-slate-400 hover:text-[#1E1E1E] transition-colors focus:outline-none"
                     >
                         <X size={20} />

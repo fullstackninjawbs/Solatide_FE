@@ -62,6 +62,7 @@ const FeaturedProducts = () => {
                 <div className="relative w-full" suppressHydrationWarning>
                     {/* Left Carousel Navigation Trigger */}
                     <button
+                        aria-label="Previous featured products"
                         className="featured-prev absolute -left-2 sm:-left-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none hover:bg-slate-50 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="h-5 w-5" />
@@ -69,6 +70,7 @@ const FeaturedProducts = () => {
 
                     {/* Right Carousel Navigation Trigger */}
                     <button
+                        aria-label="Next featured products"
                         className="featured-next absolute -right-2 sm:-right-5 top-[110px] sm:top-[120px] z-20 h-10 w-10 rounded-full bg-white border border-slate-100 shadow-md flex items-center justify-center text-[#1a4494] transition-all focus:outline-none hover:bg-slate-50 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="h-5 w-5" />
@@ -150,6 +152,7 @@ const FeaturedProducts = () => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
+                                                aria-label={`Add ${product.name} to cart`}
                                                 className={`h-11 w-11 rounded-full bg-[#f0f5fb] text-[#1a4494] flex items-center justify-center hover:bg-[#1a4494] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 disabled={!product.inStock}
                                             >

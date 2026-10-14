@@ -85,6 +85,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 {/* Left Arrow Button */}
                 <button
                     onClick={scrollLeft}
+                    aria-label="Previous suggested products"
                     className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 w-[42px] h-[42px] rounded-full bg-white border border-[#E8E8E8] shadow-md hover:bg-slate-50 text-[#6A6A6A] hover:text-black flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 hidden sm:flex focus:outline-none"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -157,6 +158,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                             e.preventDefault();
                                             addToCart(product, 1);
                                         }}
+                                        aria-label={`Add ${product.name} to cart`}
                                         className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         <ShoppingCart className="h-5 w-5" />
@@ -170,6 +172,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 {/* Right Arrow Button */}
                 <button
                     onClick={scrollRight}
+                    aria-label="Next suggested products"
                     className="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 w-[42px] h-[42px] rounded-full bg-white border border-[#E8E8E8] shadow-md hover:bg-slate-50 text-[#6A6A6A] hover:text-black flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 hidden sm:flex focus:outline-none"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">

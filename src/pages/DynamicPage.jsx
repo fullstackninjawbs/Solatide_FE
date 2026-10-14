@@ -128,7 +128,11 @@ const DynamicPage = () => {
   };
 
   const pageDescription = page.metaDescription || knownPageDescriptions[page.slug] || (page.title ? `${page.title} — Research documentation, laboratory protocols, and reference analysis from Solatide Biosciences Australia.` : '');
-  const pageTitle = page.seoTitle || `${page.title} - Solatide Biosciences`;
+  // Always carry the brand: an SEO title entered without it would otherwise equal the H1
+  // (Semrush "duplicate title and H1")
+  const pageTitle = page.seoTitle
+    ? (/solatide/i.test(page.seoTitle) ? page.seoTitle : `${page.seoTitle} | Solatide Biosciences`)
+    : `${page.title} - Solatide Biosciences`;
   const canonicalUrl = `https://solatidebiosciences.com.au/pages/${page.slug}`;
 
   const articleSchema = page ? {

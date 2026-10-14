@@ -343,6 +343,7 @@ const Header = () => {
 
                             <button
                                 onClick={() => setIsCartOpen(true)}
+                                aria-label="Open cart"
                                 className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0"
                             >
                                 <ShoppingCart className="h-[17px] w-[17px]" />
@@ -365,6 +366,7 @@ const Header = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
+                                aria-label="Open cart"
                                 className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
                             >
                                 <ShoppingCart className="h-[17px] w-[17px]" />
@@ -376,6 +378,8 @@ const Header = () => {
                             </button>
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                                aria-expanded={isMobileMenuOpen}
                                 className="p-2 text-slate-600 hover:text-slate-900 focus:outline-none"
                             >
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
