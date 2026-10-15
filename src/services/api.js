@@ -122,12 +122,6 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
-  deleteAllProducts: async () => {
-    return customFetch(`${API_URL}/api/products`, {
-      method: 'DELETE',
-      headers: { ...getAuthHeaders() }
-    });
-  },
   previewProductsImport: async (data) => {
     return customFetch(`${API_URL}/api/products/import/preview`, {
       method: 'POST',
@@ -229,11 +223,10 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
-  testTagadaConnection: async (data) => {
+  // GET (server route) — tests the SAVED credentials
+  testTagadaConnection: async () => {
     return customFetch(`${API_URL}/api/admin/settings/tagada/test`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify(data)
+      headers: { ...getAuthHeaders() }
     });
   },
 
