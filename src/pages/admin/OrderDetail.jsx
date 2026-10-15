@@ -68,6 +68,8 @@ const OrderDetail = () => {
   const { id } = useParams();
 
   const [order, setOrder] = useState(null);
+  // CRM customer record (matched by email on the server) — for "View order history"
+  const [customerRecordId, setCustomerRecordId] = useState(null);
   const [refunds, setRefunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fulfilling, setFulfilling] = useState(false);
@@ -107,6 +109,7 @@ const OrderDetail = () => {
         const refundsData = await refundsRes.json();
         if (data.success) {
           setOrder(data.data.order);
+          setCustomerRecordId(data.data.customerId || null);
         }
         if (refundsData.success) {
           setRefunds(refundsData.data.refunds);
@@ -1102,17 +1105,37 @@ const OrderDetail = () => {
                   {customerName !== 'No customer name' ? customerName.charAt(0).toUpperCase() : <User size={20} />}
                 </div>
                 <div>
-                  {order.customer?._id ? (
-                    <Link
-                      to={`/admin/customers/${order.customer._id}`}
-                      className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors"
-                    >
-                      {customerName}
-                    </Link>
-                  ) : (
-                    <span className="block text-[15px] font-bold text-brand-navy">{customerName}</span>
-                  )}
-                  <p className="text-[13px] font-medium text-slate-500 mt-0.5">View order history →</p>
+                  {(() => {
+                    // Customer profile in admin (CRM record matched by email), else the orders list
+                    // filtered by this email (e.g. before the order's side effects created the record)
+                    const customerHref = (customerRecordId || order.customer?._id)
+                      ? `/admin/customers/${customerRecordId || order.customer._id}`
+                      : customerEmail ? `/admin/orders?q=${encodeURIComponent(customerEmail)}` : null;
+                    return (
+                      <>
+                        {customerHref ? (
+                          <Link
+                            to={customerHref}
+                            className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors"
+                          >
+                            {customerName}
+                          </Link>
+                        ) : (
+                          <span className="block text-[15px] font-bold text-brand-navy">{customerName}</span>
+                        )}
+                        {customerHref ? (
+                          <Link
+                            to={customerHref}
+                            className="inline-block text-[13px] font-medium text-slate-500 hover:text-brand-blue mt-0.5 transition-colors"
+                          >
+                            View order history →
+                          </Link>
+                        ) : (
+                          <p className="text-[13px] font-medium text-slate-400 mt-0.5">No email — order history unavailable</p>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
