@@ -190,7 +190,7 @@ const PageForm = () => {
             </h2>
             {isEditing && (
               <a
-                href={`/pages/${page.slug}`}
+                href={`${import.meta.env.VITE_STOREFRONT_URL}/pages/${page.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[13px] text-[#0079CD] hover:underline mt-1 inline-flex items-center gap-1 font-semibold"
