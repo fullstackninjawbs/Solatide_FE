@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
-import { trackEvent, orderLocation } from '../utils/analytics';
+import { trackEvent } from '../utils/analytics';
 import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../hooks/useTagadaCheckout';
 
 const DeferredTracker = () => {
@@ -42,7 +42,6 @@ const DeferredTracker = () => {
               trackEvent('purchase', {
                 orderId: ord._id,
                 cartValue: ord.grandTotal || ord.totalAmount,
-                ...orderLocation(ord),
               });
 
               // 2. GTM DataLayer

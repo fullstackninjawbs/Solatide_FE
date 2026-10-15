@@ -178,13 +178,6 @@ function isAutomatedVisitor() {
  * Called by the 404 screens (generic, unknown CMS page, unknown product) so the page view for a
  * URL that does not exist is not recorded (crawlers probe random URLs to test 404 handling).
  */
-/** Location from an order's shipping address (most accurate for purchases); {} if unknown. */
-export function orderLocation(order) {
-  const a = (order && (order.shippingAddressObj || order.tagadaShipping?.address)) || {};
-  const country = a.country || a.countryCode;
-  return country ? { country, region: a.state || a.province || '', city: a.city || '' } : {};
-}
-
 export function markNotFound() {
   try {
     if (typeof window !== 'undefined') window.__SLAT_NOT_FOUND_PATH__ = window.location.pathname;
@@ -251,8 +244,9 @@ export function trackEvent(eventType, metadata = {}) {
           if (waited < 1200) await new Promise((r) => setTimeout(r, 1200 - waited));
           if (isNotFoundPage(path)) return;
         }
-        // Location fields come together from one source: the caller's (e.g. an order's shipping
-        // address) or the visitor lookup — never a mix such as an address country with an IP city
+        // Location fields come together from one source: the caller's or the visitor lookup —
+        // never a mix such as one country with another lookup's city. Purchases use the visitor
+        // lookup too (where the visitor is, not the shipping address).
         const callerLoc = metadata.country ? { country: metadata.country, region: metadata.region || '', city: metadata.city || '' } : null;
         const { country, region, city } = callerLoc || loc;
         send(JSON.stringify(clipStrings({
