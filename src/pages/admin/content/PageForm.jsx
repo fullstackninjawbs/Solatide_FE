@@ -134,36 +134,47 @@ const PageForm = () => {
     }
   };
 
+  // Created once: jodit-react destroys and recreates the editor whenever the config object
+  // changes. An inline config was rebuilt on every content update, so the first paste (which
+  // blurs the editor and saves its content) recreated the editor and the pasted HTML was lost.
+  const joditConfig = useMemo(() => ({
+    readonly: false,
+    toolbarButtonSize: 'middle',
+    buttons: [
+      'source', '|',
+      'bold', 'italic', 'underline', 'strikethrough', '|',
+      'ul', 'ol', '|',
+      'outdent', 'indent', 'align', '|',
+      'font', 'fontsize', 'brush', 'paragraph', 'classSpan', '|',
+      'table', 'link', 'image', '|',
+      'hr', 'eraser', 'copyformat', '|',
+      'fullsize', 'undo', 'redo'
+    ],
+    height: 600,
+    width: '100%',
+    placeholder: 'Start writing your page content...',
+    style: { background: '#fff', color: '#333', width: '100%' },
+    // Paste HTML directly, keeping classes/structure that CMS page styles rely on (no
+    // "Paste as HTML?" prompt). Word content is still cleaned. The server sanitizes on save.
+    askBeforePasteHTML: false,
+    askBeforePasteFromWord: false,
+    defaultActionOnPaste: 'insert_as_html',
+    defaultActionOnPasteFromWord: 'insert_clear_html'
+  }), []);
+
   const memoizedEditor = useMemo(() => {
     return (
       <JoditEditor
         ref={editorRef}
         value={page.content.html}
-        config={{
-          readonly: false,
-          toolbarButtonSize: 'middle',
-          buttons: [
-            'source', '|',
-            'bold', 'italic', 'underline', 'strikethrough', '|',
-            'ul', 'ol', '|',
-            'outdent', 'indent', 'align', '|',
-            'font', 'fontsize', 'brush', 'paragraph', 'classSpan', '|',
-            'table', 'link', 'image', '|',
-            'hr', 'eraser', 'copyformat', '|',
-            'fullsize', 'undo', 'redo'
-          ],
-          height: 600,
-          width: '100%',
-          placeholder: 'Start writing your page content...',
-          style: { background: '#fff', color: '#333', width: '100%' }
-        }}
+        config={joditConfig}
         onBlur={(newContent) => setPage(prev => ({
           ...prev,
           content: { ...prev.content, html: newContent }
         }))}
       />
     );
-  }, [page.content?.html]);
+  }, [page.content?.html, joditConfig]);
 
   if (loading) {
     return (
