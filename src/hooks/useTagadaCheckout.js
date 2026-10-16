@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { apiService } from '../services/api';
 import { getCheckoutAttributionPayload } from '../utils/attribution';
+import { getVisitorContext } from '../utils/analytics';
 
 // localStorage keys shared with CheckoutSuccess.jsx
 export const LAST_ORDER_ID_KEY = 'solatide_last_order_id';
@@ -56,11 +57,13 @@ export const useTagadaCheckout = () => {
 
       // 2) Initiate Tagada Checkout Session — the server re-resolves variants, prices and stock.
       const attribution = getCheckoutAttributionPayload();
+      const visitor = await getVisitorContext(); // analytics session + location (never blocks > 2.5 s)
       const payRes = await apiService.createTagadaPayment({
         orderId,
         accessToken: createToken,
         items: checkoutItems,
         attribution,
+        visitor,
       });
       const payData = await payRes.json();
 

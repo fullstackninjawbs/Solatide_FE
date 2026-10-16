@@ -114,29 +114,49 @@ function readCachedLocation() {
   }
 }
 
+const fetchJson = async (url) => {
+  const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const t = ctrl ? setTimeout(() => ctrl.abort(), 3000) : null;
+  try {
+    const res = await fetch(url, ctrl ? { signal: ctrl.signal } : undefined);
+    return res.ok ? await res.json() : null;
+  } finally {
+    if (t) clearTimeout(t);
+  }
+};
+
+const LOCATION_PROVIDERS = [
+  async () => {
+    const d = await fetchJson('https://ipapi.co/json/');
+    return d && !d.error ? { country: d.country_name || d.country, region: d.region, city: d.city } : null;
+  },
+  async () => {
+    const d = await fetchJson('https://get.geojs.io/v1/ip/geo.json');
+    return d ? { country: d.country, region: d.region, city: d.city } : null;
+  },
+];
+
 async function fetchLocationDetails() {
   const cached = readCachedLocation();
   if (cached) {
     locationCache = cached;
     return locationCache;
   }
-  try {
-    const res = await fetch('https://ipapi.co/json/');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && !data.error && (data.country_name || data.country)) {
-        locationCache = {
-          country: data.country_name || data.country,
-          region: data.region || '',
-          city: data.city || '',
-        };
+  // Two free IP-lookup providers: the second is used when the first is blocked (some ad/privacy
+  // blockers block ipapi.co) or rate-limited. Each lookup gives up after 3 s.
+  for (const lookup of LOCATION_PROVIDERS) {
+    try {
+      const loc = await lookup();
+      if (loc && loc.country) {
+        locationCache = { country: loc.country, region: loc.region || '', city: loc.city || '' };
         try { localStorage.setItem(LOC_KEY, JSON.stringify({ ...locationCache, at: Date.now() })); } catch { /* ignore */ }
         return locationCache;
       }
+    } catch {
+      // blocked / network / rate-limit: try the next provider
     }
-  } catch {
-    // network / rate-limit: fall back below (not cached, so the next visit retries)
   }
+  // Not cached, so the next visit retries the lookup
   locationCache = detectLocationFromTimezone();
   return locationCache;
 }
@@ -178,6 +198,19 @@ function isAutomatedVisitor() {
  * Called by the 404 screens (generic, unknown CMS page, unknown product) so the page view for a
  * URL that does not exist is not recorded (crawlers probe random URLs to test 404 handling).
  */
+/**
+ * The visitor's analytics session and detected location — sent with the checkout so the server's
+ * (trusted) purchase event belongs to this visitor's session and shows where they are.
+ */
+export async function getVisitorContext() {
+  try {
+    const loc = await getLocation();
+    return { sessionId: getSessionId(), country: loc.country, region: loc.region, city: loc.city };
+  } catch {
+    return { sessionId: getSessionId() };
+  }
+}
+
 export function markNotFound() {
   try {
     if (typeof window !== 'undefined') window.__SLAT_NOT_FOUND_PATH__ = window.location.pathname;
