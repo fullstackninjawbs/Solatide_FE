@@ -763,6 +763,15 @@ const OrderDetail = () => {
                             <span className="text-slate-400 italic font-medium">Label Pending (Check Starshipit)</span>
                           )}
                         </p>
+                        {order.shipmentWeight?.totalGrams > 0 && (
+                          <p className="text-[12.5px] text-slate-500 mt-1">
+                            Parcel weight sent: <span className="font-semibold text-slate-700">{order.shipmentWeight.totalGrams} g</span>
+                            {' '}(items {order.shipmentWeight.itemsGrams} g + {order.shipmentWeight.packageName || 'package'} {order.shipmentWeight.packageGrams} g)
+                          </p>
+                        )}
+                        {order.shipmentWeight?.warnings?.length > 0 && (
+                          <p className="text-[12.5px] text-amber-700 mt-1">⚠ {order.shipmentWeight.warnings.join(' · ')}</p>
+                        )}
                       </div>
                       <div className="flex gap-2">
                         {order.labelUrl && (
