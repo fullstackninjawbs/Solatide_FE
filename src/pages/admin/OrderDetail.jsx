@@ -769,6 +769,11 @@ const OrderDetail = () => {
                             {' '}(items {order.shipmentWeight.itemsGrams} g + {order.shipmentWeight.packageName || 'package'} {order.shipmentWeight.packageGrams} g)
                           </p>
                         )}
+                        {order.shipmentWeight?.packageName && order.shipmentWeight?.packageReason && (
+                          <p className="text-[12px] text-slate-400 mt-0.5">
+                            Package: {order.shipmentWeight.packageName} — {order.shipmentWeight.packageReason}
+                          </p>
+                        )}
                         {order.shipmentWeight?.warnings?.length > 0 && (
                           <p className="text-[12.5px] text-amber-700 mt-1">⚠ {order.shipmentWeight.warnings.join(' · ')}</p>
                         )}
