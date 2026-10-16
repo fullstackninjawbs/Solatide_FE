@@ -53,6 +53,20 @@ const priceValidUntilFor = (product) => {
     return `${new Date(ts).getUTCFullYear() + 1}-12-31`;
 };
 
+/**
+ * Variant shown first (and described to Google in the Product schema): the first one that can be
+ * bought — in stock, or continue-selling — else the first. Opening on a sold-out first variant
+ * showed "Sold out" + OutOfStock although another variant was available.
+ */
+const defaultVariant = (p) => {
+    const vs = p?.variants;
+    if (!Array.isArray(vs) || vs.length === 0) return null;
+    const productContinues = p.inventoryPolicy === 'continue' || p.continueSellingWhenOutOfStock === true;
+    const purchasable = (v) =>
+        Number(v?.stockQty ?? 0) > 0 || v?.inventoryPolicy === 'continue' || v?.continueSellingWhenOutOfStock === true || productContinues;
+    return vs.find(purchasable) || vs[0];
+};
+
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -64,7 +78,7 @@ const ProductDetail = () => {
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
     // Initialised synchronously so the first client render matches the prerendered DOM.
-    const [selectedVariant, setSelectedVariant] = useState(() => getEmbeddedProduct(id)?.variants?.[0] || null);
+    const [selectedVariant, setSelectedVariant] = useState(() => defaultVariant(getEmbeddedProduct(id)));
     const { checkoutError } = useTagadaCheckout();
     const [fetchedReviewCount, setFetchedReviewCount] = useState(() => getEmbeddedReviewCount(getEmbeddedProduct(id)));
     const [notFound, setNotFound] = useState(false);
@@ -84,7 +98,7 @@ const ProductDetail = () => {
     const [variantSource, setVariantSource] = useState(product);
     if (variantSource !== product) {
         setVariantSource(product);
-        setSelectedVariant(product && product.variants && product.variants.length > 0 ? product.variants[0] : null);
+        setSelectedVariant(defaultVariant(product));
         setActiveTab(0);
     }
 
