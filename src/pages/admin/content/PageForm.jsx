@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../../components/admin/UrlRedirectNotice';
 import { ChevronLeft, Save, Globe, EyeOff } from 'lucide-react';
 import JoditEditor from 'jodit-react';
 import { apiService } from '../../../services/api';
@@ -29,6 +30,8 @@ const PageForm = () => {
   });
 
   const [slugDirty, setSlugDirty] = useState(false);
+  // URL handle as saved (for the redirect notice; kept out of the page payload)
+  const [loadedSlug, setLoadedSlug] = useState('');
 
   useEffect(() => {
     if (isEditing) {
@@ -42,6 +45,7 @@ const PageForm = () => {
       const res = await apiService.getAdminPageById(id);
       const data = await res.json();
       setPage(data);
+      setLoadedSlug(data?.slug || '');
       setSlugDirty(true); // Don't auto-generate slug if editing
     } catch (err) {
       toast.error('Failed to load page');
@@ -328,6 +332,7 @@ const PageForm = () => {
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-r-lg focus:ring-1 focus:ring-brand-navy outline-none text-[14px]"
                 />
               </div>
+              <UrlRedirectNotice base="/pages" originalSlug={loadedSlug} currentSlug={page.slug} />
             </div>
 
           </div>

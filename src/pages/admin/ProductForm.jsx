@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../components/admin/UrlRedirectNotice';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X, HelpCircle } from 'lucide-react';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
@@ -305,6 +306,7 @@ const ProductForm = () => {
             _originalVariants: product.variants || [],
             currentBatch: product.currentBatch || null,
             slug: product.slug || '',
+            _loadedSlug: product.slug || '', // URL as saved (for the redirect notice; not sent)
 
             // Shopify Refinements
             // publishStatus is the source of truth (storefront + list); legacy `published` only as fallback
@@ -1378,6 +1380,7 @@ const ProductForm = () => {
                   <div className="text-[12px] text-slate-500 mt-1">
                     {SITE_URL}/products/{formData.slug || slugifiedName}
                   </div>
+                  <UrlRedirectNotice base="/products" originalSlug={formData._loadedSlug} currentSlug={formData.slug} />
                 </div>
               </div>
             )}

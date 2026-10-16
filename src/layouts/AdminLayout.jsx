@@ -92,7 +92,8 @@ const AdminLayout = () => {
       roles: ['super_admin', 'content_manager', 'admin'],
       subItems: [
         { name: 'Pages', path: '/admin/content/pages', roles: ['super_admin', 'content_manager', 'admin'] },
-        { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] }
+        { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] },
+        { name: 'Redirects', path: '/admin/content/redirects', roles: ['super_admin', 'content_manager', 'admin'] }
       ]
     },
     {

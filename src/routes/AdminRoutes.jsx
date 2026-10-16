@@ -23,6 +23,7 @@ const SubscriberList = lazyWithRetry(() => import('../pages/admin/growth/Subscri
 const FaqList = lazyWithRetry(() => import('../pages/admin/content/FaqList'));
 const PageList = lazyWithRetry(() => import('../pages/admin/content/PageList'));
 const PageForm = lazyWithRetry(() => import('../pages/admin/content/PageForm'));
+const RedirectList = lazyWithRetry(() => import('../pages/admin/content/RedirectList'));
 const AnalyticsDashboard = lazyWithRetry(() => import('../pages/admin/analytics/AnalyticsDashboard'));
 const OrderList = lazyWithRetry(() => import('../pages/admin/OrderList'));
 const CreateOrder = lazyWithRetry(() => import('../pages/admin/CreateOrder'));
@@ -77,6 +78,7 @@ const AdminRoutes = () => (
             <Route path="content/pages/new" element={<PageForm />} />
             <Route path="content/pages/edit/:id" element={<PageForm />} />
             <Route path="content/faqs" element={<FaqList />} />
+            <Route path="content/redirects" element={<RedirectList />} />
             <Route path="reviews" element={<Placeholder>Reviews Moderation (Phase 4)</Placeholder>} />
             <Route path="cms" element={<Placeholder>Static Pages &amp; CMS Editor (Phase 4)</Placeholder>} />
             <Route path="settings" element={<Placeholder>System Configuration (Phase 4)</Placeholder>} />

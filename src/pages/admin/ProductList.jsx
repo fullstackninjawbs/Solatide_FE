@@ -424,6 +424,15 @@ const ProductList = () => {
                               Archive
                             </button>
                           )}
+                          {product.publishStatus === 'archived' && product.slug && ['super_admin', 'admin', 'content_manager'].includes(adminUser?.role) && (
+                            <Link
+                              to={`/admin/content/redirects?new=1&from=${encodeURIComponent(`/products/${product.slug}`)}`}
+                              className="text-slate-500 hover:text-brand-blue font-semibold text-[13px]"
+                              title="Send visitors of this archived product's URL to another page"
+                            >
+                              Redirect URL
+                            </Link>
+                          )}
                         </div>
                     </td>
                   </tr>

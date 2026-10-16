@@ -8,6 +8,7 @@ import ShopBanner from '../pages/shop/ShopBanner';
 import ProductCategories from '../pages/shop/ProductCategories';
 import ShopProducts from '../pages/shop/ShopProducts';
 import ShopFaq from '../pages/shop/ShopFaq';
+import NotFound from '../pages/NotFound';
 
 const Shop = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -41,6 +42,12 @@ const Shop = () => {
         const body = getRouteData('/api/products/collections');
         return (body && body.success && Array.isArray(body.data)) ? body.data : [];
     });
+    // True once the list of active collections is known (embedded data or a successful fetch):
+    // only then can an unknown handle be declared "not found" (a failed fetch never 404s).
+    const [collectionsLoaded, setCollectionsLoaded] = useState(() => {
+        const body = getRouteData('/api/products/collections');
+        return !!(body && body.success && Array.isArray(body.data));
+    });
 
     useEffect(() => {
         let isMounted = true;
@@ -50,6 +57,7 @@ const Shop = () => {
                 const result = await response.json();
                 if (result.success && Array.isArray(result.data) && isMounted) {
                     setCollections(prev => (sameData(prev, result.data) ? prev : result.data));
+                    setCollectionsLoaded(true);
                 }
             } catch (err) {
                 console.error('Error fetching collections in Shop:', err);
@@ -61,6 +69,13 @@ const Shop = () => {
 
     const key = handle && handle !== 'all' ? handle : 'all';
     const matchedCol = collections.find(c => c.slug === key);
+
+    // Unknown (or deactivated) collection: a real 404 — noindex, and NotFoundMarker sends the
+    // visitor on if the URL has moved (renamed collection / legacy URL). Was: an empty, indexable
+    // collection page for any handle.
+    if (key !== 'all' && collectionsLoaded && !matchedCol) {
+        return <NotFound />;
+    }
 
     const collectionPath = key !== 'all' ? `/collections/${key}` : '/collections/all';
     const canonicalUrl = (matchedCol?.seo?.canonicalUrl && matchedCol.seo.canonicalUrl.trim()) 

@@ -93,10 +93,10 @@ const PageList = () => {
   const handleDelete = async (id, title) => {
     const isConfirmed = await confirm({
       title: 'Archive page?',
-      message: `'${title}' will be removed from the website and sitemap. Its content is kept — open it and use Save draft or Publish to restore it.`,
-      confirmText: 'Archive page',
-      cancelText: 'Cancel',
-      type: 'danger'
+      description: `'${title}' will be removed from the website and sitemap. Its content is kept — open it and use Save draft or Publish to restore it.`,
+      confirmLabel: 'Archive page',
+      cancelLabel: 'Cancel',
+      variant: 'danger'
     });
 
     if (isConfirmed) {

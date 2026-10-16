@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../../components/admin/UrlRedirectNotice';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Layers, Search } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
@@ -70,6 +71,8 @@ const CollectionForm = () => {
   const toast = useToast();
 
   // Collection State
+  // URL handle as saved (for the redirect notice)
+  const [loadedSlug, setLoadedSlug] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -177,6 +180,7 @@ const CollectionForm = () => {
               themeTemplate: collection.themeTemplate || 'default'
             });
             setInitialDescription(collection.description || '');
+            setLoadedSlug(collection.slug || '');
           } else {
             setError('Failed to fetch collection details.');
           }
@@ -624,6 +628,9 @@ const CollectionForm = () => {
                     <div className="text-[12px] text-slate-400 mt-1">
                       https://solatidebiosciences.com.au/collections/{formData.slug || 'collection-slug'}
                     </div>
+                  )}
+                  {formData.slug !== 'all' && (
+                    <UrlRedirectNotice base="/collections" originalSlug={loadedSlug} currentSlug={formData.slug} />
                   )}
                 </div>
               </div>

@@ -652,6 +652,28 @@ export const apiService = {
     });
   },
 
+  // ─── Redirects (Admin) — no delete: redirects are disabled, never removed ──────
+  getAdminRedirects: async (queryString = '') => {
+    return customFetch(`${API_URL}/api/admin/redirects${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  createAdminRedirect: async (payload) => {
+    return customFetch(`${API_URL}/api/admin/redirects`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  updateAdminRedirect: async (id, payload) => {
+    return customFetch(`${API_URL}/api/admin/redirects/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+
   // ─── Pages (Admin & Public) ────────────────────────────────────────────────
   getAdminPages: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/content/pages${queryString ? `?${queryString}` : ''}`, {
