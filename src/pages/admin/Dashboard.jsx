@@ -486,7 +486,8 @@ const Dashboard = () => {
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-                      {new Date(customer.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      {/* First paid order date in store time (AEST/AEDT), matching the Orders list */}
+                      {new Date(customer.firstOrderAt || customer.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'Australia/Sydney' })}
                     </span>
                   </div>
                 </div>
