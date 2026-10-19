@@ -19,6 +19,8 @@ const ProductList = () => {
   const limit = parseInt(searchParams.get('limit') || '25', 10);
   const selectedStatus = searchParams.get('status') || 'all';
   const selectedCollection = searchParams.get('collection') || '';
+  // Sort order (server-side, so it applies across all pages); '' = default order
+  const selectedSort = searchParams.get('sort') || '';
   const urlQ = searchParams.get('q') || '';
 
   const [products, setProducts] = useState([]);
@@ -72,6 +74,7 @@ const ProductList = () => {
       if (urlQ) params.set('search', urlQ);
       if (selectedStatus && selectedStatus !== 'all') params.set('status', selectedStatus);
       if (selectedCollection) params.set('collection', selectedCollection);
+      if (selectedSort) params.set('sort', selectedSort);
 
       const response = await apiService.getProducts(params.toString());
       const result = await response.json();
@@ -118,7 +121,7 @@ const ProductList = () => {
   useEffect(() => {
     fetchProducts();
     setSelectedProducts([]);
-  }, [page, limit, selectedStatus, selectedCollection, urlQ]);
+  }, [page, limit, selectedStatus, selectedCollection, selectedSort, urlQ]);
 
   const handleStatusChange = (val) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -134,6 +137,14 @@ const ProductList = () => {
     } else {
       nextParams.delete('collection');
     }
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleSortChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (val) nextParams.set('sort', val);
+    else nextParams.delete('sort');
     nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
@@ -251,6 +262,22 @@ const ProductList = () => {
             options={[
               { value: '', label: 'All Collections' },
               ...collectionsList.map(col => ({ value: col._id, label: col.name }))
+            ]}
+          />
+          {/* Sort (values are the server's sort names) */}
+          <CustomDropdown
+            value={selectedSort}
+            onChange={handleSortChange}
+            placeholder="Sort: Default"
+            align="right"
+            options={[
+              { value: '', label: 'Sort: Default' },
+              { value: 'Alphabetically, A-Z', label: 'Name A → Z' },
+              { value: 'Alphabetically, Z-A', label: 'Name Z → A' },
+              { value: 'Date, new to old', label: 'Newest first' },
+              { value: 'Date, old to new', label: 'Oldest first' },
+              { value: 'Price: Low to High', label: 'Price low → high' },
+              { value: 'Price: High to Low', label: 'Price high → low' }
             ]}
           />
         </div>
