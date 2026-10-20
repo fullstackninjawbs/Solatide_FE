@@ -110,7 +110,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
-                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
+                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image, 600) || productVialImage}
                                     loading="lazy"
                                     decoding="async"
                                     className={product.imageUrl || product.image

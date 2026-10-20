@@ -11,6 +11,15 @@ import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg
 import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
 import { useEffect } from 'react'
 
+// Each hero image is in a <picture> whose <source> only matches at its own breakpoint; the <img>
+// fallback is this 1×1 GIF. So phones never download the desktop image and desktops never
+// download the mobile one (images inside display:none containers are still downloaded).
+const BLANK_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+// Intrinsic sizes: width/height let the browser reserve the space before the image arrives
+// (without them the mobile hero pushed the text down ~450px: CLS 0.62 on mobile).
+const MOBILE_HERO_W = 644
+const MOBILE_HERO_H = 803
+
 const MobileEvidenceSection = () => (
     <section
         className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up rounded-b-[24px]"
@@ -101,15 +110,20 @@ const HeroSection = () => {
 
         <section className="relative w-full overflow-hidden bg-white flex flex-col lg:flex-row items-stretch lg:items-center min-h-0 lg:min-h-[860px] pt-0 lg:pt-[130px] pb-0 lg:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
-                <img
-                    src={heroImageWebp}
-                    className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
-                    alt="Solatide Biosciences – Research Grade Peptides"
-                    draggable={false}
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="sync"
-                />
+                <picture className="block w-full h-full">
+                    <source media="(min-width: 1024px)" srcSet={heroImageWebp} width={1672} height={941} />
+                    <img
+                        src={BLANK_GIF}
+                        className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
+                        alt="Solatide Biosciences – Research Grade Peptides"
+                        width={1672}
+                        height={941}
+                        draggable={false}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="sync"
+                    />
+                </picture>
             </div>
 
             {/* Mobile Hero Image & Content Wrapper */}
@@ -117,27 +131,37 @@ const HeroSection = () => {
 
                 {/* Mobile Background Image */}
                 <div className="w-full md:hidden relative z-10">
-                    <img
-                        src={mobileHeroImageWebp}
-                        className="w-full h-auto object-contain select-none pointer-events-none"
-                        alt="Solatide Biosciences – Research Grade Peptides"
-                        loading="eager"
-                        fetchPriority="high"
-                        decoding="sync"
-                    />
+                    <picture className="block w-full">
+                        <source media="(max-width: 767px)" srcSet={mobileHeroImageWebp} width={MOBILE_HERO_W} height={MOBILE_HERO_H} />
+                        <img
+                            src={BLANK_GIF}
+                            className="w-full h-auto object-contain select-none pointer-events-none"
+                            alt="Solatide Biosciences – Research Grade Peptides"
+                            width={MOBILE_HERO_W}
+                            height={MOBILE_HERO_H}
+                            loading="eager"
+                            fetchPriority="high"
+                            decoding="sync"
+                        />
+                    </picture>
                 </div>
 
                 {/* Tablet Dedicated Layout (768px - 1023px) */}
                 <div className="hidden md:flex lg:hidden flex-col w-full relative z-10 flex-1">
                     {/* Tablet Specific Background Image */}
                     <div className="w-full relative z-10">
-                        <img
-                            src={mobileHeroImageWebp}
-                            className="w-full h-auto object-contain select-none pointer-events-none"
-                            alt="Solatide Biosciences"
-                            loading="eager"
-                            fetchPriority="high"
-                        />
+                        <picture className="block w-full">
+                            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobileHeroImageWebp} width={MOBILE_HERO_W} height={MOBILE_HERO_H} />
+                            <img
+                                src={BLANK_GIF}
+                                className="w-full h-auto object-contain select-none pointer-events-none"
+                                alt="Solatide Biosciences"
+                                width={MOBILE_HERO_W}
+                                height={MOBILE_HERO_H}
+                                loading="eager"
+                                fetchPriority="high"
+                            />
+                        </picture>
                     </div>
 
                     {/* Text Content sitting below bottles */}

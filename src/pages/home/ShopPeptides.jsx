@@ -103,7 +103,7 @@ const ShopPeptides = () => {
                                 >
                                     <div className={`relative w-full h-[240px] sm:h-[260px] overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[20px] flex items-center justify-center`}>
                                         <img
-                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
+                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image, 600) || productVialImage}
                                             loading="lazy"
                                             decoding="async"
                                             className={product.imageUrl || product.image
