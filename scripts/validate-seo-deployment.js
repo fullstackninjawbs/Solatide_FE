@@ -10,7 +10,8 @@
  *  - every HTML file: no empty canonical, embedded JSON blobs contain no literal "</script" and parse,
  *    no localhost references
  *  - 404.html: exactly one robots meta (noindex), no canonical
- *  - SPA shells (200.html, checkout.html): noindex; no admin shells in the store build
+ *  - SPA shells (200.html, checkout.html): noindex; app-shell.html (new live items): NO robots meta;
+ *    503.html: static + noindex; no admin shells in the store build
  *  - precompressed .gz/.br of each HTML file decompress to the same bytes (no stale pre-prerender shells)
  *  - expected product/CMS/collection URLs are derived from the files themselves (no hardcoded slugs)
  */
@@ -76,7 +77,7 @@ const urlForFile = (r) => (r === 'index.html' ? ORIGIN : `${ORIGIN}/${r.replace(
 
 // ─── 1. Required files ──────────────────────────────────────────────────────────
 console.log('1. Required files');
-for (const f of ['index.html', '404.html', '200.html', 'checkout.html', 'sitemap.xml', 'robots.txt', 'favicon.png', 'assets/logo.webp']) {
+for (const f of ['index.html', '404.html', '200.html', 'checkout.html', 'app-shell.html', '503.html', 'sitemap.xml', 'robots.txt', 'favicon.png', 'assets/logo.webp']) {
   assert(fs.existsSync(path.join(distDir, f)), `${f} exists`);
 }
 assert(!fs.existsSync(path.join(distDir, 'admin.html')) && !fs.existsSync(path.join(distDir, 'admin')), 'no admin shells in the store build (M-19)');
@@ -142,6 +143,18 @@ for (const file of htmlFiles) {
   if (SHELLS.has(r)) {
     if (!(info.robots.length === 1 && /noindex/i.test(info.robots[0]))) fail(`${r}: SPA shell must have exactly one noindex robots meta (${JSON.stringify(info.robots)})`);
     if (/<div id="root"[^>]*>\s*<[a-z]/i.test(html)) fail(`${r}: SPA shell must have an empty #root`);
+    continue;
+  }
+  if (r === 'app-shell.html') {
+    // Live item not prerendered yet: must stay indexable (the app sets robots/canonical itself)
+    if (info.robots.length !== 0) fail(`app-shell.html: must have no robots meta (${JSON.stringify(info.robots)})`);
+    if (info.canon.length !== 0) fail('app-shell.html: must not have a canonical link');
+    if (/<div id="root"[^>]*>\s*<[a-z]/i.test(html)) fail('app-shell.html: must have an empty #root');
+    continue;
+  }
+  if (r === '503.html') {
+    if (!(info.robots.length === 1 && /noindex/i.test(info.robots[0]))) fail('503.html: expected exactly one noindex robots meta');
+    if (/<script/i.test(html)) fail('503.html: must be static (no scripts)');
     continue;
   }
   if (r === '404.html') {

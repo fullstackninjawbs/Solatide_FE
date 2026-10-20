@@ -462,6 +462,38 @@ const main = async () => {
     const shell = template.replace('<title>', '<meta name="robots" content="noindex, nofollow" />\n  <title>');
     fs.writeFileSync(path.join(distDir, '200.html'), shell);
     fs.writeFileSync(path.join(distDir, 'checkout.html'), shell);
+    // App shell for a live product/collection/page that has no prerendered file yet (created or
+    // renamed, rebuild still running). Served by nginx only via X-Accel-Redirect from the redirect
+    // resolver. NO robots meta: the app sets title/robots/canonical itself, so Google indexes it.
+    fs.writeFileSync(path.join(distDir, 'app-shell.html'), template);
+    // Static "back shortly" page nginx shows with HTTP 503 while the API is unreachable, so Google
+    // retries the URL later instead of dropping it as a 404. Self-contained: no app JS, no API.
+    fs.writeFileSync(path.join(distDir, '503.html'), `<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Back shortly | Solatide Biosciences</title>
+  <style>
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:#1e293b;font-family:Arial,Helvetica,sans-serif;text-align:center;padding:24px;box-sizing:border-box}
+    main{max-width:460px}
+    img{width:180px;height:auto;margin-bottom:28px}
+    h1{color:#1a3a6b;font-size:26px;margin:0 0 12px}
+    p{font-size:16px;line-height:1.6;margin:0 0 24px;color:#475569}
+    a{display:inline-block;background:#1F54A1;color:#fff;padding:12px 26px;border-radius:40px;text-decoration:none}
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/assets/logo.webp" alt="Solatide Biosciences" width="180" height="60" />
+    <h1>We'll be right back</h1>
+    <p>This page is temporarily unavailable. Please try again in a minute.</p>
+    <a href="">Try again</a>
+  </main>
+</body>
+</html>
+`);
     // The admin SPA is served by hub.solatidebiosciences.com.au only (M-19): never emit admin shells.
     for (const stale of ['admin.html', path.join('admin', 'login.html')]) {
         fs.rmSync(path.join(distDir, stale), { force: true });
