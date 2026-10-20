@@ -63,7 +63,7 @@ const PrivacyPolicy = () => {
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <h1
                         className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight mb-6"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Privacy Policy
                     </h1>
@@ -79,7 +79,7 @@ const PrivacyPolicy = () => {
 
                     {/* Left Sticky Sidebar navigation */}
                     <aside className="hidden lg:block w-[320px] bg-white rounded-3xl p-6 border border-[#E8E8E8] shadow-sm shrink-0 sticky top-[90px] text-left">
-                        <h3 className="text-[17px] font-semibold text-[#1E1E1E] mb-4 px-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        <h3 className="text-[17px] font-semibold text-[#1E1E1E] mb-4 px-2" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                             On this page
                         </h3>
                         <nav className="space-y-1">
@@ -91,7 +91,7 @@ const PrivacyPolicy = () => {
                                         ? 'bg-[#F0F5FB] text-[#214A9E] font-semibold'
                                         : 'text-slate-600 hover:text-black hover:bg-slate-50 font-medium'
                                         }`}
-                                    style={{ fontFamily: 'Poppins, sans-serif' }}
+                                    style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                                 >
                                     <span className={`text-[14px] shrink-0 w-5 pt-0.5 ${activeSection === sec.id ? 'text-[#214A9E] font-bold' : 'text-[#94A3B8]'}`}>
                                         {sec.num}
@@ -106,7 +106,7 @@ const PrivacyPolicy = () => {
                     <div className="flex-grow w-full space-y-12 text-left lg:max-w-[calc(100%-352px)]">
 
                         {/* Welcome Disclaimer Box */}
-                        <div className="bg-[#fef3c7]/40 border-l-4 border-amber-500 rounded-r-2xl p-6 text-[14.5px] leading-relaxed text-amber-900" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        <div className="bg-[#fef3c7]/40 border-l-4 border-amber-500 rounded-r-2xl p-6 text-[14.5px] leading-relaxed text-amber-900" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                             <strong className="font-bold text-amber-950">Disclaimer:</strong> Please read this Privacy Policy carefully. By using and accessing any of the Services, you acknowledge that you have read this Privacy Policy and understand the collection, use, and disclosure of your information as described in this Privacy Policy.
                         </div>
 
@@ -115,10 +115,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Gathering
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Personal Information We Collect or Process
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     When we use the term "personal information," we are referring to information that identifies or can reasonably be linked to you or another person. Personal information does not include information that is collected anonymously or that has been de-identified, so that it cannot identify or be reasonably linked to you. We may collect or process the following categories of personal information, including inferences drawn from this personal information, depending on how you interact with the Services, where you live, and as permitted or required by applicable law:
                                 </p>
@@ -160,10 +160,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Origins
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Personal Information Sources
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     We may collect personal information from the following sources:
                                 </p>
@@ -193,10 +193,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Usage
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 How We Use Your Personal Information
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     Depending on how you interact with us or which of the Services you use, we may use personal information for the following purposes:
                                 </p>
@@ -230,10 +230,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Information Disclosure
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 How We Disclose Personal Information
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     In certain circumstances, we may disclose your personal information to third parties for legitimate purposes subject to this Privacy Policy. Such circumstances may include:
                                 </p>
@@ -267,10 +267,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 External Sites
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Third Party Websites and Links
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     The Services may provide links to websites or other online platforms operated by third parties. If you follow links to sites not affiliated or controlled by us, you should review their privacy and security policies and other terms and conditions. We do not guarantee and are not responsible for the privacy or security of such sites, including the accuracy, completeness, or reliability of information found on these sites. Information you provide on public or semi-public venues, including information you share on third-party social networking platforms may also be viewable by other users of the Services and/or users of those third-party platforms without limitation as to its use by us or by a third party. Our inclusion of such links does not, by itself, imply any endorsement of the content on such platforms or of their owners or operators, except as disclosed on the Services.
                                 </p>
@@ -282,10 +282,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Age Limitations
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Children's Data
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     The Services are not intended to be used by children, and we do not knowingly collect any personal information about children under the age of majority in your jurisdiction. If you are the parent or guardian of a child who has provided us with their personal information, you may contact us using the contact details set out below to request that it be deleted.As of the Effective Date of this Privacy Policy, we do not have actual knowledge that we "share" or "sell" (as those terms are defined in applicable law) personal information of individuals under 16 years of age.
                                 </p>
@@ -297,10 +297,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Data Safeguards
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Security and Retention of Your Information
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     Please be aware that no security measures are perfect or impenetrable, and we cannot guarantee "perfect security." In addition, any information you send to us may not be secure while in transit. We recommend that you do not use unsecure channels to communicate sensitive or confidential information to us.
                                 </p>
@@ -315,10 +315,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Control & Consent
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Your Rights and Choices
                             </h2>
-                            <div className="space-y-6 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-6 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     Depending on where you live, you may have some or all of the rights listed below in relation to your personal information. However, these rights are not absolute, may apply only in certain circumstances and, in certain cases, we may decline your request as permitted by law.
                                 </p>
@@ -380,10 +380,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Feedback & Disputes
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Complaints
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     If you have complaints about how we process your personal information, please contact us using the contact details provided below. Depending on where you live, you may have the right to appeal our decision by contacting us using the contact details set out below, or lodge your complaint with your local data protection authority. For the EEA, you can find a list of the responsible data protection supervisory authorities <span className="text-[#00bfef] underline cursor-pointer">here</span>.
                                 </p>
@@ -395,10 +395,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Cross-Border Data
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 International Transfers
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     Please note that we may transfer, store and process your personal information outside the country you live in.
                                 </p>
@@ -413,10 +413,10 @@ const PrivacyPolicy = () => {
                             {/* <span className="text-[#00bfef] text-[13px] font-extrabold tracking-widest uppercase mb-1 block">
                                 Document Updates
                             </span> */}
-                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-[#214A9E] mb-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 Changes to This Privacy Policy
                             </h2>
-                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                            <div className="space-y-4 text-[#6A6A6A] text-[15px] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <p>
                                     We may update this Privacy Policy from time to time, including to reflect changes to our practices or for other operational, legal, or regulatory reasons. We will post the revised Privacy Policy on this website, update the "Last updated" date and provide notice as required by applicable law.
                                 </p>

@@ -84,7 +84,7 @@ const TagadaSync = () => {
   }, []);
 
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-navy">Tagada Product Sync</h2>

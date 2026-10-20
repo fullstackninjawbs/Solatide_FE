@@ -128,7 +128,7 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
         : "0.0";
 
     return (
-        <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins']">
+        <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins','Poppins_Fallback',sans-serif]">
             {/* Header Section */}
             <div className="mb-8">
                 <h3 className="text-[14px] font-bold text-[#0079CD] mb-2">Reviews</h3>

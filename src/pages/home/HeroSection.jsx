@@ -17,7 +17,7 @@ const MobileEvidenceSection = () => (
         style={{
             background: 'radial-gradient(circle at 50% 0%, rgba(16, 185, 220, 0.17), transparent 48%), #062d5c',
             animationDelay: '300ms',
-            fontFamily: '"Poppins", system-ui, sans-serif'
+            fontFamily: '"Poppins", "Poppins Fallback", system-ui, sans-serif'
         }}
     >
         <div className="pt-[14px] px-[12px] pb-[16px]">

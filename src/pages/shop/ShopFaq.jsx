@@ -46,7 +46,7 @@ const ShopFaq = () => {
                     <span className="text-[#00bfef] text-[13px] sm:text-[15px] font-extrabold tracking-widest uppercase mb-3 block">
                         FAQ
                     </span>
-                    <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold tracking-tight leading-tight" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+                    <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold tracking-tight leading-tight" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 600 }}>
                         <span className="text-[#1E1E1E]">Frequently Asked </span>
                         <span className="text-[#214A9E]">Questions</span>
                     </h2>
@@ -56,14 +56,14 @@ const ShopFaq = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Left Column: Disclaimer Card */}
                     <div className="col-span-1 lg:col-span-4 bg-white rounded-[24px] p-6 sm:p-8 border border-[#E8E8E8] shadow-sm">
-                        <h3 className="text-xl font-bold text-[#1E1E1E] mb-4 leading-snug" style={{ fontFamily: 'Poppins' }}>
+                        <h3 className="text-xl font-bold text-[#1E1E1E] mb-4 leading-snug" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                             Research-use clarity before ordering.
                         </h3>
-                        <p className="text-[14px] text-[#6A6A6A] leading-[1.6] mb-6" style={{ fontFamily: 'Poppins' }}>
+                        <p className="text-[14px] text-[#6A6A6A] leading-[1.6] mb-6" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                             These answers cover intended use, online batch verification, documentation, dispatch, and research supply responsibilities.
                         </p>
                         <div className="bg-[#F4F8FD] border border-[#E0EFFE] rounded-[16px] p-5">
-                            <p className="text-[13px] text-[#1E1E1E] leading-[1.6]" style={{ fontFamily: 'Poppins' }}>
+                            <p className="text-[13px] text-[#1E1E1E] leading-[1.6]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 <strong className="font-bold text-[#1E1E1E]">Research-use-only:</strong> Solatide products are supplied strictly for in-vitro laboratory research use and are not for human or veterinary consumption.
                             </p>
                         </div>
@@ -81,7 +81,7 @@ const ShopFaq = () => {
                                     <button
                                         onClick={() => toggleIndex(index)}
                                         className="w-full flex items-center justify-between px-6 py-5 font-bold text-[16px] text-[#1E1E1E] hover:text-[#214A9E] focus:outline-none transition-colors duration-200"
-                                        style={{ fontFamily: 'Poppins' }}
+                                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                                     >
                                         <span>{faq.question}</span>
                                         <div className="h-8 w-8 rounded-full bg-[#F0F7FF] flex items-center justify-center text-[#214A9E] shrink-0 ml-4 transition-transform duration-300">
@@ -99,7 +99,7 @@ const ShopFaq = () => {
 
                                     <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100 pb-6' : 'grid-rows-[0fr] opacity-0'}`}>
                                         <div className="overflow-hidden">
-                                            <div className="px-6 pt-1 border-t border-slate-100 text-[14.5px] text-[#6A6A6A] leading-[1.7]" style={{ fontFamily: 'Poppins' }}>
+                                            <div className="px-6 pt-1 border-t border-slate-100 text-[14.5px] text-[#6A6A6A] leading-[1.7]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                                 {faq.answer}
                                             </div>
                                         </div>

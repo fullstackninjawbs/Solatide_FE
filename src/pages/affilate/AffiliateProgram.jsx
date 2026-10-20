@@ -7,7 +7,7 @@ const AffiliateProgram = () => {
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-bold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Affiliate Program
                     </h1>

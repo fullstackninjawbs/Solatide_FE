@@ -115,11 +115,11 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                         <span className="text-[#00bfef] text-[13px] sm:text-[15px] font-extrabold tracking-widest uppercase mb-3 block text-left">
                             Research Catalogue
                         </span>
-                        <h2 className="text-3xl sm:text-[40px] font-semibold text-[#1E1E1E] text-left tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+                        <h2 className="text-3xl sm:text-[40px] font-semibold text-[#1E1E1E] text-left tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 600 }}>
                             {details.name}
                         </h2>
 
-                        <p className="text-[#6A6A6A] text-[16px] leading-[1.7] w-full text-left mb-12" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
+                        <p className="text-[#6A6A6A] text-[16px] leading-[1.7] w-full text-left mb-12" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 400 }}>
                             {details.description}
                         </p>
 
@@ -223,7 +223,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
 
                         {/* Bottom Link */}
                         <div className="text-left mt-12">
-                            <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
+                            <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                 New to research peptides? View our <Link to="/pages/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
                             </p>
                         </div>
@@ -233,21 +233,21 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                     <div className="w-full">
                         {/* Section Header */}
                         <div className={isHome ? "text-center max-w-3xl mx-auto mb-16" : "text-left max-w-none mb-12"}>
-                            <span className="text-[#00E5FF] text-[14px] font-weight-600 font-semibold font-['Poppins',sans-serif] tracking-widest uppercase mb-3 block">
+                            <span className="text-[#00E5FF] text-[14px] font-weight-600 font-semibold font-['Poppins','Poppins_Fallback',sans-serif] tracking-widest uppercase mb-3 block">
                                 {isHome ? "Product Categories" : "Research Category"}
                             </span>
                             {isHome ? (
-                                <h2 className="text-[48px] font-weight-600 font-semibold text-[#102a5c] tracking-tight font-['Anek_Telugu',sans-serif]">
+                                <h2 className="text-[48px] font-weight-600 font-semibold text-[#102a5c] tracking-tight font-['Anek_Telugu','Anek_Telugu_Fallback',sans-serif]">
                                     Shop by <span className="text-[#1a4494]">Research</span> Category
                                 </h2>
                             ) : (
-                                <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold text-[#1E1E1E] tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+                                <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-semibold text-[#1E1E1E] tracking-tight leading-tight mb-8" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 600 }}>
                                     Browse the Full Research Catalogue
                                 </h2>
                             )}
 
                             {!isHome && (
-                                <div className="space-y-6 text-[#6A6A6A] text-[16px] leading-[1.6] max-w-none" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
+                                <div className="space-y-6 text-[#6A6A6A] text-[16px] leading-[1.6] max-w-none" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 400 }}>
                                     <p>
                                         This page brings together the full Solatide Biosciences research catalogue in one view, including metabolic research peptides, repair-focused compounds, dermal research peptides, and laboratory support materials. It is designed as a broad navigation page rather than a single-topic research guide.
                                     </p>
@@ -272,12 +272,12 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                                         </div>
 
                                         {/* Title */}
-                                        <h3 className="text-xl font-semibold text-[#1E1E1E] mb-3" style={{ fontFamily: 'Poppins', fontWeight: 600 }}>
+                                        <h3 className="text-xl font-semibold text-[#1E1E1E] mb-3" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 600 }}>
                                             {category.title}
                                         </h3>
 
                                         {/* Description */}
-                                        <p className="text-[15px] text-[#6A6A6A] leading-relaxed mb-6" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
+                                        <p className="text-[15px] text-[#6A6A6A] leading-relaxed mb-6" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif', fontWeight: 400 }}>
                                             {category.description}
                                         </p>
                                     </div>
@@ -290,7 +290,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                                         <Link
                                             to={category.path}
                                             className="inline-flex items-center justify-center rounded-lg bg-[#e0eaf5]/85 text-[#214A9E] px-5 py-2 text-xs font-bold hover:bg-[#e0eaf5] transition-colors cursor-pointer w-auto"
-                                            style={{ fontFamily: 'Poppins' }}
+                                            style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                                         >
                                             Shop
                                         </Link>
@@ -302,7 +302,7 @@ const ProductCategories = ({ isHome = false, selectedCategory = 'all-products' }
                         {/* Bottom Guide Link */}
                         {!isHome && (
                             <div className="text-left">
-                                <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins' }}>
+                                <p className="text-[#214A9E] font-semibold text-[16px]" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                                     New to research peptides? View our <Link to="/pages/about" className="text-[#1E1E1E] underline hover:opacity-80">Research Peptides Guide</Link>
                                 </p>
                             </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const ContactUs = () => {
     return (
-        <div className="w-full bg-white min-h-screen text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <div className="w-full bg-white min-h-screen text-slate-700" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
             {/* Header Banner */}
             <section className="w-full py-4 text-center border-b border-slate-100">
                 <div className="main-container">

@@ -60,7 +60,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
     };
 
     return (
-        <div className="mt-20 max-w-[1440px] mx-auto text-left relative" style={{ fontFamily: 'Poppins' }}>
+        <div className="mt-20 max-w-[1440px] mx-auto text-left relative" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0 mb-8">
                 <div>

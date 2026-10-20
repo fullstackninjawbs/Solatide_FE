@@ -15,7 +15,7 @@ const ProductInfoSection = ({ product }) => {
     }
 
     return (
-        <div className="w-full bg-[#f4f9fd] py-16 mt-8 font-['Poppins']">
+        <div className="w-full bg-[#f4f9fd] py-16 mt-8 font-['Poppins','Poppins_Fallback',sans-serif]">
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 text-left">
 
                 <div className="mb-10">

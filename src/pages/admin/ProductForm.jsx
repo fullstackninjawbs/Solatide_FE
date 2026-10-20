@@ -731,7 +731,7 @@ const ProductForm = () => {
 
   if (fetching) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-400 font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-400 font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-blue"></div>
         <p className="text-[14px] font-medium">Fetching product data...</p>
       </div>
@@ -749,7 +749,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
 
       {/* Top Header Section */}
       <div className="sticky -top-6 sm:-top-8 pt-6 sm:pt-8 pb-4 z-50 bg-[#f8fafc] -mx-6 sm:-mx-8 px-6 sm:px-8 mb-4 border-b border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

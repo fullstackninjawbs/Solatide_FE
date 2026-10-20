@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anek+Telugu:wght@300..800&display=swap');
+/* Anek Telugu + Poppins are self-hosted: see the @font-face block in index.html */
 @import './styles/shopify-pages.css';
 
 @tailwind base;
@@ -7,7 +7,7 @@
 
 @layer utilities {
   .font-anek {
-    font-family: 'Anek Telugu', sans-serif !important;
+    font-family: 'Anek Telugu', 'Anek Telugu Fallback', sans-serif !important;
   }
 }
 
@@ -22,7 +22,7 @@ body,
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Poppins', 'Poppins Fallback', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer components {
@@ -135,7 +135,7 @@ body,
 /* Jodit Editor premium styling overrides to match Shopify aesthetic */
 .jodit-container {
   border: none !important;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Poppins', 'Poppins Fallback', sans-serif !important;
 }
 
 .jodit-toolbar__box {

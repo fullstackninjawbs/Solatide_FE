@@ -64,7 +64,7 @@ const CartDrawer = () => {
             <div
                 ref={drawerRef}
                 className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[1001] transform transition-transform duration-300 ease-in-out flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}
-                style={{ fontFamily: 'Poppins' }}
+                style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">

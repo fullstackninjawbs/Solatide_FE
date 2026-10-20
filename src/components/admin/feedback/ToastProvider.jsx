@@ -105,7 +105,7 @@ const ToastItem = ({ toast, onDismiss }) => {
   return (
     <div
       className={`pointer-events-auto flex w-full flex-col p-4 rounded-[16px] border shadow-lg ${config.bgColor} ${config.borderColor}`}
-      style={{ fontFamily: 'Poppins, sans-serif' }}
+      style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
       role="alert"
     >
       <div className="flex items-start gap-3">

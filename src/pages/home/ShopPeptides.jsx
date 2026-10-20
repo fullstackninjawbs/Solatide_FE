@@ -49,10 +49,10 @@ const ShopPeptides = () => {
         <section className="relative w-full py-4 lg:py-12  overflow-hidden">
             <div className="main-container">
                 <div className="text-center mb-10">
-                    <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case mb-3 block align-middle leading-none font-['Poppins',sans-serif]">
+                    <span className="text-[#00E5FF] text-[14px] font-semibold tracking-normal normal-case mb-3 block align-middle leading-none font-['Poppins','Poppins_Fallback',sans-serif]">
                         Featured Research Compounds
                     </span>
-                    <h2 className="text-[48px] font-bold text-[#1E1E1E] tracking-normal leading-none font-['Anek_Telugu',sans-serif]">
+                    <h2 className="text-[48px] font-bold text-[#1E1E1E] tracking-normal leading-none font-['Anek_Telugu','Anek_Telugu_Fallback',sans-serif]">
                         Shop Peptides
                     </h2>
                 </div>
@@ -141,13 +141,13 @@ const ShopPeptides = () => {
                                     </div>
 
                                     <div className="flex flex-col justify-between flex-grow mt-4 px-1.5 pb-2">
-                                        <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-tight text-left font-['Anek_Telugu',sans-serif] mb-2 line-clamp-2">
+                                        <h3 className="text-[20px] font-medium text-[#1E1E1E] leading-tight text-left font-['Anek_Telugu','Anek_Telugu_Fallback',sans-serif] mb-2 line-clamp-2">
                                             <Link to={`/products/${product.slug || product._id || product.id}`} className="hover:text-[#00bfef] transition-colors">
                                                 {product.name}
                                             </Link>
                                         </h3>
                                         <div className="flex items-center justify-between mt-3.5">
-                                            <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu',sans-serif]">
+                                            <span className="text-[18px] font-semibold text-[#00E5FF] leading-none font-['Anek_Telugu','Anek_Telugu_Fallback',sans-serif]">
                                                 {formatPrice(product.price)}
                                             </span>
                                             <button

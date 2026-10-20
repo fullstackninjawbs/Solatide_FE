@@ -69,7 +69,7 @@ const CertificatesAnalysis = () => {
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Certificates of Analysis
                     </h1>
@@ -225,7 +225,7 @@ const CertificatesAnalysis = () => {
                                 <span className="text-[12px] font-bold text-[#60A5FA] tracking-widest uppercase">
                                     COA
                                 </span>
-                                <h2 className="text-[22px] sm:text-[24px] font-medium text-[#214A9E] tracking-tight" style={{ fontFamily: 'Anek Telugu, sans-serif' }}>
+                                <h2 className="text-[22px] sm:text-[24px] font-medium text-[#214A9E] tracking-tight" style={{ fontFamily: '"Anek Telugu", "Anek Telugu Fallback", sans-serif' }}>
                                     {selectedCoa.title}
                                 </h2>
                             </div>

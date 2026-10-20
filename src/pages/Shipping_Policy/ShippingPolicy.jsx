@@ -64,7 +64,7 @@ const ShippingPolicy = () => {
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <h1
                         className="text-4xl sm:text-5xl font-semibold text-[#214A9E] leading-tight mb-4"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Shipping Policy
                     </h1>

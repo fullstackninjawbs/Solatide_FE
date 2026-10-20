@@ -531,7 +531,7 @@ const ProductDetail = () => {
             )}
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumbs */}
-                <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins' }}>
+                <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                     <Link to="/" className="text-[#214A9E] hover:underline">Home</Link>
                     <span>/</span>
                     <Link to="/collections/all" className="text-[#214A9E] hover:underline">Shop</Link>
@@ -602,7 +602,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Right Column: Product Specs */}
-                    <div className="lg:col-span-6 text-left flex flex-col gap-4" style={{ fontFamily: 'Poppins' }}>
+                    <div className="lg:col-span-6 text-left flex flex-col gap-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                         <div>
 
                             {/* Product Title */}
