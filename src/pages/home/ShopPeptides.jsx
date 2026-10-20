@@ -1,49 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ShoppingCart, Star } from 'lucide-react'
 import productVialImage from '../../assets/images/homePageFirstSection.webp'
 
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
-import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
-import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+import useHomeProducts from '../../hooks/useHomeProducts';
+import ProductCardSkeletonRow from '../../components/ProductCardSkeleton';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-// Product list embedded by prerender.js (card DTOs) for the given API key.
-const getEmbeddedList = (key) => {
-    const body = getRouteData(key);
-    return body && body.success && body.data && Array.isArray(body.data.products) ? body.data.products.map(toCardDto) : null;
-};
-
 const ShopPeptides = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [products, setProducts] = useState(() => getEmbeddedList('/api/products?limit=12') || []);
-
-    useEffect(() => {
-        let cancelled = false;
-        const fetchProducts = async () => {
-            try {
-                const response = await apiService.getProducts('limit=12');
-                const result = await response.json();
-                if (!cancelled && result.success && result.data && Array.isArray(result.data.products)) {
-                    // Background refresh: only re-render when the list actually changed.
-                    const fresh = result.data.products.map(toCardDto);
-                    setProducts(prev => (sameData(prev, fresh) ? prev : fresh));
-                }
-            } catch {
-                console.warn('Backend server unreachable for homepage products.');
-            }
-        };
-        fetchProducts();
-        return () => { cancelled = true; };
-    }, []);
+    const { products, loading, failed, retry } = useHomeProducts('limit=12');
 
     return (
         <section className="relative w-full py-4 lg:py-12  overflow-hidden">
@@ -72,6 +47,17 @@ const ShopPeptides = () => {
                         <ChevronRight className="h-5 w-5" />
                     </button>
 
+                    {loading ? (
+                        <ProductCardSkeletonRow />
+                    ) : failed ? (
+                        <div className="flex flex-col items-center justify-center gap-3 py-12 text-center rounded-[28px] border border-slate-100 bg-slate-50" role="status">
+                            <p className="text-[15px] text-slate-600">Products couldn&apos;t be loaded right now.</p>
+                            <div className="flex items-center gap-3">
+                                <button type="button" onClick={retry} className="text-[14px] font-semibold text-[#1a4494] border border-[#1a4494]/30 rounded-full px-5 py-2 hover:bg-white cursor-pointer">Try again</button>
+                                <Link to="/collections/all" className="text-[14px] font-semibold text-white bg-gradient-to-r from-[#00ACEE] to-[#0079CD] rounded-full px-5 py-2">View all products</Link>
+                            </div>
+                        </div>
+                    ) : (
                     <Swiper
                         modules={[Navigation]}
                         spaceBetween={24}
@@ -167,6 +153,7 @@ const ShopPeptides = () => {
                             </SwiperSlide>
                         ))}
                     </Swiper>
+                    )}
                 </div>
 
                 <div className="flex justify-center mt-10">
