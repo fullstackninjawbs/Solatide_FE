@@ -46,13 +46,6 @@ const getEmbeddedReviewCount = (product) => {
     return body.success && Array.isArray(body.reviews) ? body.reviews.length : 0;
 };
 
-// Deterministic (data-derived) Offer validity: end of the year after the product was last updated.
-const priceValidUntilFor = (product) => {
-    const ts = product?.updatedAt ? Date.parse(product.updatedAt) : NaN;
-    if (Number.isNaN(ts)) return undefined;
-    return `${new Date(ts).getUTCFullYear() + 1}-12-31`;
-};
-
 /**
  * Variant shown first (and described to Google in the Product schema): the first one that can be
  * bought — in stock, or continue-selling — else the first. Opening on a sold-out first variant
@@ -280,10 +273,10 @@ const ProductDetail = () => {
     const dbImages = product.images && product.images.length > 0
         ? product.images.map(img => {
             const isString = typeof img === 'string';
-            const url = optimizeCloudinaryUrl(isString ? img : img.url);
+            const url = optimizeCloudinaryUrl(isString ? img : img.url, 1100);
             return url ? (isString ? { url } : { ...img, url }) : null;
         }).filter(Boolean)
-        : [{ url: optimizeCloudinaryUrl(product.imageUrl || product.image) || retatrutideVial }].filter(img => img.url);
+        : [{ url: optimizeCloudinaryUrl(product.imageUrl || product.image, 1100) || retatrutideVial }].filter(img => img.url);
 
     const coaImages = [
         optimizeCloudinaryUrl(product.coaImage1),
@@ -423,7 +416,6 @@ const ProductDetail = () => {
     })();
 
     const schemaPrice = formatNumericPrice(price);
-    const priceValidUntil = priceValidUntilFor(product);
     const productSchema = product ? {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -441,7 +433,7 @@ const ProductDetail = () => {
                 "url": canonicalUrl,
                 "priceCurrency": "AUD",
                 "price": schemaPrice,
-                ...(priceValidUntil ? { "priceValidUntil": priceValidUntil } : {}),
+                // No priceValidUntil: prices have no real expiry date (it's optional in schema.org Offer)
                 "itemCondition": "https://schema.org/NewCondition",
                 "availability": schemaAvailability,
                 "seller": {
