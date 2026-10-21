@@ -450,6 +450,7 @@ const OrderDetail = () => {
   const isPaid = paymentStatus === 'paid';
   const isUnfulfilled = fulfilStatus === 'unfulfilled';
   const isManual = order.source === 'admin_manual';
+  const isShopifyImport = order.source === 'shopify_import' || (Array.isArray(order.tags) && order.tags.includes('shopify-import'));
 
   // ─── Timeline Events Logic ───────────────────────────────────────────────────
 
@@ -666,12 +667,12 @@ const OrderDetail = () => {
               </h1>
             </div>
             <p className="text-[14px] text-slate-500 ml-[52px] font-medium">
-              {fmtDate(order.createdAt)} from {isManual ? 'Admin' : 'Tagadacrm'}
+              {fmtDate(order.createdAt)} from {isShopifyImport ? 'Shopify (Historical Import)' : isManual ? 'Admin' : 'Tagadacrm'}
             </p>
           </div>
 
           <div className=" items-center gap-3 print:hidden flex">
-            {isPaid && (
+            {!isShopifyImport && isPaid && (
               <button
                 onClick={handleRefund}
                 disabled={refunding}
@@ -834,16 +835,18 @@ const OrderDetail = () => {
                           </AdminSecondaryButton>
                           <div
                             title={
-                              (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
+                              isShopifyImport
+                                ? 'Historical Shopify order: shipping labels cannot be created.'
+                                : (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
                                 ? 'Payment is pending from tagada, refresh to update..'
                                 : (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : '')
                             }
-                            className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
+                            className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
                           >
                             <AdminPrimaryButton
                               onClick={handleCreateLabel}
-                              disabled={creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
-                              className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
+                              disabled={isShopifyImport || creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
+                              className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
                             >
                               {creatingLabel ? 'Generating...' : 'Create shipping label'}
                             </AdminPrimaryButton>
@@ -953,7 +956,7 @@ const OrderDetail = () => {
                     </div>
                   )}
 
-                  {order.refundStatus !== 'refunded' && (
+                  {!isShopifyImport && order.refundStatus !== 'refunded' && (
                     <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
                       <AdminPrimaryButton
                         onClick={() => {
@@ -964,6 +967,13 @@ const OrderDetail = () => {
                       >
                         Refund Full Amount
                       </AdminPrimaryButton>
+                    </div>
+                  )}
+                  {isShopifyImport && (
+                    <div className="pt-4 border-t border-slate-100">
+                      <p className="text-[12.5px] text-slate-400 italic">
+                        Historical Shopify imported order — refunds are managed in the original payment system and disabled here.
+                      </p>
                     </div>
                   )}
                 </div>
