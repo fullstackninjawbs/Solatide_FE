@@ -13,6 +13,7 @@ import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackEvent } from '../../utils/analytics';
+import { metaViewContent } from '../../utils/metaPixel';
 import { getProductImageAltText } from '../../utils/imageHelpers';
 import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
 import { sanitizedMarkup } from '../../utils/sanitize';
@@ -159,6 +160,7 @@ const ProductDetail = () => {
                         productName: fetchedProduct.name,
                         path: window.location.pathname
                     });
+                    metaViewContent(fetchedProduct, defaultVariant(fetchedProduct));
                 } else if (!embedded) {
                     // API returned success:false / 404 — this slug doesn't exist
                     setNotFound(true);

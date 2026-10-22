@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import { trackEvent } from '../utils/analytics'
+import { metaPageView } from '../utils/metaPixel'
 import { lazyWithRetry } from './lazyWithRetry'
 
 // ─── Storefront pages: imported EAGERLY ────────────────────────────────────────
@@ -48,6 +49,7 @@ const PageViewTracker = () => {
         // Skip admin panel pages
         if (location.pathname.startsWith('/admin')) return;
         trackEvent('page_view', { page: location.pathname, path: location.pathname });
+        metaPageView();
     }, [location.pathname]);
     return null;
 };

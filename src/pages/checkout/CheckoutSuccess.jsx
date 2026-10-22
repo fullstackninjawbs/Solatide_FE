@@ -5,6 +5,7 @@ import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { useCart } from '../../context/CartContext';
 import { trackEvent } from '../../utils/analytics';
+import { metaPurchase } from '../../utils/metaPixel';
 import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
 
 const POLL_INTERVAL_MS = 3000;
@@ -25,6 +26,7 @@ const fmt = (amount, currency = 'AUD') =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: currency || 'AUD' }).format(amount || 0);
 
 const firePurchaseTracking = (order) => {
+  try { metaPurchase(order); } catch { /* own once-per-order guard; never breaks the page */ }
   const key = `gtm_pushed_${order._id}`;
   try {
     if (sessionStorage.getItem(key)) return; // already tracked (refresh)

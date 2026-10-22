@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { trackEvent } from '../utils/analytics';
+import { metaAddToCart } from '../utils/metaPixel';
 import { toast } from 'react-hot-toast';
 
 const CartContext = createContext();
@@ -50,14 +51,14 @@ export const CartProvider = ({ children }) => {
         const cartItemId = resolvedVariant
             ? `${product._id || product.id || ''}-${variantSku}`
             : `${product._id || product.id || ''}`;
-            
+
         const inventoryPolicy = resolvedVariant?.inventoryPolicy || product.inventoryPolicy;
         const continueSelling = product.continueSellingWhenOutOfStock;
         const availableStock = resolvedVariant ? resolvedVariant.stockQty : product.stockQuantity;
 
         const existingItem = cartItems.find(item => item.cartItemId === cartItemId);
         const currentQty = existingItem ? existingItem.quantity : 0;
-        
+
         if (inventoryPolicy !== 'continue' && !continueSelling) {
             const stock = availableStock || 0;
             if (currentQty + quantity > stock) {
@@ -91,7 +92,7 @@ export const CartProvider = ({ children }) => {
                 image: product.imageUrl || product.image
             }];
         });
-        
+
         setIsCartOpen(true);
         // Analytics: fire add_to_cart
         try {
@@ -104,6 +105,7 @@ export const CartProvider = ({ children }) => {
                 cartValue: (numericPrice || 0) * quantity,
                 path: window.location.pathname
             });
+            metaAddToCart(product, resolvedVariantForAnalytics, quantity);
         } catch { /* analytics never breaks the cart */ }
     };
 
@@ -115,7 +117,7 @@ export const CartProvider = ({ children }) => {
 
     const updateQuantity = (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
-        
+
         setCartItems(prevItems => {
             const item = prevItems.find(i => i.cartItemId === cartItemId || i.id === cartItemId || i._id === cartItemId);
             if (item) {

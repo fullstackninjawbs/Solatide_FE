@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { trackEvent } from '../utils/analytics';
+import { metaPurchase } from '../utils/metaPixel';
 import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../hooks/useTagadaCheckout';
 
 const DeferredTracker = () => {
@@ -33,6 +34,7 @@ const DeferredTracker = () => {
           
           // If the order was fully paid but GTM wasn't fired yet
           if (ord.paymentStatus === 'succeeded' || ord.paymentStatus === 'paid') {
+            try { metaPurchase(ord); } catch { /* own once-per-order guard */ }
             const hasPushed = sessionStorage.getItem(`gtm_pushed_${ord._id}`);
             
             if (!hasPushed) {

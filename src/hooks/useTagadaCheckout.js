@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { apiService } from '../services/api';
 import { getCheckoutAttributionPayload } from '../utils/attribution';
 import { getVisitorContext } from '../utils/analytics';
+import { getMetaBrowserIds, metaInitiateCheckout } from '../utils/metaPixel';
 
 // localStorage keys shared with CheckoutSuccess.jsx
 export const LAST_ORDER_ID_KEY = 'solatide_last_order_id';
@@ -34,6 +35,8 @@ export const useTagadaCheckout = () => {
       }
 
       const checkoutItems = items.map(toCheckoutItem);
+      // Meta InitiateCheckout: here so both the checkout page and the cart drawer button count it
+      try { metaInitiateCheckout(items); } catch { /* tracking never blocks checkout */ }
 
       // 1) Create a placeholder order. Tagada collects shipping & email securely.
       const orderRes = await apiService.createOrder({
@@ -57,7 +60,8 @@ export const useTagadaCheckout = () => {
 
       // 2) Initiate Tagada Checkout Session — the server re-resolves variants, prices and stock.
       const attribution = getCheckoutAttributionPayload();
-      const visitor = await getVisitorContext(); // analytics session + location (never blocks > 2.5 s)
+      // analytics session + location (never blocks > 2.5 s) + Meta browser ids for the server-side Purchase
+      const visitor = { ...(await getVisitorContext()), ...getMetaBrowserIds() };
       const payRes = await apiService.createTagadaPayment({
         orderId,
         accessToken: createToken,

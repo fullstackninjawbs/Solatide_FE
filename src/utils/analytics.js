@@ -184,7 +184,7 @@ if (!isPrerendering()) {
 
 const BOT_UA = /bot\b|crawler|spider|crawling|headless|lighthouse|pagespeed|gtmetrix|pingdom|uptime|monitor|preview|facebookexternalhit|slurp|bingpreview|ahrefs|semrush|mj12|dotbot|petalbot|yandex|baidu|python-requests|curl\/|wget\//i;
 
-function isAutomatedVisitor() {
+export function isAutomatedVisitor() {
   try {
     if (typeof navigator === 'undefined') return true;
     if (navigator.webdriver) return true; // Selenium / Puppeteer / Playwright
