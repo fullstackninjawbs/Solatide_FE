@@ -27,6 +27,7 @@ const ReviewVerification = lazyWithRetry(() => import('../pages/product/ReviewVe
 const Checkout = lazyWithRetry(() => import('../pages/checkout/Checkout'))
 const CheckoutSuccess = lazyWithRetry(() => import('../pages/checkout/CheckoutSuccess'))
 const CheckoutFailure = lazyWithRetry(() => import('../pages/checkout/CheckoutFailure'))
+const BankPayment = lazyWithRetry(() => import('../pages/checkout/BankPayment'))
 const OrderStatus = lazyWithRetry(() => import('../pages/checkout/OrderStatus'))
 
 // ─── Admin: build-time switch ──────────────────────────────────────────────────
@@ -72,6 +73,7 @@ const AppRoutes = () => {
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/checkout/success" element={<CheckoutSuccess />} />
                         <Route path="/checkout/failure" element={<CheckoutFailure />} />
+                        <Route path="/checkout/payment/:orderId" element={<BankPayment />} />
                         <Route path="/order/:orderId" element={<OrderStatus />} />
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />

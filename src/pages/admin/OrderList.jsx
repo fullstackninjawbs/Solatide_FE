@@ -36,7 +36,14 @@ const PAYMENT_BADGE = {
   pending: 'bg-amber-100 text-amber-700 border border-amber-200',
   failed: 'bg-red-100 text-red-700 border border-red-200',
   refunded: 'bg-slate-100 text-slate-600 border border-slate-200',
+  awaiting_payment: 'bg-amber-100 text-amber-800 border border-amber-300',
+  cancelled: 'bg-slate-100 text-slate-500 border border-slate-200',
 };
+
+// Bank transfer / PayID orders (our own checkout) — payment confirmed manually by the admin
+const BANK_METHODS = ['payid', 'bank_transfer', 'international_bank_transfer'];
+const BANK_METHOD_LABEL = { payid: 'PayID', bank_transfer: 'Bank transfer', international_bank_transfer: 'Intl transfer' };
+const paymentBadgeText = (o) => (o.paymentStatus === 'pending' && BANK_METHODS.includes(o.paymentMethod) ? 'awaiting_payment' : o.paymentStatus);
 
 const FULFIL_BADGE = {
   unfulfilled: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -64,6 +71,7 @@ function Badge({ text, styleMap, fallback = 'bg-slate-100 text-slate-500 border 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 const TABS = [
   { label: 'All', filter: { hasCustomer: true } },
+  { label: 'Awaiting Payment', filter: { awaitingPayment: 'true' } },
   { label: 'Unfulfilled', filter: { fulfilmentStatus: 'unfulfilled', hasCustomer: true } },
   { label: 'Paid', filter: { paymentStatus: 'paid', hasCustomer: true } },
   { label: 'Abandoned Checkouts', filter: { hasCustomer: false } },
@@ -353,7 +361,7 @@ const OrderList = () => {
               <div className="flex items-center gap-3 w-full bg-brand-navy text-white px-4 py-2 rounded-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
                 <span className="text-[13px] font-semibold">{selectedOrders.length} selected</span>
                 <div className="flex-1" />
-                {activeTab === 4 ? (
+                {TABS[activeTab]?.filter?.isDeleted ? (
                   <button
                     onClick={handleBulkRestore}
                     disabled={isBulkProcessing}
@@ -440,7 +448,7 @@ const OrderList = () => {
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
-                      <p className="text-[12px]">Orders will appear here once customers complete checkout via Tagada.</p>
+                      <p className="text-[12px]">Orders will appear here once customers complete checkout.</p>
                     </div>
                   </td>
                 </tr>
@@ -487,6 +495,14 @@ const OrderList = () => {
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
                           Admin Manual
                         </span>
+                      ) : BANK_METHODS.includes(order.paymentMethod) ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200">
+                          {BANK_METHOD_LABEL[order.paymentMethod]}
+                        </span>
+                      ) : order.source === 'shopify_import' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-lime-50 text-lime-700 border border-lime-200">
+                          Shopify
+                        </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                           Tagadacrm
@@ -506,7 +522,7 @@ const OrderList = () => {
 
                     {/* Payment */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <Badge text={order.paymentStatus} styleMap={PAYMENT_BADGE} />
+                      <Badge text={paymentBadgeText(order)} styleMap={PAYMENT_BADGE} />
                     </td>
 
                     {/* Fulfilment */}
@@ -533,7 +549,7 @@ const OrderList = () => {
 
                     {/* Actions */}
                     <td className="px-4 py-3 whitespace-nowrap text-right">
-                      {activeTab === 4 ? (
+                      {TABS[activeTab]?.filter?.isDeleted ? (
                         <button
                           onClick={() => handleRestore(order._id)}
                           className="text-slate-400 hover:text-emerald-500 transition-colors p-1 rounded hover:bg-emerald-50"

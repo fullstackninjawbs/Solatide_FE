@@ -203,6 +203,20 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
+  // Own checkout: bank transfer / PayID (no card processor)
+  getCheckoutConfig: async () => {
+    return customFetch(`${API_URL}/api/checkout/config`);
+  },
+  placeBankOrder: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/bank-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  },
+  getBankOrder: async (id, accessToken) => {
+    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?accessToken=${encodeURIComponent(accessToken)}`);
+  },
   syncOrderWithTagada: async (id) => {
     return customFetch(`${API_URL}/api/payments/tagada/sync/${id}`, {
       method: 'POST',
@@ -289,6 +303,18 @@ export const apiService = {
   },
   updateStoreSettings: async (data) => {
     return customFetch(`${API_URL}/api/admin/settings/store`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  getBankTransferSettings: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/bank-transfer`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateBankTransferSettings: async (data) => {
+    return customFetch(`${API_URL}/api/admin/settings/bank-transfer`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(data)

@@ -78,6 +78,9 @@ const OrderStatus = () => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: displayCurrency }).format(amount);
     };
 
+    // Bank transfer / PayID order not paid yet (our own checkout)
+    const awaitingPayment = order.paymentStatus === 'pending' && ['payid', 'bank_transfer', 'international_bank_transfer'].includes(order.paymentMethod);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans pb-16">
             {/* Header */}
@@ -92,7 +95,7 @@ const OrderStatus = () => {
                         <h1 className="text-[22px] text-gray-900 font-normal">
                             Order <span className="font-medium">#{order.orderNumber}</span>
                         </h1>
-                        <p className="text-[13px] text-gray-500 mt-1">Confirmed {orderDate}</p>
+                        <p className="text-[13px] text-gray-500 mt-1">{awaitingPayment ? 'Placed' : 'Confirmed'} {orderDate}</p>
                     </div>
                     <Link to="/collections/all" className="bg-[#102a5c] text-white rounded-lg shadow-md px-6 py-2.5 text-[14px] font-semibold hover:bg-[#0c2048] transition-all duration-200">
                         Buy again
@@ -114,7 +117,7 @@ const OrderStatus = () => {
                     </div>
                     <div className="w-full">
                         <h2 className="text-[18px] font-bold text-[#102a5c]">
-                            {order.trackingNumber ? "Shipped" : "Confirmed"}
+                            {order.trackingNumber ? "Shipped" : awaitingPayment ? "Awaiting payment" : "Confirmed"}
                         </h2>
                         {order.trackingNumber ? (
                             <>
@@ -136,7 +139,16 @@ const OrderStatus = () => {
                                 </div>
                             </>
                         ) : (
-                            <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
+                            awaitingPayment ? (
+                                <>
+                                    <p className="text-[14px] text-gray-600 mt-1">Your order will be processed once your payment has been received and matched to your order.</p>
+                                    {accessToken && (
+                                        <Link to={`/checkout/payment/${order._id}?accessToken=${encodeURIComponent(accessToken)}`} className="inline-block mt-3 bg-[#102a5c] text-white rounded-md px-4 py-2 text-[13px] font-semibold">View payment details</Link>
+                                    )}
+                                </>
+                            ) : (
+                                <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
+                            )
                         )}
                         <p className="text-[13px] text-gray-400 mt-2 hidden">{orderDate}</p>
                     </div>
