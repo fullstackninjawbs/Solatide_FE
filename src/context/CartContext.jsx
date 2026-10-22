@@ -34,11 +34,31 @@ export const CartProvider = ({ children }) => {
         }
     }, []);
 
-    // Persist to localStorage only AFTER the cart has been initialized from storage
+    // Keep every open tab in sync: another tab changed the cart → take its version, so a tab
+    // that was already open never shows a stale cart or saves it over the other tab's items
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key !== 'solatie_cart') return;
+            try {
+                const parsed = e.newValue ? JSON.parse(e.newValue) : [];
+                if (Array.isArray(parsed)) setCartItems(parsed);
+            } catch (error) {
+                console.warn('Error syncing cart from another tab', error);
+            }
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
+    // Persist to localStorage only AFTER the cart has been initialized from storage.
+    // Skipped when unchanged, so a cart taken from another tab is not written back.
     useEffect(() => {
         if (!isCartInitialized) return;
         try {
-            window.localStorage.setItem('solatie_cart', JSON.stringify(cartItems));
+            const serialized = JSON.stringify(cartItems);
+            if (window.localStorage.getItem('solatie_cart') !== serialized) {
+                window.localStorage.setItem('solatie_cart', serialized);
+            }
         } catch (error) {
             console.warn('Error setting localStorage for cart', error);
         }
