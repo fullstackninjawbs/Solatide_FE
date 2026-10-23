@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 import { useTagadaCheckout } from '../hooks/useTagadaCheckout';
+import { loadCheckoutConfig } from '../hooks/useCheckoutConfig';
 
 const CartDrawer = () => {
     const {
@@ -181,7 +182,14 @@ const CartDrawer = () => {
                         </p>
                         {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
                         <button
-                            onClick={() => {
+                            onClick={async () => {
+                                const cfg = await loadCheckoutConfig().catch(() => null);
+                                // Temporary order-request checkout → our checkout page; otherwise Tagada as before
+                                if (!cfg || cfg.mode === 'order_request') {
+                                    setIsCartOpen(false);
+                                    navigate('/checkout');
+                                    return;
+                                }
                                 initiateCheckout(cartItems);
                             }}
                             disabled={isCheckingOut}

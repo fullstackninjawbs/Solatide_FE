@@ -5,8 +5,10 @@ import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
+import useCheckoutConfig from '../../hooks/useCheckoutConfig';
+import OrderRequestCheckout from './OrderRequestCheckout';
 
-const Checkout = () => {
+const TagadaCheckout = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotalPrice } = useCart();
 
@@ -186,6 +188,21 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+/**
+ * /checkout — temporary order-request form while ORDER_REQUEST_CHECKOUT is on (server .env),
+ * otherwise the Tagada summary + redirect.
+ */
+const Checkout = () => {
+  const { config, error } = useCheckoutConfig();
+  if (config?.mode === 'order_request' || error) return <OrderRequestCheckout config={config} />;
+  if (config) return <TagadaCheckout />;
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+      <div className="w-8 h-8 border-2 border-slate-200 border-t-[#102a5c] rounded-full animate-spin" aria-label="Loading checkout" />
     </div>
   );
 };
