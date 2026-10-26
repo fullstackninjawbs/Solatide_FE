@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Lock, ShoppingBag, AlertCircle } from 'lucide-react';
+import { AlertCircle, ChevronDown, FileText, Info, Lock, ShoppingBag } from 'lucide-react';
 import Logo from '../../components/Logo';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
@@ -31,15 +31,15 @@ const METHOD_COPY = {
   },
 };
 
-const aud = (n) => new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(Number(n) || 0);
+const money = (n) => `A$${(Number(n) || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const num = (v) => {
   const n = typeof v === 'string' ? parseFloat(v.replace(/[^0-9.]/g, '')) : Number(v);
   return Number.isFinite(n) ? n : 0;
 };
-// "Default Title" is Shopify's placeholder for single-variant products: not shown
+// "Default Title" (Shopify placeholder) and titles repeating the product name are not shown
 const variantLabel = (item) => {
   const t = item.selectedVariant?.title || item.selectedVariant?.name || '';
-  return t && !/^default title$/i.test(t.trim()) ? t : '';
+  return t && !/^default title$/i.test(t.trim()) && t.trim().toLowerCase() !== String(item.name || '').trim().toLowerCase() ? t : '';
 };
 const imageOf = (item) => item.image || (typeof item.images?.[0] === 'string' ? item.images[0] : item.images?.[0]?.url) || '';
 const newRequestId = () => {
@@ -53,67 +53,59 @@ const EMPTY = { email: '', firstName: '', lastName: '', company: '', street1: ''
 
 function validate(f, country) {
   const e = {};
+  if (!f.firstName.trim()) e.firstName = 'Enter your first name';
+  if (!f.lastName.trim()) e.lastName = 'Enter your last name';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = 'Enter a valid email address';
-  if (!f.firstName.trim()) e.firstName = 'Enter a first name';
-  if (!f.lastName.trim()) e.lastName = 'Enter a last name';
-  if (!f.street1.trim()) e.street1 = 'Enter an address';
-  if (!f.city.trim()) e.city = country === 'AU' ? 'Enter a suburb' : 'Enter a city';
+  if (!/^\+?[0-9 ()-]{6,30}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, '').length < 6) e.phone = 'Enter a valid phone number';
+  if (!f.street1.trim()) e.street1 = 'Enter your address';
+  if (!f.city.trim()) e.city = country === 'AU' ? 'Enter your suburb' : 'Enter your city';
   if (country === 'AU') {
-    if (!f.state) e.state = 'Select a state / territory';
+    if (!f.state) e.state = 'Select a state';
     if (!/^\d{4}$/.test(f.zip.trim())) e.zip = 'Enter a 4-digit postcode';
   } else if (!f.zip.trim()) {
     e.zip = 'Enter a postal code';
   }
-  if (!/^\+?[0-9 ()-]{6,30}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, '').length < 6) e.phone = 'Enter a valid phone number';
   return e;
 }
 
 const inputCls = (err) =>
-  `w-full h-[50px] px-3.5 rounded-lg border bg-white text-[15px] text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-2 ${
-    err ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-slate-300 focus:border-[#0079CE] focus:ring-[#0079CE]/15'
+  `w-full h-[48px] px-4 rounded-xl border bg-white text-[14.5px] text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-2 ${
+    err ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#0079CE] focus:ring-[#0079CE]/15'
   }`;
 
-const Field = ({ label, error, children, className = '' }) => (
-  <label className={`block ${className}`}>
-    <span className="sr-only">{label}</span>
-    {children}
-    {error && <span className="mt-1 flex items-center gap-1 text-[13px] text-red-600"><AlertCircle size={13} />{error}</span>}
-  </label>
-);
+const Err = ({ text }) => (text ? <span className="mt-1 flex items-center gap-1 text-[12.5px] text-red-600"><AlertCircle size={12} />{text}</span> : null);
 
-const Summary = ({ cartItems, subtotal, shipping, total, gst, country }) => (
-  <div>
-    <ul className="space-y-4">
-      {cartItems.map((item) => (
-        <li key={item.cartItemId} className="flex items-center gap-4">
-          <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-lg border border-slate-200 bg-white overflow-hidden flex items-center justify-center">
-              {imageOf(item) ? <img src={imageOf(item)} alt="" className="w-full h-full object-contain" /> : <ShoppingBag size={20} className="text-slate-300" />}
+const Summary = ({ cartItems, subtotal, shipping, total }) => {
+  const count = cartItems.reduce((s, i) => s + (Number(i.quantity) || 0), 0);
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(16,42,92,0.12)]">
+      <h2 className="text-[18px] font-semibold text-[#102a5c]">Order Summary <span className="text-[14px] text-slate-500">({count} item{count === 1 ? '' : 's'})</span></h2>
+      <ul className="mt-4 divide-y divide-slate-100">
+        {cartItems.map((item) => (
+          <li key={item.cartItemId} className="flex items-center gap-4 py-4">
+            <div className="w-14 h-14 shrink-0 rounded-xl border border-slate-200 bg-white overflow-hidden flex items-center justify-center">
+              {imageOf(item) ? <img src={imageOf(item)} alt="" className="w-full h-full object-contain" /> : <ShoppingBag size={18} className="text-slate-300" />}
             </div>
-            <span className="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1.5 rounded-full bg-slate-600 text-white text-[12px] font-semibold flex items-center justify-center">{item.quantity}</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-medium text-slate-900 leading-snug">{item.name}</p>
-            {variantLabel(item) && <p className="text-[13px] text-slate-500">{variantLabel(item)}</p>}
-          </div>
-          <p className="text-[14px] text-slate-900 shrink-0">{aud(num(item.price) * item.quantity)}</p>
-        </li>
-      ))}
-    </ul>
-    <dl className="mt-6 space-y-2.5 text-[14px]">
-      <div className="flex justify-between"><dt className="text-slate-600">Subtotal</dt><dd className="text-slate-900">{aud(subtotal)}</dd></div>
-      <div className="flex justify-between">
-        <dt className="text-slate-600">Shipping</dt>
-        <dd className="text-slate-900">{shipping == null ? <span className="text-slate-500">Enter shipping address</span> : shipping === 0 ? 'Free' : aud(shipping)}</dd>
-      </div>
-      <div className="flex justify-between items-baseline pt-3">
-        <dt className="text-[17px] font-semibold text-slate-900">Total</dt>
-        <dd className="text-[22px] font-semibold text-slate-900"><span className="text-[12px] font-normal text-slate-500 mr-1.5">AUD</span>{aud(total)}</dd>
-      </div>
-      {country === 'AU' && gst > 0 && <p className="text-[13px] text-slate-500">Including {aud(gst)} in GST</p>}
-    </dl>
-  </div>
-);
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-medium text-[#102a5c] leading-snug">{item.name}{variantLabel(item) ? ` — ${variantLabel(item)}` : ''}</p>
+              <p className="text-[13px] text-slate-500">Quantity: {item.quantity}</p>
+            </div>
+            <p className="text-[14px] text-slate-900 shrink-0">{money(num(item.price) * item.quantity)}</p>
+          </li>
+        ))}
+      </ul>
+      <dl className="mt-2 pt-4 border-t border-slate-100 space-y-2.5 text-[14px]">
+        <div className="flex justify-between"><dt className="text-slate-700">Subtotal</dt><dd className="text-slate-900">{money(subtotal)}</dd></div>
+        <div className="flex justify-between"><dt className="text-slate-700">Shipping</dt><dd className="text-slate-900">{shipping === 0 ? 'Free' : money(shipping)}</dd></div>
+        <div className="flex justify-between items-baseline pt-3">
+          <dt className="text-[16px] font-semibold text-[#102a5c]">Total (AUD)</dt>
+          <dd className="text-[22px] font-bold text-[#102a5c]">{money(total)}</dd>
+        </div>
+      </dl>
+      <p className="mt-4 text-[12px] text-slate-500">All prices are in AUD and include GST where applicable.</p>
+    </div>
+  );
+};
 
 const BankCheckout = ({ config }) => {
   const navigate = useNavigate();
@@ -124,7 +116,6 @@ const BankCheckout = ({ config }) => {
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [summaryOpen, setSummaryOpen] = useState(false);
   const [errorTick, setErrorTick] = useState(0);
   const requestId = useRef(newRequestId());
 
@@ -149,7 +140,6 @@ const BankCheckout = ({ config }) => {
     ? (config.shipping.freeThresholdAU > 0 && subtotal >= config.shipping.freeThresholdAU ? 0 : config.shipping.AU)
     : config.shipping.international;
   const total = Math.round((subtotal + shipping) * 100) / 100;
-  const gst = country === 'AU' ? Math.round((total / 11) * 100) / 100 : 0;
 
   const set = (k) => (ev) => {
     const v = ev.target.value;
@@ -208,114 +198,113 @@ const BankCheckout = ({ config }) => {
     }
   };
 
+  const header = (
+    <header className="bg-white border-b border-slate-200">
+      <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+        <Logo />
+        <span className="flex items-center gap-1.5 text-[13.5px] font-medium text-[#102a5c]"><Lock size={15} className="text-[#0079CE]" />Secure Checkout</span>
+      </div>
+    </header>
+  );
+
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-white font-['Poppins','Poppins_Fallback',sans-serif]">
-        <header className="border-b border-slate-200 py-4"><div className="max-w-5xl mx-auto px-5 flex justify-center"><Logo className="h-14" /></div></header>
-        <div className="max-w-md mx-auto px-5 py-20 text-center">
+        {header}
+        <main className="max-w-md mx-auto px-5 py-20 text-center">
           <ShoppingBag size={36} className="mx-auto text-slate-300" />
-          <h1 className="mt-4 text-[22px] font-semibold text-slate-900">Your cart is empty</h1>
-          <Link to="/collections/all" className="mt-6 inline-block bg-[#102a5c] text-white text-[15px] font-semibold px-6 py-3 rounded-lg">Continue shopping</Link>
-        </div>
+          <h1 className="mt-4 text-[24px] font-semibold text-[#102a5c]">Your cart is empty</h1>
+          <Link to="/collections/all" className="mt-6 inline-block bg-gradient-to-r from-[#00ACEE] to-[#0079CD] text-white text-[15px] font-semibold px-6 py-3 rounded-xl">Continue shopping</Link>
+        </main>
       </div>
     );
   }
 
-  const fe = (k) => errors[k];
-  const fieldProps = (k) => ({ value: form[k], onChange: set(k), className: inputCls(fe(k)), 'data-field-error': fe(k) ? 'true' : undefined });
+  const fp = (k) => ({ value: form[k], onChange: set(k), className: inputCls(errors[k]), 'data-field-error': errors[k] ? 'true' : undefined });
+  const shippingName = country === 'AU' ? (shipping === 0 ? 'Free shipping' : 'Express shipping') : 'International express shipping';
 
   return (
-    <div className="min-h-screen bg-white font-['Poppins','Poppins_Fallback',sans-serif]">
-      <header className="border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-          <Logo className="h-12 sm:h-14" />
-          <Link to="/collections/all" className="text-[14px] text-[#0079CE] hover:underline">Continue shopping</Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f7f9fc] font-['Poppins','Poppins_Fallback',sans-serif]">
+      {header}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8 lg:items-start">
+        {/* Order summary: right column on desktop, above the form on mobile */}
+        <aside className="mb-6 lg:mb-0 lg:order-2 lg:sticky lg:top-6"><Summary {...{ cartItems, subtotal, shipping, total }} /></aside>
 
-      {/* Mobile: collapsible order summary */}
-      <div className="lg:hidden border-b border-slate-200 bg-slate-50">
-        <button type="button" onClick={() => setSummaryOpen((o) => !o)} className="w-full max-w-xl mx-auto px-5 py-4 flex items-center justify-between text-[14px] text-[#0079CE]">
-          <span className="flex items-center gap-2"><ShoppingBag size={16} />{summaryOpen ? 'Hide' : 'Show'} order summary {summaryOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
-          <span className="text-[17px] font-semibold text-slate-900">{aud(total)}</span>
-        </button>
-        {summaryOpen && <div className="max-w-xl mx-auto px-5 pb-6"><Summary {...{ cartItems, subtotal, shipping, total, gst, country }} /></div>}
-      </div>
-
-      <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_420px]">
-        <form noValidate onSubmit={submit} className="px-5 sm:px-8 lg:pr-12 py-8 lg:py-10 max-w-xl w-full mx-auto lg:mx-0 lg:ml-auto">
-          {/* Contact */}
-          <section>
-            <h2 className="text-[20px] font-semibold text-slate-900 mb-3">Contact</h2>
-            <Field label="Email" error={fe('email')}>
-              <input type="email" autoComplete="email" placeholder="Email" {...fieldProps('email')} />
-            </Field>
-          </section>
-
-          {/* Delivery */}
-          <section className="mt-8">
-            <h2 className="text-[20px] font-semibold text-slate-900 mb-3">Delivery</h2>
-            <div className="space-y-3">
-              <label className="block relative">
-                <span className="absolute left-3.5 top-2 text-[12px] text-slate-500">Country/Region</span>
-                <select value={country} onChange={onCountry} autoComplete="country" className="w-full h-[54px] pt-4 px-3.5 rounded-lg border border-slate-300 bg-white text-[15px] text-slate-900 outline-none focus:border-[#0079CE] focus:ring-2 focus:ring-[#0079CE]/15 appearance-none">
-                  {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
-                </select>
-                <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="First name" error={fe('firstName')}><input autoComplete="given-name" placeholder="First name" {...fieldProps('firstName')} /></Field>
-                <Field label="Last name" error={fe('lastName')}><input autoComplete="family-name" placeholder="Last name" {...fieldProps('lastName')} /></Field>
-              </div>
-              <Field label="Company"><input autoComplete="organization" placeholder="Company (optional)" {...fieldProps('company')} /></Field>
-              <Field label="Address" error={fe('street1')}><input autoComplete="address-line1" placeholder="Address" {...fieldProps('street1')} /></Field>
-              <Field label="Apartment"><input autoComplete="address-line2" placeholder="Apartment, suite, etc. (optional)" {...fieldProps('street2')} /></Field>
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-                <Field label={country === 'AU' ? 'Suburb' : 'City'} error={fe('city')}><input autoComplete="address-level2" placeholder={country === 'AU' ? 'Suburb' : 'City'} {...fieldProps('city')} /></Field>
-                {country === 'AU' ? (
-                  <Field label="State/territory" error={fe('state')}>
-                    <div className="relative">
-                      <select autoComplete="address-level1" {...fieldProps('state')} className={`${inputCls(fe('state'))} appearance-none ${form.state ? '' : 'text-slate-400'}`}>
-                        <option value="">State/territory</option>
-                        {AU_STATES.map((st) => <option key={st.code} value={st.code} className="text-slate-900">{st.name}</option>)}
-                      </select>
-                      <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-                    </div>
-                  </Field>
-                ) : (
-                  <Field label="State / region"><input autoComplete="address-level1" placeholder="State / region (optional)" {...fieldProps('state')} /></Field>
-                )}
-                <Field label="Postcode" error={fe('zip')}><input autoComplete="postal-code" inputMode={country === 'AU' ? 'numeric' : 'text'} placeholder={country === 'AU' ? 'Postcode' : 'Postal code'} {...fieldProps('zip')} /></Field>
-              </div>
-              <Field label="Phone" error={fe('phone')}><input type="tel" autoComplete="tel" placeholder="Phone" {...fieldProps('phone')} /></Field>
+        <form noValidate onSubmit={submit} className="lg:order-1">
+          <div className="flex gap-3 rounded-2xl border border-[#0079CE]/15 bg-[#0079CE]/[0.06] px-5 py-4">
+            <Info size={22} className="shrink-0 mt-0.5 text-[#0079CE]" />
+            <div className="text-[13.5px] leading-relaxed text-slate-600">
+              <p className="text-[15px] font-semibold text-[#102a5c]">Pay by PayID or bank transfer.</p>
+              <p>Complete your order below and choose how you'd like to pay.</p>
+              <p>Your payment details will be shown on the next page and emailed to you.</p>
+              <p>Your order will be processed once payment is received.</p>
             </div>
-          </section>
+          </div>
 
-          {/* Shipping method */}
-          <section className="mt-8">
-            <h2 className="text-[17px] font-semibold text-slate-900 mb-3">Shipping method</h2>
-            <div className="rounded-lg border border-[#0079CE] bg-[#0079CE]/5 px-4 py-3.5 flex justify-between text-[14px]">
-              <span className="text-slate-900">{country === 'AU' ? (shipping === 0 ? 'Free shipping' : 'Standard shipping') : 'International shipping'}</span>
-              <span className="font-semibold text-slate-900">{shipping === 0 ? 'Free' : aud(shipping)}</span>
+          <h1 className="mt-7 text-[28px] font-semibold text-[#102a5c]">Checkout</h1>
+          <p className="mt-1 text-[14px] text-slate-600">Enter your contact and delivery details, then choose a payment method.</p>
+
+          <h2 className="mt-6 text-[15px] font-semibold text-[#102a5c]">Contact Information</h2>
+          <div className="mt-3 grid gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="block"><span className="sr-only">First name</span><input autoComplete="given-name" placeholder="First name *" {...fp('firstName')} /><Err text={errors.firstName} /></label>
+              <label className="block"><span className="sr-only">Last name</span><input autoComplete="family-name" placeholder="Last name *" {...fp('lastName')} /><Err text={errors.lastName} /></label>
             </div>
-          </section>
+            <label className="block"><span className="sr-only">Email address</span><input type="email" autoComplete="email" placeholder="Email address *" {...fp('email')} /><Err text={errors.email} /></label>
+            <label className="block"><span className="sr-only">Phone number</span><input type="tel" autoComplete="tel" placeholder="Phone number *" {...fp('phone')} /><Err text={errors.phone} /></label>
+          </div>
 
-          {/* Payment */}
-          <section className="mt-8">
-            <h2 className="text-[20px] font-semibold text-slate-900 mb-1">Payment</h2>
-            <p className="text-[13px] text-slate-500 mb-3 flex items-center gap-1.5"><Lock size={13} />Payment details are shown after you complete your order.</p>
+          <h2 className="mt-6 text-[15px] font-semibold text-[#102a5c]">Delivery Address</h2>
+          <div className="mt-3 grid gap-3">
+            <label className="block relative">
+              <span className="sr-only">Country</span>
+              <select value={country} onChange={onCountry} autoComplete="country" className={`${inputCls(false)} appearance-none`}>
+                {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+              </select>
+              <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            </label>
+            <label className="block"><span className="sr-only">Company</span><input autoComplete="organization" placeholder="Company (optional)" {...fp('company')} /></label>
+            <label className="block"><span className="sr-only">Address line 1</span><input autoComplete="address-line1" placeholder="Address line 1 *" {...fp('street1')} /><Err text={errors.street1} /></label>
+            <label className="block"><span className="sr-only">Address line 2</span><input autoComplete="address-line2" placeholder="Address line 2 (optional)" {...fp('street2')} /></label>
+            <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr] gap-3">
+              <label className="block"><span className="sr-only">{country === 'AU' ? 'Suburb' : 'City'}</span><input autoComplete="address-level2" placeholder={country === 'AU' ? 'Suburb *' : 'City *'} {...fp('city')} /><Err text={errors.city} /></label>
+              {country === 'AU' ? (
+                <label className="block relative">
+                  <span className="sr-only">State</span>
+                  <select autoComplete="address-level1" {...fp('state')} className={`${inputCls(errors.state).replace('text-slate-900', form.state ? 'text-slate-900' : 'text-slate-400')} appearance-none`}>
+                    <option value="">State *</option>
+                    {AU_STATES.map((st) => <option key={st.code} value={st.code} className="text-slate-900">{st.name}</option>)}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 top-[23px] -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <Err text={errors.state} />
+                </label>
+              ) : (
+                <label className="block"><span className="sr-only">State / region</span><input autoComplete="address-level1" placeholder="State / region" {...fp('state')} /></label>
+              )}
+              <label className="block"><span className="sr-only">Postcode</span><input autoComplete="postal-code" inputMode={country === 'AU' ? 'numeric' : 'text'} placeholder={country === 'AU' ? 'Postcode *' : 'Postal code *'} {...fp('zip')} /><Err text={errors.zip} /></label>
+            </div>
+          </div>
+
+          <h2 className="mt-6 text-[15px] font-semibold text-[#102a5c]">Shipping Method</h2>
+          <div className="mt-3 rounded-xl border border-[#0079CE]/40 bg-white px-4 py-3.5 flex justify-between text-[14px]">
+            <span className="text-slate-900">{shippingName}</span>
+            <span className="font-semibold text-[#102a5c]">{shipping === 0 ? 'Free' : money(shipping)}</span>
+          </div>
+
+          <h2 className="mt-6 text-[15px] font-semibold text-[#102a5c]">Payment Method</h2>
+          <div className="mt-3">
             {methods.length === 0 ? (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3.5 text-[14px] text-amber-800">We can't take orders for delivery to this country at the moment. Please contact us.</div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-[14px] text-amber-800">We can't take orders for delivery to this country at the moment. Please contact us.</div>
             ) : (
-              <div className={`rounded-lg border overflow-hidden ${fe('method') ? 'border-red-400' : 'border-slate-300'}`} data-field-error={fe('method') ? 'true' : undefined} role="radiogroup" aria-label="Payment method">
+              <div className={`rounded-xl border bg-white overflow-hidden ${errors.method ? 'border-red-400' : 'border-slate-200'}`} data-field-error={errors.method ? 'true' : undefined} role="radiogroup" aria-label="Payment method">
                 {methods.map((m, i) => {
                   const selected = method === m;
                   return (
-                    <label key={m} className={`block cursor-pointer ${i > 0 ? 'border-t border-slate-200' : ''} ${selected ? 'bg-[#0079CE]/5' : 'bg-white'}`}>
+                    <label key={m} className={`block cursor-pointer transition ${i > 0 ? 'border-t border-slate-100' : ''} ${selected ? 'bg-[#0079CE]/[0.06]' : 'bg-white hover:bg-slate-50'}`}>
                       <div className="flex items-start gap-3 px-4 py-4">
                         <input type="radio" name="paymentMethod" value={m} checked={selected} onChange={() => { setMethod(m); setErrors((e) => ({ ...e, method: undefined })); }} className="mt-1 h-4 w-4 accent-[#0079CE]" />
                         <span>
-                          <span className="block text-[15px] font-medium text-slate-900">{METHOD_COPY[m].title}</span>
+                          <span className="block text-[14.5px] font-medium text-[#102a5c]">{METHOD_COPY[m].title}</span>
                           {selected && <span className="block mt-1.5 text-[13px] leading-relaxed text-slate-600">{METHOD_COPY[m].text}</span>}
                         </span>
                       </div>
@@ -324,24 +313,28 @@ const BankCheckout = ({ config }) => {
                 })}
               </div>
             )}
-            {fe('method') && <p className="mt-1 flex items-center gap-1 text-[13px] text-red-600"><AlertCircle size={13} />{fe('method')}</p>}
-          </section>
+            <Err text={errors.method} />
+          </div>
 
-          {submitError && (
-            <div role="alert" className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700 flex gap-2"><AlertCircle size={18} className="shrink-0 mt-0.5" />{submitError}</div>
-          )}
+          <div className="mt-6 flex gap-3 rounded-2xl border border-[#00ADEE]/20 bg-[#00ADEE]/[0.07] px-5 py-4">
+            <FileText size={22} className="shrink-0 mt-0.5 text-[#0079CE]" />
+            <div className="text-[13.5px] leading-relaxed text-slate-600">
+              <p className="font-semibold text-[#102a5c]">No payment is taken on this page.</p>
+              <p>After clicking Complete order, your PayID or bank transfer details will be shown on the next page and emailed to you.</p>
+            </div>
+          </div>
 
-          <button type="submit" disabled={submitting || methods.length === 0} className="mt-6 w-full h-[56px] rounded-lg bg-[#102a5c] hover:bg-[#0d2255] disabled:opacity-60 disabled:cursor-not-allowed text-white text-[17px] font-semibold transition flex items-center justify-center gap-2">
+          {submitError && <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700 flex gap-2"><AlertCircle size={18} className="shrink-0 mt-0.5" />{submitError}</div>}
+
+          <button type="submit" disabled={submitting || methods.length === 0} className="mt-5 inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:brightness-105 justify-center gap-2 text-white text-[15px] font-semibold whitespace-nowrap transition-all duration-200 w-full h-[52px] rounded-xl shadow-[0_6px_18px_-6px_rgba(0,121,205,0.55)] disabled:opacity-60 disabled:cursor-not-allowed">
             {submitting ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-label="Placing order" /> : 'Complete order'}
           </button>
-          <p className="mt-4 text-[12px] text-slate-500 text-center">All prices in AUD{country === 'AU' ? ', including GST' : ''}.</p>
+          <p className="mt-3 text-center text-[12.5px] leading-relaxed text-slate-500">
+            By completing your order, you confirm that the order details above are correct.<br />
+            Your order will be processed once payment has been received.
+          </p>
         </form>
-
-        {/* Desktop: order summary */}
-        <aside className="hidden lg:block bg-slate-50 border-l border-slate-200 px-10 py-10 min-h-[calc(100vh-81px)]">
-          <div className="sticky top-10"><Summary {...{ cartItems, subtotal, shipping, total, gst, country }} /></div>
-        </aside>
-      </div>
+      </main>
     </div>
   );
 };
