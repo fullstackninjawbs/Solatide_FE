@@ -66,6 +66,10 @@ function getFallbackMessage(context) {
       return 'Unable to update review. Please try again.';
     case 'reviewDelete':
       return 'Unable to delete review. Please try again.';
+    case 'exportOrders':
+      return 'Unable to export orders. Please try again.';
+    case 'exportCustomers':
+      return 'Unable to export customers. Please try again.';
     default:
       return 'An unexpected error occurred. Please try again later.';
   }

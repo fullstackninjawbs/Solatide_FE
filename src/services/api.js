@@ -650,6 +650,13 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  // Same search as the customer list (empty = all customers)
+  exportAdminCustomersCsv: async (search = '') => {
+    return customFetch(`${API_URL}/api/admin/customer/export/csv${search ? `?search=${encodeURIComponent(search)}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
 
   // ─── Shipping Packages ──────────────────────────────────────────────────────
   getShippingPackages: async () => {
