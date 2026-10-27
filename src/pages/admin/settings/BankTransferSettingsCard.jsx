@@ -7,13 +7,14 @@ import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 
 /**
- * Settings → "Bank transfer & PayID checkout": the store's own checkout (no card processor).
- * When on, the storefront checkout shows PayID / Bank Transfer (Australia) or International Bank
- * Transfer, and the payment details below are shown to the customer after they place an order.
+ * Settings → Checkout → "Bank transfer & PayID details": used when the checkout mode is
+ * "Manual Bank Transfer / PayID" (CheckoutModeCard). The storefront checkout then shows PayID /
+ * Bank Transfer (Australia) or International Bank Transfer, and these payment details are shown to
+ * the customer after they place an order.
  */
 
 const EMPTY = {
-  enabled: false, accountName: '', bankName: '', bsb: '', accountNumber: '', payId: '', swiftBic: '',
+  accountName: '', bankName: '', bsb: '', accountNumber: '', payId: '', swiftBic: '',
   shippingFeeAU: '', shippingFeeInternational: '', freeShippingThresholdAU: '', internationalEnabled: true,
   unpaidCancelDays: 3, notifyAdminOnOrder: true,
 };
@@ -36,7 +37,7 @@ const Toggle = ({ label, hint, checked, onChange }) => (
   </label>
 );
 
-const BankTransferSettingsCard = () => {
+const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -52,7 +53,8 @@ const BankTransferSettingsCard = () => {
   }, []);
 
   const s = data?.settings;
-  const live = data?.checkout?.mode === 'bank_transfer';
+  const live = (checkoutMode || data?.checkout?.mode) === 'bank_transfer';
+  const ready = !!data?.ready;
 
   const openModal = () => {
     // Edit what is saved in the database; values that only come from the server .env are shown as hints
@@ -79,6 +81,7 @@ const BankTransferSettingsCard = () => {
         if (body.warning) toast(body.warning, { icon: '⚠️' });
         else toast.success('Bank transfer settings saved');
         setOpen(false);
+        onSaved?.();
       } else if (res.status === 403) {
         toast.error('Only a super admin can change the payment settings.');
       } else {
@@ -95,19 +98,20 @@ const BankTransferSettingsCard = () => {
     ? 'Loading…'
     : live
       ? `On · ${[s.payId && 'PayID', s.bsb && 'Bank Transfer', data.checkout.methods.international.length && 'International'].filter(Boolean).join(', ')}`
-      : s.enabled ? 'Switched on, but payment details are incomplete' : 'Off — checkout uses TagadaPay';
+      : ready
+        ? `Ready · ${[s.payId && 'PayID', s.bsb && 'Bank Transfer', data.checkout.methods.international.length && 'International'].filter(Boolean).join(', ')} — select it in Checkout mode to use it`
+        : 'Add your PayID or bank account details to use this checkout';
 
   return (
-    <div className="mb-8">
-      <h2 className="text-[15px] font-bold text-slate-800 mb-3 ml-1">Checkout</h2>
+    <div>
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <button onClick={openModal} disabled={!s} className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors text-left group">
           <div className="flex items-start gap-4">
             <div className="mt-1 text-slate-500 group-hover:text-slate-700"><Landmark size={20} strokeWidth={1.5} /></div>
             <div>
               <h3 className="text-[14.5px] font-semibold text-slate-800 flex items-center gap-2">
-                Bank transfer & PayID checkout
-                <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${live ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}>{live ? 'Live' : 'Off'}</span>
+                Bank transfer & PayID details
+                <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${live ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ready ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>{live ? 'Live' : ready ? 'Ready' : 'Needs details'}</span>
               </h3>
               <p className="text-[14px] text-slate-500 mt-0.5">{summary}</p>
             </div>
@@ -120,15 +124,11 @@ const BankTransferSettingsCard = () => {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000] p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <div className="flex justify-between items-center mb-5">
-              <h2 className="text-lg font-bold text-gray-900">Bank transfer & PayID checkout</h2>
+              <h2 className="text-lg font-bold text-gray-900">Bank transfer & PayID details</h2>
               <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-700" aria-label="Close"><X className="w-5 h-5" /></button>
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-lg border border-slate-200 p-4">
-                <Toggle label="Use this checkout on the website" hint="Customers place the order on the website and pay by PayID / bank transfer. Turn off to go back to TagadaPay." checked={form.enabled} onChange={set('enabled')} />
-              </div>
-
               <div>
                 <h3 className="text-[14px] font-bold text-slate-800 mb-3">Payment details shown to customers</h3>
                 <p className="text-[12.5px] text-slate-500 mb-3">The account name must match the bank's records exactly (banks warn customers when it does not).</p>
@@ -155,7 +155,7 @@ const BankTransferSettingsCard = () => {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                <Text type="number" label="Cancel unpaid orders after (days)" hint="Releases the reserved stock. Runs only when the cancellation schedule is enabled on the server." value={form.unpaidCancelDays} onChange={set('unpaidCancelDays')} placeholder="3" />
+                <Text type="number" label="Cancel unpaid orders after (days)" hint="Checked every hour. The order is cancelled and its reserved stock released. Shown to customers on the payment page and email." value={form.unpaidCancelDays} onChange={set('unpaidCancelDays')} placeholder="3" />
                 <div className="pt-6">
                   <Toggle label="Email me each new order" hint="Sent to the admin notification address, so you know to check the bank." checked={form.notifyAdminOnOrder} onChange={set('notifyAdminOnOrder')} />
                 </div>
