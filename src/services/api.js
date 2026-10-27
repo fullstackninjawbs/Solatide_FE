@@ -203,9 +203,16 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
-  // Own checkout: bank transfer / PayID (no card processor)
+  // Storefront checkout (mode chosen in Admin → Settings → Checkout mode)
   getCheckoutConfig: async () => {
     return customFetch(`${API_URL}/api/checkout/config`);
+  },
+  submitOrderRequest: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/order-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
   },
   placeBankOrder: async (data) => {
     return customFetch(`${API_URL}/api/checkout/bank-order`, {
@@ -306,6 +313,18 @@ export const apiService = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(data)
+    });
+  },
+  getCheckoutMode: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/checkout-mode`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateCheckoutMode: async (mode) => {
+    return customFetch(`${API_URL}/api/admin/settings/checkout-mode`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ mode })
     });
   },
   getBankTransferSettings: async () => {
@@ -447,6 +466,11 @@ export const apiService = {
   getAdminOrders: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/order${queryString ? `?${queryString}` : ''}`, {
       method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  getAdminOrderRequest: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/requests/${encodeURIComponent(id)}`, {
       headers: getAuthHeaders(),
     });
   },

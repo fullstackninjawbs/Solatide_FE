@@ -7,6 +7,7 @@ import { ArrowLeft, Lock } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
 import useCheckoutConfig from '../../hooks/useCheckoutConfig';
 import BankCheckout from './BankCheckout';
+import OrderRequestCheckout from './OrderRequestCheckout';
 
 const TagadaCheckout = () => {
   const navigate = useNavigate();
@@ -193,14 +194,16 @@ const TagadaCheckout = () => {
 };
 
 /**
- * /checkout — our own bank transfer / PayID checkout when it is enabled (Admin → Settings),
- * otherwise the previous Tagada summary + redirect.
+ * /checkout — the checkout chosen in Admin → Settings → Checkout mode (asked fresh on each visit):
+ * Order Request, Manual Bank Transfer / PayID, or the previous Tagada summary + redirect.
  */
 const Checkout = () => {
   const { config, error } = useCheckoutConfig();
+  if (config?.mode === 'order_request') return <OrderRequestCheckout config={config} />;
   if (config?.mode === 'bank_transfer') return <BankCheckout config={config} />;
-  if (config) return <TagadaCheckout />;
-  if (error) {
+  if (config?.mode === 'tagada') return <TagadaCheckout />;
+  // A load error, or a mode this version of the site does not know: never guess a checkout
+  if (error || config) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', fontFamily: 'Poppins, "Poppins Fallback", sans-serif', padding: 20 }}>
         <div className="text-center max-w-sm">

@@ -183,9 +183,9 @@ const CartDrawer = () => {
                         {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
                         <button
                             onClick={async () => {
-                                // Own checkout (bank transfer / PayID) → our checkout page; otherwise Tagada as before
+                                // Order Request / Bank Transfer (Admin → Settings → Checkout mode) → our checkout page; Tagada as before
                                 const cfg = await loadCheckoutConfig().catch(() => null);
-                                if (!cfg || cfg.mode === 'bank_transfer') {
+                                if (!cfg || cfg.mode !== 'tagada') {
                                     setIsCartOpen(false);
                                     navigate('/checkout');
                                     return;
