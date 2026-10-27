@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, CheckCircle2, ChevronDown, FileText, Info, Lock, ShoppingBag } from 'lucide-react';
 import Logo from '../../components/Logo';
+import DiscountCodeBox from '../../components/checkout/DiscountCodeBox';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
 import { trackEvent, getVisitorContext } from '../../utils/analytics';
@@ -66,7 +67,7 @@ const inputCls = (err) =>
 
 const Err = ({ text }) => (text ? <span className="mt-1 flex items-center gap-1 text-[12.5px] text-red-600"><AlertCircle size={12} />{text}</span> : null);
 
-const Summary = ({ cartItems, subtotal, shipping, total }) => (
+const Summary = ({ cartItems, subtotal, shipping, total, discount, discountBox }) => (
   <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(16,42,92,0.12)]">
     <h2 className="text-[18px] font-semibold text-[#102a5c]">Order Summary <span className="text-[14px] text-slate-500">({cartItems.reduce((s, i) => s + (Number(i.quantity) || 0), 0)} item{cartItems.reduce((s, i) => s + (Number(i.quantity) || 0), 0) === 1 ? '' : 's'})</span></h2>
     <ul className="mt-4 divide-y divide-slate-100">
@@ -83,8 +84,10 @@ const Summary = ({ cartItems, subtotal, shipping, total }) => (
         </li>
       ))}
     </ul>
-    <dl className="mt-2 pt-4 border-t border-slate-100 space-y-2.5 text-[14px]">
+    <div className="mt-2 pt-4 border-t border-slate-100">{discountBox}</div>
+    <dl className="mt-4 space-y-2.5 text-[14px]">
       <div className="flex justify-between"><dt className="text-slate-700">Subtotal</dt><dd className="text-slate-900">{money(subtotal)}</dd></div>
+      {discount && <div className="flex justify-between"><dt className="text-slate-700">Discount <span className="text-slate-500">({discount.code})</span></dt><dd className="text-emerald-700">−{money(discount.amount)}</dd></div>}
       <div className="flex justify-between"><dt className="text-slate-700">Shipping</dt><dd className="text-slate-900">{shipping == null ? 'To be confirmed' : shipping === 0 ? 'Free' : money(shipping)}</dd></div>
       <div className="flex justify-between items-baseline pt-3">
         <dt className="text-[16px] font-semibold text-[#102a5c]">Total (AUD)</dt>
@@ -104,6 +107,7 @@ const OrderRequestCheckout = ({ config }) => {
   const [submitError, setSubmitError] = useState('');
   const [done, setDone] = useState(null); // { requestNumber, email }
   const [errorTick, setErrorTick] = useState(0);
+  const [discount, setDiscount] = useState(null); // { code, amount, label } from the server
   const requestId = useRef(newId());
 
   useEffect(() => {
@@ -119,7 +123,12 @@ const OrderRequestCheckout = ({ config }) => {
 
   const subtotal = Math.round(cartTotalPrice * 100) / 100;
   const shipping = shippingFor(config?.shipping, country, subtotal);
-  const total = Math.round((subtotal + (shipping ?? 0)) * 100) / 100;
+  const total = Math.round((subtotal - (discount?.amount || 0) + (shipping ?? 0)) * 100) / 100;
+  const checkoutItems = cartItems.map((i) => ({
+    productId: i._id || i.product || i.id,
+    variantId: i.selectedVariant?._id || undefined,
+    quantity: Math.min(100, Math.max(1, Math.floor(Number(i.quantity) || 1))),
+  }));
 
   const set = (k) => (ev) => {
     const v = ev.target.value;
@@ -143,13 +152,10 @@ const OrderRequestCheckout = ({ config }) => {
       const visitor = await getVisitorContext().catch(() => undefined);
       const res = await apiService.submitOrderRequest({
         clientRequestId: requestId.current,
-        items: cartItems.map((i) => ({
-          productId: i._id || i.product || i.id,
-          variantId: i.selectedVariant?._id || undefined,
-          quantity: Math.min(100, Math.max(1, Math.floor(Number(i.quantity) || 1))),
-        })),
+        items: checkoutItems,
         customer: { email: form.email, firstName: form.firstName, lastName: form.lastName, phone: form.phone },
         shippingAddress: { street1: form.street1, street2: form.street2, city: form.city, state: form.state, zip: form.zip, country },
+        discountCode: discount?.code || undefined,
         visitor,
       });
       const data = await res.json().catch(() => ({}));
@@ -212,7 +218,7 @@ const OrderRequestCheckout = ({ config }) => {
       {header}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8 lg:items-start">
         {/* Order summary: right column on desktop, above the form on mobile */}
-        <aside className="mb-6 lg:mb-0 lg:order-2 lg:sticky lg:top-6"><Summary {...{ cartItems, subtotal, shipping, total }} /></aside>
+        <aside className="mb-6 lg:mb-0 lg:order-2 lg:sticky lg:top-6"><Summary {...{ cartItems, subtotal, shipping, total, discount }} discountBox={<DiscountCodeBox items={checkoutItems} email={form.email.trim()} applied={discount} onChange={setDiscount} />} /></aside>
 
         <form noValidate onSubmit={submit} className="lg:order-1">
           <div className="flex gap-3 rounded-2xl border border-[#0079CE]/15 bg-[#0079CE]/[0.06] px-5 py-4">

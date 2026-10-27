@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, Tag, Package, Truck, Edit2, Trash2, RefreshCw } from 'lucide-react';
+import { Search, Tag, Edit2, Trash2 } from 'lucide-react';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
 import Pagination from '../../components/Pagination';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
-import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
 import { useConfirm } from '../../components/admin/feedback/ConfirmProvider';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
@@ -19,7 +18,6 @@ const DiscountList = () => {
   const urlQ = searchParams.get('q') || '';
 
   const [discounts, setDiscounts] = useState([]);
-  const [tagadaPortalUrl, setTagadaPortalUrl] = useState('https://app.tagada.io/org/gracie-collins-1779009767064524065/stores/store_6b8fa1a123cf/general/promotions/discounts');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [total, setTotal] = useState(0);
@@ -66,9 +64,6 @@ const DiscountList = () => {
       const data = await res.json();
       if (data.success && data.data) {
         setDiscounts(data.data.discounts);
-        if (data.data.tagadaPortalUrl) {
-          setTagadaPortalUrl(data.data.tagadaPortalUrl);
-        }
         setTotal(data.total ?? data.data.pagination?.total ?? 0);
       } else {
         setError('Failed to fetch discounts.');
@@ -121,41 +116,15 @@ const DiscountList = () => {
     }
   };
 
-  const handleSyncFromTagada = async () => {
-    try {
-      setLoading(true);
-      const res = await apiService.syncAdminDiscountsFromTagada();
-      const data = await res.json();
-      if (data.success) {
-        toast.success(data.message);
-        fetchDiscounts();
-      } else {
-        toast.error(getUserFriendlyErrorMessage(data.message, 'syncDiscounts'));
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error(getUserFriendlyErrorMessage(err, 'syncDiscounts'));
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="space-y-6 text-left font-sans pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-navy">Discounts</h2>
-          <p className="text-slate-500 text-[14px]">Manage your discount codes and automatic discounts.</p>
+          <p className="text-slate-500 text-[14px]">Discount codes customers can use at checkout.</p>
         </div>
         <div className="flex items-center gap-3">
-          <AdminSecondaryButton
-            onClick={handleSyncFromTagada}
-            disabled={loading}
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            Sync from Tagada
-          </AdminSecondaryButton>
-          <AdminPrimaryButton href={tagadaPortalUrl} target="_blank">
+          <AdminPrimaryButton to="/admin/discounts/new">
             Create discount
           </AdminPrimaryButton>
         </div>
@@ -188,8 +157,9 @@ const DiscountList = () => {
             options={[
               { value: 'all', label: 'All Statuses' },
               { value: 'active', label: 'Active' },
-              { value: 'disabled', label: 'Disabled' },
-              { value: 'expired', label: 'Expired' }
+              { value: 'scheduled', label: 'Scheduled' },
+              { value: 'expired', label: 'Expired' },
+              { value: 'disabled', label: 'Disabled' }
             ]}
           />
         </div>
@@ -210,69 +180,71 @@ const DiscountList = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/50 text-slate-450 text-[11px] uppercase font-bold tracking-wider">
-                  <th className="py-4 pl-6 pr-4 min-w-[200px]">Title</th>
+                  <th className="py-4 pl-6 pr-4 min-w-[200px]">Code</th>
                   <th className="py-4 px-4">Status</th>
-                  <th className="py-4 px-4">Method</th>
-                  <th className="py-4 px-4">Eligibility</th>
-                  <th className="py-4 px-4">Type</th>
+                  <th className="py-4 px-4">Rules</th>
+                  <th className="py-4 px-4">Schedule</th>
                   <th className="py-4 px-4 text-center">Used</th>
                   <th className="py-4 pr-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[14px]">
-                {discounts.map((discount) => (
-                  <tr key={discount._id} className="hover:bg-slate-50/60 transition-colors group">
-                    <td className="py-3.5 pl-6 pr-4">
-                      <span className="font-semibold text-slate-800">
-                        {discount.code}
-                      </span>
-                      <div className="text-slate-500 text-[13px] mt-0.5">
-                        {discount.type === 'percent' ? `${discount.value}%` : `$${discount.value}`} off {discount.appliesTo === 'all' ? 'entire order' : discount.appliesTo}
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-semibold tracking-wide ${discount.status === 'active'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : discount.status === 'expired'
-                          ? 'bg-slate-100 text-slate-600'
-                          : 'bg-red-100 text-red-700'
-                        }`}>
-                        {discount.status}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      Code
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        All customers
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <Tag className="w-3.5 h-3.5 text-slate-400" />
-                        Amount off order
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-medium text-slate-700">
-                      {discount.usesSoFar || 0}
-                    </td>
-                    <td className="py-3.5 pr-6 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <a
-                          href={tagadaPortalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
-                          title="Manage store discounts in Tagada"
-                        >
-                          Manage in Tagada
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {discounts.map((discount) => {
+                  const st = discount.displayStatus || discount.status;
+                  const rules = discount.rules || [];
+                  const fmt = (d) => new Date(d).toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+                  return (
+                    <tr key={discount._id} className="hover:bg-slate-50/60 transition-colors group cursor-pointer" onClick={() => navigate(`/admin/discounts/edit/${discount._id}`)}>
+                      <td className="py-3.5 pl-6 pr-4">
+                        <span className="font-semibold text-slate-800">{discount.code}</span>
+                        <div className="text-slate-500 text-[13px] mt-0.5">
+                          {discount.type === 'percent' ? `${discount.value}%` : `A$${Number(discount.value || 0).toFixed(2)}`} off order
+                          {Number(discount.perCustomerLimit) > 0 ? ' · one per customer' : ''}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-semibold tracking-wide capitalize ${st === 'active'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : st === 'scheduled'
+                            ? 'bg-sky-100 text-sky-800'
+                            : st === 'expired'
+                              ? 'bg-slate-100 text-slate-600'
+                              : 'bg-red-100 text-red-700'
+                          }`}>
+                          {st}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600 text-[13px]">
+                        {rules.length === 0 && !(discount.minPurchase > 0) && !(discount.minQuantity > 0) ? 'No conditions' : (
+                          <span>
+                            {rules.map((r) => ({
+                              cart_min_quantity: `Min ${r.quantity} items`,
+                              cart_total_min: `Min A$${r.amount}`,
+                              cart_total_max: `Max A$${r.amount}`,
+                              cart_contains_product: `Contains ${r.products?.length || 0} product(s)`,
+                              excluded_products: `Excludes ${r.products?.length || 0} product(s)`,
+                              max_product_quantity: `Max ${r.quantity} per product`,
+                            }[r.type] || r.type)).concat(discount.minPurchase > 0 ? [`Min A$${discount.minPurchase}`] : [], discount.minQuantity > 0 ? [`Min ${discount.minQuantity} items`] : []).join(discount.ruleMatch === 'any' ? ' or ' : ' · ')}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600 text-[13px] whitespace-nowrap">
+                        {discount.activeFrom || discount.activeTo
+                          ? `${discount.activeFrom ? fmt(discount.activeFrom) : 'Now'} → ${discount.activeTo ? fmt(discount.activeTo) : 'No end'}`
+                          : 'No date limit'}
+                      </td>
+                      <td className="py-3.5 px-4 text-center font-medium text-slate-700 whitespace-nowrap">
+                        {discount.usesSoFar || 0}{Number(discount.maxUses) > 0 ? ` / ${discount.maxUses}` : ''}
+                      </td>
+                      <td className="py-3.5 pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <Link to={`/admin/discounts/edit/${discount._id}`} className="p-2 text-slate-400 hover:text-brand-blue" aria-label={`Edit ${discount.code}`}><Edit2 className="w-4 h-4" /></Link>
+                          <button type="button" onClick={() => handleDelete(discount._id)} className="p-2 text-slate-400 hover:text-red-600" aria-label={`Delete ${discount.code}`}><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, Search, Edit2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown, RefreshCw } from 'lucide-react';
+import { Plus, Search, Edit2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -205,10 +205,6 @@ const ProductList = () => {
         <div className="flex flex-wrap items-center gap-3">
           <AdminSecondaryButton to="/admin/products/import">
             Import
-          </AdminSecondaryButton>
-          <AdminSecondaryButton to="/admin/products/tagada-sync">
-            <RefreshCw className="h-4 w-4 mr-1" />
-            Tagada Sync
           </AdminSecondaryButton>
           <AdminPrimaryButton to="/admin/products/new">
             <Plus className="h-4 w-4" />

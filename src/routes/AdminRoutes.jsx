@@ -11,7 +11,6 @@ const Dashboard = lazyWithRetry(() => import('../pages/admin/Dashboard'));
 const ProductList = lazyWithRetry(() => import('../pages/admin/ProductList'));
 const ProductForm = lazyWithRetry(() => import('../pages/admin/ProductForm'));
 const AdminProductsImportPage = lazyWithRetry(() => import('../pages/admin/AdminProductsImportPage'));
-const TagadaSync = lazyWithRetry(() => import('../pages/admin/products/TagadaSync'));
 const InventoryList = lazyWithRetry(() => import('../pages/admin/products/InventoryList'));
 const BatchList = lazyWithRetry(() => import('../pages/admin/products/BatchList'));
 const BatchForm = lazyWithRetry(() => import('../pages/admin/products/BatchForm'));
@@ -51,7 +50,6 @@ const AdminRoutes = () => (
             <Route path="products/new" element={<ProductForm />} />
             <Route path="products/edit/:id" element={<ProductForm />} />
             <Route path="products/import" element={<AdminProductsImportPage />} />
-            <Route path="products/tagada-sync" element={<TagadaSync />} />
             <Route path="products/inventory" element={<InventoryList />} />
             <Route path="products/collections" element={<CollectionList />} />
             <Route path="products/collections/new" element={<CollectionForm />} />

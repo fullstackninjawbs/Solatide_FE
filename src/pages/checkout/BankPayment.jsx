@@ -230,6 +230,7 @@ const BankPayment = () => {
             </ul>
             <dl className="mt-2 pt-4 border-t border-slate-100 space-y-2.5 text-[14px]">
               <div className="flex justify-between"><dt className="text-slate-700">Subtotal</dt><dd className="text-slate-900">{aud(order.subtotal)}</dd></div>
+              {Number(order.discountAmount) > 0 && <div className="flex justify-between"><dt className="text-slate-700">Discount{order.couponCode ? <span className="text-slate-500"> ({order.couponCode})</span> : ''}</dt><dd className="text-emerald-700">−{aud(order.discountAmount)}</dd></div>}
               <div className="flex justify-between"><dt className="text-slate-700">{order.shippingMethodName || 'Shipping'}</dt><dd className="text-slate-900">{Number(order.shippingAmount) > 0 ? aud(order.shippingAmount) : 'Free'}</dd></div>
               <div className="flex justify-between items-baseline pt-3">
                 <dt className="text-[16px] font-semibold text-[#102a5c]">Total (AUD)</dt>

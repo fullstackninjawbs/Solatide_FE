@@ -76,6 +76,7 @@ const CreateOrder = () => {
   // ── 4. Payment & Order Metadata State ─────────────────────────────────────────
   const [paymentStatus, setPaymentStatus] = useState('paid'); // 'pending' | 'paid'
   const [discountTotal, setDiscountTotal] = useState('0.00');
+  const [couponCode, setCouponCode] = useState(''); // recorded on the order; its use is counted when paid
   const [notes, setNotes] = useState('');
   const [sendEmail, setSendEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -122,8 +123,16 @@ const CreateOrder = () => {
           setCustomShippingMethod(Number(r.shippingAmount) === 0 ? 'Free shipping' : (a.country === 'AU' ? 'Standard shipping' : 'International shipping'));
           setShippingCost(Number(r.shippingAmount).toFixed(2));
         }
+        if (r.discountCode && Number(r.discountAmount) > 0) {
+          setCouponCode(r.discountCode);
+          setDiscountTotal(Number(r.discountAmount).toFixed(2));
+        }
         setPaymentStatus('pending');
-        setNotes([`Created from order request ${r.requestNumber}.`, r.notes ? `Customer note: ${r.notes}` : ''].filter(Boolean).join('\n'));
+        setNotes([
+          `Created from order request ${r.requestNumber}.`,
+          r.discountCode ? `Discount code ${r.discountCode} applied at checkout (−A$${Number(r.discountAmount || 0).toFixed(2)}).` : '',
+          r.notes ? `Customer note: ${r.notes}` : '',
+        ].filter(Boolean).join('\n'));
         // Existing customer with this email → select it (keeps their history together)
         try {
           const cres = await apiService.getAdminCustomers?.(`search=${encodeURIComponent(c.email || '')}&limit=6`);
@@ -356,6 +365,7 @@ const CreateOrder = () => {
         shippingMethod: shippingMethod === 'Custom' ? (customShippingMethod.trim() || 'Custom Shipping') : shippingMethod,
         shippingCost: parsedShipping,
         discountTotal: parsedDiscountTotal,
+        couponCode: couponCode.trim() || undefined,
         notes: notes.trim(),
         paymentStatus,
         sendEmail,
@@ -935,6 +945,18 @@ const CreateOrder = () => {
                   <span className="text-[10px] font-normal text-emerald-600">Collected Manually</span>
                 </button>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Discount code (optional)</label>
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64))}
+                placeholder="e.g. CAMERON30"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm uppercase focus:outline-none focus:border-brand-blue"
+              />
+              <p className="mt-1 text-[11.5px] text-slate-500">Recorded on the order so the code's usage limit counts it. Enter the amount below.</p>
             </div>
 
             <div>

@@ -90,25 +90,6 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
-  // Tagada Sync
-  getTagadaSyncHistory: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync-history`, {
-      method: 'GET',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  getTagadaSyncPreview: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync-preview`, {
-      method: 'GET',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  runTagadaSync: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync`, {
-      method: 'POST',
-      headers: { ...getAuthHeaders() }
-    });
-  },
   saveProduct: async (id, data) => {
     return customFetch(`${API_URL}/api/products${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',
@@ -206,6 +187,14 @@ export const apiService = {
   // Storefront checkout (mode chosen in Admin → Settings → Checkout mode)
   getCheckoutConfig: async () => {
     return customFetch(`${API_URL}/api/checkout/config`);
+  },
+  // Discount code "Apply" on our checkout: { code, items, email? } → { code, amount, label } or a reason
+  previewDiscount: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/discount`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
   },
   submitOrderRequest: async (data) => {
     return customFetch(`${API_URL}/api/checkout/order-request`, {
@@ -595,12 +584,6 @@ export const apiService = {
   },
 
   // ─── Discounts (Admin) ─────────────────────────────────────────────────────────
-  syncAdminDiscountsFromTagada: async () => {
-    return customFetch(`${API_URL}/api/admin/discount/sync-from-tagada`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-    });
-  },
   getAdminDiscounts: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/discount${queryString ? `?${queryString}` : ''}`, {
       method: 'GET',

@@ -60,8 +60,6 @@ function getFallbackMessage(context) {
       return 'Unable to remove the COA document. Please try again.';
     case 'inventoryUpdate':
       return 'Unable to update inventory levels. Please try again.';
-    case 'tagadaSync':
-      return 'Unable to sync products from Tagada. Please try again.';
     case 'discountDelete':
       return 'Unable to delete this discount. Please try again.';
     case 'reviewUpdate':
