@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { apiService } from '../../../services/api';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
+import { canEditPaymentSettings } from '../../../utils/canEditPaymentSettings';
 
 /**
  * Settings → Checkout → "Bank transfer & PayID details": used when the checkout mode is
@@ -14,7 +15,7 @@ import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryBu
  */
 
 const EMPTY = {
-  accountName: '', bankName: '', bsb: '', accountNumber: '', payId: '', swiftBic: '',
+  accountName: '', bankName: '', bsb: '', accountNumber: '', payId: '', swiftBic: '', iban: '', beneficiaryAddress: '',
   shippingFeeAU: '', shippingFeeInternational: '', freeShippingThresholdAU: '', internationalEnabled: true,
   unpaidCancelDays: 3, notifyAdminOnOrder: true,
 };
@@ -22,7 +23,7 @@ const EMPTY = {
 const Text = ({ label, hint, value, onChange, placeholder, type = 'text' }) => (
   <label className="block">
     <span className="block text-[13px] font-medium text-slate-700 mb-1">{label}</span>
-    <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} step={type === 'number' ? '0.01' : undefined} min={type === 'number' ? '0' : undefined} className="w-full h-10 px-3 rounded-lg border border-slate-300 text-[14px] outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15" />
+    <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} step={type === 'number' ? '0.01' : undefined} min={type === 'number' ? '0' : undefined} className="w-full h-10 px-3 rounded-lg border border-slate-300 text-[14px] outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 disabled:bg-slate-50 disabled:text-slate-600" />
     {hint && <span className="block mt-1 text-[12px] text-slate-500">{hint}</span>}
   </label>
 );
@@ -38,6 +39,7 @@ const Toggle = ({ label, hint, checked, onChange }) => (
 );
 
 const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
+  const canEdit = canEditPaymentSettings();
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -128,7 +130,11 @@ const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
               <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-700" aria-label="Close"><X className="w-5 h-5" /></button>
             </div>
 
-            <div className="space-y-6">
+            {!canEdit && (
+              <p className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-800">View only — only a Super Admin can change the payment details.</p>
+            )}
+
+            <fieldset disabled={!canEdit} className="space-y-6">
               <div>
                 <h3 className="text-[14px] font-bold text-slate-800 mb-3">Payment details shown to customers</h3>
                 <p className="text-[12.5px] text-slate-500 mb-3">The account name must match the bank's records exactly (banks warn customers when it does not).</p>
@@ -139,6 +145,8 @@ const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
                   <Text label="Account number" hint={envHint('accountNumber')} value={form.accountNumber} onChange={set('accountNumber')} placeholder="2248 6439" />
                   <Text label="PayID" hint={envHint('payId') || 'Leave empty to hide the PayID option.'} value={form.payId} onChange={set('payId')} placeholder="pay@yourdomain.com" />
                   <Text label="SWIFT / BIC" hint={envHint('swiftBic') || 'Needed for International Bank Transfer.'} value={form.swiftBic} onChange={set('swiftBic')} placeholder="CTBAAU2S" />
+                  <Text label="IBAN (if required)" hint={envHint('iban') || 'International only. Leave empty to hide it.'} value={form.iban} onChange={set('iban')} placeholder="06787322486439" />
+                  <Text label="Beneficiary address" hint={envHint('beneficiaryAddress') || 'International only. Leave empty to hide it.'} value={form.beneficiaryAddress} onChange={set('beneficiaryAddress')} placeholder="Suite 329/98-100 Elizabeth Street, Melbourne VIC 3000, Australia" />
                 </div>
               </div>
 
@@ -160,11 +168,11 @@ const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
                   <Toggle label="Email me each new order" hint="Sent to the admin notification address, so you know to check the bank." checked={form.notifyAdminOnOrder} onChange={set('notifyAdminOnOrder')} />
                 </div>
               </div>
-            </div>
+            </fieldset>
 
             <div className="mt-6 flex justify-end gap-3">
-              <AdminSecondaryButton onClick={() => setOpen(false)}>Cancel</AdminSecondaryButton>
-              <AdminPrimaryButton onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save'}</AdminPrimaryButton>
+              <AdminSecondaryButton onClick={() => setOpen(false)}>{canEdit ? 'Cancel' : 'Close'}</AdminSecondaryButton>
+              {canEdit && <AdminPrimaryButton onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save'}</AdminPrimaryButton>}
             </div>
           </div>
         </div>,

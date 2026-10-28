@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { apiService } from '../../../services/api';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
+import { canEditPaymentSettings } from '../../../utils/canEditPaymentSettings';
 import BankTransferSettingsCard from './BankTransferSettingsCard';
 
 /**
@@ -25,7 +26,7 @@ const LABELS = {
 // TEMPORARY (display only — the server logic is unchanged): hide modes not offered yet, and show
 // modes still being finished as "In progress" (not selectable). Empty these to show them again.
 const HIDDEN_MODES = ['external_processor', 'pay_by_bank'];
-const IN_PROGRESS_MODES = ['bank_transfer'];
+const IN_PROGRESS_MODES = []; // LOCAL TESTING ONLY: restore ['bank_transfer'] before committing
 
 const STATUS_BADGE = {
   in_progress: { text: 'In progress', cls: 'bg-violet-50 text-violet-700 border-violet-200' },
@@ -44,6 +45,7 @@ const CheckoutModeCard = () => {
   const [chosen, setChosen] = useState(null);
   const [confirming, setConfirming] = useState(false);
   const [saving, setSaving] = useState(false);
+  const canEdit = canEditPaymentSettings();
 
   const load = useCallback(() => {
     return apiService.getCheckoutMode()
@@ -109,7 +111,7 @@ const CheckoutModeCard = () => {
             {data.options.filter((o) => !HIDDEN_MODES.includes(o.id)).map((o) => {
               const isLive = data.mode === o.id;
               const inProgress = IN_PROGRESS_MODES.includes(o.id) && !isLive;
-              const selectable = o.status === 'ready' && !inProgress;
+              const selectable = canEdit && o.status === 'ready' && !inProgress;
               const selected = chosen === o.id;
               return (
                 <label key={o.id} className={`flex items-start gap-3 px-5 py-4 transition ${selectable ? 'cursor-pointer hover:bg-slate-50' : 'cursor-not-allowed opacity-70'} ${selected ? 'bg-brand-blue/[0.04]' : ''}`}>
@@ -130,7 +132,7 @@ const CheckoutModeCard = () => {
                     <span className="block text-[13px] text-slate-500 mt-0.5">{o.description}</span>
                     {inProgress
                       ? <span className="block text-[12.5px] text-violet-700 mt-1">Being finished and tested — available soon.</span>
-                      : !selectable && o.hint && <span className="block text-[12.5px] text-amber-700 mt-1">{o.hint}</span>}
+                      : canEdit && !selectable && o.hint && <span className="block text-[12.5px] text-amber-700 mt-1">{o.hint}</span>}
                   </span>
                 </label>
               );
@@ -140,13 +142,19 @@ const CheckoutModeCard = () => {
 
         {data && (
           <div className="px-5 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
-            <p className="text-[12.5px] text-slate-500">Takes effect from the customer's next Check out — no redeploy needed.</p>
-            <AdminPrimaryButton onClick={() => setConfirming(true)} disabled={!changed || saving}>Save</AdminPrimaryButton>
+            {canEdit ? (
+              <>
+                <p className="text-[12.5px] text-slate-500">Takes effect from the customer's next Check out — no redeploy needed.</p>
+                <AdminPrimaryButton onClick={() => setConfirming(true)} disabled={!changed || saving}>Save</AdminPrimaryButton>
+              </>
+            ) : (
+              <p className="text-[12.5px] text-amber-700">View only — only a Super Admin can change the checkout mode.</p>
+            )}
           </div>
         )}
       </div>
 
-      <div className="mt-4 hidden">
+      <div className="mt-4">
         {/* Bank details change whether "Manual Bank Transfer / PayID" can be selected */}
         <BankTransferSettingsCard checkoutMode={data?.mode} onSaved={load} />
       </div>

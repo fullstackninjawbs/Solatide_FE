@@ -16,10 +16,10 @@ const aud = (n) => new Intl.NumberFormat('en-AU', { style: 'currency', currency:
 const CARD = 'bg-white rounded-2xl border border-slate-200 shadow-[0_4px_20px_-10px_rgba(16,42,92,0.12)]';
 const BTN = 'inline-block bg-gradient-to-r from-[#00ACEE] to-[#0079CD] hover:brightness-105 text-white text-[15px] font-semibold px-7 py-3 rounded-xl shadow-[0_6px_18px_-6px_rgba(0,121,205,0.55)] transition';
 
-// What goes on the clipboard: digits only for BSB / account number, plain number for the amount
+// What goes on the clipboard: no spaces for BSB / account number / IBAN, plain number for the amount
 const copyValue = (field, order) => {
   if (field.key === 'amount') return Number(order.grandTotal || 0).toFixed(2);
-  if (field.key === 'bsb' || field.key === 'accountNumber') return field.value.replace(/\s+/g, '');
+  if (field.key === 'bsb' || field.key === 'accountNumber' || field.key === 'iban') return field.value.replace(/\s+/g, '');
   return field.value;
 };
 
@@ -177,11 +177,18 @@ const BankPayment = () => {
                 </div>
               </div>
 
+              {/* Pay within N days (same text as the email) */}
+              {order.paymentDueNotice && (
+                <p className="mt-5 flex gap-2.5 rounded-2xl border border-[#0079CE]/15 bg-[#0079CE]/[0.06] px-5 py-3.5 text-[14px] font-semibold leading-relaxed text-[#102a5c]">
+                  <Clock size={18} className="shrink-0 mt-0.5 text-[#0079CE]" />{order.paymentDueNotice}
+                </p>
+              )}
+
               {/* ORDER NUMBER ONLY */}
               <div className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 px-5 sm:px-6 py-5 flex gap-3">
                 <AlertTriangle size={22} className="text-amber-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[14px] font-bold tracking-wide text-amber-900">USE YOUR ORDER NUMBER ONLY AS PAYMENT REFERENCE</p>
+                  <p className="text-[14px] font-bold tracking-wide text-amber-900">IMPORTANT — ORDER NUMBER ONLY</p>
                   {(payment.warning || []).map((t) => <p key={t} className="mt-1.5 text-[14px] leading-relaxed text-amber-900">{t}</p>)}
                 </div>
               </div>
