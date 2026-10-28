@@ -78,6 +78,8 @@ const AppRoutes = () => {
                         <Route path="/" element={<MainLayout />}>
                             <Route index element={<Home />} />
                             {/* Legacy URL Client-Side Redirects (nginx 301s these server-side) */}
+                            <Route path="collections/research-grade-peptides" element={<Navigate to="/collections/all" replace />} />
+                            <Route path="collections/frontpage" element={<Navigate to="/collections/all" replace />} />
                             <Route path="collections/metabolic-research" element={<Navigate to="/collections/glp-1-metabolic-peptides" replace />} />
                             <Route path="collections/repair-recovery-research" element={<Navigate to="/collections/tissue-cellular-research-peptides" replace />} />
                             <Route path="products/retatrutide-10mg-lyophilised-peptide" element={<Navigate to="/products/retatrutide-10mg" replace />} />
