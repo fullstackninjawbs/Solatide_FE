@@ -227,7 +227,7 @@ const BankCheckout = ({ config }) => {
   }
 
   const fp = (k) => ({ value: form[k], onChange: set(k), className: inputCls(errors[k]), 'data-field-error': errors[k] ? 'true' : undefined });
-  const shippingName = country === 'AU' ? (shipping === 0 ? 'Free shipping' : 'Express shipping') : 'International express shipping';
+  const shippingName = country === 'AU' ? 'Australia Post Express Shipping' : 'Australia Post International Express';
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] font-['Poppins','Poppins_Fallback',sans-serif]">

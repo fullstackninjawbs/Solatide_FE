@@ -120,7 +120,7 @@ const CreateOrder = () => {
         })));
         if (r.shippingAmount != null) {
           setShippingMethod('Custom');
-          setCustomShippingMethod(Number(r.shippingAmount) === 0 ? 'Free shipping' : (a.country === 'AU' ? 'Express shipping' : 'International express shipping'));
+          setCustomShippingMethod(a.country === 'AU' ? 'Australia Post Express Shipping' : 'Australia Post International Express');
           setShippingCost(Number(r.shippingAmount).toFixed(2));
         }
         if (r.discountCode && Number(r.discountAmount) > 0) {
