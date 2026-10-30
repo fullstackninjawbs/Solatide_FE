@@ -40,7 +40,7 @@ const ResearchInsights = () => {
                 <div className="main-container">
                     <h1
                         className="text-[48px] font-semibold font-weight-600 md:text-[46px] text-[#214A9E] leading-tight mb-4 text-center"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Research Insights
                     </h1>
@@ -54,7 +54,7 @@ const ResearchInsights = () => {
                 <div className="main-container">
                     <h2
                         className="text-[24px] font-weight-600 font-semibold text-[#214A9E] mb-8"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
                     >
                         Getting Started
                     </h2>

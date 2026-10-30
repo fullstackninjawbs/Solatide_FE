@@ -1,5 +1,5 @@
-import React from 'react';
-import ilsLogo from '../../assets/icons/ils_logo.png';
+import React, { useId } from 'react';
+import ilsLogo from '../../assets/icons/ils_logo.webp';
 
 const FreedomLogo = () => (
     <div className="flex flex-col items-center justify-center shrink-0 h-[100px]">
@@ -14,15 +14,18 @@ const FreedomLogo = () => (
     </div>
 );
 
-const MetrixLogo = () => (
+// Logos are rendered several times (marquee), so SVG ids must be unique per instance (useId).
+const MetrixLogo = () => {
+    const gradientId = `rainbow-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+    return (
     <div className="flex flex-col items-center justify-center shrink-0 h-[100px]">
         <span className="text-[16px] font-extrabold text-[#1f2937] leading-none mb-1">Verified by</span>
         <div className="flex items-center gap-1.5">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="24" height="24" rx="6" fill="url(#rainbow)" />
+                <rect width="24" height="24" rx="6" fill={`url(#${gradientId})`} />
                 <circle cx="12" cy="12" r="6" fill="white" />
                 <defs>
-                    <linearGradient id="rainbow" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                    <linearGradient id={gradientId} x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
                         <stop stopColor="#FF0000" />
                         <stop offset="0.3" stopColor="#FF7F00" />
                         <stop offset="0.5" stopColor="#FFFF00" />
@@ -36,7 +39,8 @@ const MetrixLogo = () => (
             </span>
         </div>
     </div>
-);
+    );
+};
 
 const TrustpilotLogo = () => (
     <div className="flex items-center gap-2 shrink-0 h-[100px]">
@@ -61,15 +65,17 @@ const IsoLogo = () => (
     </div>
 );
 
-const GmpLogo = () => (
+const GmpLogo = () => {
+    const curveId = `curve-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+    return (
     <div className="flex items-center justify-center shrink-0 h-[100px]">
         <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="48" stroke="#4caf50" strokeWidth="3" fill="white" />
             <circle cx="50" cy="50" r="43" stroke="#4caf50" strokeWidth="1" fill="white" strokeDasharray="2 2" />
             <circle cx="50" cy="50" r="35" stroke="#4caf50" strokeWidth="2" fill="none" />
-            <path id="curve" d="M 15 50 A 35 35 0 1 1 85 50 A 35 35 0 1 1 15 50" fill="transparent" />
+            <path id={curveId} d="M 15 50 A 35 35 0 1 1 85 50 A 35 35 0 1 1 15 50" fill="transparent" />
             <text width="100" className="text-[8px] font-bold fill-[#4caf50] tracking-widest">
-                <textPath href="#curve" startOffset="50%" textAnchor="middle">
+                <textPath href={`#${curveId}`} startOffset="50%" textAnchor="middle">
                     GOOD MANUFACTURING PRACTICE
                 </textPath>
             </text>
@@ -77,7 +83,8 @@ const GmpLogo = () => (
             <text x="50" y="65" className="text-[8px] font-bold fill-[#4caf50]" textAnchor="middle">CERTIFIED</text>
         </svg>
     </div>
-);
+    );
+};
 
 const JanoshikLogo = () => (
     <div className="flex flex-col items-center justify-center shrink-0 h-[100px]">
@@ -97,7 +104,7 @@ const JanoshikLogo = () => (
 
 const IlsLogo = () => (
     <div className="flex items-center justify-center shrink-0 h-[100px]">
-        <img src={ilsLogo} alt="ILS Laboratories" className="h-[72px] w-auto object-contain" />
+        <img src={ilsLogo} alt="ILS Laboratories" width={108} height={72} loading="lazy" decoding="async" className="h-[72px] w-auto object-contain" />
     </div>
 );
 

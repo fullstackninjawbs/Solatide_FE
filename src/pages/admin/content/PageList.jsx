@@ -1,56 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Plus, Search, Edit2, Trash2, Eye, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { Plus, Search, Edit2, Archive, Eye, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
+import Pagination from '../../../components/Pagination';
 
 const PageList = () => {
+  // Page, page size, search and status live in the URL (same pattern as admin Orders)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '25', 10);
+  const urlQ = searchParams.get('q') || '';
+  const statusFilter = searchParams.get('status') || 'all';
+
   const [pages, setPages] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  
+  const [searchTerm, setSearchTerm] = useState(urlQ);
+  const debounceRef = useRef(null);
+
   const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
-
+  // useToast() returns a new object on every provider render; keep it out of effect deps
+  const toastRef = useRef(toast);
   useEffect(() => {
-    fetchPages();
-  }, [statusFilter]);
+    toastRef.current = toast;
+  });
 
-  const fetchPages = async () => {
+  // Sync search input with browser back/forward URL changes
+  const [prevUrlQ, setPrevUrlQ] = useState(urlQ);
+  if (urlQ !== prevUrlQ) {
+    setPrevUrlQ(urlQ);
+    setSearchTerm(urlQ);
+  }
+
+  // Debounce search input into the URL (server-side search)
+  useEffect(() => {
+    if (searchTerm === urlQ) return;
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
+      if (searchTerm.trim()) nextParams.set('q', searchTerm.trim());
+      else nextParams.delete('q');
+      nextParams.set('page', '1');
+      setSearchParams(nextParams);
+    }, 400);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchTerm, urlQ, searchParams, setSearchParams]);
+
+  const fetchPages = useCallback(async () => {
     try {
       setLoading(true);
-      const queryString = statusFilter !== 'all' ? `status=${statusFilter}` : '';
-      const res = await apiService.getAdminPages(queryString);
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', String(limit));
+      if (urlQ) params.set('search', urlQ);
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+      const res = await apiService.getAdminPages(params.toString());
       const data = await res.json();
-      setPages(data);
+      if (!res.ok) throw new Error(data?.message || 'Failed to fetch pages');
+      setPages(data?.data?.pages || []);
+      setTotal(data?.total ?? 0);
     } catch (err) {
-      toast.error('Failed to fetch pages');
+      toastRef.current.error('Failed to fetch pages');
     } finally {
       setLoading(false);
     }
+  }, [page, limit, urlQ, statusFilter]);
+
+  useEffect(() => {
+    fetchPages();
+  }, [fetchPages]);
+
+  const handleStatusChange = (value) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (value === 'all') nextParams.delete('status');
+    else nextParams.set('status', value);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handlePageChange = (newPage, newLimit) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('page', String(newPage));
+    nextParams.set('limit', String(newLimit));
+    setSearchParams(nextParams);
   };
 
   const handleDelete = async (id, title) => {
     const isConfirmed = await confirm({
-      title: 'Delete page?',
-      message: `This will permanently delete '${title}' and remove it from the website. This cannot be undone.`,
-      confirmText: 'Delete page',
-      cancelText: 'Cancel',
-      type: 'danger'
+      title: 'Archive page?',
+      description: `'${title}' will be removed from the website and sitemap. Its content is kept — open it and use Save draft or Publish to restore it.`,
+      confirmLabel: 'Archive page',
+      cancelLabel: 'Cancel',
+      variant: 'danger'
     });
 
     if (isConfirmed) {
       try {
         const res = await apiService.deleteAdminPage(id);
-        if (!res.ok) throw new Error('Failed to delete page');
-        toast.success('Page deleted successfully');
+        if (!res.ok) throw new Error('Failed to archive page');
+        toast.success('Page archived');
         fetchPages();
       } catch (err) {
-        toast.error('Failed to delete page');
+        toast.error('Failed to archive page');
       }
     }
   };
@@ -62,10 +118,6 @@ const PageList = () => {
     toast.success('Page URL copied');
   };
 
-  const filteredPages = pages.filter(page => 
-    page.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    page.slug.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-6 text-left font-sans pb-20">
@@ -96,12 +148,13 @@ const PageList = () => {
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => handleStatusChange(e.target.value)}
           className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-navy focus:border-brand-navy outline-none bg-white min-w-[150px] text-[14px]"
         >
           <option value="all">All Status</option>
           <option value="published">Published</option>
           <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
         </select>
       </div>
 
@@ -128,14 +181,14 @@ const PageList = () => {
                     </div>
                   </td>
                 </tr>
-              ) : filteredPages.length === 0 ? (
+              ) : pages.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="py-12 text-center text-slate-500">
                     No pages found matching your criteria.
                   </td>
                 </tr>
               ) : (
-                filteredPages.map(page => (
+                pages.map(page => (
                   <tr key={page._id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 font-semibold text-slate-800">
                       {page.title}
@@ -147,7 +200,9 @@ const PageList = () => {
                       <span className={`inline-flex items-center px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
                         page.status === 'published' 
                           ? 'bg-green-100 text-green-700'
-                          : 'bg-slate-100 text-slate-500'
+                          : page.status === 'archived'
+                            ? 'bg-amber-50 text-amber-700'
+                            : 'bg-slate-100 text-slate-500'
                       }`}>
                         {page.status}
                       </span>
@@ -185,13 +240,16 @@ const PageList = () => {
                         </>
                       )}
 
-                      <button 
-                        onClick={() => handleDelete(page._id, page.title)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-1"
-                        title="Delete Page"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {page.status !== 'archived' && (
+                        <button
+                          onClick={() => handleDelete(page._id, page.title)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-1"
+                          title="Archive Page"
+                          aria-label={`Archive ${page.title}`}
+                        >
+                          <Archive className="h-4 w-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -199,6 +257,15 @@ const PageList = () => {
             </tbody>
           </table>
         </div>
+
+        {!loading && pages.length > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

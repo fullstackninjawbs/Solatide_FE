@@ -82,7 +82,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A selective inhibitor of NNMT studied in preclinical laboratory models. Relevant to cellular energy expenditure, methyl-group flux and downstream metabolic signalling. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/products/5-amino-1mq-50mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
-                                <Link to="/research-insight/nnmt-article" className=" border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">NNMT Research Article</Link>
+                                <Link to="/pages/research-library" className=" border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">Research Library</Link>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A mitochondrial-derived peptide studied for AMPK activation, metabolic regulation, insulin sensitivity and cellular stress response in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-mots-c" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is MOTS-c?</Link>
-                                <Link to="/products/mots-c-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/mots-c-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -144,7 +144,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tetrapeptide that selectively accumulates in the inner mitochondrial membrane. Studied for cardiolipin binding, ETC stabilisation and cellular energy production in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-ss-31" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is SS-31?</Link>
-                                <Link to="/products/ss-31-elamipretide-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/ss-31-elamipretide-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -190,7 +190,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A C-terminal tripeptide fragment of α-MSH studied for anti-inflammatory signalling, melanocortin receptor interactions and gut epithelial research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-kpv" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is KPV?</Link>
-                                <Link to="/products/kpv-10mg-lyophilised-peptide" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/kpv-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">A tuftsin analogue heptapeptide studied for GABAergic pathway modulation, BDNF interactions, immune-neuro crosstalk and anxiolytic-related signalling in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-selank" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Selank?</Link>
-                                <Link to="/products/selank-semax-20mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/selank-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
 
@@ -216,7 +216,7 @@ const CompoundDatabase = () => {
                             <p className="text-[13.5px] text-slate-700 leading-relaxed mb-4">An ACTH(4-7) analogue heptapeptide studied for BDNF upregulation, dopaminergic modulation, neuroprotective signalling and cognitive pathway research in laboratory models. Independently third-party tested to &gt;99% purity.</p>
                             <div className="flex gap-3">
                                 <Link to="/pages/what-is-semax" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">What is Semax?</Link>
-                                <Link to="/products/selank-semax-20mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
+                                <Link to="/products/selank-10mg" className="border border-[#214A9E] text-[#214A9E] px-5 py-1.5 rounded-full text-[12px] font-semibold hover:bg-[#F0F5FB] transition-colors inline-block bg-white">View Product</Link>
                             </div>
                         </div>
                     </div>
@@ -239,23 +239,23 @@ const CompoundDatabase = () => {
                 <div className="mb-14">
                     <h2 className="text-[18px] font-bold text-[#150F3A] mb-5 border-b border-slate-200 pb-3">Shop by Category</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                        <Link to="/shop?category=glp-1-metabolic-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/glp-1-metabolic-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">GLP-1 & Metabolic</h4>
                             <p className="text-[11px] text-slate-500">Semaglutide, Tirzepatide, Retatrutide & more</p>
                         </Link>
-                        <Link to="/shop?category=tissue-cellular-research-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/tissue-cellular-research-peptides" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Tissue & Cellular</h4>
                             <p className="text-[11px] text-slate-500">BPC-157, TB-500 & repair peptides</p>
                         </Link>
-                        <Link to="/shop?category=dermal-pigmentation-research" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/dermal-pigmentation-research" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Dermal & Pigmentation</h4>
                             <p className="text-[11px] text-slate-500">GHK-Cu & copper peptide complexes</p>
                         </Link>
-                        <Link to="/shop?category=research-solutions" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/research-solutions" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Research Solutions</h4>
                             <p className="text-[11px] text-slate-500">Supporting compounds & tool materials</p>
                         </Link>
-                        <Link to="/shop?category=bundles" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
+                        <Link to="/collections/bundles" className="bg-[#F0F5FB] border border-[#dbe6f5] p-4 rounded-[4px] hover:bg-[#e6effc] transition-colors">
                             <h4 className="text-[#1a4494] font-bold text-[13px] mb-1">Bundles</h4>
                             <p className="text-[11px] text-slate-500">Multi-compound research sets</p>
                         </Link>

@@ -85,7 +85,7 @@ const CurrentBatchCard = ({ batch, product }) => {
     }
 
     return (
-      <div className="flex flex-col gap-3 mb-4 mt-2 font-['Poppins']">
+      <div className="flex flex-col gap-3 mb-4 mt-2 font-['Poppins','Poppins_Fallback',sans-serif]">
 
         {/* Manufacturer QC Card */}
         <div className="border border-[#E7F3EB] rounded-lg bg-[#F8FCF9] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
@@ -125,7 +125,7 @@ const CurrentBatchCard = ({ batch, product }) => {
   }
 
   return (
-    <div className="text-left font-['Poppins']">
+    <div className="text-left font-['Poppins','Poppins_Fallback',sans-serif]">
       <div className="flex items-center gap-1.5 mb-3">
         <span className="text-[13px] font-bold text-slate-800 uppercase tracking-wide">Current Batch</span>
       </div>

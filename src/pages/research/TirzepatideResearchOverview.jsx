@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const TirzepatideResearchOverview = () => {
     return (
@@ -12,6 +13,22 @@ const TirzepatideResearchOverview = () => {
                     content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/tirzepatide-research-overview" />
+                <meta name="robots" content={ROBOTS_INDEX} />
+                <meta property="og:title" content="Tirzepatide Research Overview | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/tirzepatide-research-overview" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Tirzepatide Research Overview | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Tirzepatide dual incretin receptor research guide covering GLP-1 and GIP molecular signalling, receptor crosstalk, and laboratory methodologies."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">
@@ -117,7 +134,7 @@ const TirzepatideResearchOverview = () => {
 <ul>
 <li><Link to="/products/tirzepatide-10mg">Tirzepatide 10mg research peptide</Link></li>
 <li><Link to="/products/tirzepatide-5mg">Tirzepatide 5mg research peptide</Link></li>
-<li><Link to="/collections/metabolic-research">GLP-1 &amp; metabolic research peptides</Link></li>
+<li><Link to="/collections/glp-1-metabolic-peptides">GLP-1 &amp; metabolic research peptides</Link></li>
 <li><Link to="/pages/glp-1-research-overview">GLP-1 research overview</Link></li>
 <li><Link to="/pages/retatrutide-research-overview">Retatrutide research overview</Link></li>
 <li><Link to="/pages/cagrisema-research-overview">CagriSema research overview</Link></li>

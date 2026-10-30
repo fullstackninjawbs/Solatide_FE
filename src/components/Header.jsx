@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ShoppingCart, Search, ChevronDown, ShieldCheck, FileText, BookOpen, Book, FlaskConical, Calculator, HelpCircle, Folder, User, Users, Truck, RotateCcw } from 'lucide-react'
-import ReactCountryFlag from "react-country-flag"
+import CountryFlag from "./CountryFlag"
+import { isPrerendering } from "../utils/routeData"
 import { useCart } from '../context/CartContext'
 import { useCurrency, countriesList } from '../context/CurrencyContext'
 import SearchModal from './SearchModal'
@@ -93,6 +94,8 @@ const Header = () => {
     }, [])
 
     useEffect(() => {
+        // Keep the first announcement while prerendering so the captured HTML matches the first client render.
+        if (isPrerendering()) return undefined
         const interval = setInterval(() => {
             setAnnouncementIndex(prev => (prev === 0 ? 1 : 0))
         }, 10000)
@@ -162,13 +165,12 @@ const Header = () => {
                     : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                     }`}
             >
-
                 <div className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
                     }`}>
                     <div className={`absolute flex items-center justify-center gap-2 transition-all duration-500 ease-in-out ${announcementIndex === 0 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                         <span className="tracking-wide">Australian owned & operated</span>
                         <span className="flex items-center justify-center overflow-hidden rounded-[2px]" style={{ width: '20px', height: '14px' }}>
-                            <ReactCountryFlag countryCode="AU" svg style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
+                            <CountryFlag countryCode="AU" alt="Australian flag" style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
                         </span>
                     </div>
 
@@ -286,7 +288,7 @@ const Header = () => {
                                     onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
                                     className="inline-flex items-center gap-1.5 bg-[#1a4494] text-white px-3 py-[7px] rounded-full text-[12px] font-bold cursor-pointer hover:bg-[#1a4494] transition-colors shrink-0 select-none"
                                 >
-                                    <span className="text-sm leading-none"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
+                                    <span className="text-sm leading-none"><CountryFlag countryCode={selectedCountry.countryCode} alt={`${selectedCountry.name || selectedCountry.countryCode} flag`} /></span>
                                     <span>{selectedCountry.code}</span>
                                     <svg className={`fill-white ml-0.5 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
                                         <path d="M5 8l7 8 7-8H5z" />
@@ -324,7 +326,7 @@ const Header = () => {
                                                             : 'hover:bg-white/70 text-[#102a5c]'
                                                             }`}
                                                     >
-                                                        <span className="text-base shrink-0 leading-none"><ReactCountryFlag countryCode={country.countryCode} svg /></span>
+                                                        <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} alt={`${country.name} flag`} /></span>
                                                         <span className="truncate flex-1">{country.name}</span>
                                                         <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                     </button>
@@ -341,6 +343,7 @@ const Header = () => {
 
                             <button
                                 onClick={() => setIsCartOpen(true)}
+                                aria-label="Open cart"
                                 className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] hover:bg-[#d0dfef] transition-colors shrink-0"
                             >
                                 <ShoppingCart className="h-[17px] w-[17px]" />
@@ -363,6 +366,7 @@ const Header = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
+                                aria-label="Open cart"
                                 className="relative h-9 w-9 rounded-full bg-[#e0eaf5] flex items-center justify-center text-[#1a4494] shrink-0"
                             >
                                 <ShoppingCart className="h-[17px] w-[17px]" />
@@ -374,6 +378,8 @@ const Header = () => {
                             </button>
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                                aria-expanded={isMobileMenuOpen}
                                 className="p-2 text-slate-600 hover:text-slate-900 focus:outline-none"
                             >
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -443,7 +449,7 @@ const Header = () => {
                                         className="flex items-center justify-between w-full bg-[#102a5c] text-white px-4 py-3 rounded-xl text-sm font-bold cursor-pointer select-none hover:bg-[#1a4494] transition-colors"
                                     >
                                         <div className="flex items-center gap-2.5">
-                                            <span className="text-base leading-none flex items-center shrink-0"><ReactCountryFlag countryCode={selectedCountry.countryCode} svg /></span>
+                                            <span className="text-base leading-none flex items-center shrink-0"><CountryFlag countryCode={selectedCountry.countryCode} alt={`${selectedCountry.name || selectedCountry.countryCode} flag`} /></span>
                                             <span className="uppercase tracking-wider">{selectedCountry.code}</span>
                                         </div>
                                         <svg className={`fill-white transition-transform duration-200 ${isMobileCountryDropdownOpen ? 'rotate-180' : ''}`} style={{ width: '14px', height: '14px' }} viewBox="0 0 24 24">
@@ -482,7 +488,7 @@ const Header = () => {
                                                                 : 'hover:bg-white/70 text-[#102a5c]'
                                                                 }`}
                                                         >
-                                                            <span className="text-base shrink-0 leading-none"><ReactCountryFlag countryCode={country.countryCode} svg /></span>
+                                                            <span className="text-base shrink-0 leading-none"><CountryFlag countryCode={country.countryCode} alt={`${country.name} flag`} /></span>
                                                             <span className="truncate flex-1">{country.name}</span>
                                                             <span className="text-[11px] font-bold opacity-60 shrink-0">{country.code}</span>
                                                         </button>

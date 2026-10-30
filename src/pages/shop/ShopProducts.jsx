@@ -6,6 +6,25 @@ import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
+import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+
+const COLLECTIONS_KEY = '/api/products/collections';
+const ALL_CATEGORY = { name: 'All Products', slug: 'all-products' };
+
+const buildProductsQuery = (selectedCategory, availability, sortBy) => {
+    let queryStr = `availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`;
+    if (selectedCategory && selectedCategory !== 'all-products') {
+        queryStr += `&collection=${encodeURIComponent(selectedCategory)}`;
+    }
+    return queryStr;
+};
+
+const toCategories = (body) => (body && body.success && Array.isArray(body.data)
+    ? [ALL_CATEGORY, ...body.data.filter(c => c.slug !== 'all' && c.slug !== 'all-products').map(c => ({ name: c.name, slug: c.slug }))]
+    : null);
+const toProductList = (body) => (body && body.success && body.data && Array.isArray(body.data.products)
+    ? body.data.products.map(toCardDto)
+    : null);
 
 const FilterSidebarContent = ({
     selectedCategory,
@@ -159,21 +178,16 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const [categories, setCategories] = useState([
-        { name: 'All Products', slug: 'all-products' }
-    ]);
+    const [categories, setCategories] = useState(() => toCategories(getRouteData(COLLECTIONS_KEY)) || [ALL_CATEGORY]);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await apiService.getPublicCollections();
                 const result = await response.json();
-                if (result.success && result.data) {
-                    const dynamicCats = result.data.map(c => ({ name: c.name, slug: c.slug }));
-                    setCategories([
-                        { name: 'All Products', slug: 'all-products' },
-                        ...dynamicCats
-                    ]);
+                const next = toCategories(result);
+                if (next) {
+                    setCategories(prev => (sameData(prev, next) ? prev : next));
                 }
             } catch (err) {
                 console.error('Error fetching categories:', err);
@@ -182,21 +196,27 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
         fetchCategories();
     }, []);
 
-    const [productsList, setProductsList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const initialKey = `/api/products?${buildProductsQuery(selectedCategory, 'All', 'Best selling')}`;
+    const [productsList, setProductsList] = useState(() => toProductList(getRouteData(initialKey)) || []);
+    // No spinner when the grid was prerendered from embedded data (hydration must match the HTML).
+    const [loading, setLoading] = useState(() => toProductList(getRouteData(initialKey)) === null);
 
     useEffect(() => {
         const fetchProducts = async () => {
-            try {
+            const queryStr = buildProductsQuery(selectedCategory, availability, sortBy);
+            const embedded = toProductList(getRouteData(`/api/products?${queryStr}`));
+            if (embedded) {
+                setProductsList(prev => (sameData(prev, embedded) ? prev : embedded));
+                setLoading(false);
+            } else {
                 setLoading(true);
-                let queryStr = `availability=${encodeURIComponent(availability)}&sort=${encodeURIComponent(sortBy)}`;
-                if (selectedCategory && selectedCategory !== 'all-products') {
-                    queryStr += `&collection=${encodeURIComponent(selectedCategory)}`;
-                }
+            }
+            try {
                 const response = await apiService.getProducts(queryStr);
                 const result = await response.json();
-                if (result.success && result.data && result.data.products) {
-                    setProductsList(result.data.products);
+                const next = toProductList(result);
+                if (next) {
+                    setProductsList(prev => (sameData(prev, next) ? prev : next));
                 }
             } catch (err) {
                 console.error('Error fetching products:', err);
@@ -238,6 +258,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                     </span>
                                     <button
                                         onClick={() => setSelectedCategory('all-products')}
+                                        aria-label="Clear category filter"
                                         className="text-[#00ADEE] hover:text-[#008bc7] transition-colors focus:outline-none"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -303,6 +324,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             <div className="flex bg-white border border-slate-200 rounded-full p-1 shadow-sm shrink-0">
                                 <button
                                     onClick={() => setViewMode('grid')}
+                                    aria-label="Grid view"
+                                    aria-pressed={viewMode === 'grid'}
                                     className={`p-1.5 rounded-full transition-all ${viewMode === 'grid' ? 'bg-[#e0eaf5] text-[#1a4494]' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -311,6 +334,8 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
+                                    aria-label="List view"
+                                    aria-pressed={viewMode === 'list'}
                                     className={`p-1.5 rounded-full transition-all ${viewMode === 'list' ? 'bg-[#e0eaf5] text-[#1a4494]' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -336,7 +361,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                             ? "grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 w-full"
                             : "flex flex-col gap-4 w-full"
                         }>
-                            {productsList.map((product) => (
+                            {productsList.map((product, index) => (
                                 <div
                                     key={product.slug || product._id || product.id}
                                     onClick={(e) => {
@@ -351,8 +376,10 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[14px] sm:rounded-[18px] flex items-center justify-center shrink-0 ${viewMode === 'list' ? 'w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px]' : 'w-full h-[180px] sm:h-[280px] md:h-[300px] lg:h-[320px]'} block`}
                                     >
                                         <img
-                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
-                                            loading="lazy"
+                                            src={optimizeCloudinaryUrl(product.imageUrl || product.image, 600) || productVialImage}
+                                            /* first row is above the fold (and the page's LCP image): don't lazy-load it */
+                                            loading={index < 4 ? 'eager' : 'lazy'}
+                                            fetchPriority={index < 2 ? 'high' : undefined}
                                             decoding="async"
                                             className={product.imageUrl || product.image
                                                 ? `object-contain w-full h-full p-2 sm:p-4 md:p-5 select-none transition-transform duration-500 group-hover:scale-105`
@@ -366,13 +393,13 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                         <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-1.5 z-10">
                                             {product.inStock && product.status !== 'Sale' && (
                                                 <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                                    <span className="inline-block w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></span>
                                                     In Stock
                                                 </span>
                                             )}
                                             {!product.inStock && (
                                                 <span className="inline-flex items-center gap-0.5 sm:gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1 min-[360px]:px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                                    <div className="w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></div>
+                                                    <span className="inline-block w-1 h-1 min-[360px]:w-1.5 min-[360px]:h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 shrink-0"></span>
                                                     Sold Out
                                                 </span>
                                             )}
@@ -405,6 +432,7 @@ const ShopProducts = ({ selectedCategory, setSelectedCategory }) => {
                                                     e.stopPropagation();
                                                     addToCart(product, 1);
                                                 }}
+                                                aria-label={`Add ${product.name} to cart`}
                                                 className={`h-8 w-8 sm:h-11 sm:w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm shrink-0 ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                                             </button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, Search, Edit2, Trash2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown, RefreshCw } from 'lucide-react';
+import { Plus, Search, Edit2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -19,6 +19,8 @@ const ProductList = () => {
   const limit = parseInt(searchParams.get('limit') || '25', 10);
   const selectedStatus = searchParams.get('status') || 'all';
   const selectedCollection = searchParams.get('collection') || '';
+  // Sort order (server-side, so it applies across all pages); '' = default order
+  const selectedSort = searchParams.get('sort') || '';
   const urlQ = searchParams.get('q') || '';
 
   const [products, setProducts] = useState([]);
@@ -72,6 +74,7 @@ const ProductList = () => {
       if (urlQ) params.set('search', urlQ);
       if (selectedStatus && selectedStatus !== 'all') params.set('status', selectedStatus);
       if (selectedCollection) params.set('collection', selectedCollection);
+      if (selectedSort) params.set('sort', selectedSort);
 
       const response = await apiService.getProducts(params.toString());
       const result = await response.json();
@@ -118,7 +121,7 @@ const ProductList = () => {
   useEffect(() => {
     fetchProducts();
     setSelectedProducts([]);
-  }, [page, limit, selectedStatus, selectedCollection, urlQ]);
+  }, [page, limit, selectedStatus, selectedCollection, selectedSort, urlQ]);
 
   const handleStatusChange = (val) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -134,6 +137,14 @@ const ProductList = () => {
     } else {
       nextParams.delete('collection');
     }
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleSortChange = (val) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (val) nextParams.set('sort', val);
+    else nextParams.delete('sort');
     nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
@@ -161,9 +172,9 @@ const ProductList = () => {
 
   const handleDelete = async (id, name) => {
     const isConfirmed = await confirm({
-      title: 'Delete Product?',
-      description: `Are you sure you want to delete the product "${name}"?`,
-      confirmLabel: 'Delete Product',
+      title: 'Archive Product?',
+      description: `"${name}" will be hidden from the store. It is kept (orders and reviews still link to it) and can be restored any time by setting Status to Active in the product form.`,
+      confirmLabel: 'Archive Product',
       variant: 'danger'
     });
 
@@ -172,33 +183,8 @@ const ProductList = () => {
     try {
       const response = await apiService.deleteProduct(id);
       if (response.ok || response.status === 204) {
-        setProducts(products.filter(p => p._id !== id));
-        toast.success(`Product "${name}" deleted successfully.`);
-      } else {
-        const errData = await response.json();
-        toast.error(getUserFriendlyErrorMessage(errData.message, 'productDelete'));
-      }
-    } catch (err) {
-      toast.error(getUserFriendlyErrorMessage(err, 'productDelete'));
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    const isConfirmed = await confirm({
-      title: 'Delete All Products?',
-      description: 'Are you absolutely sure you want to delete ALL products? This action cannot be undone!',
-      confirmLabel: 'Delete All',
-      variant: 'danger',
-      warningText: 'This will permanently remove all products from the database.'
-    });
-
-    if (!isConfirmed) return;
-
-    try {
-      const response = await apiService.deleteAllProducts();
-      if (response.ok || response.status === 200) {
-        setProducts([]);
-        toast.success('All products deleted successfully.');
+        setProducts(products.map(p => (p._id === id ? { ...p, publishStatus: 'archived', published: false } : p)));
+        toast.success(`Product "${name}" archived.`);
       } else {
         const errData = await response.json();
         toast.error(getUserFriendlyErrorMessage(errData.message, 'productDelete'));
@@ -209,7 +195,7 @@ const ProductList = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       {/* Top Header Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -217,21 +203,8 @@ const ProductList = () => {
           <p className="text-slate-500 text-[14px]">Manage your catalog, stock quantities, and research listings.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          {adminUser?.role === 'super_admin' && (
-            <button
-              onClick={handleDeleteAll}
-              className="hidden bg-white border border-red-200 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all flex items-center gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              Delete All
-            </button>
-          )}
           <AdminSecondaryButton to="/admin/products/import">
             Import
-          </AdminSecondaryButton>
-          <AdminSecondaryButton to="/admin/products/tagada-sync">
-            <RefreshCw className="h-4 w-4 mr-1" />
-            Tagada Sync
           </AdminSecondaryButton>
           <AdminPrimaryButton to="/admin/products/new">
             <Plus className="h-4 w-4" />
@@ -285,6 +258,22 @@ const ProductList = () => {
             options={[
               { value: '', label: 'All Collections' },
               ...collectionsList.map(col => ({ value: col._id, label: col.name }))
+            ]}
+          />
+          {/* Sort (values are the server's sort names) */}
+          <CustomDropdown
+            value={selectedSort}
+            onChange={handleSortChange}
+            placeholder="Sort: Default"
+            align="right"
+            options={[
+              { value: '', label: 'Sort: Default' },
+              { value: 'Alphabetically, A-Z', label: 'Name A → Z' },
+              { value: 'Alphabetically, Z-A', label: 'Name Z → A' },
+              { value: 'Date, new to old', label: 'Newest first' },
+              { value: 'Date, old to new', label: 'Oldest first' },
+              { value: 'Price: Low to High', label: 'Price low → high' },
+              { value: 'Price: High to Low', label: 'Price high → low' }
             ]}
           />
         </div>
@@ -395,24 +384,40 @@ const ProductList = () => {
                       </div>
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${(product.publishStatus || (product.published !== false ? 'active' : 'draft')) === 'active'
+                      {(() => {
+                        // Same rule as ProductForm and the storefront: publishStatus wins, legacy `published` is the fallback
+                        const status = ['active', 'draft', 'archived'].includes(product.publishStatus)
+                          ? product.publishStatus
+                          : (product.published === false ? 'draft' : 'active');
+                        return (
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${status === 'active'
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                        : (product.publishStatus === 'archived')
+                        : status === 'archived'
                           ? 'bg-amber-50 text-amber-700 border border-amber-100'
                           : 'bg-slate-100 text-slate-650 border border-slate-200'
                         }`}>
-                        {product.publishStatus === 'archived' ? 'Archived' : product.publishStatus === 'draft' || product.published === false ? 'Draft' : 'Active'}
+                        {status === 'archived' ? 'Archived' : status === 'draft' ? 'Draft' : 'Active'}
                       </span>
+                        );
+                      })()}
                     </td>
                     <td className="py-3.5">
-                      <span className={`font-semibold ${product.stockQuantity <= 0
-                        ? 'text-red-500'
-                        : product.stockQuantity <= product.lowStockThreshold
-                          ? 'text-amber-600'
-                          : 'text-slate-650'
-                        }`}>
-                        {product.stockQuantity !== undefined ? `${product.stockQuantity} in stock` : '0 in stock'}
-                      </span>
+                      {(() => {
+                        const totalStock = (Array.isArray(product.variants) && product.variants.length > 0)
+                          ? product.variants.reduce((sum, v) => sum + (Number(v.stockQty) || 0), 0)
+                          : Number(product.stockQuantity ?? product.stockQty ?? 0);
+                        const isLow = product.lowStockThreshold !== undefined && totalStock <= product.lowStockThreshold;
+                        return (
+                          <span className={`font-semibold ${totalStock <= 0
+                            ? 'text-red-500'
+                            : isLow
+                              ? 'text-amber-600'
+                              : 'text-slate-650'
+                            }`}>
+                            {`${totalStock} in stock`}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="py-3.5 text-slate-600">
                       {product.category?.includes(' > ') ? product.category.split(' > ').pop() : (product.category || 'Uncategorized')}
@@ -434,13 +439,22 @@ const ProductList = () => {
                           >
                             Edit
                           </Link>
-                          {adminUser?.role === 'super_admin' && (
+                          {adminUser?.role === 'super_admin' && product.publishStatus !== 'archived' && (
                             <button
                               onClick={() => handleDelete(product._id, product.name)}
                               className="text-red-500 hover:text-red-700 font-semibold text-[13px] focus:outline-none"
                             >
-                              Delete
+                              Archive
                             </button>
+                          )}
+                          {product.publishStatus === 'archived' && product.slug && ['super_admin', 'admin', 'content_manager'].includes(adminUser?.role) && (
+                            <Link
+                              to={`/admin/content/redirects?new=1&from=${encodeURIComponent(`/products/${product.slug}`)}`}
+                              className="text-slate-500 hover:text-brand-blue font-semibold text-[13px]"
+                              title="Send visitors of this archived product's URL to another page"
+                            >
+                              Redirect URL
+                            </Link>
                           )}
                         </div>
                     </td>

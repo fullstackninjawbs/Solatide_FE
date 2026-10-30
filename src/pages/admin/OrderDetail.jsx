@@ -68,6 +68,8 @@ const OrderDetail = () => {
   const { id } = useParams();
 
   const [order, setOrder] = useState(null);
+  // CRM customer record (matched by email on the server) — for "View order history"
+  const [customerRecordId, setCustomerRecordId] = useState(null);
   const [refunds, setRefunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fulfilling, setFulfilling] = useState(false);
@@ -107,6 +109,7 @@ const OrderDetail = () => {
         const refundsData = await refundsRes.json();
         if (data.success) {
           setOrder(data.data.order);
+          setCustomerRecordId(data.data.customerId || null);
         }
         if (refundsData.success) {
           setRefunds(refundsData.data.refunds);
@@ -143,13 +146,21 @@ const OrderDetail = () => {
   };
 
   const handleMarkPaid = async () => {
+    const bank = { payid: 'PayID', bank_transfer: 'bank transfer', international_bank_transfer: 'international bank transfer' }[order?.paymentMethod];
+    if (bank && !window.confirm(`Confirm you have received $${Number(order.grandTotal ?? order.totalAmount ?? 0).toFixed(2)} AUD by ${bank} with reference ${order.orderNumber}?
+
+The order becomes Paid / Processing and the customer is emailed their order confirmation.`)) return false;
     try {
       setUpdating(true);
       const res = await apiService.updateAdminOrderStatus(id, { paymentStatus: 'paid', status: 'processing' });
       const data = await res.json();
       if (res.ok && data.success) {
         setOrder(data.data.order);
-        toast.success('Order marked as paid');
+        toast.success('Order marked as paid — confirmation email is being sent');
+        // The email is sent in the background; reload shortly so its timeline entry shows
+        setTimeout(() => {
+          apiService.getAdminOrderById(id).then((r) => r.json()).then((d) => { if (d.success && d.data?.order) setOrder(d.data.order); }).catch(() => {});
+        }, 4000);
         return true;
       } else {
         toast.error(data.message || 'Update failed');
@@ -159,6 +170,54 @@ const OrderDetail = () => {
       console.error(err);
       toast.error('Network error');
       return false;
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleSendConfirmation = async () => {
+    const to = order.customer?.email || order.customerEmail;
+    // Already sent? Timeline entry (bank / PayID orders, or this button), or the automatic email when the order was paid
+    const lastSent = (order.comments || []).filter((c) => /^Order confirmation email sent to/.test(c.text || '')).at(-1);
+    const sentWhenPaid = (order.sideEffectStepsDone || []).includes('confirmation_email');
+    const already = lastSent
+      ? `The order confirmation was already sent on ${new Date(lastSent.createdAt).toLocaleString('en-AU', { timeZone: 'Australia/Sydney', dateStyle: 'medium', timeStyle: 'short' })} AEST.\n\n`
+      : sentWhenPaid ? 'The order confirmation was already sent automatically when this order was marked paid.\n\n' : '';
+    if (!window.confirm(`${already}Email the order confirmation for ${order.orderNumber} to ${to}${already ? ' again' : ''}?`)) return;
+    try {
+      setUpdating(true);
+      const res = await apiService.sendAdminOrderConfirmation(id);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success(data.message || 'Order confirmation sent');
+      } else {
+        toast.error(data.message || 'Could not send the email');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  // Bank transfer / PayID: cancel an unpaid order and give its reserved stock back
+  const handleCancelUnpaid = async () => {
+    if (!window.confirm(`Cancel order ${order.orderNumber}? The reserved stock is released. No email is sent to the customer.`)) return;
+    try {
+      setUpdating(true);
+      const res = await apiService.updateAdminOrderStatus(id, { paymentStatus: 'cancelled', status: 'cancelled' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success('Order cancelled, stock released');
+      } else {
+        toast.error(data.message || 'Update failed');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
     } finally {
       setUpdating(false);
     }
@@ -447,6 +506,12 @@ const OrderDetail = () => {
   const isPaid = paymentStatus === 'paid';
   const isUnfulfilled = fulfilStatus === 'unfulfilled';
   const isManual = order.source === 'admin_manual';
+  const isShopifyImport = order.source === 'shopify_import' || (Array.isArray(order.tags) && order.tags.includes('shopify-import'));
+  // Own checkout: bank transfer / PayID — the admin confirms the payment manually
+  const BANK_LABELS = { payid: 'PayID', bank_transfer: 'Bank Transfer', international_bank_transfer: 'International Bank Transfer' };
+  const isBankOrder = Object.prototype.hasOwnProperty.call(BANK_LABELS, order.paymentMethod);
+  const bankLabel = BANK_LABELS[order.paymentMethod];
+  const awaitingPayment = isBankOrder && paymentStatus === 'pending';
 
   // ─── Timeline Events Logic ───────────────────────────────────────────────────
 
@@ -494,7 +559,7 @@ const OrderDetail = () => {
   const isMissingCustomer = customerName === 'No customer name';
 
   addEvent(
-    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on {isManual ? 'Admin' : 'Tagadacrm'}.</span>,
+    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on {isManual ? 'Admin' : isBankOrder ? 'the website' : 'Tagadacrm'}.</span>,
     order.createdAt
   );
 
@@ -515,7 +580,19 @@ const OrderDetail = () => {
   }
 
   // Payment
-  if (isPaid || grandTotal > 0) {
+  if (isBankOrder) {
+    addEvent(
+      <span>Payment instructions ({bankLabel}, reference <span className="font-bold text-brand-navy">{order.orderNumber}</span>) were emailed{customerEmail ? ` to ${customerEmail}` : ''}.</span>,
+      order.createdAt,
+      true
+    );
+    if (isPaid) {
+      addEvent(
+        <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> {bankLabel} payment was confirmed by an admin.</span>,
+        order.paidAt || order.updatedAt
+      );
+    }
+  } else if (isPaid || grandTotal > 0) {
     addEvent(
       <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed {order.source === 'admin_manual' ? 'manually by admin' : 'on Tagada Pay'}.</span>,
       order.createdAt
@@ -575,7 +652,7 @@ const OrderDetail = () => {
 
     uniqueRefunds.forEach(refund => {
       addEvent(
-        <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span>{isManual ? '.' : ' to Tagada Pay.'}</span>,
+        <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span>{isManual ? '.' : isBankOrder ? ' (recorded; paid back from the bank account).' : ' to Tagada Pay.'}</span>,
         refund.createdAt
       );
       if (refund.type === 'full') {
@@ -637,9 +714,9 @@ const OrderDetail = () => {
                       : 'bg-amber-50 text-amber-700 border-amber-200'
                       }`}>
                       {isPaid ? <Check size={14} /> : <Clock size={14} />}
-                      {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
+                      {awaitingPayment ? 'Awaiting payment' : isBankOrder && isPaid ? 'Paid / Processing' : order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Pending'}
                     </span>
-                    {!isPaid && isManual && (
+                    {!isPaid && (isManual || (isBankOrder && ['pending', 'cancelled'].includes(paymentStatus))) && (
                       <button
                         onClick={handleMarkPaid}
                         disabled={updating}
@@ -647,6 +724,26 @@ const OrderDetail = () => {
                       >
                         <Check size={14} />
                         Mark Paid
+                      </button>
+                    )}
+                    {['paid', 'partially_refunded'].includes(paymentStatus) && !isShopifyImport && customerEmail && (
+                      <button
+                        onClick={handleSendConfirmation}
+                        disabled={updating}
+                        title="Email the customer their order confirmation"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
+                      >
+                        <Mail size={14} />
+                        Send confirmation email
+                      </button>
+                    )}
+                    {awaitingPayment && (
+                      <button
+                        onClick={handleCancelUnpaid}
+                        disabled={updating}
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                      >
+                        Cancel & release stock
                       </button>
                     )}
                   </div>
@@ -663,12 +760,12 @@ const OrderDetail = () => {
               </h1>
             </div>
             <p className="text-[14px] text-slate-500 ml-[52px] font-medium">
-              {fmtDate(order.createdAt)} from {isManual ? 'Admin' : 'Tagadacrm'}
+              {fmtDate(order.createdAt)} from {isShopifyImport ? 'Shopify (Historical Import)' : isManual ? 'Admin' : isBankOrder ? `Website checkout · ${bankLabel}` : 'Tagadacrm'}
             </p>
           </div>
 
           <div className=" items-center gap-3 print:hidden flex">
-            {isPaid && (
+            {!isShopifyImport && isPaid && (
               <button
                 onClick={handleRefund}
                 disabled={refunding}
@@ -760,6 +857,20 @@ const OrderDetail = () => {
                             <span className="text-slate-400 italic font-medium">Label Pending (Check Starshipit)</span>
                           )}
                         </p>
+                        {order.shipmentWeight?.totalGrams > 0 && (
+                          <p className="text-[12.5px] text-slate-500 mt-1">
+                            Parcel weight sent: <span className="font-semibold text-slate-700">{order.shipmentWeight.totalGrams} g</span>
+                            {' '}(items {order.shipmentWeight.itemsGrams} g + {order.shipmentWeight.packageName || 'package'} {order.shipmentWeight.packageGrams} g)
+                          </p>
+                        )}
+                        {order.shipmentWeight?.packageName && order.shipmentWeight?.packageReason && (
+                          <p className="text-[12px] text-slate-400 mt-0.5">
+                            Package: {order.shipmentWeight.packageName} — {order.shipmentWeight.packageReason}
+                          </p>
+                        )}
+                        {order.shipmentWeight?.warnings?.length > 0 && (
+                          <p className="text-[12.5px] text-amber-700 mt-1">⚠ {order.shipmentWeight.warnings.join(' · ')}</p>
+                        )}
                       </div>
                       <div className="flex gap-2">
                         {order.labelUrl && (
@@ -767,7 +878,7 @@ const OrderDetail = () => {
                             Download Label
                           </AdminSecondaryButton>
                         )}
-                        <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
+                        <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled || awaitingPayment} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
                           {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
                         </button>
                       </div>
@@ -810,23 +921,25 @@ const OrderDetail = () => {
                         <div className="flex items-center gap-3">
                           <AdminSecondaryButton
                             onClick={handleFulfill}
-                            disabled={fulfilling || !isUnfulfilled}
+                            disabled={fulfilling || !isUnfulfilled || awaitingPayment}
                             className="shadow-sm"
                           >
                             {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
                           </AdminSecondaryButton>
                           <div
                             title={
-                              (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
-                                ? 'Payment is pending from tagada, refresh to update..'
+                              isShopifyImport
+                                ? 'Historical Shopify order: shipping labels cannot be created.'
+                                : (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
+                                ? (isBankOrder ? 'Mark the order as paid first.' : 'Payment is pending from tagada, refresh to update..')
                                 : (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : '')
                             }
-                            className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
+                            className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
                           >
                             <AdminPrimaryButton
                               onClick={handleCreateLabel}
-                              disabled={creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
-                              className={(!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
+                              disabled={isShopifyImport || creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
+                              className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
                             >
                               {creatingLabel ? 'Generating...' : 'Create shipping label'}
                             </AdminPrimaryButton>
@@ -849,7 +962,7 @@ const OrderDetail = () => {
                   <div>
                     <h2 className="text-lg font-bold text-brand-navy">Payment</h2>
                     <p className="text-[13px] text-slate-500 font-medium">
-                      {order.source === 'admin_manual' ? 'Completed via Admin' : 'Completed via TagadaPay'}
+                      {order.source === 'admin_manual' ? 'Completed via Admin' : isBankOrder ? (isPaid ? `${bankLabel} · confirmed manually` : awaitingPayment ? `${bankLabel} · awaiting payment` : bankLabel) : 'Completed via TagadaPay'}
                     </p>
                   </div>
                 </div>
@@ -892,7 +1005,7 @@ const OrderDetail = () => {
             </div>
 
             {/* Refunds Card */}
-            {order.paymentStatus !== 'pending' && (
+            {order.paymentStatus !== 'pending' && !(isBankOrder && !isPaid && paymentStatus !== 'refunded' && paymentStatus !== 'partially_refunded') && (
               <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden mt-8">
                 <div className="p-7">
                   <div className="flex items-center justify-between mb-6">
@@ -936,7 +1049,7 @@ const OrderDetail = () => {
                     </div>
                   )}
 
-                  {order.refundStatus !== 'refunded' && (
+                  {!isShopifyImport && order.refundStatus !== 'refunded' && (
                     <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
                       <AdminPrimaryButton
                         onClick={() => {
@@ -947,6 +1060,13 @@ const OrderDetail = () => {
                       >
                         Refund Full Amount
                       </AdminPrimaryButton>
+                    </div>
+                  )}
+                  {isShopifyImport && (
+                    <div className="pt-4 border-t border-slate-100">
+                      <p className="text-[12.5px] text-slate-400 italic">
+                        Historical Shopify imported order — refunds are managed in the original payment system and disabled here.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -1102,17 +1222,37 @@ const OrderDetail = () => {
                   {customerName !== 'No customer name' ? customerName.charAt(0).toUpperCase() : <User size={20} />}
                 </div>
                 <div>
-                  {order.customer?._id ? (
-                    <Link
-                      to={`/admin/customers/${order.customer._id}`}
-                      className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors"
-                    >
-                      {customerName}
-                    </Link>
-                  ) : (
-                    <span className="block text-[15px] font-bold text-brand-navy">{customerName}</span>
-                  )}
-                  <p className="text-[13px] font-medium text-slate-500 mt-0.5">View order history →</p>
+                  {(() => {
+                    // Customer profile in admin (CRM record matched by email), else the orders list
+                    // filtered by this email (e.g. before the order's side effects created the record)
+                    const customerHref = (customerRecordId || order.customer?._id)
+                      ? `/admin/customers/${customerRecordId || order.customer._id}`
+                      : customerEmail ? `/admin/orders?q=${encodeURIComponent(customerEmail)}` : null;
+                    return (
+                      <>
+                        {customerHref ? (
+                          <Link
+                            to={customerHref}
+                            className="block text-[15px] font-bold text-brand-navy hover:text-brand-blue transition-colors"
+                          >
+                            {customerName}
+                          </Link>
+                        ) : (
+                          <span className="block text-[15px] font-bold text-brand-navy">{customerName}</span>
+                        )}
+                        {customerHref ? (
+                          <Link
+                            to={customerHref}
+                            className="inline-block text-[13px] font-medium text-slate-500 hover:text-brand-blue mt-0.5 transition-colors"
+                          >
+                            View order history →
+                          </Link>
+                        ) : (
+                          <p className="text-[13px] font-medium text-slate-400 mt-0.5">No email — order history unavailable</p>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -1459,7 +1599,14 @@ const OrderDetail = () => {
               Refund Full Amount
             </h3>
 
-            {order?.tagadaEnv === 'sandbox' ? (
+            {['payid', 'bank_transfer', 'international_bank_transfer'].includes(order?.paymentMethod) ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                <p className="text-sm font-semibold text-blue-800 mb-1">RECORD A BANK REFUND</p>
+                <p className="text-xs text-blue-700">
+                  This only records the refund on the order. Send the money back to the customer from your bank account yourself. No email is sent to the customer.
+                </p>
+              </div>
+            ) : order?.tagadaEnv === 'sandbox' ? (
               <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
                 <p className="text-sm font-semibold text-orange-800 mb-1 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>

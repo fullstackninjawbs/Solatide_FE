@@ -1,43 +1,16 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../utils/seo';
 
 const seoData = {
   "/": {
     title: "Solatide Biosciences | Research Grade Peptides | COA Verified",
     description: "Solatide Biosciences is a laboratory supply company providing analytical reference standards and chemical compounds for in-vitro research and laboratory analysis. All compounds are independently third-party tested and verified for purity. Not for human or animal consumption, therapeutic, diagnostic, or prophylactic use"
   },
-  "/collections/dermal-pigmentation-research": {
-    title: "Dermal & Pigmentation Research Peptides MT2 GHK-Cu Australia – Solatide Biosciences",
-    description: "Solatide Biosciences dermal and pigmentation research peptides, including MT2 and GHK-Cu. Melanocortin receptor and copper peptide compounds with COA."
-  },
-  "/pages/research-peptides-guide": {
-    title: "Research Peptide Guide | Solatide Biosciences",
-    description: "A plain-language guide to research peptides — covering common categories, laboratory use, handling, quality documentation and research-use terminology. For in-vitro research use only."
-  },
-  "/collections/all": {
-    title: "Research Grade Peptides | Solatide Biosciences",
-    description: "Browse research peptides, analytical compounds and laboratory-use materials with batch documentation, COAs and testing information where available."
-  },
-  "/collections/research-solutions": {
-    title: "Research Solutions | Laboratory Support Materials | Solatide – Solatide Biosciences",
-    description: "Laboratory support materials and sterile solvents for peptide handling, preparation, and controlled in-vitro research workflows. For laboratory use only."
-  },
-  "/pages/research-library": {
-    title: "Research Resource Hub | Solatide Biosciences",
-    description: "A central directory of research resources from Solatide Biosciences — including the Peptide Guide, Compound Index, COA library, concentration calculator and FAQ."
-  },
-  "/pages/research-compound-database": {
-    title: "Compound Index | Solatide Biosciences Research Compounds",
-    description: "Browse Solatide's research compound index by name, category and receptor pathway. Each entry links to product pages, batch documentation and available COA information. For in-vitro research use only."
-  },
   "/pages/faq": {
     title: "FAQs - Research Peptides | Solatide Biosciences",
     description: "Find answers about dispatch, tracking, documentation, support, restocks, and research-use policies at Solatide Biosciences."
-  },
-  "/pages/contact-us": {
-    title: "Contact Solatide Biosciences | Peptide Enquiries Australia",
-    description: "Contact Solatide Biosciences for order support, shipping updates, documentation requests, and general enquiries. Support & dispatch: Melbourne, VIC 3000."
   },
   "/pages/refund-policy": {
     title: "Refund Policy | Solatide Biosciences Australia",
@@ -55,17 +28,9 @@ const seoData = {
     title: "Shipping Policy | Solatide Biosciences Australia",
     description: "Read the Solatide Biosciences Shipping Policy covering order processing, dispatch times, delivery estimates, tracking, customs, and support."
   },
-  "/collections/tissue-cellular-research-peptides": {
-    title: "Tissue & Cellular Research Peptides | BPC-157 TB-500 AU – Solatide Biosciences",
-    description: "Browse tissue and cellular research peptides including BPC-157, TB-500, and combined-pathway compounds for in-vitro laboratory research. COA verified."
-  },
   "/pages/concentration-calculator": {
     title: "Concentration Calculator | Solatide Biosciences",
     description: "Concentration calculator for math conversions and dilution calculations. Educational reference tool for research use only."
-  },
-  "/pages/coa-lab-testing": {
-    title: "Lab Testing & Analytical Verification | Solatide Biosciences",
-    description: "Learn how Solatide Biosciences verifies research compound purity and identity through independent third-party testing, including HPLC-UV and LC-MS analysis."
   },
   "/pages/about": {
     title: "About Solatide Biosciences | Quality Research Peptides",
@@ -74,136 +39,7 @@ const seoData = {
   "/pages/coa": {
     title: "Certificates of Analysis | Solatide Biosciences",
     description: "Access batch-specific certificates of analysis for Solatide Biosciences research peptides. Third-party analytical documentation by product and batch."
-  },
-  "/collections/glp-1-metabolic-peptides": {
-    title: "GLP-1 & Metabolic Research Peptides Australia | Solatide – Solatide Biosciences",
-    description: "Research-grade GLP-1 receptor agonists, dual agonists, triple agonists, and metabolic research compounds. COA-verified. For in-vitro laboratory use only."
-  },
-  "/pages/data-sharing-opt-out": {
-    title: "Your Privacy Choices | Solatide Biosciences",
-    description: "Manage your privacy choices and data sharing preferences for Solatide Biosciences. Control how your information is used."
-  },
-  "/pages/bpc-157-vs-tb-500": {
-    title: "BPC-157 vs TB-500 Comparison | Solatide Biosciences",
-    description: "Compare BPC-157 and TB-500 in laboratory peptide research, including differences in pathway focus, tissue-response models, and migration-related investigation."
-  },
-  "/collections/bundles": {
-    title: "Research Peptide Bundles | Solatide Biosciences",
-    description: "Research peptide bundles with bacteriostatic water for laboratory reconstitution. COA-verified, ≥99% purity. For in-vitro laboratory use only."
-  },
-  "/pages/what-is-retatrutide": {
-    title: "What Is Retatrutide? The Triple Agonist Peptide Explained | Solatide Biosciences",
-    description: "Retatrutide is a triple-agonist peptide that targets GLP-1, GIP and glucagon receptors simultaneously. Learn what makes it different from Semaglutide and Tirzepatide in this research overview."
-  },
-  "/pages/what-is-cjc-1295": {
-    title: "What Is CJC-1295? | Solatide Biosciences Research",
-    description: "A research-use overview of CJC-1295 No DAC — a GHRH analogue studied for growth hormone pulse amplification, GH/IGF-1 axis research and pituitary somatotroph signalling in laboratory models."
-  },
-  "/pages/semaglutide-research-overview": {
-    title: "Semaglutide Research Overview | Solatide Biosciences",
-    description: "A laboratory-focused overview of semaglutide, including GLP-1 receptor selectivity, incretin pathway research, and comparative metabolic peptide context."
-  },
-  "/pages/what-is-nad-plus": {
-    title: "What Is NAD+? | Solatide Biosciences Research",
-    description: "A research-use overview of NAD+ (nicotinamide adenine dinucleotide) — a coenzyme studied for cellular energy metabolism, mitochondrial function and sirtuin activation in laboratory models. For in-vitro research use only."
-  },
-  "/pages/what-is-tb500": {
-    title: "What Is TB-500? | Solatide Biosciences",
-    description: "Learn what TB-500 is in the context of laboratory peptide research, including cellular migration, actin-associated processes, and recovery-pathway investigation."
-  },
-  "/pages/retatrutide-research-overview": {
-    title: "Retatrutide Research Overview | Solatide Biosciences",
-    description: "A laboratory-focused overview of retatrutide, including multi-receptor signalling, GLP-1/GIP/glucagon pathway research, and comparative peptide context."
-  },
-  "/pages/tirzepatide-research-overview": {
-    title: "Tirzepatide Research Overview | Solatide Biosciences",
-    description: "A laboratory-focused overview of tirzepatide, including dual GLP-1/GIP receptor signalling, incretin pathway research, and comparative metabolic peptide context."
-  },
-  "/pages/cagrilintide-research-overview": {
-    title: "Cagrilintide Research Overview | Solatide Biosciences",
-    description: "A research-focused overview of Cagrilintide, a long-acting amylin receptor agonist studied in satiety signalling, gastric emptying, and GLP-1 combination models."
-  },
-  "/pages/what-is-ss-31": {
-    title: "What Is SS-31 (Elamipretide)? | Solatide Biosciences Research",
-    description: "A research-use overview of SS-31 (Elamipretide) — a mitochondria-targeted peptide studied for cardiolipin binding, mitochondrial membrane stabilisation and cellular energy production in laboratory models."
-  },
-  "/pages/what-is-semax": {
-    title: "What Is Semax? | Solatide Biosciences Research",
-    description: "A research-use overview of Semax — a synthetic ACTH analogue heptapeptide studied for BDNF upregulation, neuroprotective signalling, dopaminergic modulation and cognitive pathway research in laboratory models."
-  },
-  "/pages/cagrisema-comparison-guide": {
-    title: "CagriSema Comparison Guide | Semaglutide, Tirzepatide & Retatrutide – Solatide Biosciences",
-    description: "A structured guide to CagriSema comparison pages, linking CagriSema vs Semaglutide, Tirzepatide, and Retatrutide research resources."
-  },
-  "/pages/cagrisema-research-overview": {
-    title: "CagriSema Research Overview | Solatide GLP-1 & Amylin Guide – Solatide Biosciences",
-    description: "A research-focused overview of CagriSema, its dual GLP-1 and amylin receptor framework, role in metabolic research, and comparison to related compounds."
-  },
-  "/pages/what-is-ipamorelin": {
-    title: "What Is Ipamorelin? | Solatide Biosciences Research",
-    description: "A research-use overview of Ipamorelin — a selective GHS-R agonist pentapeptide studied for growth hormone secretagogue signalling, ghrelin receptor research and GH pulse dynamics in laboratory models."
-  },
-  "/pages/what-is-bpc-157": {
-    title: "What Is BPC-157? | Research Peptide Guide | Solatide Biosciences",
-    description: "BPC-157 is a synthetic pentadecapeptide studied in laboratory settings for tissue-response mechanisms, angiogenesis-related signalling, and cellular repair pathways. For in-vitro research use only."
-  },
-  "/pages/what-is-ghk-cu": {
-    title: "What Is GHK-Cu? | Copper Peptide Research | Solatide Biosciences",
-    description: "GHK-Cu is a copper peptide studied in laboratory settings for dermal biology, extracellular matrix remodelling, and collagen synthesis. For in-vitro research use only."
-  },
-  "/pages/what-is-mots-c": {
-    title: "What Is MOTS-c? | Mitochondrial Peptide Research | Solatide Biosciences",
-    description: "MOTS-c is a mitochondria-derived peptide studied for metabolic regulation, cellular energy, and AMPK pathway activation. For in-vitro research use only."
-  },
-  "/pages/what-is-selank": {
-    title: "What Is Selank? | Neuropeptide Research | Solatide Biosciences",
-    description: "Selank is a heptapeptide studied for anxiolytic-like effects, BDNF expression, and immune modulation in laboratory research models. For in-vitro research use only."
-  },
-  "/pages/glp-1-research-overview": {
-    title: "GLP-1 Research Overview | Metabolic Peptide Research | Solatide Biosciences",
-    description: "Overview of GLP-1 receptor agonist research, including semaglutide, tirzepatide, retatrutide, and amylin receptor pathways. For in-vitro laboratory use only."
-  },
-  "/pages/cagrisema-vs-semaglutide": {
-    title: "CagriSema vs Semaglutide | Research Comparison | Solatide Biosciences",
-    description: "Comparing CagriSema (cagrilintide + semaglutide) and semaglutide alone in metabolic receptor research. Dual vs single receptor engagement examined for laboratory research."
-  },
-  "/pages/cagrisema-vs-tirzepatide": {
-    title: "CagriSema vs Tirzepatide | Research Comparison | Solatide Biosciences",
-    description: "Comparing CagriSema dual receptor combination and tirzepatide (GLP-1/GIP dual agonist) in metabolic research. For in-vitro research use only."
-  },
-  "/pages/cagrisema-vs-retatrutide": {
-    title: "CagriSema vs Retatrutide | Research Comparison | Solatide Biosciences",
-    description: "Comparing CagriSema dual receptor combination and retatrutide triple receptor agonist in metabolic research models. For in-vitro research use only."
-  },
-  "/pages/cjc-1295-vs-ipamorelin": {
-    title: "CJC-1295 vs Ipamorelin | GH Secretagogue Research | Solatide Biosciences",
-    description: "Comparing CJC-1295 and Ipamorelin as growth hormone secretagogues in research. Different receptor mechanisms and half-lives examined in laboratory models."
-  },
-  "/pages/cjc-1295-vs-tesamorelin": {
-    title: "CJC-1295 vs Tesamorelin | GHRH Analogue Research | Solatide Biosciences",
-    description: "Comparing CJC-1295 and Tesamorelin as GHRH analogues in research. Different half-lives and research applications examined in laboratory settings."
-  },
-  "/pages/selank-vs-semax": {
-    title: "Selank vs Semax | Neuropeptide Research Comparison | Solatide Biosciences",
-    description: "Comparing Selank and Semax as neuropeptides in laboratory research. Different receptor mechanisms, structures and research applications explored."
-  },
-  "/pages/mots-c-vs-ss-31": {
-    title: "MOTS-c vs SS-31 | Mitochondrial Peptide Research | Solatide Biosciences",
-    description: "Comparing MOTS-c and SS-31 (Elamipretide) as mitochondria-related research peptides. Energy metabolism vs membrane stabilisation approaches in laboratory research."
-  },
-  "/pages/bpc-157-vs-kpv": {
-    title: "BPC-157 vs KPV | Tissue Research Peptide Comparison | Solatide Biosciences",
-    description: "Comparing BPC-157 and KPV as tissue and cellular research peptides in laboratory settings. Mechanism, applications and research context differences."
-  },
-  "/pages/nad-plus-vs-mots-c": {
-    title: "NAD+ vs MOTS-c | Metabolic Research Comparison | Solatide Biosciences",
-    description: "Comparing NAD+ coenzyme and MOTS-c mitochondria-derived peptide in metabolic and mitochondrial research. Different mechanisms but related research contexts."
-  },
-  "/pages/tesamorelin-vs-ipamorelin": {
-    title: "Tesamorelin vs Ipamorelin | GH Secretagogue Research | Solatide Biosciences",
-    description: "Comparing Tesamorelin (GHRH analogue) and Ipamorelin (ghrelin mimetic) as growth hormone secretagogues in research. Different receptor mechanisms and profiles."
-  },
-
+  }
 };
 
 const StaticSEO = () => {
@@ -215,8 +51,8 @@ const StaticSEO = () => {
     path = path.slice(0, -1);
   }
 
-  // Do not inject static SEO for product detail pages - rely on their own dynamic Helmet
-  if (path.startsWith('/product/') || path.startsWith('/products/')) {
+  // Do not inject static SEO for product or collection pages - rely on their own page components to avoid duplicate canonicals/titles
+  if (path.startsWith('/product/') || path.startsWith('/products/') || path.startsWith('/collections/')) {
     return null;
   }
 
@@ -224,23 +60,24 @@ const StaticSEO = () => {
 
   if (!seo) return null;
 
-  // Prevent canonical from capturing localhost during build-time prerendering
-  const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-    ? 'https://solatidebiosciences.com.au'
-    : window.location.origin;
-
-  const canonicalUrl = `${origin}${path}`;
+  const canonicalUrl = `https://solatidebiosciences.com.au${path === '/' ? '' : path}`;
+  const defaultOgImage = "https://solatidebiosciences.com.au/assets/logo.webp";
 
   return (
     <Helmet>
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
       <link rel="canonical" href={canonicalUrl} />
+      <meta name="robots" content={ROBOTS_INDEX} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content={defaultOgImage} />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:image" content={defaultOgImage} />
     </Helmet>
   );
 };

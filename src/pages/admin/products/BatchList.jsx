@@ -132,9 +132,9 @@ const BatchList = () => {
 
   const handleDelete = async (id) => {
     const isConfirmed = await confirm({
-      title: 'Delete Batch Record?',
-      description: 'Are you sure you want to delete this batch record?',
-      confirmLabel: 'Delete Batch',
+      title: 'Archive Batch Record?',
+      description: 'The batch and its COA will be hidden from the website (status Inactive). The record is kept and can be restored by setting Status to Active in the batch form.',
+      confirmLabel: 'Archive Batch',
       variant: 'danger'
     });
 
@@ -143,9 +143,9 @@ const BatchList = () => {
         const res = await apiService.deleteBatch(id);
         if (res.ok || res.status === 204) {
           fetchBatches();
-          toast.success('Batch record deleted successfully.');
+          toast.success('Batch record archived.');
         } else {
-          toast.error('Failed to delete batch');
+          toast.error('Failed to archive batch');
         }
       } catch (error) {
         toast.error(getUserFriendlyErrorMessage(error, 'batchDelete'));
@@ -343,7 +343,7 @@ const BatchList = () => {
                           onClick={() => handleDelete(batch._id)}
                           className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer"
                         >
-                          Delete
+                          Archive
                         </button>
                       </div>
                     </td>

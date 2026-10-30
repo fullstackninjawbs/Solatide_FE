@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import retatrutideVial from '../../assets/images/retatrutide_vial.webp';
-import { products } from '../../data/products';
+import NotFoundMarker from '../../components/NotFoundMarker';
 import ProductInfoSection from './ProductInfoSection';
 import ProductReviewsSection from './ProductReviewsSection';
 import ProductFaqSection from './ProductFaqSection';
@@ -14,36 +14,102 @@ import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackEvent } from '../../utils/analytics';
 import { getProductImageAltText } from '../../utils/imageHelpers';
+import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
+import { sanitizedMarkup } from '../../utils/sanitize';
+import { ROBOTS_INDEX, ROBOTS_NOINDEX } from '../../utils/seo';
 import { Helmet } from 'react-helmet-async';
+
+// Known research article slugs (/pages/what-is-<slug>) used for "Learn more about X here" links.
+const RESEARCH_ARTICLE_SLUGS = new Set([
+    'retatrutide', 'cjc-1295', 'nad-plus', 'tb500', 'ss-31', 'semax', 'ipamorelin', 'bpc-157',
+    'ghk-cu', 'mots-c', 'selank', 'tesamorelin', 'kpv',
+]);
+const researchHrefFor = (compoundName) => {
+    let slug = compoundName.toLowerCase().replace(/\+/g, '-plus').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (slug === 'tb-500') slug = 'tb500';
+    return RESEARCH_ARTICLE_SLUGS.has(slug) ? `/pages/what-is-${slug}` : '/pages/research-library';
+};
+
+// Product payload embedded by prerender.js for this exact slug (same response the prerender used).
+const getEmbeddedProduct = (id) => {
+    if (!id) return null;
+    const body = getRouteData(`/api/products/${id}`);
+    return body && body.success && body.data && body.data.product ? body.data.product : null;
+};
+
+// Reviews payload embedded by prerender.js (ProductReviewsSection reads the same key).
+const getEmbeddedReviewCount = (product) => {
+    const productId = product?._id || product?.id;
+    if (!productId) return null;
+    const body = getRouteData(reviewsKeyFor(productId));
+    if (!body) return null;
+    return body.success && Array.isArray(body.reviews) ? body.reviews.length : 0;
+};
+
+/**
+ * Variant shown first (and described to Google in the Product schema): the first one that can be
+ * bought — in stock, or continue-selling — else the first. Opening on a sold-out first variant
+ * showed "Sold out" + OutOfStock although another variant was available.
+ */
+const defaultVariant = (p) => {
+    const vs = p?.variants;
+    if (!Array.isArray(vs) || vs.length === 0) return null;
+    const productContinues = p.inventoryPolicy === 'continue' || p.continueSellingWhenOutOfStock === true;
+    const purchasable = (v) =>
+        Number(v?.stockQty ?? 0) > 0 || v?.inventoryPolicy === 'continue' || v?.continueSellingWhenOutOfStock === true || productContinues;
+    return vs.find(purchasable) || vs[0];
+};
 
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const location = useLocation();
+    const [product, setProduct] = useState(() => getEmbeddedProduct(id));
+    const [loading, setLoading] = useState(() => !getEmbeddedProduct(id));
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState(0);
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
-    const [selectedVariant, setSelectedVariant] = useState(null);
-    const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
-    const [fetchedReviewCount, setFetchedReviewCount] = useState(null);
+    // Initialised synchronously so the first client render matches the prerendered DOM.
+    const [selectedVariant, setSelectedVariant] = useState(() => defaultVariant(getEmbeddedProduct(id)));
+    const { checkoutError } = useTagadaCheckout();
+    const [fetchedReviewCount, setFetchedReviewCount] = useState(() => getEmbeddedReviewCount(getEmbeddedProduct(id)));
     const [notFound, setNotFound] = useState(false);
+    // API unreachable and nothing prerendered: show a retry state — never a static/sample catalogue.
+    const [loadFailed, setLoadFailed] = useState(false);
 
-    // Scroll to top on ID change
+    // Scroll to top when navigating between products (not on the initial mount, so hydration doesn't jump).
+    const mountedIdRef = useRef(id);
     useEffect(() => {
+        if (mountedIdRef.current === id) return;
+        mountedIdRef.current = id;
         window.scrollTo(0, 0);
     }, [id]);
 
-    // Remove manual DOM manipulation for SEO, we will use Helmet instead
-    useEffect(() => {
-        if (product && product.variants && product.variants.length > 0) {
-            setSelectedVariant(product.variants[0]);
-        } else {
-            setSelectedVariant(null);
-        }
+    // Reset the variant/gallery selection when the product data actually changes (adjust-state-
+    // during-render pattern; product only changes identity when its data differs).
+    const [variantSource, setVariantSource] = useState(product);
+    if (variantSource !== product) {
+        setVariantSource(product);
+        setSelectedVariant(defaultVariant(product));
         setActiveTab(0);
-    }, [product]);
+    }
+
+    // When the route id changes (client navigation), adopt embedded data or show the loader.
+    const [stateForId, setStateForId] = useState(id);
+    if (stateForId !== id) {
+        setStateForId(id);
+        const embedded = getEmbeddedProduct(id);
+        const matches = !!product && (product.slug === id || String(product._id) === String(id) || String(product.id) === String(id));
+        if (embedded) {
+            setProduct(prev => (sameData(prev, embedded) ? prev : embedded));
+            setLoading(false);
+        } else if (!matches) {
+            setLoading(true);
+        }
+        setNotFound(false);
+        setLoadFailed(false);
+    }
 
     useEffect(() => {
         const controller = new AbortController();
@@ -51,62 +117,59 @@ const ProductDetail = () => {
 
         const saveToRecentlyViewed = (prod) => {
             if (!prod) return;
-            const stored = localStorage.getItem('recentlyViewed');
-            let list = [];
-            if (stored) {
-                try {
-                    list = JSON.parse(stored);
-                } catch (e) {
-                    console.error(e);
+            try {
+                const stored = localStorage.getItem('recentlyViewed');
+                let list = [];
+                if (stored) {
+                    try {
+                        list = JSON.parse(stored);
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
-            }
-            list = list.filter(item => (item._id || item.id) !== (prod._id || prod.id));
-            list.unshift(prod);
-            list = list.slice(0, 4);
-            localStorage.setItem('recentlyViewed', JSON.stringify(list));
+                list = list.filter(item => (item._id || item.id) !== (prod._id || prod.id));
+                list.unshift(prod);
+                list = list.slice(0, 4);
+                localStorage.setItem('recentlyViewed', JSON.stringify(list));
+            } catch { /* storage unavailable */ }
         };
+
+        const embedded = getEmbeddedProduct(id);
 
         const fetchProduct = async () => {
             try {
-                setLoading(true);
-                setNotFound(false); // Reset notFound state when URL changes!
                 const response = await apiService.getProductById(id, { signal });
                 const result = await response.json();
-                if (!signal.aborted) {
-                    if (result.success && result.data && result.data.product) {
-                        const fetchedProduct = result.data.product;
+                if (signal.aborted) return;
+                if (response.ok && result.success && result.data && result.data.product) {
+                    const fetchedProduct = stripInternal(result.data.product);
 
-                        // SEO Redirect: If product has a URL handle (slug) and current URL doesn't use it, redirect
-                        if (fetchedProduct.slug && id !== fetchedProduct.slug) {
-                            navigate(`/products/${fetchedProduct.slug}`, { replace: true });
-                            return; // Stop rendering this instance, the route change will re-mount/re-fetch
-                        }
-
-                        setProduct(fetchedProduct);
-                        saveToRecentlyViewed(fetchedProduct);
-                        // Fire product_view analytics event
-                        trackEvent('product_view', {
-                            productId: fetchedProduct._id,
-                            productName: fetchedProduct.name,
-                            path: window.location.pathname
-                        });
-                    } else {
-                        // API returned success:false or no product — this slug doesn't exist
-                        setNotFound(true);
+                    // SEO Redirect: If product has a URL handle (slug) and current URL doesn't use it, redirect
+                    if (fetchedProduct.slug && id !== fetchedProduct.slug) {
+                        navigate(`/products/${fetchedProduct.slug}`, { replace: true });
+                        return;
                     }
+
+                    // Background refresh: only update state when the data actually changed.
+                    setProduct(prev => (sameData(prev, fetchedProduct) ? prev : fetchedProduct));
+                    setNotFound(false);
+                    saveToRecentlyViewed(fetchedProduct);
+                    trackEvent('product_view', {
+                        productId: fetchedProduct._id,
+                        productName: fetchedProduct.name,
+                        path: window.location.pathname
+                    });
+                } else if (!embedded) {
+                    // API returned success:false / 404 — this slug doesn't exist
+                    setNotFound(true);
                 }
             } catch (err) {
-                if (err.name !== 'AbortError') {
-                    // Network/server unreachable — try static fallback only as last resort
-                    const fallback = products.find(p => p.slug === id) || products.find(p => p.id === parseInt(id));
-                    if (fallback) {
-                        setProduct(fallback);
-                        saveToRecentlyViewed(fallback);
-                    } else {
-                        console.warn('Backend unreachable and no static fallback for slug:', id);
-                        setNotFound(true);
-                    }
-                }
+                if (err.name === 'AbortError' || signal.aborted) return;
+                if (embedded) return; // keep the prerendered data on a transient network failure
+                // Backend unreachable and nothing prerendered: no static/sample fallback (it showed stale
+                // or placeholder prices/stock). Show a retry state instead.
+                console.warn('Backend unreachable for product:', id);
+                setLoadFailed(true);
             } finally {
                 if (!signal.aborted) {
                     setLoading(false);
@@ -118,7 +181,7 @@ const ProductDetail = () => {
         return () => {
             controller.abort();
         };
-    }, [id]);
+    }, [id, navigate]);
 
     if (loading) {
         return (
@@ -128,14 +191,38 @@ const ProductDetail = () => {
         );
     }
 
+    if (loadFailed && !product) {
+        return (
+            <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 px-4">
+                <Helmet>
+                    <title>Product temporarily unavailable | Solatide Biosciences</title>
+                    <meta name="robots" content={ROBOTS_NOINDEX} />
+                </Helmet>
+                <div className="max-w-md w-full text-center">
+                    <h1 className="text-[28px] font-bold text-[#150F3A] mb-3">We couldn't load this product</h1>
+                    <p className="text-[14px] text-slate-500 mb-8 leading-relaxed">
+                        Please check your connection and try again.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => window.location.reload()}
+                        className="bg-[#214A9E] text-white px-6 py-3 rounded-full text-[13.5px] font-semibold hover:bg-[#163678] transition-colors"
+                    >
+                        Try again
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     if (notFound) {
         return (
             <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center py-20 px-4">
                 <Helmet>
                     <title>Product Not Found | Solatide Biosciences</title>
-                    <meta name="robots" content="noindex, nofollow" />
-                    <link rel="canonical" href="" />
+                    <meta name="robots" content={ROBOTS_NOINDEX} />
                 </Helmet>
+                <NotFoundMarker />
                 <div className="max-w-md w-full text-center">
                     <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#F0F5FB] flex items-center justify-center">
                         <svg className="w-10 h-10 text-[#214A9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,6 +260,10 @@ const ProductDetail = () => {
     if (!product) {
         return (
             <div className="w-full min-h-screen bg-white flex items-center justify-center py-20 text-slate-500 font-medium">
+                <Helmet>
+                    <title>Product Not Found | Solatide Biosciences</title>
+                    <meta name="robots" content={ROBOTS_NOINDEX} />
+                </Helmet>
                 <p>Product not found</p>
                 <Link to="/collections/all" className="mt-4 text-[#214A9E] hover:underline font-semibold">Back to Shop</Link>
             </div>
@@ -182,10 +273,10 @@ const ProductDetail = () => {
     const dbImages = product.images && product.images.length > 0
         ? product.images.map(img => {
             const isString = typeof img === 'string';
-            const url = optimizeCloudinaryUrl(isString ? img : img.url);
+            const url = optimizeCloudinaryUrl(isString ? img : img.url, 1100);
             return url ? (isString ? { url } : { ...img, url }) : null;
         }).filter(Boolean)
-        : [{ url: optimizeCloudinaryUrl(product.imageUrl || product.image) || retatrutideVial }].filter(img => img.url);
+        : [{ url: optimizeCloudinaryUrl(product.imageUrl || product.image, 1100) || retatrutideVial }].filter(img => img.url);
 
     const coaImages = [
         optimizeCloudinaryUrl(product.coaImage1),
@@ -228,19 +319,47 @@ const ProductDetail = () => {
     const decrementQty = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
 
     const displayPrice = selectedVariant ? formatPrice(selectedVariant.price) : formatPrice(product.price);
-    const isOutOfStock = (() => {
+
+    // Reconciled stock availability for both the purchase UI and Schema.org
+    const isAvailable = (() => {
+        if (!product) return false;
+        if (product.publishStatus && product.publishStatus !== 'active') return false;
+        if (product.published === false) return false;
+
         if (selectedVariant) {
-            const hasStock = (selectedVariant.stockQty ?? 0) > 0;
-            const canContinueSelling = selectedVariant.inventoryPolicy === 'continue' || selectedVariant.continueSellingWhenOutOfStock || product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
-            return !hasStock && !canContinueSelling;
+            const vStock = Number(selectedVariant.stockQty ?? 0);
+            const vCanContinue = 
+                selectedVariant.inventoryPolicy === 'continue' || 
+                selectedVariant.continueSellingWhenOutOfStock === true ||
+                product.inventoryPolicy === 'continue' || 
+                product.continueSellingWhenOutOfStock === true;
+            return vCanContinue || vStock > 0;
         }
-        const hasStock = product.inStock !== false && ((product.stockQuantity ?? 0) > 0 || (product.stockQty ?? 0) > 0);
-        const canContinueSelling = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock;
-        return !hasStock && !canContinueSelling;
+
+        const canContinue = product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true;
+        if (canContinue) return true;
+
+        const rootStock = Number(product.stockQuantity ?? product.stockQty ?? 0);
+        if (rootStock > 0) return true;
+
+        if (Array.isArray(product.variants) && product.variants.length > 0) {
+            return product.variants.some((v) => {
+                const s = Number(v.stockQty ?? 0);
+                const c = v.inventoryPolicy === 'continue' || v.continueSellingWhenOutOfStock === true;
+                return c || s > 0;
+            });
+        }
+
+        // Secondary fallback for missing/null stock counts
+        if (product.stockQuantity === undefined && product.stockQty === undefined) {
+            if (product.status === 'In Stock' || product.status === 'Sale' || product.inStock === true) return true;
+        }
+
+        return false;
     })();
 
+    const isOutOfStock = !isAvailable;
 
-    const location = useLocation();
     const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith('/')
         ? location.pathname.slice(0, -1)
         : location.pathname;
@@ -251,14 +370,127 @@ const ProductDetail = () => {
         targetDesc = `Buy high-purity ${product.name} online from Solatide Biosciences. Verified third-party testing.`;
     }
 
-    const origin = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-        ? 'https://solatidebiosciences.com.au'
-        : window.location.origin;
-    const canonicalUrl = `${origin}${normalizedPath}`;
+    const canonicalUrl = `https://solatidebiosciences.com.au${normalizedPath}`;
 
     const rawDescription = product?.description || product?.summaryHtml || '';
     const hasDescriptionContent = rawDescription.replace(/&nbsp;/g, '').replace(/<[^>]*>/g, '').trim().length > 0 || /<(img|iframe|video|audio)/i.test(rawDescription);
 
+    // Format numeric price cleanly for Google Search Console & Schema.org compliance (e.g. "199.95")
+    const formatNumericPrice = (rawPrice) => {
+        if (rawPrice === null || rawPrice === undefined) return null;
+        let val = typeof rawPrice === 'object' ? (rawPrice.amount || rawPrice.value || 0) : rawPrice;
+        let str = String(val).replace(/[^0-9.]/g, '');
+        const parts = str.split('.');
+        if (parts.length > 2) {
+            str = parts[0] + '.' + parts.slice(1).join('');
+        }
+        const num = parseFloat(str);
+        if (isNaN(num) || num <= 0) return null;
+        return num.toFixed(2);
+    };
+
+    const price = selectedVariant?.price || product?.price || 0;
+
+    const imageUrl = product?.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : 'https://solatidebiosciences.com.au/assets/logo.webp';
+
+    // Schema.org Availability (InStock, BackOrder, OutOfStock) — derived from the SAME isAvailable
+    // result as the Add to cart / Sold Out button, so schema and UI can never disagree.
+    // (Previously a zero-stock, no-backorder product was still marked InStock via its status label.)
+    const schemaAvailability = (() => {
+        if (!product || !isAvailable) return "https://schema.org/OutOfStock";
+        const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+        const stock = selectedVariant
+            ? Number(selectedVariant.stockQty ?? 0)
+            : hasVariants
+                ? product.variants.reduce((sum, v) => sum + Number(v.stockQty ?? 0), 0)
+                : Number(product.stockQuantity ?? product.stockQty ?? 0);
+        if (stock > 0) return "https://schema.org/InStock";
+        // Available with no units on hand → selling via backorder ("continue" policy)
+        const canBackorder =
+            product.inventoryPolicy === 'continue' || product.continueSellingWhenOutOfStock === true ||
+            (selectedVariant ? (selectedVariant.inventoryPolicy === 'continue' || selectedVariant.continueSellingWhenOutOfStock === true)
+                : hasVariants && product.variants.some(v => v.inventoryPolicy === 'continue' || v.continueSellingWhenOutOfStock === true));
+        if (canBackorder) return "https://schema.org/BackOrder";
+        // Available only because stock is untracked (no stock fields at all)
+        return "https://schema.org/InStock";
+    })();
+
+    const schemaPrice = formatNumericPrice(price);
+    const productSchema = product ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": imageUrl,
+        "description": targetDesc,
+        "sku": selectedVariant?.sku || product.sku || product._id || product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Solatide Biosciences"
+        },
+        ...(schemaPrice ? {
+            "offers": {
+                "@type": "Offer",
+                "url": canonicalUrl,
+                "priceCurrency": "AUD",
+                "price": schemaPrice,
+                // No priceValidUntil: prices have no real expiry date (it's optional in schema.org Offer)
+                "itemCondition": "https://schema.org/NewCondition",
+                "availability": schemaAvailability,
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Solatide Biosciences"
+                },
+                // Derived from /pages/refund-policy ("No Returns Policy": all sales final; remedies
+                // only for damaged/incorrect orders). No shippingDetails: the shipping policy page
+                // does not publish rates, so they cannot be stated accurately.
+                "hasMerchantReturnPolicy": {
+                    "@type": "MerchantReturnPolicy",
+                    "applicableCountry": "AU",
+                    "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+                    "merchantReturnLink": "https://solatidebiosciences.com.au/pages/refund-policy"
+                }
+            }
+        } : {})
+    } : null;
+
+    // Compute real approved review rating and review count (no default 5.0 fake fallback)
+    const ratingVal = product?.stats?.averageRating || product?.averageRating || product?.rating || null;
+    const reviewCnt = fetchedReviewCount !== null ? fetchedReviewCount : (product?.stats?.totalReviews || product?.totalReviews || product?.reviewCount || 0);
+
+    if (productSchema && reviewCnt > 0 && ratingVal) {
+        productSchema.aggregateRating = {
+            "@type": "AggregateRating",
+            "ratingValue": Number(ratingVal).toFixed(1),
+            "reviewCount": reviewCnt.toString(),
+            "bestRating": "5",
+            "worstRating": "1"
+        };
+    }
+
+    const breadcrumbSchema = product ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://solatidebiosciences.com.au"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://solatidebiosciences.com.au/collections/all"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product.name,
+                "item": canonicalUrl
+            }
+        ]
+    } : null;
 
     return (
         <div className="w-full bg-white py-12">
@@ -267,16 +499,31 @@ const ProductDetail = () => {
                     <title>{product.seo?.title || `${product.name} | Solatide Biosciences`}</title>
                     <meta name="description" content={targetDesc} />
                     <link rel="canonical" href={canonicalUrl} />
+                    <meta name="robots" content={ROBOTS_INDEX} />
                     <meta property="og:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
                     <meta property="og:description" content={targetDesc} />
                     <meta property="og:url" content={canonicalUrl} />
+                    <meta property="og:type" content="product" />
+                    <meta property="og:image" content={imageUrl} />
+                    <meta name="twitter:card" content="summary_large_image" />
                     <meta name="twitter:title" content={product.seo?.title || `${product.name} | Solatide Biosciences`} />
                     <meta name="twitter:description" content={targetDesc} />
+                    <meta name="twitter:image" content={imageUrl} />
+                    {productSchema && (
+                        <script type="application/ld+json">
+                            {JSON.stringify(productSchema)}
+                        </script>
+                    )}
+                    {breadcrumbSchema && (
+                        <script type="application/ld+json">
+                            {JSON.stringify(breadcrumbSchema)}
+                        </script>
+                    )}
                 </Helmet>
             )}
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumbs */}
-                <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins' }}>
+                <div className="flex items-center gap-2 text-[14px] text-slate-500 mb-10 text-left font-medium" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                     <Link to="/" className="text-[#214A9E] hover:underline">Home</Link>
                     <span>/</span>
                     <Link to="/collections/all" className="text-[#214A9E] hover:underline">Shop</Link>
@@ -347,7 +594,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Right Column: Product Specs */}
-                    <div className="lg:col-span-6 text-left flex flex-col gap-4" style={{ fontFamily: 'Poppins' }}>
+                    <div className="lg:col-span-6 text-left flex flex-col gap-4" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
                         <div>
 
                             {/* Product Title */}
@@ -381,24 +628,23 @@ const ProductDetail = () => {
                                 <div
                                     className="text-[#6A6A6A] text-[15px] leading-relaxed mb-6 product-description-content font-sans [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:mb-1 [&_p]:mb-3"
                                     style={{ fontWeight: 400 }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: rawDescription.replace(
+                                    dangerouslySetInnerHTML={sanitizedMarkup(rawDescription.replace(
                                             // Match "Learn more about <Something> here" or typo "her" - handles &nbsp; and variable whitespace
                                             /Learn\s+more\s+abou?o?t\s+([^<\|]+?)\s*(?:&nbsp;|\s)\s*here?/gi,
                                             (match, compoundName) => {
                                                 // clean name from any weird spaces
                                                 const cleanName = compoundName.replace(/&nbsp;/g, ' ').trim();
-                                                // Pass the compound name to ResearchPage via query string
-                                                return `<span class="text-[#214A9E] cursor-pointer font-medium hover:underline research-link-dynamic" data-href="/ResearchPage?compound=${encodeURIComponent(cleanName.toLowerCase())}">Learn more about ${cleanName} here</span>`;
+                                                // Real link to the matching research article (or the research library)
+                                                return `<a class="text-[#214A9E] cursor-pointer font-medium hover:underline research-link-dynamic" href="${researchHrefFor(cleanName)}">Learn more about ${cleanName} here</a>`;
                                             }
-                                        )
-                                    }}
+                                    ))}
                                     onClick={(e) => {
-                                        if (e.target.classList.contains('research-link-dynamic')) {
+                                        const link = e.target.closest && e.target.closest('a.research-link-dynamic');
+                                        if (link) {
+                                            // Client-side navigation for our generated internal links
                                             e.preventDefault();
-                                            // Also prevent it from bubbling up to any wrapping <a> tags from Shopify
                                             e.stopPropagation();
-                                            const href = e.target.getAttribute('data-href');
+                                            const href = link.getAttribute('href');
                                             if (href) navigate(href);
                                         }
                                     }}

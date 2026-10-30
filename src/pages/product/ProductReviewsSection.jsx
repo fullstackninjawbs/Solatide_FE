@@ -4,60 +4,66 @@ import ReviewList from '../../components/reviews/ReviewList';
 import ReviewFilter from '../../components/reviews/ReviewFilter';
 import ReviewWizard from '../../components/reviews/ReviewWizard';
 import { apiService } from '../../services/api';
+import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
+
+// Reviews embedded by prerender.js for this product (same response the prerender rendered).
+const getEmbeddedReviews = (productId) => {
+    if (!productId) return null;
+    const body = getRouteData(reviewsKeyFor(productId));
+    if (!body) return null;
+    return body.success && Array.isArray(body.reviews) ? body.reviews : [];
+};
 
 const ProductReviewsSection = ({ product, onReviewsFetched }) => {
-    // Initial mock reviews data just in case API fails or is empty
-    const initialReviews = [
-        {
-            id: 1,
-            name: 'Anonymous',
-            role: 'Biotech Researcher',
-            rating: 5,
-            title: 'good Prodects',
-            comment: 'The peptide quality is consistently high, and the detailed batch documentation gives us complete confidence in our research. Solatide Biosciences has become our go-to source.',
-            createdAt: '2026-07-03T12:00:00Z',
-            verified: false
-        },
-        {
-            id: 2,
-            name: 'Michael D',
-            role: 'Biotech Researcher',
-            rating: 5,
-            title: 'Clear and tidy',
-            comment: 'Everything was clear and tidy. Order email, payment email, tracking email.',
-            createdAt: '2026-05-15T12:00:00Z',
-            verified: false
-        }
-    ];
-
-    const [reviews, setReviews] = useState(initialReviews);
+    const initialProductId = product?._id || product?.id;
+    const [reviews, setReviews] = useState(() => getEmbeddedReviews(initialProductId) || []);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(() => getEmbeddedReviews(initialProductId) === null);
 
     // Filter and Sort states
     const [filterRating, setFilterRating] = useState('All');
     const [sortBy, setSortBy] = useState('newest');
 
+    const productId = product?._id || product?.id;
+
     useEffect(() => {
         const fetchReviews = async () => {
-            if (!product || (!product.id && !product._id)) return;
-            const productId = product._id || product.id;
+            if (!productId) {
+                setIsLoading(false);
+                return;
+            }
+            const embedded = getEmbeddedReviews(productId);
             try {
-                setIsLoading(true);
+                if (embedded) {
+                    setReviews(prev => (sameData(prev, embedded) ? prev : embedded));
+                    setIsLoading(false);
+                } else {
+                    setIsLoading(true);
+                }
                 const res = await apiService.getProductReviews(productId, 'limit=100');
                 const data = await res.json();
-                if (data.success && data.reviews) {
-                    setReviews(data.reviews);
+                if (data.success && Array.isArray(data.reviews)) {
+                    const fresh = stripInternal(data.reviews);
+                    setReviews(prev => (sameData(prev, fresh) ? prev : fresh));
+                    if (onReviewsFetched) {
+                        onReviewsFetched(data.reviews.length);
+                    }
+                } else {
+                    setReviews(prev => (prev.length ? [] : prev));
+                    if (onReviewsFetched) {
+                        onReviewsFetched(0);
+                    }
                 }
             } catch (err) {
-                console.error("Failed to fetch reviews, using mock data.", err);
+                console.error("Failed to fetch reviews.", err);
+                if (!embedded) setReviews([]);
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchReviews();
-    }, [product]);
+    }, [productId]);
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
@@ -113,19 +119,16 @@ const ProductReviewsSection = ({ product, onReviewsFetched }) => {
 
     const processedReviews = getProcessedReviews();
 
-    const totalReviews = processedReviews.length;
+    const productReviewsCount = product?.reviewsCount ?? product?.ratingCount ?? 0;
+    const totalReviews = isLoading ? productReviewsCount : processedReviews.length;
     const averageRating = totalReviews > 0
-        ? (processedReviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1)
+        ? (processedReviews.length > 0
+            ? (processedReviews.reduce((acc, curr) => acc + curr.rating, 0) / processedReviews.length).toFixed(1)
+            : (product?.rating ? Number(product.rating).toFixed(1) : "5.0"))
         : "0.0";
 
-    useEffect(() => {
-        if (onReviewsFetched) {
-            onReviewsFetched(totalReviews);
-        }
-    }, [totalReviews, onReviewsFetched]);
-
     return (
-        <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins']">
+        <div id="reviews" className="mt-20 max-w-[1400px] mx-auto text-left px-4 font-['Poppins','Poppins_Fallback',sans-serif]">
             {/* Header Section */}
             <div className="mb-8">
                 <h3 className="text-[14px] font-bold text-[#0079CD] mb-2">Reviews</h3>

@@ -100,9 +100,7 @@ const PaymentSettings = () => {
     setTestStatus('loading');
     setTestMessage('');
     try {
-      const res = await fetch('/api/admin/settings/tagada/test', {
-        headers: { Authorization: `Bearer ${token()}` },
-      });
+      const res = await apiService.testTagadaConnection();
       const data = await res.json();
       if (data.success) {
         setTestStatus('success');

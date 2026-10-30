@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { apiService } from '../../services/api';
+import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
-import { getCheckoutAttributionPayload } from '../../utils/attribution';
+import useCheckoutConfig from '../../hooks/useCheckoutConfig';
+import BankCheckout from './BankCheckout';
+import OrderRequestCheckout from './OrderRequestCheckout';
 
-const Checkout = () => {
+const TagadaCheckout = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotalPrice } = useCart();
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Discount
@@ -40,53 +41,23 @@ const Checkout = () => {
   const fmt = (amount) =>
     new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(amount);
 
+  // Single checkout implementation (variant ids, quantity bounds, access-token storage) shared
+  // with the cart drawer — see hooks/useTagadaCheckout.js.
+  const { initiateCheckout, isCheckingOut, checkoutError } = useTagadaCheckout();
+  const loading = isCheckingOut;
+  const displayError = error || checkoutError || '';
+
   const handleCheckout = async () => {
     if (cartItems.length === 0) {
       setError('Your cart is empty.');
       return;
     }
-
-    setLoading(true);
     setError('');
-
-    try {
-      // 1) Create a placeholder order. Tagada collects shipping & email securely.
-      const orderRes = await apiService.createOrder({
-        products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity ?? 1 })),
-        shippingAddress: 'Provided via TagadaPay',
-        customerEmail: '',
-        customerName: '',
-        paymentMethod: 'tagada',
-      });
-      const orderData = await orderRes.json();
-      if (!orderRes.ok) throw new Error(orderData.message || 'Failed to create order');
-
-      const orderId = orderData.data.order._id;
-
-      // 2) Initiate Tagada Checkout Session
-      const attribution = getCheckoutAttributionPayload();
-      const payRes = await apiService.createTagadaPayment({ orderId, attribution });
-      const payData = await payRes.json();
-
-      if (!payRes.ok) throw new Error(payData.message || 'TagadaPay checkout initiation failed');
-
-      // 3) Redirect to Tagada Hosted Checkout Page
-      if (payData.checkoutUrl) {
-        // Save orderId so the success page can retrieve it after redirect
-        localStorage.setItem('solatide_last_order_id', orderId);
-        window.location.href = payData.checkoutUrl;
-      } else {
-        throw new Error('No checkout URL returned from TagadaPay');
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'An unexpected error occurred.');
-      setLoading(false);
-    }
+    await initiateCheckout(cartItems);
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'Poppins, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       {/* ── HEADER ── */}
       <header style={{ background: '#fff', borderBottom: '1px solid #e8e8e8', padding: '20px 0' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -107,9 +78,9 @@ const Checkout = () => {
           </div>
 
           <div style={{ padding: '32px 40px' }}>
-            {error && (
+            {displayError && (
               <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: '8px', fontSize: '13px', marginBottom: '24px', border: '1px solid #f87171' }}>
-                {error}
+                {displayError}
               </div>
             )}
 
@@ -218,6 +189,34 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+/**
+ * /checkout — the checkout chosen in Admin → Settings → Checkout mode (asked fresh on each visit):
+ * Order Request, Manual Bank Transfer / PayID, or the previous Tagada summary + redirect.
+ */
+const Checkout = () => {
+  const { config, error } = useCheckoutConfig();
+  if (config?.mode === 'order_request') return <OrderRequestCheckout config={config} />;
+  if (config?.mode === 'bank_transfer') return <BankCheckout config={config} />;
+  if (config?.mode === 'tagada') return <TagadaCheckout />;
+  // A load error, or a mode this version of the site does not know: never guess a checkout
+  if (error || config) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', fontFamily: 'Poppins, "Poppins Fallback", sans-serif', padding: 20 }}>
+        <div className="text-center max-w-sm">
+          <h1 className="text-[20px] font-semibold text-slate-900">We couldn't load the checkout</h1>
+          <p className="mt-2 text-[14px] text-slate-600">Please check your connection and try again. Your cart is saved.</p>
+          <button type="button" onClick={() => window.location.reload()} className="mt-6 bg-[#102a5c] text-white text-[15px] font-semibold px-6 py-3 rounded-lg">Try again</button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+      <div className="w-8 h-8 border-2 border-slate-200 border-t-[#102a5c] rounded-full animate-spin" aria-label="Loading checkout" />
     </div>
   );
 };

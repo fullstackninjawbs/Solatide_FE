@@ -13,25 +13,56 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
-        try {
-            const item = window.localStorage.getItem('solatie_cart');
-            return item ? JSON.parse(item) : [];
-        } catch (error) {
-            console.warn('Error reading localStorage for cart', error);
-            return [];
-        }
-    });
-
+    const [cartItems, setCartItems] = useState([]);
+    const [isCartInitialized, setIsCartInitialized] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
+    // Initial load from localStorage AFTER initial render to ensure deterministic hydration
     useEffect(() => {
         try {
-            window.localStorage.setItem('solatie_cart', JSON.stringify(cartItems));
+            const item = window.localStorage.getItem('solatie_cart');
+            if (item) {
+                const parsed = JSON.parse(item);
+                if (Array.isArray(parsed)) {
+                    setCartItems(parsed);
+                }
+            }
+        } catch (error) {
+            console.warn('Error reading localStorage for cart', error);
+        } finally {
+            setIsCartInitialized(true);
+        }
+    }, []);
+
+    // Keep every open tab in sync: another tab changed the cart → take its version, so a tab
+    // that was already open never shows a stale cart or saves it over the other tab's items
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key !== 'solatie_cart') return;
+            try {
+                const parsed = e.newValue ? JSON.parse(e.newValue) : [];
+                if (Array.isArray(parsed)) setCartItems(parsed);
+            } catch (error) {
+                console.warn('Error syncing cart from another tab', error);
+            }
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
+    // Persist to localStorage only AFTER the cart has been initialized from storage.
+    // Skipped when unchanged, so a cart taken from another tab is not written back.
+    useEffect(() => {
+        if (!isCartInitialized) return;
+        try {
+            const serialized = JSON.stringify(cartItems);
+            if (window.localStorage.getItem('solatie_cart') !== serialized) {
+                window.localStorage.setItem('solatie_cart', serialized);
+            }
         } catch (error) {
             console.warn('Error setting localStorage for cart', error);
         }
-    }, [cartItems]);
+    }, [cartItems, isCartInitialized]);
 
     const addToCart = (product, quantity = 1, selectedVariant = null) => {
         const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);

@@ -23,6 +23,7 @@ import {
 
 import { ToastProvider } from '../components/admin/feedback/ToastProvider';
 import { ConfirmProvider } from '../components/admin/feedback/ConfirmProvider';
+import { Helmet } from 'react-helmet-async';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -91,7 +92,8 @@ const AdminLayout = () => {
       roles: ['super_admin', 'content_manager', 'admin'],
       subItems: [
         { name: 'Pages', path: '/admin/content/pages', roles: ['super_admin', 'content_manager', 'admin'] },
-        { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] }
+        { name: 'FAQs', path: '/admin/content/faqs', roles: ['super_admin', 'content_manager', 'admin'] },
+        { name: 'Redirects', path: '/admin/content/redirects', roles: ['super_admin', 'content_manager', 'admin'] }
       ]
     },
     {
@@ -120,6 +122,13 @@ const AdminLayout = () => {
   return (
     <ToastProvider>
       <ConfirmProvider>
+        <Helmet>
+          <title>Admin Panel | Solatide Biosciences</title>
+          <meta
+            name="description"
+            content="Admin Panel for Solatide Biosciences"
+          />
+        </Helmet>
         <div className="h-screen print:h-auto bg-[#f8fafc] text-slate-800 flex font-sans overflow-hidden print:overflow-visible">
           {/* Sidebar */}
           <aside

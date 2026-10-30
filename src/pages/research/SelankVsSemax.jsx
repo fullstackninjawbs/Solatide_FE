@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const SelankVsSemax = () => {
     return (
@@ -12,6 +13,22 @@ const SelankVsSemax = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/selank-vs-semax" />
+                <meta name="robots" content={ROBOTS_INDEX} />
+                <meta property="og:title" content="Selank vs Semax | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/selank-vs-semax" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Selank vs Semax | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">
@@ -21,7 +38,7 @@ const SelankVsSemax = () => {
 <h1 style={{ fontSize: '2em', fontWeight: 700, color: '#1a3a6b', marginBottom: '16px' }}>Selank vs Semax | Research Comparison</h1>
 <p style={{ fontSize: '1.05em', lineHeight: 1.75, color: '#444' }}>Selank and Semax are two synthetic heptapeptides derived from endogenous neuropeptide sequences — tuftsin and ACTH respectively — that are frequently studied together due to their complementary mechanisms. While both modulate neurotrophic and neuromodulatory pathways in laboratory models, they act through distinct primary mechanisms and are used to investigate different aspects of neuropeptide signalling. Solatide Biosciences supplies them as a combined research material.</p>
 <div className="cmp-cta-row">
-<Link to="/products/selank-semax-20mg" className="cmp-btn">View Combined Product</Link><Link to="/pages/research-compound-database" className="cmp-btn-outline">Compound Index</Link>
+<Link to="/products/selank-10mg" className="cmp-btn">View Combined Product</Link><Link to="/pages/research-compound-database" className="cmp-btn-outline">Compound Index</Link>
 </div>
 <h2>At a Glance</h2>
 <table className="cmp-table">
@@ -81,7 +98,7 @@ const SelankVsSemax = () => {
 <p>Semax is the preferred compound for neuroprotective signalling research, including ischaemia-reperfusion models, oxidative stress resistance and neuronal survival pathway studies. Its pronounced BDNF upregulation and dopaminergic modulation make it more relevant to these applications than Selank.</p>
 <h2>Combined Use in Research</h2>
 <p>Selank and Semax are frequently used together in laboratory research because their mechanisms are complementary rather than redundant. Selank addresses GABAergic inhibitory signalling while Semax addresses dopaminergic and neurotrophic signalling — together they enable dual-pathway neuropeptide research in a single experimental framework. Solatide Biosciences supplies them as a combined 20mg research material (10mg Selank + 10mg Semax).</p>
-<div className="cmp-cta-row"><Link to="/products/selank-semax-20mg" className="cmp-btn">View Combined Product</Link></div>
+<div className="cmp-cta-row"><Link to="/products/selank-10mg" className="cmp-btn">View Combined Product</Link></div>
 <h2>Choosing Between Them for Research</h2>
 <p>For GABAergic pathway research, anxiolytic-related signalling or immune-neuro crosstalk studies, Selank is the appropriate tool. For BDNF-mediated neuroprotection, dopaminergic modulation or cognitive pathway research, Semax is preferred. For comprehensive neuropeptide signalling research covering both inhibitory and neurotrophic pathways, the combination is used.</p>
 <h2>Related Resources</h2>

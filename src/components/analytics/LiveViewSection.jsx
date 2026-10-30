@@ -20,7 +20,7 @@ const getCountryFlag = (country) => {
 };
 
 const getCountryFullName = (country) => {
-  if (!country) return 'India';
+  if (!country) return 'Unknown';
   const c = country.trim().toUpperCase();
   if (c === 'IN' || c === 'INDIA') return 'India';
   if (c === 'AU' || c === 'AUSTRALIA') return 'Australia';

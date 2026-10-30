@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../../components/admin/UrlRedirectNotice';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, Layers, Search } from 'lucide-react';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { apiService } from '../../../services/api';
@@ -7,6 +8,50 @@ import JoditEditor from 'jodit-react';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 import { useToast } from '../../../components/admin/feedback/ToastProvider';
+
+const getProductPrice = (p) => {
+  if (typeof p?.price === 'number') return p.price;
+  if (p?.price && !isNaN(Number(p.price))) return Number(p.price);
+  if (Array.isArray(p?.variants) && p.variants.length > 0) {
+    const vPrice = p.variants[0]?.price;
+    if (typeof vPrice === 'number') return vPrice;
+    if (vPrice && !isNaN(Number(vPrice))) return Number(vPrice);
+  }
+  return 0;
+};
+
+const getProductDate = (p) => {
+  if (p?.createdAt) {
+    const t = new Date(p.createdAt).getTime();
+    if (!isNaN(t)) return t;
+  }
+  if (p?._id && typeof p._id === 'string' && p._id.length === 24) {
+    const t = parseInt(p._id.substring(0, 8), 16) * 1000;
+    if (!isNaN(t)) return t;
+  }
+  return 0;
+};
+
+const sortProducts = (products, sortType = 'alpha-asc') => {
+  if (!Array.isArray(products) || products.length <= 1) return [...(products || [])];
+  const list = [...products];
+  switch (sortType) {
+    case 'alpha-asc':
+      return list.sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), undefined, { numeric: true, sensitivity: 'base' }));
+    case 'alpha-desc':
+      return list.sort((a, b) => String(b?.name || '').localeCompare(String(a?.name || ''), undefined, { numeric: true, sensitivity: 'base' }));
+    case 'price-asc':
+      return list.sort((a, b) => getProductPrice(a) - getProductPrice(b));
+    case 'price-desc':
+      return list.sort((a, b) => getProductPrice(b) - getProductPrice(a));
+    case 'created-desc':
+      return list.sort((a, b) => getProductDate(b) - getProductDate(a));
+    case 'created-asc':
+      return list.sort((a, b) => getProductDate(a) - getProductDate(b));
+    default:
+      return list;
+  }
+};
 
 const CollectionForm = () => {
   const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
@@ -21,9 +66,13 @@ const CollectionForm = () => {
   const [productsCatalog, setProductsCatalog] = useState([]);
   const [productSearch, setProductSearch] = useState('');
   const [showProductSearchDropdown, setShowProductSearchDropdown] = useState(false);
+  const [productSort, setProductSort] = useState('alpha-asc');
+  const [editSeo, setEditSeo] = useState(false);
   const toast = useToast();
 
   // Collection State
+  // URL handle as saved (for the redirect notice)
+  const [loadedSlug, setLoadedSlug] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -32,6 +81,12 @@ const CollectionForm = () => {
     status: 'active',
     type: 'manual',
     sortOrder: 0,
+    productSort: 'alpha-asc',
+    seo: {
+      title: '',
+      description: '',
+      canonicalUrl: ''
+    },
     displayOptions: {
       showFaqBlock: false
     },
@@ -103,20 +158,29 @@ const CollectionForm = () => {
           const result = await res.json();
           if (result.success && result.data) {
             const { collection, products } = result.data;
+            const currentSort = collection.productSort || 'alpha-asc';
+            setProductSort(currentSort);
             setFormData({
               name: collection.name || '',
               slug: collection.slug || '',
               description: collection.description || '',
               bannerImage: collection.bannerImage || '',
               status: collection.status || 'active',
-              type: 'manual',
+              type: collection.type || 'manual',
               sortOrder: collection.sortOrder || 0,
+              productSort: currentSort,
+              seo: {
+                title: collection.seo?.title || '',
+                description: collection.seo?.description || '',
+                canonicalUrl: collection.seo?.canonicalUrl || ''
+              },
               displayOptions: collection.displayOptions || { showFaqBlock: false },
-              products: products || [],
+              products: sortProducts(products || [], currentSort),
               publishing: collection.publishing || ['online_store'],
               themeTemplate: collection.themeTemplate || 'default'
             });
             setInitialDescription(collection.description || '');
+            setLoadedSlug(collection.slug || '');
           } else {
             setError('Failed to fetch collection details.');
           }
@@ -131,15 +195,43 @@ const CollectionForm = () => {
     }
   }, [id, isEditMode]);
 
+  // Product sorting handler
+  const handleSortChange = (newSort) => {
+    setProductSort(newSort);
+    setFormData(prev => ({
+      ...prev,
+      productSort: newSort,
+      products: sortProducts(prev.products, newSort)
+    }));
+  };
+
+  const handleSeoChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      seo: {
+        ...prev.seo,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleSlugChange = (e) => {
+    if (formData.slug === 'all') return;
+    const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+    setFormData(prev => ({ ...prev, slug: value }));
+  };
+
   // Manual Mode: Products selection helpers
   const handleAddProduct = (product) => {
-    if (formData.products.some(p => p._id === product._id)) {
+    if (formData.products.some(p => (p._id || p) === (product._id || product))) {
       toast.warning('Product is already in this collection.');
       return;
     }
+    const updated = [...formData.products, product];
     setFormData(prev => ({
       ...prev,
-      products: [...prev.products, product]
+      products: sortProducts(updated, productSort)
     }));
     setProductSearch('');
     setShowProductSearchDropdown(false);
@@ -220,16 +312,19 @@ const CollectionForm = () => {
     setLoading(true);
 
     try {
+      const sortedProducts = sortProducts(formData.products, productSort);
       const payload = {
         name: formData.name,
         slug: formData.slug || undefined,
         description: formData.description,
         bannerImage: formData.bannerImage,
         status: formData.status,
-        type: 'manual',
+        type: formData.type || 'manual',
         sortOrder: Number(formData.sortOrder) || 0,
+        productSort,
+        seo: formData.seo,
         displayOptions: formData.displayOptions,
-        products: formData.products.map(p => p._id || p),
+        products: sortedProducts.map(p => p._id || p),
         publishing: formData.publishing,
         themeTemplate: formData.themeTemplate
       };
@@ -348,8 +443,8 @@ const CollectionForm = () => {
                 </span>
                 <span className="text-slate-200">|</span>
                 <select
-                  value={formData.sortOrder}
-                  onChange={(e) => setFormData(prev => ({ ...prev, sortOrder: e.target.value }))}
+                  value={productSort}
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="bg-transparent border-0 outline-none text-[13px] font-semibold text-[#214A9E] cursor-pointer hover:underline py-1"
                 >
                   <option value="alpha-asc">Sort: Product title A-Z</option>
@@ -447,6 +542,99 @@ const CollectionForm = () => {
                 ))
               )}
             </div>
+          </div>
+
+          {/* Search Engine Listing Preview */}
+          <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm space-y-4">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+              <h3 className="text-[15px] font-bold text-slate-850">
+                Search engine listing
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditSeo(!editSeo)}
+                className="text-[13px] font-semibold text-brand-blue hover:underline cursor-pointer"
+              >
+                {editSeo ? 'Cancel' : 'Edit'}
+              </button>
+            </div>
+
+            {/* Google Search Result Preview */}
+            <div className="pt-1 text-left space-y-1">
+              <span className="text-[13px] text-[#202124] block leading-none font-sans font-normal">
+                Solatide Biosciences<br />
+                https://solatidebiosciences.com.au › collections › <span className="font-bold">{formData.slug || 'collection'}</span>
+              </span>
+              <span className="text-[18px] text-[#1a0dab] hover:underline cursor-pointer font-medium leading-tight font-sans block mt-1">
+                {formData.seo?.title || `${formData.name || 'Collection'} | Solatide Biosciences`}
+              </span>
+              <span className="text-[13.5px] text-[#4d5156] leading-normal font-sans block max-w-2xl mt-1 line-clamp-2">
+                {formData.seo?.description || (formData.description ? formData.description.replace(/<[^>]*>/g, '').slice(0, 160) : `Browse ${formData.name || 'our'} research peptides and laboratory compounds at Solatide Biosciences.`)}
+              </span>
+            </div>
+
+            {editSeo && (
+              <div className="space-y-4 pt-4 mt-4 border-t border-slate-100">
+                <div>
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    Page title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.seo?.title || ''}
+                    onChange={handleSeoChange}
+                    placeholder={`${formData.name || 'Collection'} | Solatide Biosciences`}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-800 text-[14px]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    Meta description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.seo?.description || ''}
+                    onChange={handleSeoChange}
+                    rows={4}
+                    placeholder="Brief description of this collection for search engines..."
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-800 text-[14px] resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-medium text-slate-700 mb-1">
+                    URL handle
+                  </label>
+                  <div className="flex items-center">
+                    <span className="px-3 py-2 bg-slate-50 border border-r-0 border-slate-300 rounded-l-lg text-slate-500 text-[13.5px]">
+                      /collections/
+                    </span>
+                    <input
+                      type="text"
+                      value={formData.slug}
+                      onChange={handleSlugChange}
+                      disabled={formData.slug === 'all'}
+                      placeholder="e.g. research-grade-peptides"
+                      className={`w-full px-3 py-2 rounded-r-lg bg-white border border-slate-300 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-800 text-[14px] ${formData.slug === 'all' ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''}`}
+                    />
+                  </div>
+                  {formData.slug === 'all' ? (
+                    <div className="text-[12px] text-amber-600 mt-1">
+                      The root /collections/all URL handle is locked as a core system route.
+                    </div>
+                  ) : (
+                    <div className="text-[12px] text-slate-400 mt-1">
+                      https://solatidebiosciences.com.au/collections/{formData.slug || 'collection-slug'}
+                    </div>
+                  )}
+                  {formData.slug !== 'all' && (
+                    <UrlRedirectNotice base="/collections" originalSlug={loadedSlug} currentSlug={formData.slug} />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

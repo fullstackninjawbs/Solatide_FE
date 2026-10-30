@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../components/admin/UrlRedirectNotice';
 import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X, HelpCircle } from 'lucide-react';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
@@ -79,7 +80,7 @@ const ProductForm = () => {
     slug: '',
 
     // Shopify Refinements
-    published: true,
+    publishStatus: 'active',
     vendor: 'Solatide Biosciences',
     productType: 'Research Peptides',
     barcode: '',
@@ -305,9 +306,13 @@ const ProductForm = () => {
             _originalVariants: product.variants || [],
             currentBatch: product.currentBatch || null,
             slug: product.slug || '',
+            _loadedSlug: product.slug || '', // URL as saved (for the redirect notice; not sent)
 
             // Shopify Refinements
-            published: product.published !== false,
+            // publishStatus is the source of truth (storefront + list); legacy `published` only as fallback
+            publishStatus: ['active', 'draft', 'archived'].includes(product.publishStatus)
+              ? product.publishStatus
+              : (product.published === false ? 'draft' : 'active'),
             vendor: product.vendor || 'Solatide Biosciences',
             productType: product.productType || 'Research Peptides',
             barcode: product.barcode || '',
@@ -685,7 +690,8 @@ const ProductForm = () => {
       inStock: parseInt(formData.stockQuantity, 10) > 0,
 
       // Shopify Refinements
-      published: formData.published,
+      publishStatus: formData.publishStatus,
+      published: formData.publishStatus === 'active',
       showPendingResultsSection: formData.showPendingResultsSection,
       vendor: formData.vendor,
       productType: formData.productType,
@@ -725,7 +731,7 @@ const ProductForm = () => {
 
   if (fetching) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-400 font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-400 font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-blue"></div>
         <p className="text-[14px] font-medium">Fetching product data...</p>
       </div>
@@ -743,7 +749,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
 
       {/* Top Header Section */}
       <div className="sticky -top-6 sm:-top-8 pt-6 sm:pt-8 pb-4 z-50 bg-[#f8fafc] -mx-6 sm:-mx-8 px-6 sm:px-8 mb-4 border-b border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -757,9 +763,9 @@ const ProductForm = () => {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-brand-navy">{formData.name || 'Unnamed Product'}</h2>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold uppercase ${formData.published ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold uppercase ${formData.publishStatus === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200'
                 }`}>
-                {formData.published ? 'Active' : 'Draft'}
+                {formData.publishStatus === 'archived' ? 'Archived' : formData.publishStatus === 'draft' ? 'Draft' : 'Active'}
               </span>
             </div>
           </div>
@@ -1374,6 +1380,7 @@ const ProductForm = () => {
                   <div className="text-[12px] text-slate-500 mt-1">
                     {SITE_URL}/products/{formData.slug || slugifiedName}
                   </div>
+                  <UrlRedirectNotice base="/products" originalSlug={formData._loadedSlug} currentSlug={formData.slug} />
                 </div>
               </div>
             )}
@@ -1391,11 +1398,12 @@ const ProductForm = () => {
 
             <CustomDropdown
               options={[
-                { value: 'true', label: 'Active (Visible in Store)' },
-                { value: 'false', label: 'Draft (Hidden in Store)' }
+                { value: 'active', label: 'Active (Visible in Store)' },
+                { value: 'draft', label: 'Draft (Hidden in Store)' },
+                { value: 'archived', label: 'Archived (Hidden in Store)' }
               ]}
-              value={formData.published ? 'true' : 'false'}
-              onChange={(val) => setFormData(prev => ({ ...prev, published: val === 'true' }))}
+              value={formData.publishStatus}
+              onChange={(val) => setFormData(prev => ({ ...prev, publishStatus: val }))}
               className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-850 text-[13.5px] font-bold cursor-pointer focus:outline-none focus:border-brand-blue"
             />
 

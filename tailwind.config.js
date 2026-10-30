@@ -16,8 +16,8 @@ export default {
       fontFamily: {
         // 'Poppins' is now the default sans-serif for the entire project.
         // All Tailwind classes like font-sans, and the base body style, will use Poppins.
-        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        anek: ['"Anek Telugu"', 'sans-serif'],
+        sans: ['Poppins', '"Poppins Fallback"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        anek: ['"Anek Telugu"', '"Anek Telugu Fallback"', 'sans-serif'],
       },
       colors: {
         primary: "#aa3bff",

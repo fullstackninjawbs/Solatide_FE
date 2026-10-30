@@ -47,7 +47,7 @@ const WhySolatideSection = () => {
                         <p className="mt-3 text-[15px] text-[#4B5563] font-semibold leading-[1.6]">
                             Quality verification follows a rigorous process:
                             <br />
-                            <span className="font-normal">Visit our <a className='text-[#1a4494] font-semibold hover:underline transition-all' href='/coa'>COA & Lab Testing</a> page for more information about our verification process.</span>
+                            <span className="font-normal">Visit our <a className='text-[#1a4494] font-semibold hover:underline transition-all' href='/pages/coa-lab-testing'>COA & Lab Testing</a> page for more information about our verification process.</span>
                         </p>
 
                         <ul className="mt-5 space-y-3 text-[15px] font-semibold text-slate-600 mb-6">
@@ -86,9 +86,7 @@ const WhySolatideSection = () => {
                         </p>
 
                         <div className="flex flex-wrap items-center gap-4">
-                            <Link to="/collections/all">
-                                <CommonButton title="Explore Product" width="180px" showArrow={true} />
-                            </Link>
+                            <CommonButton to="/collections/all" title="Explore Product" width="180px" showArrow={true} />
                             <Link to="/pages/coa-lab-testing" className="text-[#1a4494] font-bold text-[14px] hover:underline">
                                 View documentation process
                             </Link>

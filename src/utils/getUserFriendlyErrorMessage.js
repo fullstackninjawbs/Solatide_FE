@@ -60,14 +60,16 @@ function getFallbackMessage(context) {
       return 'Unable to remove the COA document. Please try again.';
     case 'inventoryUpdate':
       return 'Unable to update inventory levels. Please try again.';
-    case 'tagadaSync':
-      return 'Unable to sync products from Tagada. Please try again.';
     case 'discountDelete':
       return 'Unable to delete this discount. Please try again.';
     case 'reviewUpdate':
       return 'Unable to update review. Please try again.';
     case 'reviewDelete':
       return 'Unable to delete review. Please try again.';
+    case 'exportOrders':
+      return 'Unable to export orders. Please try again.';
+    case 'exportCustomers':
+      return 'Unable to export customers. Please try again.';
     default:
       return 'An unexpected error occurred. Please try again later.';
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const WhatIsBPC157 = () => {
     return (
@@ -12,6 +13,22 @@ const WhatIsBPC157 = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/what-is-bpc-157" />
+                <meta name="robots" content={ROBOTS_INDEX} />
+                <meta property="og:title" content="What Is BPC-157? | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/what-is-bpc-157" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="What Is BPC-157? | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">
@@ -85,7 +102,7 @@ const WhatIsBPC157 = () => {
 <h2>Related Research Resources</h2>
 <ul>
 <li><Link to="/products/bpc-157-10mg">BPC-157 10mg research peptide</Link></li>
-<li><Link to="/collections/repair-recovery-research">Repair &amp; recovery peptides</Link></li>
+<li><Link to="/collections/tissue-cellular-research-peptides">Tissue &amp; cellular research peptides</Link></li>
 <li><Link to="/pages/what-is-tb500">What is TB-500?</Link></li>
 <li><Link to="/pages/bpc-157-vs-tb-500">BPC-157 vs TB-500 comparison</Link></li>
 </ul>

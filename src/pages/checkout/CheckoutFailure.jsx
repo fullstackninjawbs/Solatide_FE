@@ -8,7 +8,7 @@ const CheckoutFailure = () => {
   const reason = searchParams.get('reason') || '';
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'Poppins, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       {/* Header */}
       <header style={{ background: '#fff', borderBottom: '1px solid #e8e8e8', padding: '20px 0' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

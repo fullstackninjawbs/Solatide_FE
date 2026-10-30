@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Search,
@@ -23,6 +23,11 @@ import CustomAddressAutocomplete from '../../components/admin/CustomAddressAutoc
 const CreateOrder = () => {
   const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
   const navigate = useNavigate();
+  // ?fromRequest=<id>: pre-fill from a storefront order request (link in the admin email)
+  const [searchParams] = useSearchParams();
+  const fromRequestId = searchParams.get('fromRequest');
+  const [sourceRequest, setSourceRequest] = useState(null); // { request, order }
+  const [requestLoadError, setRequestLoadError] = useState('');
 
   // ── 1. Customer State ────────────────────────────────────────────────────────
   const [customerMode, setCustomerMode] = useState('search'); // 'search' | 'create'
@@ -71,12 +76,78 @@ const CreateOrder = () => {
   // ── 4. Payment & Order Metadata State ─────────────────────────────────────────
   const [paymentStatus, setPaymentStatus] = useState('paid'); // 'pending' | 'paid'
   const [discountTotal, setDiscountTotal] = useState('0.00');
+  const [couponCode, setCouponCode] = useState(''); // recorded on the order; its use is counted when paid
   const [notes, setNotes] = useState('');
   const [sendEmail, setSendEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const customerDebounceRef = useRef(null);
+
+  // ── Pre-fill from a storefront order request ─────────────────────────────────
+  useEffect(() => {
+    if (!fromRequestId || !/^[0-9a-fA-F]{24}$/.test(fromRequestId)) return undefined;
+    let alive = true;
+    apiService.getAdminOrderRequest(fromRequestId)
+      .then((res) => res.json())
+      .then(async (json) => {
+        if (!alive) return;
+        if (!json.success || !json.data?.request) {
+          setRequestLoadError(json.message || 'Order request not found.');
+          return;
+        }
+        const r = json.data.request;
+        setSourceRequest(json.data);
+        const c = r.customer || {};
+        const a = r.shippingAddress || {};
+        const fullName = `${c.firstName || ''} ${c.lastName || ''}`.trim();
+        setCustomerMode('create');
+        setCustomerForm({ firstName: c.firstName || '', lastName: c.lastName || '', email: c.email || '', phone: c.phone || '' });
+        setShippingAddress({ name: fullName, street1: a.street1 || '', street2: a.street2 || '', city: a.city || '', state: a.state || '', zip: a.zip || '', country: a.country || 'AU' });
+        setBillingSameAsShipping(true);
+        setLineItems((r.items || []).filter((i) => !i.missing).map((i) => ({
+          productId: i.product,
+          variantId: i.variant || undefined,
+          title: i.title,
+          variantTitle: i.variantTitle || '',
+          sku: i.sku,
+          quantity: Number(i.quantity) || 1,
+          unitPrice: Number(i.unitPrice) || 0,
+          originalPrice: Number(i.unitPrice) || 0,
+          discountAmount: 0,
+          productImageUrl: i.productImageUrl || '',
+          stockQty: i.stockQty,
+        })));
+        if (r.shippingAmount != null) {
+          setShippingMethod('Custom');
+          setCustomShippingMethod(Number(r.shippingAmount) === 0 ? 'Free shipping' : (a.country === 'AU' ? 'Express shipping' : 'International express shipping'));
+          setShippingCost(Number(r.shippingAmount).toFixed(2));
+        }
+        if (r.discountCode && Number(r.discountAmount) > 0) {
+          setCouponCode(r.discountCode);
+          setDiscountTotal(Number(r.discountAmount).toFixed(2));
+        }
+        setPaymentStatus('pending');
+        setNotes([
+          `Created from order request ${r.requestNumber}.`,
+          r.discountCode ? `Discount code ${r.discountCode} applied at checkout (−A$${Number(r.discountAmount || 0).toFixed(2)}).` : '',
+          r.notes ? `Customer note: ${r.notes}` : '',
+        ].filter(Boolean).join('\n'));
+        // Existing customer with this email → select it (keeps their history together)
+        try {
+          const cres = await apiService.getAdminCustomers?.(`search=${encodeURIComponent(c.email || '')}&limit=6`);
+          const cj = cres && cres.ok ? await cres.json() : null;
+          const list = cj?.data?.customers || cj?.customers || [];
+          const match = list.find((x) => String(x.email || '').toLowerCase() === String(c.email || '').toLowerCase());
+          if (alive && match) {
+            setSelectedCustomer(match);
+            setCustomerMode('search');
+          }
+        } catch { /* creating a new customer is fine */ }
+      })
+      .catch(() => alive && setRequestLoadError('Could not load the order request.'));
+    return () => { alive = false; };
+  }, [fromRequestId]);
 
   // ── Live Customer Search Autocomplete ────────────────────────────────────────
   useEffect(() => {
@@ -150,8 +221,8 @@ const CreateOrder = () => {
     try {
       setLoadingProducts(true);
       const queryStr = query ? `search=${encodeURIComponent(query)}&limit=100` : `limit=100`;
-      const res = await apiService.getProducts?.(queryStr) ||
-        await fetch(`/api/products?${queryStr}`);
+      // apiService.getProducts sends the staff token inside /admin (drafts + internal fields).
+      const res = await apiService.getProducts(queryStr);
       const json = await res.json();
       if (json.success || json.data) {
         const prods = json.data?.products || json.data || json.products || [];
@@ -294,9 +365,11 @@ const CreateOrder = () => {
         shippingMethod: shippingMethod === 'Custom' ? (customShippingMethod.trim() || 'Custom Shipping') : shippingMethod,
         shippingCost: parsedShipping,
         discountTotal: parsedDiscountTotal,
+        couponCode: couponCode.trim() || undefined,
         notes: notes.trim(),
         paymentStatus,
-        sendEmail
+        sendEmail,
+        orderRequestId: sourceRequest?.request?._id
       };
 
       const res = await apiService.createAdminOrder(payload);
@@ -355,6 +428,33 @@ const CreateOrder = () => {
           </button>
         </div>
       </div>
+
+      {fromRequestId && (sourceRequest || requestLoadError) && (
+        sourceRequest?.request?.status === 'handled' ? (
+          <div className="bg-amber-50 text-amber-800 p-4 rounded-xl text-sm border border-amber-200 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
+            <span>
+              Order request <strong>{sourceRequest.request.requestNumber}</strong> was already turned into an order
+              {sourceRequest.order ? <> — <Link to={`/admin/orders/${sourceRequest.order._id}`} className="underline font-semibold">#{sourceRequest.order.orderNumber}</Link></> : ''}. Creating it again makes a duplicate.
+            </span>
+          </div>
+        ) : sourceRequest ? (
+          <div className="bg-blue-50 text-blue-900 p-4 rounded-xl text-sm border border-blue-200 flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-brand-blue shrink-0" />
+            <span>
+              Pre-filled from order request <strong>{sourceRequest.request.requestNumber}</strong> ({new Date(sourceRequest.request.createdAt).toLocaleString('en-AU')}). Please check the details, then create the order.
+              {sourceRequest.request.shippingAmount == null && ' Shipping was not set on the request — choose it below.'}
+              {(sourceRequest.request.items || []).some((i) => i.missing) && <strong className="block mt-1 text-red-700">Some requested items no longer exist and were left out: {(sourceRequest.request.items || []).filter((i) => i.missing).map((i) => i.title).join(', ')}.</strong>}
+              {(sourceRequest.request.items || []).some((i) => !i.missing && i.currentPrice != null && Number(i.currentPrice) !== Number(i.unitPrice)) && <span className="block mt-1">Note: some prices changed since the request; the requested prices are used.</span>}
+            </span>
+          </div>
+        ) : (
+          <div className="bg-red-50 text-red-700 p-4 rounded-xl text-sm border border-red-200 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+            <span>{requestLoadError}</span>
+          </div>
+        )
+      )}
 
       {error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-xl text-sm border border-red-200 flex items-center gap-3">
@@ -724,6 +824,17 @@ const CreateOrder = () => {
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Apartment, suite, etc. (optional)</label>
+                <input
+                  type="text"
+                  value={shippingAddress.street2}
+                  onChange={(e) => setShippingAddress(prev => ({ ...prev, street2: e.target.value }))}
+                  placeholder="Apartment, unit, suite"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-blue font-medium text-slate-800"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Suburb / City *</label>
@@ -834,6 +945,18 @@ const CreateOrder = () => {
                   <span className="text-[10px] font-normal text-emerald-600">Collected Manually</span>
                 </button>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Discount code (optional)</label>
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64))}
+                placeholder="e.g. CAMERON30"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm uppercase focus:outline-none focus:border-brand-blue"
+              />
+              <p className="mt-1 text-[11.5px] text-slate-500">Recorded on the order so the code's usage limit counts it. Enter the amount below.</p>
             </div>
 
             <div>

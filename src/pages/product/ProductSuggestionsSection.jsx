@@ -1,16 +1,28 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
-import { products } from '../../data/products';
 import productVialImage from '../../assets/images/homePageFirstSection.webp';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
+import { getRouteData, sameData, toCardDto } from '../../utils/routeData';
+
+const SUGGESTIONS_KEY = '/api/products?limit=7';
+const pickSuggestions = (list, currentProduct) => (list || [])
+    .filter(p => p._id !== currentProduct?._id && p.id !== currentProduct?.id)
+    .slice(0, 5)
+    .map(toCardDto);
+const getEmbeddedSuggestions = (currentProduct) => {
+    const body = getRouteData(SUGGESTIONS_KEY);
+    return body && body.success && body.data && Array.isArray(body.data.products)
+        ? pickSuggestions(body.data.products, currentProduct)
+        : null;
+};
 
 const ProductSuggestionsSection = ({ currentProduct }) => {
     const scrollContainerRef = useRef(null);
-    const [suggestedProducts, setSuggestedProducts] = useState([]);
+    const [suggestedProducts, setSuggestedProducts] = useState(() => getEmbeddedSuggestions(currentProduct) || []);
     const { addToCart } = useCart();
     const { formatPrice } = useCurrency();
 
@@ -20,26 +32,20 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 const response = await apiService.getProducts('limit=7');
                 const result = await response.json();
                 if (result.success && result.data && result.data.products) {
-                    // Filter out current product
-                    const filtered = result.data.products.filter(
-                        p => p._id !== currentProduct._id && p.id !== currentProduct.id
-                    ).slice(0, 5);
-                    setSuggestedProducts(filtered);
-                } else {
-                    const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
-                    setSuggestedProducts(fallback);
+                    // Filter out current product; only update state when the list actually changed
+                    const filtered = pickSuggestions(result.data.products, currentProduct);
+                    setSuggestedProducts(prev => (sameData(prev, filtered) ? prev : filtered));
                 }
-            } catch (error) {
-                console.warn('Backend suggestions API unreachable. Using static fallback.');
-                const fallback = products.filter(p => p.id !== currentProduct.id).slice(0, 5);
-                setSuggestedProducts(fallback);
+            } catch {
+                // No static/sample fallback: keep embedded suggestions (if any), otherwise show none.
+                console.warn('Backend suggestions API unreachable.');
             }
         };
 
         if (currentProduct) {
             fetchSuggestions();
         }
-    }, [currentProduct]);
+    }, [currentProduct?._id, currentProduct?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
@@ -54,7 +60,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
     };
 
     return (
-        <div className="mt-20 max-w-[1440px] mx-auto text-left relative" style={{ fontFamily: 'Poppins' }}>
+        <div className="mt-20 max-w-[1440px] mx-auto text-left relative" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0 mb-8">
                 <div>
@@ -79,6 +85,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 {/* Left Arrow Button */}
                 <button
                     onClick={scrollLeft}
+                    aria-label="Previous suggested products"
                     className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 w-[42px] h-[42px] rounded-full bg-white border border-[#E8E8E8] shadow-md hover:bg-slate-50 text-[#6A6A6A] hover:text-black flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 hidden sm:flex focus:outline-none"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -103,7 +110,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 className={`relative overflow-hidden ${product.imageUrl || product.image ? 'bg-white border border-slate-100/60' : 'bg-[#eef2f6]'} rounded-[18px] flex items-center justify-center w-full h-[240px] block`}
                             >
                                 <img
-                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image) || productVialImage}
+                                    src={optimizeCloudinaryUrl(product.imageUrl || product.image, 600) || productVialImage}
                                     loading="lazy"
                                     decoding="async"
                                     className={product.imageUrl || product.image
@@ -116,12 +123,12 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                 {/* Badges */}
                                 {product.inStock ? (
                                     <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#eaf7ee] to-[#f0fdf4] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#16a34a] border border-[#16a34a]/20 shadow-sm whitespace-nowrap">
-                                        <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></div>
+                                        <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-[#16a34a] animate-pulse shrink-0"></span>
                                         In Stock
                                     </span>
                                 ) : (
                                     <span className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#fef2f2] to-[#fff5f5] px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-bold tracking-wide text-red-600 border border-red-200 shadow-sm whitespace-nowrap">
-                                        <div className="w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></div>
+                                        <span className="inline-block w-1.5 h-1.5 sm:w-1.5 sm:h-1.5 rounded-full bg-red-600 animate-pulse shrink-0"></span>
                                         Sold Out
                                     </span>
                                 )}
@@ -151,6 +158,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                                             e.preventDefault();
                                             addToCart(product, 1);
                                         }}
+                                        aria-label={`Add ${product.name} to cart`}
                                         className={`h-11 w-11 rounded-full bg-[#edf4ff] text-[#214A9E] flex items-center justify-center hover:bg-[#214A9E] hover:text-white transition-all duration-300 cursor-pointer focus:outline-none shadow-sm ${!product.inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         <ShoppingCart className="h-5 w-5" />
@@ -164,6 +172,7 @@ const ProductSuggestionsSection = ({ currentProduct }) => {
                 {/* Right Arrow Button */}
                 <button
                     onClick={scrollRight}
+                    aria-label="Next suggested products"
                     className="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 w-[42px] h-[42px] rounded-full bg-white border border-[#E8E8E8] shadow-md hover:bg-slate-50 text-[#6A6A6A] hover:text-black flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 hidden sm:flex focus:outline-none"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">

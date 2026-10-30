@@ -12,9 +12,13 @@ const ImageUploader = ({ files, setFiles, maxFiles = 5 }) => {
     }
   };
 
+  // Server accepts only jpeg/png/webp/gif, max 5 files, 5 MB each.
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  const MAX_BYTES = 5 * 1024 * 1024;
   const addFiles = (newFiles) => {
+    const accepted = newFiles.filter((f) => ALLOWED_TYPES.includes(f.type) && f.size <= MAX_BYTES);
     setFiles((prev) => {
-      const combined = [...prev, ...newFiles];
+      const combined = [...prev, ...accepted];
       return combined.slice(0, maxFiles); // Enforce max limit
     });
   };
@@ -64,7 +68,7 @@ const ImageUploader = ({ files, setFiles, maxFiles = 5 }) => {
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,image/gif"
           onChange={handleFileChange}
           className="hidden"
         />

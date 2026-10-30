@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 # Logs
 logs
 *.log
@@ -12,6 +14,8 @@ node_modules
 dist
 dist-ssr
 dist-store
+releases
+dist-store-current*
 
 *.local
 
@@ -25,3 +29,8 @@ dist-store
 *.njsproj
 *.sln
 *.sw?
+
+release-meta
+dist-admin
+dist-test
+.prerender-report.json

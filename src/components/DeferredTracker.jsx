@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { trackEvent } from '../utils/analytics';
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../hooks/useTagadaCheckout';
 
 const DeferredTracker = () => {
   const location = useLocation();
@@ -14,12 +15,17 @@ const DeferredTracker = () => {
     }
 
     const checkDeferredTracking = async () => {
-      const orderId = localStorage.getItem('solatide_last_order_id');
-      if (!orderId) return;
+      let orderId = null;
+      let accessToken = null;
+      try {
+        orderId = localStorage.getItem(LAST_ORDER_ID_KEY);
+        accessToken = localStorage.getItem(LAST_ORDER_TOKEN_KEY);
+      } catch { /* storage unavailable */ }
+      if (!orderId || !accessToken) return; // public order lookup requires the access token
 
       try {
         // Silently ask the backend for the order status
-        const res = await apiService.getOrderById(orderId);
+        const res = await apiService.getOrderById(`${encodeURIComponent(orderId)}?accessToken=${encodeURIComponent(accessToken)}`);
         const data = await res.json();
 
         if (res.ok && data.success && data.data && data.data.order) {
@@ -36,7 +42,6 @@ const DeferredTracker = () => {
               trackEvent('purchase', {
                 orderId: ord._id,
                 cartValue: ord.grandTotal || ord.totalAmount,
-                country: ord.shippingAddress?.country || ord.tagadaShipping?.address?.countryCode || undefined,
               });
 
               // 2. GTM DataLayer
@@ -61,10 +66,12 @@ const DeferredTracker = () => {
             }
 
             // We successfully processed this order. Remove it from local storage so we never check it again.
-            localStorage.removeItem('solatide_last_order_id');
+            localStorage.removeItem(LAST_ORDER_ID_KEY);
+            localStorage.removeItem(LAST_ORDER_TOKEN_KEY);
           } else if (ord.paymentStatus === 'failed') {
             // If it failed, just clear it out so we stop checking.
-            localStorage.removeItem('solatide_last_order_id');
+            localStorage.removeItem(LAST_ORDER_ID_KEY);
+            localStorage.removeItem(LAST_ORDER_TOKEN_KEY);
           }
         }
       } catch (err) {

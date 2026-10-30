@@ -14,7 +14,7 @@ export default function AboutSolatide() {
 
                     <div className="w-full lg:w-[45%] shrink-0 relative">
                         <div className="rounded-[24px] overflow-hidden shadow-lg border border-slate-100/30 aspect-[4/3] sm:aspect-[1.1] lg:aspect-[1.05]">
-                            <img src={lab} loading="lazy" decoding="async" className="w-full h-full object-cover select-none" />
+                            <img src={lab} alt="Solatide Biosciences research laboratory" loading="lazy" decoding="async" className="w-full h-full object-cover select-none" />
                         </div>
                         <div className="absolute bottom-6 left-6 bg-white rounded-full px-4 py-2.5 shadow-md flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-[#00ADEE]"></div>
@@ -26,12 +26,12 @@ export default function AboutSolatide() {
 
                     <div className="w-full lg:w-[50%] flex flex-col text-left justify-center pt-2">
                         <div className="flex items-center gap-2 mb-3">
-                            <span className="text-[#00E5FF] text-[14px] font-bold tracking-normal normal-case align-middle leading-none font-['Poppins',sans-serif]">
+                            <span className="text-[#00E5FF] text-[14px] font-bold tracking-normal normal-case align-middle leading-none font-['Poppins','Poppins_Fallback',sans-serif]">
                                 About Solatide
                             </span>
                         </div>
 
-                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu',sans-serif] mb-6">
+                        <h2 className="text-[36px] sm:text-[48px] font-bold text-[#1E1E1E] leading-[1.1] tracking-tight font-['Anek_Telugu','Anek_Telugu_Fallback',sans-serif] mb-6">
                             Built on Science.<br />
                             <span className="text-[#1a4494]">Driven by Trust.</span>
                         </h2>
@@ -76,9 +76,7 @@ export default function AboutSolatide() {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <Link to="/collections/all">
-                                <CommonButton title="Explore Products" width="180px" showArrow={true} />
-                            </Link>
+                            <CommonButton to="/collections/all" title="Explore Products" width="180px" showArrow={true} />
                             <Link
                                 to="/pages/coa-lab-testing"
                                 className="text-[#1a4494] font-bold text-[14px] hover:underline px-2 py-2 text-center sm:text-left"

@@ -129,7 +129,7 @@ const AdminProductsImportPage = () => {
   };
 
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       {/* Top Breadcrumb */}
       <div className="flex items-center gap-4">
         <Link

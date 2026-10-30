@@ -1,17 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
+/**
+ * Gradient call-to-action. Pass `to` to render a real link (<a>) styled as a button —
+ * never wrap this component in a <Link>, which would nest <button> inside <a> (invalid HTML).
+ */
 const CommonButton = ({
     title,
     width = "w-[200px]",
     onClick,
     type = "button",
     className = "",
+    to,
 }) => {
-    return (
-        <button
-            type={type}
-            onClick={onClick}
-            className={`
+    const classes = `
         ${width}
         h-[46px]
         rounded-[14px]
@@ -32,10 +34,25 @@ const CommonButton = ({
         duration-300
         hover:opacity-90
         ${className}
-      `}
-        >
+      `;
+    const content = (
+        <>
             <span>{title}</span>
             <span>→</span>
+        </>
+    );
+
+    if (to) {
+        return (
+            <Link to={to} onClick={onClick} className={classes}>
+                {content}
+            </Link>
+        );
+    }
+
+    return (
+        <button type={type} onClick={onClick} className={classes}>
+            {content}
         </button>
     );
 };

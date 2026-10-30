@@ -11,6 +11,19 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// Storefront customer authentication (excludes adminToken to avoid pre-filling admin credentials on checkout)
+const getCustomerAuthHeaders = () => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+// Public product GETs stay anonymous on the storefront (cacheable public projection: active
+// products only, no internal fields). Inside the admin panel the same endpoints need the staff
+// token so drafts and internal fields (stock thresholds, cost, sync state…) are returned.
+const adminContextHeaders = () => (
+  typeof window !== 'undefined' && window.location.pathname.startsWith('/admin') ? getAuthHeaders() : {}
+);
+
 const customFetch = async (url, options = {}) => {
   const response = await fetch(url, options);
   if (response.status === 401) {
@@ -27,16 +40,18 @@ const customFetch = async (url, options = {}) => {
 export const apiService = {
   // Products
   getProducts: async (queryParams = '') => {
-    return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`);
+    return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`, {
+      headers: { ...adminContextHeaders() }
+    });
   },
   getPublicCollections: async () => {
     return customFetch(`${API_URL}/api/products/collections`);
   },
   getProductById: async (id, options = {}) => {
-    return customFetch(`${API_URL}/api/products/${id}`, options);
+    return customFetch(`${API_URL}/api/products/${id}`, { ...options, headers: { ...adminContextHeaders(), ...(options.headers || {}) } });
   },
   getProductBySlug: async (slug, options = {}) => {
-    return customFetch(`${API_URL}/api/products/${slug}`, options);
+    return customFetch(`${API_URL}/api/products/${slug}`, { ...options, headers: { ...adminContextHeaders(), ...(options.headers || {}) } });
   },
   getPublicCoas: async () => {
     return customFetch(`${API_URL}/api/v1/coas`);
@@ -75,25 +90,6 @@ export const apiService = {
       headers: { ...getAuthHeaders() }
     });
   },
-  // Tagada Sync
-  getTagadaSyncHistory: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync-history`, {
-      method: 'GET',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  getTagadaSyncPreview: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync-preview`, {
-      method: 'GET',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  runTagadaSync: async () => {
-    return customFetch(`${API_URL}/api/admin/tagada/products/sync`, {
-      method: 'POST',
-      headers: { ...getAuthHeaders() }
-    });
-  },
   saveProduct: async (id, data) => {
     return customFetch(`${API_URL}/api/products${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',
@@ -103,12 +99,6 @@ export const apiService = {
   },
   deleteProduct: async (id) => {
     return customFetch(`${API_URL}/api/products/${id}`, {
-      method: 'DELETE',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  deleteAllProducts: async () => {
-    return customFetch(`${API_URL}/api/products`, {
       method: 'DELETE',
       headers: { ...getAuthHeaders() }
     });
@@ -178,14 +168,14 @@ export const apiService = {
   createOrder: async (data) => {
     return customFetch(`${API_URL}/api/v1/orders`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
       body: JSON.stringify(data)
     });
   },
   createTagadaPayment: async (data) => {
     return customFetch(`${API_URL}/api/payments/tagada/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
       body: JSON.stringify(data)
     });
   },
@@ -193,6 +183,35 @@ export const apiService = {
     return customFetch(`${API_URL}/api/v1/orders/${id}`, {
       headers: { ...getAuthHeaders() }
     });
+  },
+  // Storefront checkout (mode chosen in Admin → Settings → Checkout mode)
+  getCheckoutConfig: async () => {
+    return customFetch(`${API_URL}/api/checkout/config`);
+  },
+  // Discount code "Apply" on our checkout: { code, items, email? } → { code, amount, label } or a reason
+  previewDiscount: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/discount`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  },
+  submitOrderRequest: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/order-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  },
+  placeBankOrder: async (data) => {
+    return customFetch(`${API_URL}/api/checkout/bank-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  },
+  getBankOrder: async (id, accessToken) => {
+    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?accessToken=${encodeURIComponent(accessToken)}`);
   },
   syncOrderWithTagada: async (id) => {
     return customFetch(`${API_URL}/api/payments/tagada/sync/${id}`, {
@@ -214,11 +233,10 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
-  testTagadaConnection: async (data) => {
+  // GET (server route) — tests the SAVED credentials
+  testTagadaConnection: async () => {
     return customFetch(`${API_URL}/api/admin/settings/tagada/test`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify(data)
+      headers: { ...getAuthHeaders() }
     });
   },
 
@@ -281,6 +299,30 @@ export const apiService = {
   },
   updateStoreSettings: async (data) => {
     return customFetch(`${API_URL}/api/admin/settings/store`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(data)
+    });
+  },
+  getCheckoutMode: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/checkout-mode`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateCheckoutMode: async (mode) => {
+    return customFetch(`${API_URL}/api/admin/settings/checkout-mode`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify({ mode })
+    });
+  },
+  getBankTransferSettings: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/bank-transfer`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  updateBankTransferSettings: async (data) => {
+    return customFetch(`${API_URL}/api/admin/settings/bank-transfer`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(data)
@@ -416,6 +458,11 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  getAdminOrderRequest: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/requests/${encodeURIComponent(id)}`, {
+      headers: getAuthHeaders(),
+    });
+  },
   createAdminOrder: async (payload) => {
     return customFetch(`${API_URL}/api/admin/order`, {
       method: 'POST',
@@ -466,6 +513,12 @@ export const apiService = {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(payload)
+    });
+  },
+  sendAdminOrderConfirmation: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/send-confirmation`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
     });
   },
   updateAdminOrder: async (id, payload) => {
@@ -537,12 +590,6 @@ export const apiService = {
   },
 
   // ─── Discounts (Admin) ─────────────────────────────────────────────────────────
-  syncAdminDiscountsFromTagada: async () => {
-    return customFetch(`${API_URL}/api/admin/discount/sync-from-tagada`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-    });
-  },
   getAdminDiscounts: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/discount${queryString ? `?${queryString}` : ''}`, {
       method: 'GET',
@@ -609,6 +656,13 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  // Same search as the customer list (empty = all customers)
+  exportAdminCustomersCsv: async (search = '') => {
+    return customFetch(`${API_URL}/api/admin/customer/export/csv${search ? `?search=${encodeURIComponent(search)}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
 
   // ─── Shipping Packages ──────────────────────────────────────────────────────
   getShippingPackages: async () => {
@@ -641,6 +695,28 @@ export const apiService = {
     return customFetch(`${API_URL}/api/admin/shipping/packages/${id}/default`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
+    });
+  },
+
+  // ─── Redirects (Admin) — no delete: redirects are disabled, never removed ──────
+  getAdminRedirects: async (queryString = '') => {
+    return customFetch(`${API_URL}/api/admin/redirects${queryString ? `?${queryString}` : ''}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  createAdminRedirect: async (payload) => {
+    return customFetch(`${API_URL}/api/admin/redirects`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  updateAdminRedirect: async (id, payload) => {
+    return customFetch(`${API_URL}/api/admin/redirects/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
     });
   },
 

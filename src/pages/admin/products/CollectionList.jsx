@@ -18,24 +18,40 @@ const CollectionList = () => {
   const toast = useToast();
   const confirm = useConfirm();
 
+  // Filter collections client-side for immediate feedback
+  const filteredCollections = collections.filter(col =>
+    col.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (col.description && col.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const selectableCollections = filteredCollections.filter(c => c.slug !== 'all');
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedCollections(filteredCollections.map(c => c._id));
+      setSelectedCollections(selectableCollections.map(c => c._id));
     } else {
       setSelectedCollections([]);
     }
   };
 
   const handleSelectCollection = (id) => {
+    const target = collections.find(c => c._id === id);
+    if (target?.slug === 'all') return;
     setSelectedCollections(prev => 
       prev.includes(id) ? prev.filter(cId => cId !== id) : [...prev, id]
     );
   };
 
   const handleDeleteSelected = async () => {
+    const validIds = selectedCollections.filter(id => {
+      const col = collections.find(c => c._id === id);
+      return col && col.slug !== 'all';
+    });
+    if (validIds.length === 0) return;
+
     const isConfirmed = await confirm({
       title: 'Delete Collections?',
-      description: `Are you sure you want to delete the selected ${selectedCollections.length} collections?`,
+      description: `Are you sure you want to delete the selected ${validIds.length} collections?`,
       confirmLabel: 'Delete Collections',
       variant: 'danger'
     });
@@ -44,13 +60,13 @@ const CollectionList = () => {
 
     try {
       let successCount = 0;
-      for (const id of selectedCollections) {
+      for (const id of validIds) {
         const response = await apiService.deleteCollection(id);
         if (response.ok || response.status === 204) {
           successCount++;
         }
       }
-      setCollections(collections.filter(c => !selectedCollections.includes(c._id)));
+      setCollections(collections.filter(c => !validIds.includes(c._id)));
       setSelectedCollections([]);
       toast.success(`Successfully deleted ${successCount} collections.`);
     } catch (err) {
@@ -141,14 +157,8 @@ const CollectionList = () => {
     );
   };
 
-  // Filter collections client-side for immediate feedback
-  const filteredCollections = collections.filter(col =>
-    col.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (col.description && col.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   return (
-    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="space-y-6 text-left font-sans" style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}>
       {/* Top Header Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -209,7 +219,7 @@ const CollectionList = () => {
                     <th className="py-3 pl-6 w-12">
                       <input 
                         type="checkbox" 
-                        checked={selectedCollections.length === filteredCollections.length && filteredCollections.length > 0} 
+                        checked={selectedCollections.length === selectableCollections.length && selectableCollections.length > 0} 
                         onChange={handleSelectAll} 
                         className="rounded cursor-pointer h-4 w-4 accent-slate-800" 
                       />
@@ -243,7 +253,7 @@ const CollectionList = () => {
                     <th className="py-4 pl-6 w-12">
                       <input 
                         type="checkbox" 
-                        checked={selectedCollections.length === filteredCollections.length && filteredCollections.length > 0}
+                        checked={selectedCollections.length === selectableCollections.length && selectableCollections.length > 0}
                         onChange={handleSelectAll}
                         className="rounded border-slate-350 cursor-pointer h-4 w-4" 
                       />
@@ -262,9 +272,10 @@ const CollectionList = () => {
                     <td className="py-4 pl-6">
                       <input 
                         type="checkbox" 
+                        disabled={col.slug === 'all'}
                         checked={selectedCollections.includes(col._id)}
                         onChange={() => handleSelectCollection(col._id)}
-                        className={`rounded cursor-pointer h-4 w-4 ${selectedCollections.includes(col._id) ? 'accent-slate-800' : 'border-slate-350'}`} 
+                        className={`rounded cursor-pointer h-4 w-4 disabled:opacity-20 disabled:cursor-not-allowed ${selectedCollections.includes(col._id) ? 'accent-slate-800' : 'border-slate-350'}`} 
                       />
                     </td>
                     <td className="py-4 pl-2 font-medium text-slate-900">
@@ -277,13 +288,20 @@ const CollectionList = () => {
                           )}
                         </div>
                         <div className="flex flex-col text-left">
-                          <Link 
-                            to={`/admin/products/collections/edit/${col._id}`}
-                            className="font-bold text-slate-900 hover:text-brand-blue transition-colors text-[14px]"
-                          >
-                            {col.name}
-                          </Link>
-                          <span className="text-slate-400 text-[12px] font-normal font-mono">/{col.slug}</span>
+                          <div className="flex items-center gap-2">
+                            <Link 
+                              to={`/admin/products/collections/edit/${col._id}`}
+                              className="font-bold text-slate-900 hover:text-brand-blue transition-colors text-[14px]"
+                            >
+                              {col.name}
+                            </Link>
+                            {col.slug === 'all' && (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500 uppercase tracking-wider">
+                                All Catalog
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-slate-400 text-[12px] font-normal font-mono">/collections/{col.slug}</span>
                         </div>
                       </div>
                     </td>
@@ -313,7 +331,7 @@ const CollectionList = () => {
                       )}
                     </td>
                     <td className="py-4 pr-6 text-right">
-                        <div className="flex justify-end gap-3">
+                        <div className="flex justify-end items-center gap-3">
                           <Link
                             to={`/admin/products/collections/edit/${col._id}`}
                             className="text-brand-blue hover:text-blue-800 font-semibold text-[13px]"
@@ -321,12 +339,14 @@ const CollectionList = () => {
                             Edit
                           </Link>
                           {adminUser?.role === 'super_admin' && (
-                            <button
-                              onClick={() => handleDelete(col._id, col.name)}
-                              className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
-                            >
-                              Delete
-                            </button>
+                            col.slug !== 'all' ? (
+                              <button
+                                onClick={() => handleDelete(col._id, col.name)}
+                                className="text-red-500 hover:text-red-700 font-semibold text-[13px] cursor-pointer focus:outline-none"
+                              >
+                                Delete
+                              </button>
+                            ) : null
                           )}
                         </div>
                     </td>

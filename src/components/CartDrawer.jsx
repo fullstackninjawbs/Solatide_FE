@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 import { useTagadaCheckout } from '../hooks/useTagadaCheckout';
+import { loadCheckoutConfig } from '../hooks/useCheckoutConfig';
 
 const CartDrawer = () => {
     const {
@@ -64,7 +65,7 @@ const CartDrawer = () => {
             <div
                 ref={drawerRef}
                 className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-[1001] transform transition-transform duration-300 ease-in-out flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}
-                style={{ fontFamily: 'Poppins' }}
+                style={{ fontFamily: 'Poppins, "Poppins Fallback", sans-serif' }}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
@@ -76,6 +77,7 @@ const CartDrawer = () => {
                     </div>
                     <button
                         onClick={() => setIsCartOpen(false)}
+                        aria-label="Close cart"
                         className="text-slate-400 hover:text-[#1E1E1E] transition-colors focus:outline-none"
                     >
                         <X size={20} />
@@ -180,7 +182,14 @@ const CartDrawer = () => {
                         </p>
                         {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
                         <button
-                            onClick={() => {
+                            onClick={async () => {
+                                // Order Request / Bank Transfer (Admin → Settings → Checkout mode) → our checkout page; Tagada as before
+                                const cfg = await loadCheckoutConfig().catch(() => null);
+                                if (!cfg || cfg.mode !== 'tagada') {
+                                    setIsCartOpen(false);
+                                    navigate('/checkout');
+                                    return;
+                                }
                                 initiateCheckout(cartItems);
                             }}
                             disabled={isCheckingOut}

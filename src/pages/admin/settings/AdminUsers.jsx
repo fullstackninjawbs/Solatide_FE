@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { apiService } from '../../../services/api';
 import { useConfirm } from '../../../components/admin/feedback/ConfirmProvider';
@@ -16,8 +16,107 @@ import {
   Trash2,
   Users,
   ChevronDown,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
+
+// Mirrors Server/src/config/roles.ts + adminUserController — update both together.
+const ROLE_INFO = [
+  {
+    role: 'Super Admin',
+    tagline: 'Full access',
+    iconClass: 'text-amber-500',
+    points: [
+      'Everything an Admin can do',
+      'Checkout mode and bank / PayID payment details',
+      'Delete / Archive products, batches, collections, FAQ sections, discounts and shipping packages',
+      'Add, edit and remove any admin user, including Super Admins',
+      'Change roles, and other users’ emails and passwords',
+    ],
+  },
+  {
+    role: 'Admin',
+    tagline: 'Runs the store day to day',
+    iconClass: 'text-brand-cyan',
+    points: [
+      'Orders: view, ship, mark paid, cancel, refund and create orders',
+      'Products, inventory, batches, collections and discounts',
+      'Customers (incl. export), content, SEO, growth and analytics',
+      'Store settings and shipping packages',
+      'Add other Admins; change their own email and password',
+      'Cannot change payment settings, delete / archive products and other records, edit Super Admins or remove users',
+    ],
+  },
+];
+
+const RoleInfo = () => {
+  const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!pinned) return;
+    const close = (e) => {
+      if (e.type === 'keydown' ? e.key === 'Escape' : !ref.current?.contains(e.target)) {
+        setPinned(false);
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, [pinned]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative inline-flex"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => !pinned && setOpen(false)}
+    >
+      <button
+        type="button"
+        onClick={() => { setPinned(!pinned); setOpen(!pinned); }}
+        className="p-1 text-slate-400 hover:text-brand-cyan rounded-lg transition-colors"
+        aria-label="What can Admins and Super Admins do?"
+        aria-expanded={open}
+      >
+        <Info size={18} />
+      </button>
+
+      {open && (
+        <div
+          role="tooltip"
+          className="fixed inset-x-4 top-24 max-h-[70vh] overflow-y-auto sm:absolute sm:inset-x-auto sm:left-0 sm:top-full sm:max-h-none sm:overflow-visible sm:w-[560px] mt-2 z-50 bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-5"
+        >
+          <p className="text-[13px] font-bold text-slate-800 mb-3">What each role can do</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {ROLE_INFO.map((r) => (
+              <div key={r.role}>
+                <div className="flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-wider text-slate-700">
+                  <Shield size={12} className={r.iconClass} />
+                  {r.role}
+                </div>
+                <p className="text-[12px] text-slate-400 mt-0.5 mb-2">{r.tagline}</p>
+                <ul className="space-y-1.5">
+                  {r.points.map((p) => (
+                    <li key={p} className="flex gap-2 text-[13px] leading-snug text-slate-600">
+                      <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-slate-300" />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const AdminUsers = () => {
   const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
@@ -166,7 +265,10 @@ const AdminUsers = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-navy tracking-tight">Admin Users</h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-2xl font-bold text-brand-navy tracking-tight">Admin Users</h1>
+            <RoleInfo />
+          </div>
           <p className="text-[14px] text-slate-500 mt-1">
             Manage dashboard access and user permissions.
           </p>

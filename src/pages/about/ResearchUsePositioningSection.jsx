@@ -63,9 +63,7 @@ const ResearchUsePositioningSection = () => {
                         </ul>
 
                         <div className="mt-8 flex flex-wrap items-center gap-4">
-                            <Link to="/collections/all">
-                                <CommonButton title="View Products" width="180px" showArrow={true} />
-                            </Link>
+                            <CommonButton to="/collections/all" title="View Products" width="180px" showArrow={true} />
                             <Link to="/pages/coa-lab-testing" className="text-[#1a4494] font-bold text-[14px] hover:underline">
                                 View documentation process
                             </Link>

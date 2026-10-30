@@ -74,6 +74,7 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
           {/* Prev Button */}
           <button
             onClick={() => handlePageChange(currentPage - 1)}
+            aria-label="Previous reviews page"
             disabled={currentPage === 1}
             className="w-8 h-8 flex items-center justify-center rounded bg-slate-200/60 text-slate-400 hover:bg-slate-200 hover:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -88,6 +89,8 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
+                aria-label={`Reviews page ${page}`}
+                aria-current={currentPage === page ? 'page' : undefined}
                 className={`w-8 h-8 flex items-center justify-center rounded border text-[13px] font-medium transition-colors ${
                   currentPage === page 
                     ? 'border-[#0079CD] text-[#0079CD] bg-white' 
@@ -102,6 +105,7 @@ const ReviewList = ({ reviews = [], isLoading, onWriteReview }) => {
           {/* Next Button */}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
+            aria-label="Next reviews page"
             disabled={currentPage === totalPages}
             className="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed"
           >

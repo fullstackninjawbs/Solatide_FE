@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ROBOTS_INDEX } from '../../utils/seo';
 
 const GLP1ResearchOverview = () => {
     return (
@@ -12,6 +13,22 @@ const GLP1ResearchOverview = () => {
                     content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
                 />
                 <link rel="canonical" href="https://solatidebiosciences.com.au/pages/glp-1-research-overview" />
+                <meta name="robots" content={ROBOTS_INDEX} />
+                <meta property="og:title" content="GLP-1 Research Overview | Solatide Biosciences" />
+                <meta
+                    property="og:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta property="og:url" content="https://solatidebiosciences.com.au/pages/glp-1-research-overview" />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="GLP-1 Research Overview | Solatide Biosciences" />
+                <meta
+                    name="twitter:description"
+                    content="Research guide and scientific reference provided by Solatide Biosciences for laboratory investigation purposes only."
+                />
+                <meta name="twitter:image" content="https://solatidebiosciences.com.au/assets/logo.webp" />
             </Helmet>
 
             <div className="shopify-page-container">
@@ -117,7 +134,7 @@ const GLP1ResearchOverview = () => {
                 <h2><strong>Combination Research Models: Cagrilintide and Semaglutide</strong></h2>
                 <p>An emerging area of GLP-1 receptor research involves combination models that pair GLP-1 receptor agonists with compounds targeting adjacent receptor systems. Cagrilintide, a long-acting amylin analogue, engages the amylin receptor, a structurally distinct receptor class formed by calcitonin receptor and RAMP heterodimers, and has been studied in parallel with semaglutide in preclinical laboratory models.</p>
                 <p>The rationale for this combination approach centres on the hypothesis that GLP-1 receptor agonism and amylin receptor agonism may engage complementary or partially overlapping downstream signalling nodes. Studying both systems concurrently allows researchers to examine whether the two pathways exhibit additive, synergistic, or independent effects in cellular and in vivo experimental models. This dual-pathway framework is of particular interest in metabolic signalling research, where integrated receptor crosstalk is increasingly recognised as a determinant of experimental outcomes.</p>
-                <p>Pre-blended research materials that combine both compounds in a fixed ratio provide a practical tool for investigators designing combination-model studies, reducing preparation variability and supporting reproducibility across experimental runs. Researchers can explore <Link to="/products/cagrisema-10mg">CagriSema 10mg</Link> as a pre-blended GLP-1 and amylin receptor research material, review the <Link to="/pages/cagrisema-research-overview">CagriSema research overview</Link> for a full compound framework reference, or consult the <Link to="/pages/research-insights/cagrilintide-semaglutide-dual-receptor-synergies">Cagrilintide and Semaglutide: Dual-Receptor Synergies</Link> research article for a detailed overview of this combination research area.</p>
+                <p>Pre-blended research materials that combine both compounds in a fixed ratio provide a practical tool for investigators designing combination-model studies, reducing preparation variability and supporting reproducibility across experimental runs. Researchers can explore <Link to="/products/cagrisema-10mg">CagriSema 10mg</Link> as a pre-blended GLP-1 and amylin receptor research material, review the <Link to="/pages/cagrisema-research-overview">CagriSema research overview</Link> for a full compound framework reference, or consult the <Link to="/pages/cagrisema-comparison-guide">CagriSema Comparison Guide</Link> for a detailed overview of this combination research area.</p>
                 <hr />
                 <h2>Related Research Resources</h2>
                 <ul>

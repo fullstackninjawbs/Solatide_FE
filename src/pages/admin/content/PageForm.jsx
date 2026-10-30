@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import UrlRedirectNotice from '../../../components/admin/UrlRedirectNotice';
 import { ChevronLeft, Save, Globe, EyeOff } from 'lucide-react';
 import JoditEditor from 'jodit-react';
 import { apiService } from '../../../services/api';
@@ -29,6 +30,8 @@ const PageForm = () => {
   });
 
   const [slugDirty, setSlugDirty] = useState(false);
+  // URL handle as saved (for the redirect notice; kept out of the page payload)
+  const [loadedSlug, setLoadedSlug] = useState('');
 
   useEffect(() => {
     if (isEditing) {
@@ -42,6 +45,7 @@ const PageForm = () => {
       const res = await apiService.getAdminPageById(id);
       const data = await res.json();
       setPage(data);
+      setLoadedSlug(data?.slug || '');
       setSlugDirty(true); // Don't auto-generate slug if editing
     } catch (err) {
       toast.error('Failed to load page');
@@ -134,36 +138,47 @@ const PageForm = () => {
     }
   };
 
+  // Created once: jodit-react destroys and recreates the editor whenever the config object
+  // changes. An inline config was rebuilt on every content update, so the first paste (which
+  // blurs the editor and saves its content) recreated the editor and the pasted HTML was lost.
+  const joditConfig = useMemo(() => ({
+    readonly: false,
+    toolbarButtonSize: 'middle',
+    buttons: [
+      'source', '|',
+      'bold', 'italic', 'underline', 'strikethrough', '|',
+      'ul', 'ol', '|',
+      'outdent', 'indent', 'align', '|',
+      'font', 'fontsize', 'brush', 'paragraph', 'classSpan', '|',
+      'table', 'link', 'image', '|',
+      'hr', 'eraser', 'copyformat', '|',
+      'fullsize', 'undo', 'redo'
+    ],
+    height: 600,
+    width: '100%',
+    placeholder: 'Start writing your page content...',
+    style: { background: '#fff', color: '#333', width: '100%' },
+    // Paste HTML directly, keeping classes/structure that CMS page styles rely on (no
+    // "Paste as HTML?" prompt). Word content is still cleaned. The server sanitizes on save.
+    askBeforePasteHTML: false,
+    askBeforePasteFromWord: false,
+    defaultActionOnPaste: 'insert_as_html',
+    defaultActionOnPasteFromWord: 'insert_clear_html'
+  }), []);
+
   const memoizedEditor = useMemo(() => {
     return (
       <JoditEditor
         ref={editorRef}
         value={page.content.html}
-        config={{
-          readonly: false,
-          toolbarButtonSize: 'middle',
-          buttons: [
-            'source', '|',
-            'bold', 'italic', 'underline', 'strikethrough', '|',
-            'ul', 'ol', '|',
-            'outdent', 'indent', 'align', '|',
-            'font', 'fontsize', 'brush', 'paragraph', 'classSpan', '|',
-            'table', 'link', 'image', '|',
-            'hr', 'eraser', 'copyformat', '|',
-            'fullsize', 'undo', 'redo'
-          ],
-          height: 600,
-          width: '100%',
-          placeholder: 'Start writing your page content...',
-          style: { background: '#fff', color: '#333', width: '100%' }
-        }}
+        config={joditConfig}
         onBlur={(newContent) => setPage(prev => ({
           ...prev,
           content: { ...prev.content, html: newContent }
         }))}
       />
     );
-  }, [page.content?.html]);
+  }, [page.content?.html, joditConfig]);
 
   if (loading) {
     return (
@@ -190,7 +205,7 @@ const PageForm = () => {
             </h2>
             {isEditing && (
               <a
-                href={`/pages/${page.slug}`}
+                href={`${import.meta.env.VITE_STOREFRONT_URL}/pages/${page.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[13px] text-[#0079CD] hover:underline mt-1 inline-flex items-center gap-1 font-semibold"
@@ -317,6 +332,7 @@ const PageForm = () => {
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-r-lg focus:ring-1 focus:ring-brand-navy outline-none text-[14px]"
                 />
               </div>
+              <UrlRedirectNotice base="/pages" originalSlug={loadedSlug} currentSlug={page.slug} />
             </div>
 
           </div>

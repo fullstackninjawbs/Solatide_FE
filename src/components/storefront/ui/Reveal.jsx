@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { isPrerendering } from '../../../utils/routeData';
 
 /**
  * A reusable wrapper component that reveals its children with an animation
@@ -29,10 +30,13 @@ const Reveal = ({ children, delay = 0, direction = 'up', width = '100%', classNa
   };
 
   return (
-    <div style={{ width }} className={className}>
+    <div style={{ width }} className={className} suppressHydrationWarning>
       <motion.div
         variants={getVariants()}
-        initial="hidden"
+        // Prerendered HTML is captured with the final ("visible") styles so content is readable
+        // without JavaScript (L-4). Only inline style attributes differ from the client's first
+        // render, which React does not treat as a structural hydration mismatch.
+        initial={isPrerendering() ? false : 'hidden'}
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.5, delay: delay, ease: [0.17, 0.55, 0.55, 1] }}

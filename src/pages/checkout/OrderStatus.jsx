@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
+
+// GET /api/v1/orders/:id requires the order's access token (?accessToken=). It comes from the
+// link (?accessToken=) or, for the browser that placed the order, from localStorage.
+const readStoredToken = (orderId) => {
+    try {
+        return localStorage.getItem(LAST_ORDER_ID_KEY) === orderId ? localStorage.getItem(LAST_ORDER_TOKEN_KEY) : null;
+    } catch {
+        return null;
+    }
+};
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 
 const OrderStatus = () => {
     const { orderId } = useParams();
+    const [searchParams] = useSearchParams();
+    const accessToken = searchParams.get('accessToken') || readStoredToken(orderId);
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -13,12 +26,17 @@ const OrderStatus = () => {
         const fetchOrder = async () => {
             try {
                 setLoading(true);
-                const res = await apiService.getOrderById(orderId);
+                const query = accessToken ? `?accessToken=${encodeURIComponent(accessToken)}` : '';
+                const res = await apiService.getOrderById(`${encodeURIComponent(orderId)}${query}`);
                 const data = await res.json();
                 if (data.success) {
                     setOrder(data.data.order);
                 } else {
-                    setError('Order not found');
+                    if (!accessToken) {
+                        setError('This order link is missing its access token.');
+                    } else {
+                        setError(data.message || 'Order not found');
+                    }
                 }
             } catch (err) {
                 console.error('Failed to fetch order:', err);
@@ -31,7 +49,7 @@ const OrderStatus = () => {
         if (orderId) {
             fetchOrder();
         }
-    }, [orderId]);
+    }, [orderId, accessToken]);
 
     if (loading) {
         return (
@@ -60,6 +78,9 @@ const OrderStatus = () => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: displayCurrency }).format(amount);
     };
 
+    // Bank transfer / PayID order not paid yet (our own checkout)
+    const awaitingPayment = order.paymentStatus === 'pending' && ['payid', 'bank_transfer', 'international_bank_transfer'].includes(order.paymentMethod);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans pb-16">
             {/* Header */}
@@ -74,7 +95,7 @@ const OrderStatus = () => {
                         <h1 className="text-[22px] text-gray-900 font-normal">
                             Order <span className="font-medium">#{order.orderNumber}</span>
                         </h1>
-                        <p className="text-[13px] text-gray-500 mt-1">Confirmed {orderDate}</p>
+                        <p className="text-[13px] text-gray-500 mt-1">{awaitingPayment ? 'Placed' : 'Confirmed'} {orderDate}</p>
                     </div>
                     <Link to="/collections/all" className="bg-[#102a5c] text-white rounded-lg shadow-md px-6 py-2.5 text-[14px] font-semibold hover:bg-[#0c2048] transition-all duration-200">
                         Buy again
@@ -96,7 +117,7 @@ const OrderStatus = () => {
                     </div>
                     <div className="w-full">
                         <h2 className="text-[18px] font-bold text-[#102a5c]">
-                            {order.trackingNumber ? "Shipped" : "Confirmed"}
+                            {order.trackingNumber ? "Shipped" : awaitingPayment ? "Awaiting payment" : "Confirmed"}
                         </h2>
                         {order.trackingNumber ? (
                             <>
@@ -118,7 +139,16 @@ const OrderStatus = () => {
                                 </div>
                             </>
                         ) : (
-                            <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
+                            awaitingPayment ? (
+                                <>
+                                    <p className="text-[14px] text-gray-600 mt-1">Your order will be processed once your payment has been received and matched to your order.</p>
+                                    {accessToken && (
+                                        <Link to={`/checkout/payment/${order._id}?accessToken=${encodeURIComponent(accessToken)}`} className="inline-block mt-3 bg-[#102a5c] text-white rounded-md px-4 py-2 text-[13px] font-semibold">View payment details</Link>
+                                    )}
+                                </>
+                            ) : (
+                                <p className="text-[14px] text-gray-600 mt-1">We're preparing these items for shipping.</p>
+                            )
                         )}
                         <p className="text-[13px] text-gray-400 mt-2 hidden">{orderDate}</p>
                     </div>
@@ -178,18 +208,18 @@ const OrderStatus = () => {
 
                 {/* Customer Information Card */}
                 <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
-                    <div className="flex px-5 py-4 border-b border-gray-100">
-                        <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium">Contact</div>
-                        <div className="text-[14px] text-gray-900">{order.customerEmail || order.customer?.email}</div>
-                    </div>
+                    {/* Guests receive a minimal projection (no email/phone/street/zip/state). */}
+                    {(order.customerEmail || order.customer?.email) && (
+                        <div className="flex px-5 py-4 border-b border-gray-100">
+                            <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium">Contact</div>
+                            <div className="text-[14px] text-gray-900">{order.customerEmail || order.customer?.email}</div>
+                        </div>
+                    )}
                     <div className="flex px-5 py-4 border-b border-gray-100">
                         <div className="w-[120px] shrink-0 text-[13px] text-gray-500 font-medium pt-1">Ship to</div>
                         <div className="text-[14px] text-gray-900 leading-relaxed">
-                            {order.shippingAddressObj?.name || order.customer?.firstName + ' ' + order.customer?.lastName}<br />
-                            {order.shippingAddressObj?.street1 || ''}<br />
-                            {order.shippingAddressObj?.street2 ? <>{order.shippingAddressObj.street2}<br /></> : null}
-                            {order.shippingAddressObj?.city || ''}, {order.shippingAddressObj?.state || ''} {order.shippingAddressObj?.zip || ''}<br />
-                            {order.shippingAddressObj?.country || ''}
+                            {order.shippingAddressObj?.name || [order.customer?.firstName, order.customer?.lastName].filter(Boolean).join(' ')}<br />
+                            {[order.shippingAddressObj?.city, order.shippingAddressObj?.country].filter(Boolean).join(', ')}
                         </div>
                     </div>
                     <div className="flex px-5 py-4">

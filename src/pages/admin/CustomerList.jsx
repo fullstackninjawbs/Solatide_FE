@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import { Search, Users, Ban, CheckCircle } from 'lucide-react';
+import { Search, Users, Ban, CheckCircle, Download } from 'lucide-react';
 import Pagination from '../../components/Pagination';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
+import { useToast } from '../../components/admin/feedback/ToastProvider';
+import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
 const CustomerList = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +18,32 @@ const CustomerList = () => {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [searchQuery, setSearchQuery] = useState(urlQ);
+    const [exporting, setExporting] = useState(false);
     const debounceRef = useRef(null);
+    const toast = useToast();
+
+    // CSV of the customers matching the current search (all customers when there is none)
+    const handleExport = async () => {
+        setExporting(true);
+        try {
+            const response = await apiService.exportAdminCustomersCsv(urlQ);
+            if (!response.ok) throw new Error('Export failed');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `customers_export_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Export error:', err);
+            toast.error(getUserFriendlyErrorMessage(err, 'exportCustomers'));
+        } finally {
+            setExporting(false);
+        }
+    };
 
     // Sync input box when browser back/forward changes URL query
     useEffect(() => {
@@ -101,6 +128,16 @@ const CustomerList = () => {
                     </h1>
                     <p className="text-gray-500 mt-1">Manage your customer database and view their purchase history.</p>
                 </div>
+                <button
+                    type="button"
+                    onClick={handleExport}
+                    disabled={exporting}
+                    className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium border border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    title={urlQ ? `Export customers matching "${urlQ}" as CSV` : 'Export all customers as CSV'}
+                >
+                    <Download size={14} />
+                    {exporting ? 'Exporting…' : urlQ ? 'Export results' : 'Export'}
+                </button>
             </div>
 
             {/* Search and Filters */}
