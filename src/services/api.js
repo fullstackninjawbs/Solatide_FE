@@ -515,6 +515,12 @@ export const apiService = {
       body: JSON.stringify(payload)
     });
   },
+  sendAdminOrderConfirmation: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/send-confirmation`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   updateAdminOrder: async (id, payload) => {
     return customFetch(`${API_URL}/api/admin/order/${id}`, {
       method: 'PATCH',

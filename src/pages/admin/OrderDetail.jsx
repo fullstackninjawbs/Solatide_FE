@@ -149,14 +149,18 @@ const OrderDetail = () => {
     const bank = { payid: 'PayID', bank_transfer: 'bank transfer', international_bank_transfer: 'international bank transfer' }[order?.paymentMethod];
     if (bank && !window.confirm(`Confirm you have received $${Number(order.grandTotal ?? order.totalAmount ?? 0).toFixed(2)} AUD by ${bank} with reference ${order.orderNumber}?
 
-The order becomes Paid / Processing. No email is sent to the customer.`)) return false;
+The order becomes Paid / Processing and the customer is emailed their order confirmation.`)) return false;
     try {
       setUpdating(true);
       const res = await apiService.updateAdminOrderStatus(id, { paymentStatus: 'paid', status: 'processing' });
       const data = await res.json();
       if (res.ok && data.success) {
         setOrder(data.data.order);
-        toast.success('Order marked as paid');
+        toast.success('Order marked as paid — confirmation email is being sent');
+        // The email is sent in the background; reload shortly so its timeline entry shows
+        setTimeout(() => {
+          apiService.getAdminOrderById(id).then((r) => r.json()).then((d) => { if (d.success && d.data?.order) setOrder(d.data.order); }).catch(() => {});
+        }, 4000);
         return true;
       } else {
         toast.error(data.message || 'Update failed');
@@ -166,6 +170,27 @@ The order becomes Paid / Processing. No email is sent to the customer.`)) return
       console.error(err);
       toast.error('Network error');
       return false;
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleSendConfirmation = async () => {
+    const to = order.customer?.email || order.customerEmail;
+    if (!window.confirm(`Email the order confirmation for ${order.orderNumber} to ${to}?`)) return;
+    try {
+      setUpdating(true);
+      const res = await apiService.sendAdminOrderConfirmation(id);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success(data.message || 'Order confirmation sent');
+      } else {
+        toast.error(data.message || 'Could not send the email');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
     } finally {
       setUpdating(false);
     }
@@ -693,6 +718,17 @@ The order becomes Paid / Processing. No email is sent to the customer.`)) return
                       >
                         <Check size={14} />
                         Mark Paid
+                      </button>
+                    )}
+                    {['paid', 'partially_refunded'].includes(paymentStatus) && !isShopifyImport && customerEmail && (
+                      <button
+                        onClick={handleSendConfirmation}
+                        disabled={updating}
+                        title="Email the customer their order confirmation"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
+                      >
+                        <Mail size={14} />
+                        Send confirmation email
                       </button>
                     )}
                     {awaitingPayment && (
