@@ -177,7 +177,13 @@ The order becomes Paid / Processing and the customer is emailed their order conf
 
   const handleSendConfirmation = async () => {
     const to = order.customer?.email || order.customerEmail;
-    if (!window.confirm(`Email the order confirmation for ${order.orderNumber} to ${to}?`)) return;
+    // Already sent? Timeline entry (bank / PayID orders, or this button), or the automatic email when the order was paid
+    const lastSent = (order.comments || []).filter((c) => /^Order confirmation email sent to/.test(c.text || '')).at(-1);
+    const sentWhenPaid = (order.sideEffectStepsDone || []).includes('confirmation_email');
+    const already = lastSent
+      ? `The order confirmation was already sent on ${new Date(lastSent.createdAt).toLocaleString('en-AU', { timeZone: 'Australia/Sydney', dateStyle: 'medium', timeStyle: 'short' })} AEST.\n\n`
+      : sentWhenPaid ? 'The order confirmation was already sent automatically when this order was marked paid.\n\n' : '';
+    if (!window.confirm(`${already}Email the order confirmation for ${order.orderNumber} to ${to}${already ? ' again' : ''}?`)) return;
     try {
       setUpdating(true);
       const res = await apiService.sendAdminOrderConfirmation(id);
