@@ -203,6 +203,28 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     }
   };
 
+  // Bank transfer / PayID: email the payment instructions again
+  const handleResendPaymentDetails = async () => {
+    const to = order.customer?.email || order.customerEmail;
+    if (!window.confirm(`Email the payment details for ${order.orderNumber} to ${to} again?`)) return;
+    try {
+      setUpdating(true);
+      const res = await apiService.resendAdminPaymentDetails(id);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrder(data.data.order);
+        toast.success(data.message || 'Payment details sent');
+      } else {
+        toast.error(data.message || 'Could not send the email');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   // Bank transfer / PayID: cancel an unpaid order and give its reserved stock back
   const handleCancelUnpaid = async () => {
     if (!window.confirm(`Cancel order ${order.orderNumber}? The reserved stock is released. No email is sent to the customer.`)) return;
@@ -746,6 +768,17 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                       >
                         <Mail size={14} />
                         Send confirmation email
+                      </button>
+                    )}
+                    {awaitingPayment && customerEmail && (
+                      <button
+                        onClick={handleResendPaymentDetails}
+                        disabled={updating}
+                        title="Email the customer their payment instructions again"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
+                      >
+                        <Mail size={14} />
+                        Resend payment details
                       </button>
                     )}
                     {awaitingPayment && (
