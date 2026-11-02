@@ -156,7 +156,8 @@ The order becomes Paid / Processing and the customer is emailed their order conf
       const data = await res.json();
       if (res.ok && data.success) {
         setOrder(data.data.order);
-        toast.success('Order marked as paid — confirmation email is being sent');
+        const emailsCustomer = !order?.confirmationEmailOptOut && !order?.confirmationEmailSentAt;
+        toast.success(emailsCustomer ? 'Order marked as paid — confirmation email is being sent' : 'Order marked as paid');
         // The email is sent in the background; reload shortly so its timeline entry shows
         setTimeout(() => {
           apiService.getAdminOrderById(id).then((r) => r.json()).then((d) => { if (d.success && d.data?.order) setOrder(d.data.order); }).catch(() => {});
@@ -579,37 +580,47 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     );
   }
 
-  // Payment
+  // Payment. "Marked as paid" and sent confirmation emails are timeline entries (comments) written
+  // by the server, so the lines below only cover orders from before those entries existed.
+  const comments = order.comments || [];
+  const hasMarkedPaidEntry = comments.some((c) => /marked as paid by/.test(c.text || ''));
   if (isBankOrder) {
     addEvent(
       <span>Payment instructions ({bankLabel}, reference <span className="font-bold text-brand-navy">{order.orderNumber}</span>) were emailed{customerEmail ? ` to ${customerEmail}` : ''}.</span>,
       order.createdAt,
       true
     );
-    if (isPaid) {
+    if (isPaid && !hasMarkedPaidEntry) {
       addEvent(
         <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> {bankLabel} payment was confirmed by an admin.</span>,
         order.paidAt || order.updatedAt
       );
     }
-  } else if (isPaid || grandTotal > 0) {
-    addEvent(
-      <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed {order.source === 'admin_manual' ? 'manually by admin' : 'on Tagada Pay'}.</span>,
-      order.createdAt
-    );
-
-    let emailText = 'Confirmation email was sent.';
-    if (customerEmail && !isMissingCustomer) {
-      emailText = `Confirmation email was sent to ${customerName} (${customerEmail}).`;
-    } else if (customerEmail) {
-      emailText = `Confirmation email was sent to ${customerEmail}.`;
+  } else if (isPaid) {
+    if (!hasMarkedPaidEntry) {
+      addEvent(
+        <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed {order.source === 'admin_manual' ? 'manually by admin' : 'on Tagada Pay'}.</span>,
+        order.paidAt || order.createdAt
+      );
     }
 
-    addEvent(
-      <span>{emailText}</span>,
-      order.createdAt,
-      true
-    );
+    // Older orders (no confirmationEmailSentAt field) have no timeline entry for the email:
+    // show it when it was not switched off
+    const legacyOrder = order.confirmationEmailSentAt === undefined;
+    const hasEmailEntry = comments.some((c) => /^Order confirmation email sent to/.test(c.text || ''));
+    if (legacyOrder && !hasEmailEntry && !order.suppressConfirmationEmail) {
+      let emailText = 'Confirmation email was sent.';
+      if (customerEmail && !isMissingCustomer) {
+        emailText = `Confirmation email was sent to ${customerName} (${customerEmail}).`;
+      } else if (customerEmail) {
+        emailText = `Confirmation email was sent to ${customerEmail}.`;
+      }
+      addEvent(
+        <span>{emailText}</span>,
+        order.createdAt,
+        true
+      );
+    }
   }
 
   // Shipments
