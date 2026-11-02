@@ -9,7 +9,8 @@ import reportsIconWeb from '../../assets/icons/solatide_document_magnifying_glas
 import purityIcon from '../../assets/icons/solatide-icon-purity-identity.svg'
 import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg'
 import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
-import { useEffect } from 'react'
+import { Fragment } from 'react'
+import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageContent'
 
 // Each hero image is in a <picture> whose <source> only matches at its own breakpoint; the <img>
 // fallback is this 1×1 GIF. So phones never download the desktop image and desktops never
@@ -19,6 +20,13 @@ const BLANK_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAA
 // (without them the mobile hero pushed the text down ~450px: CLS 0.62 on mobile).
 const MOBILE_HERO_W = 644
 const MOBILE_HERO_H = 803
+const DESKTOP_HERO_W = 1672
+const DESKTOP_HERO_H = 941
+
+// Headline from the Hub: each line break becomes <br />
+const Lines = ({ text }) => String(text).split('\n').map((line, i) => (
+    <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>
+))
 
 const MobileEvidenceSection = () => (
     <section
@@ -106,18 +114,28 @@ const FeatureCards = () => (
 );
 
 const HeroSection = () => {
+    const { hero } = useHomepageContent()
+    // Images uploaded in the Hub replace the built-in ones (same slots, same sizing behaviour)
+    const desktop = hero.desktopImage
+        ? { src: cloudinarySized(hero.desktopImage.url, 2000), w: hero.desktopImage.width, h: hero.desktopImage.height }
+        : { src: heroImageWebp, w: DESKTOP_HERO_W, h: DESKTOP_HERO_H }
+    const mobile = hero.mobileImage
+        ? { src: cloudinarySized(hero.mobileImage.url, 900), w: hero.mobileImage.width, h: hero.mobileImage.height }
+        : { src: mobileHeroImageWebp, w: MOBILE_HERO_W, h: MOBILE_HERO_H }
+    const alt = hero.imageAlt
+
     return (
 
         <section className="relative w-full overflow-hidden bg-white flex flex-col lg:flex-row items-stretch lg:items-center min-h-0 lg:min-h-[860px] pt-0 lg:pt-[130px] pb-0 lg:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <picture className="block w-full h-full">
-                    <source media="(min-width: 1024px)" srcSet={heroImageWebp} width={1672} height={941} />
+                    <source media="(min-width: 1024px)" srcSet={desktop.src} width={desktop.w} height={desktop.h} />
                     <img
                         src={BLANK_GIF}
                         className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
-                        alt="Solatide Biosciences – Research Grade Peptides"
-                        width={1672}
-                        height={941}
+                        alt={alt}
+                        width={desktop.w}
+                        height={desktop.h}
                         draggable={false}
                         loading="eager"
                         fetchPriority="high"
@@ -132,13 +150,13 @@ const HeroSection = () => {
                 {/* Mobile Background Image */}
                 <div className="w-full md:hidden relative z-10">
                     <picture className="block w-full">
-                        <source media="(max-width: 767px)" srcSet={mobileHeroImageWebp} width={MOBILE_HERO_W} height={MOBILE_HERO_H} />
+                        <source media="(max-width: 767px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />
                         <img
                             src={BLANK_GIF}
                             className="w-full h-auto object-contain select-none pointer-events-none"
-                            alt="Solatide Biosciences – Research Grade Peptides"
-                            width={MOBILE_HERO_W}
-                            height={MOBILE_HERO_H}
+                            alt={alt}
+                            width={mobile.w}
+                            height={mobile.h}
                             loading="eager"
                             fetchPriority="high"
                             decoding="sync"
@@ -151,13 +169,13 @@ const HeroSection = () => {
                     {/* Tablet Specific Background Image */}
                     <div className="w-full relative z-10">
                         <picture className="block w-full">
-                            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobileHeroImageWebp} width={MOBILE_HERO_W} height={MOBILE_HERO_H} />
+                            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />
                             <img
                                 src={BLANK_GIF}
                                 className="w-full h-auto object-contain select-none pointer-events-none"
-                                alt="Solatide Biosciences"
-                                width={MOBILE_HERO_W}
-                                height={MOBILE_HERO_H}
+                                alt={alt}
+                                width={mobile.w}
+                                height={mobile.h}
                                 loading="eager"
                                 fetchPriority="high"
                             />
@@ -168,10 +186,10 @@ const HeroSection = () => {
                     <div className="flex flex-col justify-end w-full relative z-20 pb-0 pt-8 bg-[#e4dbf8] -mt-2">
                         <div className="main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                             <h2 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
-                                Your Trusted Source For<br />Research Grade Peptides.
+                                <Lines text={hero.headline} />
                             </h2>
                             <p className="text-[16px] text-[#475569] font-medium leading-relaxed mb-6 w-[90%] max-w-[600px]">
-                                Solatide Biosciences delivers research grade peptides and laboratory solutions for researchers who demand purity, consistency, and results.
+                                {hero.subtext}
                             </p>
                             <div className="flex flex-row items-center justify-center gap-4 mb-2">
                                 <Link to="/collections/all" className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px' }}>
@@ -194,13 +212,11 @@ const HeroSection = () => {
                             <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20 opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
 
                                 <h1 className="text-[24px] min-[360px]:text-[28px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-3 sm:mb-5">
-                                    Your Trusted Source For<br />Research Grade Peptides.
+                                    <Lines text={hero.headline} />
                                 </h1>
 
                                 <p className="text-[12px] min-[360px]:text-[13px] sm:text-[14px] lg:text-[16px] text-[#475569] font-medium leading-relaxed mb-3 sm:mb-4 w-[95%] sm:w-[90%]">
-                                    Solatide Biosciences delivers research grade peptides and
-                                    laboratory solutions for researchers who demand purity,
-                                    consistency, and results.
+                                    {hero.subtext}
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-start gap-2 min-[360px]:gap-2.5 sm:gap-3.5 mb-2 lg:mb-8">
 

@@ -628,6 +628,32 @@ export const apiService = {
       method: 'GET'
     });
   },
+  getPublicHomepage: async () => {
+    return customFetch(`${API_URL}/api/v1/content/homepage`, {
+      method: 'GET'
+    });
+  },
+  getAdminHomepage: async () => {
+    return customFetch(`${API_URL}/api/admin/content/homepage`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+  },
+  updateAdminHomepage: async (payload) => {
+    return customFetch(`${API_URL}/api/admin/content/homepage`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(payload)
+    });
+  },
+  uploadAdminHomepageImage: async (formData) => {
+    // Content-Type omitted for FormData (the browser sets the boundary)
+    return customFetch(`${API_URL}/api/admin/content/homepage/image`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() },
+      body: formData
+    });
+  },
   getAdminFaqs: async () => {
     return customFetch(`${API_URL}/api/admin/content/faqs`, {
       method: 'GET',

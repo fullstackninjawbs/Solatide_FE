@@ -11,6 +11,28 @@ import logo from '../assets/images/logo.webp'
 import visaLogo from '../assets/icons/Visa_Inc._logo__2021_present.svg'
 import mastercardLogo from '../assets/icons/ma_symbol.svg'
 import applePayLogo from '../assets/icons/apple-black-logo-svgrepo-com.svg'
+import useHomepageContent from '../hooks/useHomepageContent'
+
+// Icon shown after an announcement message (chosen per message in Hub → Content → Homepage)
+const AnnouncementIcon = ({ icon }) => {
+    if (icon === 'au_flag') {
+        return (
+            <span className="flex items-center justify-center overflow-hidden rounded-[2px]" style={{ width: '20px', height: '14px' }}>
+                <CountryFlag countryCode="AU" alt="Australian flag" style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
+            </span>
+        )
+    }
+    if (icon === 'card_logos') {
+        return (
+            <>
+                <img src={visaLogo} alt="Visa" loading="lazy" decoding="async" className="h-[12px] lg:h-[13px] w-auto object-contain" />
+                <img src={mastercardLogo} alt="Mastercard" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
+                <img src={applePayLogo} alt="Apple Pay" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
+            </>
+        )
+    }
+    return null
+}
 
 
 
@@ -35,6 +57,9 @@ const Header = () => {
     const mobileCountryDropdownRef = React.useRef(null)
     const moreDropdownRef = React.useRef(null)
     const lastScrollY = React.useRef(0);
+    const { announcement } = useHomepageContent()
+    const announcements = announcement.enabled ? announcement.messages : []
+    const showAnnouncementBar = announcements.length > 0
 
     useEffect(() => {
         let ticking = false;
@@ -95,12 +120,12 @@ const Header = () => {
 
     useEffect(() => {
         // Keep the first announcement while prerendering so the captured HTML matches the first client render.
-        if (isPrerendering()) return undefined
+        if (isPrerendering() || announcements.length < 2) return undefined
         const interval = setInterval(() => {
-            setAnnouncementIndex(prev => (prev === 0 ? 1 : 0))
+            setAnnouncementIndex(prev => (prev + 1) % announcements.length)
         }, 10000)
         return () => clearInterval(interval)
-    }, [])
+    }, [announcements.length])
 
     const isHome = location.pathname === '/'
 
@@ -157,7 +182,8 @@ const Header = () => {
     return (
         <>
             {!isHome && (
-                <div className="w-full h-[122px] lg:h-[175px] shrink-0" aria-hidden="true" />
+                // Space for the fixed header; 36px less when the announcement bar is switched off
+                <div className={`w-full shrink-0 ${showAnnouncementBar ? 'h-[122px] lg:h-[175px]' : 'h-[86px] lg:h-[139px]'}`} aria-hidden="true" />
             )}
             <header
                 className={`top-0 left-0 w-full z-[999] transform-gpu transition-[background-color,border-color,box-shadow,height] duration-0 lg:duration-300 ease-in-out fixed ${(!isScrolled && !isMobileMenuOpen)
@@ -165,23 +191,22 @@ const Header = () => {
                     : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                     }`}
             >
-                <div className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
-                    }`}>
-                    <div className={`absolute flex items-center justify-center gap-2 transition-all duration-500 ease-in-out ${announcementIndex === 0 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                        <span className="tracking-wide">Australian owned & operated</span>
-                        <span className="flex items-center justify-center overflow-hidden rounded-[2px]" style={{ width: '20px', height: '14px' }}>
-                            <CountryFlag countryCode="AU" alt="Australian flag" style={{ width: '20px', height: '15px', objectFit: 'cover' }} />
-                        </span>
+                {showAnnouncementBar && (
+                    <div className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
+                        }`}>
+                        {announcements.map((msg, i) => {
+                            const active = i === announcementIndex % announcements.length
+                            // Earlier messages leave upwards, later ones wait below (same motion as before)
+                            const hidden = i < announcementIndex % announcements.length ? '-translate-y-4' : 'translate-y-4'
+                            return (
+                                <div key={i} className={`absolute flex items-center justify-center gap-2 px-4 text-center transition-all duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : `opacity-0 ${hidden} pointer-events-none`}`}>
+                                    <span className="tracking-wide truncate">{msg.text}</span>
+                                    <AnnouncementIcon icon={msg.icon} />
+                                </div>
+                            )
+                        })}
                     </div>
-
-                    <div className={`absolute flex items-center justify-center gap-2.5 transition-all duration-500 ease-in-out ${announcementIndex === 1 ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
-                        <span className="tracking-wide text-[14.5px] lg:text-[15.5px]">Card Payments Available</span>
-
-                        <img src={visaLogo} alt="Visa" loading="lazy" decoding="async" className="h-[12px] lg:h-[13px] w-auto object-contain" />
-                        <img src={mastercardLogo} alt="Mastercard" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
-                        <img src={applePayLogo} alt="Apple Pay" loading="lazy" decoding="async" className="h-[14px] lg:h-[15px] w-auto object-contain" />
-                    </div>
-                </div>
+                )}
 
                 <div className="main-container py-0">
                     <div className={`flex py-2 lg:py-3 items-center justify-between gap-6 transition-[min-height] duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'min-h-[72px] lg:min-h-[100px]' : 'min-h-[60px] lg:min-h-[76px]'}`}>
