@@ -46,12 +46,13 @@ const toContent = (body) => (body?.success && body.data?.hero && body.data?.anno
 
 let latest = null;   // last content from the API (shared by every mount)
 let inflight = null; // one request at a time
+let settled = false; // a request has finished (even failed): later mounts don't wait again
 
 const FALLBACK_AFTER_MS = 3000;
 
 const initial = () => {
     const known = latest || toContent(getRouteData(HOMEPAGE_KEY));
-    return { content: known || HOMEPAGE_DEFAULTS, ready: Boolean(known) };
+    return { content: known || HOMEPAGE_DEFAULTS, ready: Boolean(known) || settled };
 };
 
 const fetchContent = () => {
@@ -64,7 +65,7 @@ const fetchContent = () => {
                 return content;
             })
             .catch(() => null)
-            .finally(() => { setTimeout(() => { inflight = null; }, 0); });
+            .finally(() => { settled = true; setTimeout(() => { inflight = null; }, 0); });
     }
     return inflight;
 };

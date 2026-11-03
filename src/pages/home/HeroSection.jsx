@@ -2,8 +2,15 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, FileText, FlaskConical } from 'lucide-react'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
 import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageContent'
+
+// Desktop sizes are compact so the whole hero (down to the feature cards) fits on a laptop screen;
+// "[@media(max-height:720px)]:lg:" classes tighten it further on short screens (13–14" laptops).
+
+// The entrance fade (0.8 s) plays once per visit; coming back to the homepage from another page
+// shows the hero straight away (images are already cached, the fade made it feel slow).
+let heroShownOnce = false
 
 // Each hero image is in a <picture> whose <source> only matches at its own breakpoint; the <img>
 // fallback is this 1×1 GIF. So phones never download the desktop image and desktops never
@@ -70,20 +77,20 @@ const BadgeTitle = ({ text }) => String(text).split(/(#\d+)/).map((part, i) => (
 // PepFinder card: one clean white card (the badge already has its own frame, so no inner panel),
 // badge on the left, title / subtitle / link on the right. Phones: stacked and centred.
 const PepFinderCard = ({ title, subtitle, linkText }) => (
-    <div className="mt-6 lg:mt-7 w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 bg-white rounded-[20px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 text-center sm:text-left">
+    <div className="mt-6 lg:mt-4 min-[1680px]:mt-5 [@media(max-height:720px)]:lg:mt-3 w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left">
         {/* Badge scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding */}
         <a href={PEPFINDER_URL} target="_blank" rel="noopener" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
-            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[250px] xl:w-[290px] h-auto aspect-[220/64]" />
+            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[200px] xl:w-[215px] min-[1680px]:w-[250px] [@media(max-height:720px)]:lg:w-[190px] h-auto aspect-[220/64]" />
         </a>
         <span className="hidden sm:block w-px self-stretch my-2 bg-slate-200" aria-hidden="true" />
-        <div className="flex flex-col items-center sm:items-start min-w-0 pb-2 sm:py-1">
-            <p className="text-[18px] xl:text-[20px] font-bold text-[#0b1f4b] leading-tight"><BadgeTitle text={title} /></p>
-            <p className="text-[14px] text-slate-500 mt-1">{subtitle}</p>
+        <div className="flex flex-col items-center sm:items-start min-w-0 pb-2 sm:py-1 lg:py-0">
+            <p className="text-[18px] lg:text-[16px] xl:text-[17px] min-[1680px]:text-[19px] font-bold text-[#0b1f4b] leading-tight"><BadgeTitle text={title} /></p>
+            <p className="text-[14px] lg:text-[13px] text-slate-500 mt-1 lg:mt-0.5">{subtitle}</p>
             <a
                 href={PEPFINDER_URL}
                 target="_blank"
                 rel="noopener"
-                className="group inline-flex items-center gap-1.5 mt-2 text-[14.5px] font-semibold text-[#1a4494] hover:text-[#0650b3] whitespace-nowrap"
+                className="group inline-flex items-center gap-1.5 mt-2 lg:mt-1 text-[14.5px] lg:text-[13.5px] font-semibold text-[#1a4494] hover:text-[#0650b3] whitespace-nowrap"
             >
                 <span className="group-hover:underline underline-offset-4">{linkText}</span>
                 <ArrowRight size={16} strokeWidth={2.25} className="transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -94,9 +101,9 @@ const PepFinderCard = ({ title, subtitle, linkText }) => (
 
 // Phones: one card with three rows. sm+: three cards side by side.
 const Features = () => (
-    <ul className="mt-6 lg:mt-7 min-[1440px]:-mr-4 grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
+    <ul className="mt-6 lg:mt-4 min-[1680px]:mt-5 [@media(max-height:720px)]:lg:mt-3 grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
         {FEATURES.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
+            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 lg:py-2.5 min-[1680px]:py-3 [@media(max-height:720px)]:lg:py-2 sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
                 <Icon className="w-9 h-9 sm:w-8 sm:h-8 shrink-0 text-[#1a73e8]" strokeWidth={1.6} aria-hidden="true" />
                 <span className="flex flex-col text-left min-w-0">
                     <span className="text-[14px] lg:text-[13px] xl:text-[13.5px] font-bold text-[#0b1f4b] leading-tight"><KeepHyphenated text={title} /></span>
@@ -111,6 +118,10 @@ const HeroSection = () => {
     // ready=false: content not known yet (no prerendered data) — keep the image slots and text empty
     // (space reserved) rather than flashing the built-in image/text before the saved ones
     const { hero, ready } = useHomepageContent()
+    const [animate] = useState(() => !heroShownOnce)
+    useEffect(() => {
+        if (ready) heroShownOnce = true
+    }, [ready])
 
     // Images uploaded in the Hub replace the built-in ones (same slots, same sizing behaviour)
     const desktop = hero.desktopImage
@@ -122,7 +133,7 @@ const HeroSection = () => {
     const alt = hero.imageAlt
 
     return (
-        <section className="relative w-full overflow-hidden bg-[#e4dbf8] lg:bg-white flex flex-col lg:flex-row lg:items-center lg:min-h-[860px] lg:pt-[170px] lg:pb-[64px]">
+        <section className="relative w-full overflow-hidden bg-[#e4dbf8] lg:bg-white flex flex-col lg:flex-row lg:items-center lg:min-h-[min(100svh,860px)] lg:pt-[160px] lg:pb-8">
             {/* Desktop: full-width background photo, text on its calm left side */}
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <picture className="block w-full h-full">
@@ -164,29 +175,29 @@ const HeroSection = () => {
                         {/* key: remount when content arrives so the fade-in plays then, not while hidden */}
                         <div
                             key={String(ready)}
-                            className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`}
-                            style={{ animationDelay: '100ms' }}
+                            className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 ${animate ? 'opacity-0 animate-fade-in-up' : ''} ${ready ? '' : 'invisible'}`}
+                            style={animate ? { animationDelay: '100ms' } : undefined}
                         >
-                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[38px] xl:text-[48px] min-[1440px]:text-[56px] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08]">
+                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[36px] xl:text-[42px] min-[1440px]:text-[44px] min-[1680px]:text-[52px] [@media(max-height:720px)]:lg:text-[34px] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08] lg:leading-[1.06]">
                                 <Headline text={hero.headline} />
                             </h1>
 
-                            <span className="block w-16 lg:w-24 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:mt-5 lg:mb-5" aria-hidden="true" />
+                            <span className="block w-16 lg:w-20 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:mt-3.5 lg:mb-3.5 [@media(max-height:720px)]:lg:my-2.5" aria-hidden="true" />
 
-                            <p className="text-[15px] lg:text-[17px] xl:text-[19px] min-[1440px]:text-[20px] text-[#1e2a44] leading-[1.5] max-w-[680px]">
+                            <p className="text-[15px] lg:text-[15px] xl:text-[16px] min-[1680px]:text-[18px] [@media(max-height:720px)]:lg:text-[14.5px] text-[#1e2a44] leading-[1.5] max-w-[680px] lg:max-w-[600px] min-[1680px]:max-w-[680px]">
                                 <KeepHyphenated text={hero.subtext} />
                             </p>
 
-                            <div className="mt-6 lg:mt-7 flex flex-col sm:flex-row gap-3 sm:gap-5">
+                            <div className="mt-6 lg:mt-5 [@media(max-height:720px)]:lg:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-5 lg:gap-4">
                                 <Link
                                     to="/collections/all"
-                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[56px] px-8 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[17px] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[48px] min-[1680px]:h-[54px] [@media(max-height:720px)]:lg:h-[44px] px-8 lg:px-7 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[15px] min-[1680px]:text-[16px] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
                                 >
                                     {hero.primaryButtonText} <ArrowRight size={20} strokeWidth={2.25} />
                                 </Link>
                                 <Link
                                     to="/pages/coa"
-                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[56px] px-8 rounded-full border-[1.5px] border-[#0b4fa8] bg-white/80 text-[#0b2a66] font-semibold text-[16px] lg:text-[17px] whitespace-nowrap hover:bg-white transition-colors duration-200"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[48px] min-[1680px]:h-[54px] [@media(max-height:720px)]:lg:h-[44px] px-8 lg:px-7 rounded-full border-[1.5px] border-[#0b4fa8] bg-white/80 text-[#0b2a66] font-semibold text-[16px] lg:text-[15px] min-[1680px]:text-[16px] whitespace-nowrap hover:bg-white transition-colors duration-200"
                                 >
                                     <FileText size={20} strokeWidth={1.9} /> {hero.secondaryButtonText}
                                 </Link>
@@ -198,7 +209,7 @@ const HeroSection = () => {
 
                             <Features />
 
-                            <p className="mt-5 text-[12.5px] lg:text-[13px] xl:text-[14px] text-slate-600">{hero.disclaimer}</p>
+                            <p className="mt-5 lg:mt-3 [@media(max-height:720px)]:lg:mt-2 text-[12.5px] lg:text-[13px] text-slate-600">{hero.disclaimer}</p>
                         </div>
 
                         <div className="hidden lg:block lg:col-span-5" aria-hidden="true" />
