@@ -5,8 +5,10 @@ import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
 import { Fragment, useEffect, useState } from 'react'
 import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageContent'
 
-// Desktop sizes are compact so the whole hero (down to the feature cards) fits on a laptop screen;
-// "[@media(max-height:720px)]:lg:" classes tighten it further on short screens (13–14" laptops).
+// Desktop (lg+) sizes scale with the screen height so the whole hero, down to the feature cards,
+// fills the first screen without being cut off: "(100vh - 200px)" is the room below the header.
+// Each value is clamped (never smaller / bigger than on the design), the headline also by width.
+// Phones and tablets use the fixed sizes.
 
 // The entrance fade (0.8 s) plays once per visit; coming back to the homepage from another page
 // shows the hero straight away (images are already cached, the fade made it feel slow).
@@ -77,20 +79,20 @@ const BadgeTitle = ({ text }) => String(text).split(/(#\d+)/).map((part, i) => (
 // PepFinder card: one clean white card (the badge already has its own frame, so no inner panel),
 // badge on the left, title / subtitle / link on the right. Phones: stacked and centred.
 const PepFinderCard = ({ title, subtitle, linkText }) => (
-    <div className="mt-6 lg:mt-4 min-[1680px]:mt-5 [@media(max-height:720px)]:lg:mt-3 w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left">
+    <div className="mt-6 lg:mt-[clamp(12px,2.2vh,24px)] w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left">
         {/* Badge scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding */}
         <a href={PEPFINDER_URL} target="_blank" rel="noopener" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
-            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[200px] xl:w-[215px] min-[1680px]:w-[250px] [@media(max-height:720px)]:lg:w-[190px] h-auto aspect-[220/64]" />
+            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[clamp(190px,min(calc((100vh_-_200px)*0.44),19vw),270px)] h-auto aspect-[220/64]" />
         </a>
         <span className="hidden sm:block w-px self-stretch my-2 bg-slate-200" aria-hidden="true" />
         <div className="flex flex-col items-center sm:items-start min-w-0 pb-2 sm:py-1 lg:py-0">
-            <p className="text-[18px] lg:text-[16px] xl:text-[17px] min-[1680px]:text-[19px] font-bold text-[#0b1f4b] leading-tight"><BadgeTitle text={title} /></p>
-            <p className="text-[14px] lg:text-[13px] text-slate-500 mt-1 lg:mt-0.5">{subtitle}</p>
+            <p className="text-[18px] lg:text-[clamp(16px,calc((100vh_-_200px)*0.034),21px)] font-bold text-[#0b1f4b] leading-tight"><BadgeTitle text={title} /></p>
+            <p className="text-[14px] lg:text-[clamp(13px,1.9vh,15px)] text-slate-500 mt-1 lg:mt-0.5">{subtitle}</p>
             <a
                 href={PEPFINDER_URL}
                 target="_blank"
                 rel="noopener"
-                className="group inline-flex items-center gap-1.5 mt-2 lg:mt-1 text-[14.5px] lg:text-[13.5px] font-semibold text-[#1a4494] hover:text-[#0650b3] whitespace-nowrap"
+                className="group inline-flex items-center gap-1.5 mt-2 lg:mt-1 text-[14.5px] lg:text-[clamp(13.5px,1.9vh,15.5px)] font-semibold text-[#1a4494] hover:text-[#0650b3] whitespace-nowrap"
             >
                 <span className="group-hover:underline underline-offset-4">{linkText}</span>
                 <ArrowRight size={16} strokeWidth={2.25} className="transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -101,13 +103,13 @@ const PepFinderCard = ({ title, subtitle, linkText }) => (
 
 // Phones: one card with three rows. sm+: three cards side by side.
 const Features = () => (
-    <ul className="mt-6 lg:mt-4 min-[1680px]:mt-5 [@media(max-height:720px)]:lg:mt-3 grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
+    <ul className="mt-6 lg:mt-[clamp(12px,2.2vh,24px)] grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
         {FEATURES.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 lg:py-2.5 min-[1680px]:py-3 [@media(max-height:720px)]:lg:py-2 sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
+            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 lg:py-[clamp(8px,1.5vh,14px)] sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
                 <Icon className="w-9 h-9 sm:w-8 sm:h-8 shrink-0 text-[#1a73e8]" strokeWidth={1.6} aria-hidden="true" />
                 <span className="flex flex-col text-left min-w-0">
-                    <span className="text-[14px] lg:text-[13px] xl:text-[13.5px] font-bold text-[#0b1f4b] leading-tight"><KeepHyphenated text={title} /></span>
-                    <span className="text-[12.5px] lg:text-[12px] xl:text-[13px] text-slate-600 leading-snug mt-0.5">{text}</span>
+                    <span className="text-[14px] lg:text-[clamp(13px,1.85vh,15px)] font-bold text-[#0b1f4b] leading-tight"><KeepHyphenated text={title} /></span>
+                    <span className="text-[12.5px] lg:text-[clamp(12px,1.65vh,13.5px)] text-slate-600 leading-snug mt-0.5">{text}</span>
                 </span>
             </li>
         ))}
@@ -178,26 +180,26 @@ const HeroSection = () => {
                             className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 ${animate ? 'opacity-0 animate-fade-in-up' : ''} ${ready ? '' : 'invisible'}`}
                             style={animate ? { animationDelay: '100ms' } : undefined}
                         >
-                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[36px] xl:text-[42px] min-[1440px]:text-[44px] min-[1680px]:text-[52px] [@media(max-height:720px)]:lg:text-[34px] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08] lg:leading-[1.06]">
+                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[clamp(32px,min(calc((100vh_-_200px)*0.087),3.5vw),52px)] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08] lg:leading-[1.06]">
                                 <Headline text={hero.headline} />
                             </h1>
 
-                            <span className="block w-16 lg:w-20 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:mt-3.5 lg:mb-3.5 [@media(max-height:720px)]:lg:my-2.5" aria-hidden="true" />
+                            <span className="block w-16 lg:w-20 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:my-[clamp(10px,2vh,20px)]" aria-hidden="true" />
 
-                            <p className="text-[15px] lg:text-[15px] xl:text-[16px] min-[1680px]:text-[18px] [@media(max-height:720px)]:lg:text-[14.5px] text-[#1e2a44] leading-[1.5] max-w-[680px] lg:max-w-[600px] min-[1680px]:max-w-[680px]">
+                            <p className="text-[15px] lg:text-[clamp(14.5px,calc((100vh_-_200px)*0.031),19px)] text-[#1e2a44] leading-[1.5] max-w-[680px] lg:max-w-[620px] min-[1680px]:max-w-[700px]">
                                 <KeepHyphenated text={hero.subtext} />
                             </p>
 
-                            <div className="mt-6 lg:mt-5 [@media(max-height:720px)]:lg:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-5 lg:gap-4">
+                            <div className="mt-6 lg:mt-[clamp(14px,2.6vh,28px)] flex flex-col sm:flex-row gap-3 sm:gap-5 lg:gap-4">
                                 <Link
                                     to="/collections/all"
-                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[48px] min-[1680px]:h-[54px] [@media(max-height:720px)]:lg:h-[44px] px-8 lg:px-7 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[15px] min-[1680px]:text-[16px] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[clamp(44px,calc((100vh_-_200px)*0.1),58px)] px-8 lg:px-7 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[clamp(15px,2vh,17px)] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
                                 >
                                     {hero.primaryButtonText} <ArrowRight size={20} strokeWidth={2.25} />
                                 </Link>
                                 <Link
                                     to="/pages/coa"
-                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[48px] min-[1680px]:h-[54px] [@media(max-height:720px)]:lg:h-[44px] px-8 lg:px-7 rounded-full border-[1.5px] border-[#0b4fa8] bg-white/80 text-[#0b2a66] font-semibold text-[16px] lg:text-[15px] min-[1680px]:text-[16px] whitespace-nowrap hover:bg-white transition-colors duration-200"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[clamp(44px,calc((100vh_-_200px)*0.1),58px)] px-8 lg:px-7 rounded-full border-[1.5px] border-[#0b4fa8] bg-white/80 text-[#0b2a66] font-semibold text-[16px] lg:text-[clamp(15px,2vh,17px)] whitespace-nowrap hover:bg-white transition-colors duration-200"
                                 >
                                     <FileText size={20} strokeWidth={1.9} /> {hero.secondaryButtonText}
                                 </Link>
@@ -209,7 +211,7 @@ const HeroSection = () => {
 
                             <Features />
 
-                            <p className="mt-5 lg:mt-3 [@media(max-height:720px)]:lg:mt-2 text-[12.5px] lg:text-[13px] text-slate-600">{hero.disclaimer}</p>
+                            <p className="mt-5 lg:mt-[clamp(8px,1.4vh,16px)] text-[12.5px] lg:text-[clamp(12.5px,1.7vh,14px)] text-slate-600">{hero.disclaimer}</p>
                         </div>
 
                         <div className="hidden lg:block lg:col-span-5" aria-hidden="true" />
