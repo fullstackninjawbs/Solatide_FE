@@ -8,7 +8,9 @@ import { getRouteData, sameData } from '../utils/routeData';
  * - Prerendered pages embed the API payload (every route: the header uses it), so the first
  *   render already shows the saved content and hydration matches the HTML.
  * - Header and hero share one request; later mounts (in-site navigation) reuse its result.
- * - Without data (API down, page not rebuilt yet) the built-in defaults below are shown.
+ * - Without embedded data (dev server, pages that weren't prerendered) `ready` is false until the
+ *   API answers, so callers can hold back hero images/text instead of flashing the built-in ones.
+ *   API down or slower than FALLBACK_AFTER_MS: the built-in defaults below are shown.
  *   Keep them in sync with HOMEPAGE_DEFAULTS in Server/src/services/content/siteContent.ts.
  *   Images: null = the built-in image bundled with the storefront.
  */
@@ -38,7 +40,12 @@ const toContent = (body) => (body?.success && body.data?.hero && body.data?.anno
 let latest = null;   // last content from the API (shared by every mount)
 let inflight = null; // one request at a time
 
-const initial = () => latest || toContent(getRouteData(HOMEPAGE_KEY)) || HOMEPAGE_DEFAULTS;
+const FALLBACK_AFTER_MS = 3000;
+
+const initial = () => {
+    const known = latest || toContent(getRouteData(HOMEPAGE_KEY));
+    return { content: known || HOMEPAGE_DEFAULTS, ready: Boolean(known) };
+};
 
 const fetchContent = () => {
     if (!inflight) {
@@ -56,17 +63,26 @@ const fetchContent = () => {
 };
 
 export default function useHomepageContent() {
-    const [content, setContent] = useState(initial);
+    const [state, setState] = useState(initial);
 
     useEffect(() => {
         let cancelled = false;
+        // API too slow: stop waiting and show the built-in content (fresh content still replaces it)
+        const timer = setTimeout(() => {
+            setState((prev) => (prev.ready ? prev : { ...prev, ready: true }));
+        }, FALLBACK_AFTER_MS);
         fetchContent().then((fresh) => {
-            if (!cancelled && fresh) setContent((prev) => (sameData(prev, fresh) ? prev : fresh));
+            if (cancelled) return;
+            clearTimeout(timer);
+            setState((prev) => {
+                const content = fresh && !sameData(prev.content, fresh) ? fresh : prev.content;
+                return content === prev.content && prev.ready ? prev : { content, ready: true };
+            });
         });
-        return () => { cancelled = true; };
+        return () => { cancelled = true; clearTimeout(timer); };
     }, []);
 
-    return content;
+    return { ...state.content, ready: state.ready };
 }
 
 /** Cloudinary delivery URL resized for the slot, in WebP/AVIF where supported. */

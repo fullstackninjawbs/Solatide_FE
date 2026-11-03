@@ -57,9 +57,10 @@ const Header = () => {
     const mobileCountryDropdownRef = React.useRef(null)
     const moreDropdownRef = React.useRef(null)
     const lastScrollY = React.useRef(0);
-    const { announcement } = useHomepageContent()
-    const announcements = announcement.enabled ? announcement.messages : []
-    const showAnnouncementBar = announcements.length > 0
+    const { announcement, ready: announcementReady } = useHomepageContent()
+    // Until the saved messages are known the bar keeps its space but stays empty (no default-text flash)
+    const announcements = announcementReady && announcement.enabled ? announcement.messages : []
+    const showAnnouncementBar = !announcementReady || announcements.length > 0
 
     useEffect(() => {
         let ticking = false;

@@ -114,7 +114,9 @@ const FeatureCards = () => (
 );
 
 const HeroSection = () => {
-    const { hero } = useHomepageContent()
+    // ready=false: content not known yet (no prerendered data) — keep the image slots and text empty
+    // (space reserved) rather than flashing the built-in image/text before the saved ones
+    const { hero, ready } = useHomepageContent()
     // Images uploaded in the Hub replace the built-in ones (same slots, same sizing behaviour)
     const desktop = hero.desktopImage
         ? { src: cloudinarySized(hero.desktopImage.url, 2000), w: hero.desktopImage.width, h: hero.desktopImage.height }
@@ -129,7 +131,7 @@ const HeroSection = () => {
         <section className="relative w-full overflow-hidden bg-white flex flex-col lg:flex-row items-stretch lg:items-center min-h-0 lg:min-h-[860px] pt-0 lg:pt-[130px] pb-0 lg:pb-[80px]">
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <picture className="block w-full h-full">
-                    <source media="(min-width: 1024px)" srcSet={desktop.src} width={desktop.w} height={desktop.h} />
+                    {ready && <source media="(min-width: 1024px)" srcSet={desktop.src} width={desktop.w} height={desktop.h} />}
                     <img
                         src={BLANK_GIF}
                         className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
@@ -150,7 +152,7 @@ const HeroSection = () => {
                 {/* Mobile Background Image */}
                 <div className="w-full md:hidden relative z-10">
                     <picture className="block w-full">
-                        <source media="(max-width: 767px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />
+                        {ready && <source media="(max-width: 767px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />}
                         <img
                             src={BLANK_GIF}
                             className="w-full h-auto object-contain select-none pointer-events-none"
@@ -169,7 +171,7 @@ const HeroSection = () => {
                     {/* Tablet Specific Background Image */}
                     <div className="w-full relative z-10">
                         <picture className="block w-full">
-                            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />
+                            {ready && <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />}
                             <img
                                 src={BLANK_GIF}
                                 className="w-full h-auto object-contain select-none pointer-events-none"
@@ -184,7 +186,8 @@ const HeroSection = () => {
 
                     {/* Text Content sitting below bottles */}
                     <div className="flex flex-col justify-end w-full relative z-20 pb-0 pt-8 bg-[#e4dbf8] -mt-2">
-                        <div className="main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                        {/* key: remount when content arrives so the fade-in plays then, not while hidden */}
+                        <div key={String(ready)} className={`main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`} style={{ animationDelay: '100ms' }}>
                             <h2 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
                                 <Lines text={hero.headline} />
                             </h2>
@@ -209,7 +212,7 @@ const HeroSection = () => {
                     <div className="main-container w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
 
-                            <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20 opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                            <div key={String(ready)} className={`lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20 opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`} style={{ animationDelay: '100ms' }}>
 
                                 <h1 className="text-[24px] min-[360px]:text-[28px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-3 sm:mb-5">
                                     <Lines text={hero.headline} />
