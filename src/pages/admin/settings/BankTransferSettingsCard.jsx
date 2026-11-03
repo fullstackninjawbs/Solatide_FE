@@ -17,7 +17,7 @@ import { canEditPaymentSettings } from '../../../utils/canEditPaymentSettings';
 const EMPTY = {
   accountName: '', bankName: '', bsb: '', accountNumber: '', payId: '', swiftBic: '', iban: '', beneficiaryAddress: '',
   shippingFeeAU: '', shippingFeeInternational: '', freeShippingThresholdAU: '', internationalEnabled: true,
-  unpaidCancelDays: 3, notifyAdminOnOrder: true,
+  unpaidCancelDays: 3, unpaidCancelDaysInternational: 10, notifyAdminOnOrder: true,
 };
 
 const Text = ({ label, hint, value, onChange, placeholder, type = 'text' }) => (
@@ -76,6 +76,7 @@ const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
         payload[k] = payload[k] === '' || payload[k] == null ? 0 : Number(payload[k]);
       }
       payload.unpaidCancelDays = payload.unpaidCancelDays === '' || payload.unpaidCancelDays == null ? 3 : Number(payload.unpaidCancelDays);
+      payload.unpaidCancelDaysInternational = payload.unpaidCancelDaysInternational === '' || payload.unpaidCancelDaysInternational == null ? 10 : Number(payload.unpaidCancelDaysInternational);
       const res = await apiService.updateBankTransferSettings(payload);
       const body = await res.json();
       if (res.ok && body.success) {
@@ -162,12 +163,16 @@ const BankTransferSettingsCard = ({ checkoutMode, onSaved }) => {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Text type="number" label="Cancel unpaid orders after (days)" hint="Checked every hour. The order is cancelled and its reserved stock released. Shown to customers on the payment page and email." value={form.unpaidCancelDays} onChange={set('unpaidCancelDays')} placeholder="3" />
-                <div className="pt-6">
-                  <Toggle label="Email me each new order" hint="Sent to the admin notification address, so you know to check the bank." checked={form.notifyAdminOnOrder} onChange={set('notifyAdminOnOrder')} />
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-800 mb-1">Cancel unpaid orders after (days)</h3>
+                <p className="text-[12.5px] text-slate-500 mb-3">Checked every hour. The order is cancelled and its reserved stock released. Shown to customers on the payment page and email. One final reminder is emailed before then.</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Text type="number" label="Australian orders (PayID / Bank Transfer)" hint="Reminder 24 hours after the order." value={form.unpaidCancelDays} onChange={set('unpaidCancelDays')} placeholder="3" />
+                  <Text type="number" label="International orders" hint="Overseas transfers take 5–7 days. Reminder 5 days after the order." value={form.unpaidCancelDaysInternational} onChange={set('unpaidCancelDaysInternational')} placeholder="10" />
                 </div>
               </div>
+
+              <Toggle label="Email me each new order" hint="Sent to the admin notification address, so you know to check the bank." checked={form.notifyAdminOnOrder} onChange={set('notifyAdminOnOrder')} />
             </fieldset>
 
             <div className="mt-6 flex justify-end gap-3">
