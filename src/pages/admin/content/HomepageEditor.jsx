@@ -168,7 +168,7 @@ const HomepageEditor = () => {
           </span>
           <textarea className={input} rows={3} value={form.hero.headline} maxLength={limits.headline} onChange={(e) => setHero({ headline: e.target.value })} required />
           <span className={`text-[12px] ${headlineLines > limits.headlineLines ? 'text-red-600' : 'text-slate-500'}`}>
-            Press Enter to start a new line on the site (at most {limits.headlineLines} lines).
+            Press Enter to start a new line on the site (at most {limits.headlineLines} lines). With two or more lines, the last line is shown in blue.
           </span>
         </label>
 
@@ -178,6 +178,56 @@ const HomepageEditor = () => {
             <Counter value={form.hero.subtext} max={limits.subtext} />
           </span>
           <textarea className={input} rows={4} value={form.hero.subtext} maxLength={limits.subtext} onChange={(e) => setHero({ subtext: e.target.value })} required />
+        </label>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label className="block space-y-1">
+            <span className="flex items-center justify-between">
+              <span className="text-[13px] font-semibold text-slate-700">Main button <span className="font-normal text-slate-400">(goes to the shop)</span></span>
+              <Counter value={form.hero.primaryButtonText} max={limits.buttonText} />
+            </span>
+            <input className={input} value={form.hero.primaryButtonText} maxLength={limits.buttonText} onChange={(e) => setHero({ primaryButtonText: e.target.value })} placeholder="Shop Research Peptides" />
+          </label>
+          <label className="block space-y-1">
+            <span className="flex items-center justify-between">
+              <span className="text-[13px] font-semibold text-slate-700">Second button <span className="font-normal text-slate-400">(goes to the COA Library)</span></span>
+              <Counter value={form.hero.secondaryButtonText} max={limits.buttonText} />
+            </span>
+            <input className={input} value={form.hero.secondaryButtonText} maxLength={limits.buttonText} onChange={(e) => setHero({ secondaryButtonText: e.target.value })} placeholder="View COAs" />
+          </label>
+        </div>
+
+        <div className="space-y-3 rounded-xl border border-slate-200 p-4">
+          <label className="inline-flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" className="h-4 w-4 mt-0.5 accent-brand-navy" checked={form.hero.showBadge} onChange={(e) => setHero({ showBadge: e.target.checked })} />
+            <span className="text-[14px] text-slate-700">
+              <span className="font-semibold">Show the PepFinder card</span>
+              <span className="block text-[12px] text-slate-500">PepFinder&apos;s official badge (live rating, updates by itself) with the text below, under the buttons. Links go to your PepFinder page.</span>
+            </span>
+          </label>
+          <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 ${form.hero.showBadge ? '' : 'opacity-60'}`}>
+            {[
+              ['badgeTitle', 'Card title', 'Ranked #1 Australian Supplier'],
+              ['badgeSubtitle', 'Card subtitle', 'Independent supplier ranking'],
+              ['badgeLinkText', 'Link text', 'View ranking'],
+            ].map(([field, label, placeholder]) => (
+              <label key={field} className="block space-y-1">
+                <span className="flex items-center justify-between">
+                  <span className="text-[13px] font-semibold text-slate-700">{label}</span>
+                  <Counter value={form.hero[field]} max={limits[field]} />
+                </span>
+                <input className={input} value={form.hero[field]} maxLength={limits[field]} onChange={(e) => setHero({ [field]: e.target.value })} placeholder={placeholder} />
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <label className="block space-y-1">
+          <span className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold text-slate-700">Disclaimer <span className="font-normal text-slate-400">(small text at the bottom)</span></span>
+            <Counter value={form.hero.disclaimer} max={limits.disclaimer} />
+          </span>
+          <input className={input} value={form.hero.disclaimer} maxLength={limits.disclaimer} onChange={(e) => setHero({ disclaimer: e.target.value })} placeholder="For laboratory research only. Not for human use." />
         </label>
 
         <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6">
@@ -191,7 +241,7 @@ const HomepageEditor = () => {
           />
           <ImageField
             label="Mobile & tablet image"
-            hint="Shown on phones and tablets, above the headline. Portrait, about 644 × 803px."
+            hint="Shown on phones and tablets, above the headline. Portrait, about 644 × 803px; the text below sits on a lilac background (#e4dbf8), so a matching image background blends in."
             image={form.hero.mobileImage}
             builtIn={builtInMobileImage}
             aspect="aspect-[4/5]"

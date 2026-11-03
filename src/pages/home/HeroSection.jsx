@@ -1,14 +1,7 @@
 import { Link } from 'react-router-dom'
-import { FileText } from 'lucide-react'
+import { ArrowRight, FileText, FlaskConical } from 'lucide-react'
 import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
 import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
-import purityIconWeb from '../../assets/icons/solatide_purity_chromatogram_icon_e95d6e5c-40f0-440a-ac91-2ad346664e9f.webp'
-import traceableIconWeb from '../../assets/icons/solatide_lot_traceable_vial_to_coa_icon_0d8282ae-ba91-4634-913a-5832b47dffaf.webp'
-import reportsIconWeb from '../../assets/icons/solatide_document_magnifying_glass_icon_185ab8bb-75b3-431a-a4e7-93e99f0a4488.webp'
-
-import purityIcon from '../../assets/icons/solatide-icon-purity-identity.svg'
-import traceableIcon from '../../assets/icons/solatide-icon-lot-specific-coa.svg'
-import reportsIcon from '../../assets/icons/solatide-icon-independent-analysis.svg'
 import { Fragment } from 'react'
 import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageContent'
 
@@ -23,100 +16,102 @@ const MOBILE_HERO_H = 803
 const DESKTOP_HERO_W = 1672
 const DESKTOP_HERO_H = 941
 
-// Headline from the Hub: each line break becomes <br />
-const Lines = ({ text }) => String(text).split('\n').map((line, i) => (
-    <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>
+// PepFinder badge: their official embed, unchanged (their terms: don't copy or edit the image).
+// rel without "noreferrer" so PepFinder can count visits from the site.
+const PEPFINDER_URL = 'https://pepfinder.com/suppliers/solatide-biosciences'
+const PEPFINDER_BADGE = 'https://pepfinder.com/badge/solatide-biosciences.svg'
+const PEPFINDER_ALT = 'Solatide Biosciences on PepFinder, PepFinder rating 9.0 out of 10, pepfinder verified'
+
+// Feature icons drawn to match the mock-up (lucide has no chromatogram / moving box)
+const ChromatogramIcon = (props) => (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M2 27h28" />
+        <path d="M3 26h3.5c1.2 0 1.6-1.5 2.2-5L10.5 7l1.8 14c.5 3.5 1 5 2.2 5h1c1 0 1.4-1.4 1.9-4.5l1.1-7 1.1 7c.5 3.1.9 4.5 1.9 4.5h1c1 0 1.3-1 1.7-3l.8-4 .8 4c.4 2 .7 3 1.7 3H30" />
+    </svg>
+)
+const ShippingBoxIcon = (props) => (
+    <svg viewBox="0 0 36 32" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M1.5 12h7M3.5 16.5h5M1.5 21h7" />
+        <path d="M13 9.5 23 4l10 5.5v12L23 27l-10-5.5z" />
+        <path d="M13 9.5 23 15l10-5.5M23 15v12" />
+        <path d="m18 6.8 10 5.5v4" />
+    </svg>
+)
+
+const FEATURES = [
+    { icon: FlaskConical, title: 'Batch-Specific COAs', text: 'Matched to current vial lots' },
+    { icon: ChromatogramIcon, title: 'Independent HPLC + LC-MS', text: 'Purity + identity testing' },
+    { icon: ShippingBoxIcon, title: 'Worldwide Tracked Shipping', text: 'Dispatched from Australia' },
+]
+
+// Hyphenated words never break at the hyphen ("Batch-/Verified", "LC-/MS")
+const KeepHyphenated = ({ text }) => String(text).split(/(\s+)/).map((part, i) => (
+    part.includes('-') ? <span key={i} className="whitespace-nowrap">{part}</span> : part
 ))
 
-const MobileEvidenceSection = () => (
-    <section
-        className="w-full overflow-hidden text-white border-t-[3px] border-[#10b9dc] lg:hidden opacity-0 animate-fade-in-up rounded-b-[24px]"
-        style={{
-            background: 'radial-gradient(circle at 50% 0%, rgba(16, 185, 220, 0.17), transparent 48%), #062d5c',
-            animationDelay: '300ms',
-            fontFamily: '"Poppins", "Poppins Fallback", system-ui, sans-serif'
-        }}
-    >
-        <div className="pt-[14px] px-[12px] pb-[16px]">
-            <p className="flex items-center gap-[7px] mx-[4px] mb-[12px] text-[#8fdced] text-[11px] leading-none tracking-[0.11em] uppercase font-medium">
-                <span className="w-[6px] h-[6px] flex-none rounded-full bg-[#10b9dc]"></span>
-                Analytical evidence
-            </p>
-            <div className="grid grid-cols-3">
-                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
-                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={purityIcon} alt="" aria-hidden="true" />
-                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Purity &amp;<br />Identity</h3>
-                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">HPLC-UV purity<br />LC-MS identity</p>
-                </div>
-                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center border-l border-[rgba(200,224,239,0.18)]" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
-                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={traceableIcon} alt="" aria-hidden="true" />
-                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Lot-Specific<br />COA</h3>
-                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">Matched to the<br />vial lot</p>
-                </div>
-                <div className="grid min-w-0 px-[4px] min-[360px]:px-[7px] text-center border-l border-[rgba(200,224,239,0.18)]" style={{ gridTemplateRows: 'max-content max-content max-content', rowGap: '7px' }}>
-                    <img className="block w-[46px] h-[46px] min-[360px]:w-[56px] min-[360px]:h-[56px] mx-auto object-contain" src={reportsIcon} alt="" aria-hidden="true" />
-                    <h3 className="self-start m-0 text-white text-[11px] min-[360px]:text-[13px] leading-[1.23] font-medium">Independent<br />Analysis</h3>
-                    <p className="self-start m-0 text-[#c4dbea] text-[10px] min-[360px]:text-[11px] leading-[1.28] font-normal">Third-party reports</p>
-                </div>
-            </div>
-        </div>
+// Headline from the Hub: each line break becomes <br />; with 2+ lines the last one is blue
+const Headline = ({ text }) => {
+    const lines = String(text).split('\n')
+    return lines.map((line, i) => (
+        <Fragment key={i}>
+            {i > 0 && <br />}
+            {lines.length > 1 && i === lines.length - 1
+                ? <span className="text-[#1a4494]"><KeepHyphenated text={line} /></span>
+                : <KeepHyphenated text={line} />}
+        </Fragment>
+    ))
+}
 
-        <div className="relative pt-[13px] px-[18px] pb-[15px] border-t border-[rgba(143,220,237,0.35)] text-center" style={{ background: 'linear-gradient(90deg, rgba(16, 185, 220, 0.18), transparent 28%, transparent 72%, rgba(16, 185, 220, 0.18)), #0a3c73' }}>
-            <div className="absolute top-[-2px] left-1/2 -translate-x-1/2 w-[88px] h-[3px] rounded-full bg-[#10b9dc]"></div>
-            <span className="block mb-[6px] text-[#8fdced] text-[11px] leading-none tracking-[0.13em] uppercase font-medium">Contaminant analysis</span>
-            <strong className="block text-white text-[14px] min-[360px]:text-[16px] leading-[1.2] tracking-[-0.02em] font-medium">Fentanyl + Endotoxin Testing</strong>
-        </div>
-    </section>
-);
+// "#1" (any #number) in the badge title is blue, as in the mock-up
+const BadgeTitle = ({ text }) => String(text).split(/(#\d+)/).map((part, i) => (
+    /^#\d+$/.test(part) ? <span key={i} className="text-[#1a4494]">{part}</span> : part
+))
 
-
-const FeatureCards = () => (
-    <div className="flex flex-col sm:flex-row items-stretch justify-center lg:justify-start gap-2.5 xl:gap-3">
-        {/* Feature 1 */}
-        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={purityIconWeb} alt="Purity Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-            <div className="flex flex-col text-left">
-                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                    ≥99% Purity Standard
-                </span>
-                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                    HPLC-UV/LC-MS + Endotoxin
-                </span>
-            </div>
-        </div>
-
-        {/* Feature 2 */}
-        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={traceableIconWeb} alt="Traceable Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-            <div className="flex flex-col text-left">
-                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                    Lot-Traceable Vials
-                </span>
-                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                    Vial-to-COA Verified
-                </span>
-            </div>
-        </div>
-
-        {/* Feature 3 */}
-        <div className="bg-white rounded-[12px] shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-2 pr-3.5 xl:p-2.5 xl:pr-4 flex items-center gap-2.5">
-            <img src={reportsIconWeb} alt="Reports Icon" className="w-9 h-9 xl:w-10 xl:h-10 object-contain shrink-0" />
-            <div className="flex flex-col text-left">
-                <span className="text-[14px] xl:text-[15px] font-semibold text-[#00ACEE] tracking-tight whitespace-nowrap leading-none mb-[4px]">
-                    Verifiable Reports
-                </span>
-                <span className="text-[11px] xl:text-[12px] text-slate-600 font-medium whitespace-nowrap leading-none">
-                    Third-Party Results
-                </span>
-            </div>
+// PepFinder card: one clean white card (the badge already has its own frame, so no inner panel),
+// badge on the left, title / subtitle / link on the right. Phones: stacked and centred.
+const PepFinderCard = ({ title, subtitle, linkText }) => (
+    <div className="mt-6 lg:mt-7 w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 bg-white rounded-[20px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 text-center sm:text-left">
+        {/* Badge scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding */}
+        <a href={PEPFINDER_URL} target="_blank" rel="noopener" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
+            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[250px] xl:w-[290px] h-auto aspect-[220/64]" />
+        </a>
+        <span className="hidden sm:block w-px self-stretch my-2 bg-slate-200" aria-hidden="true" />
+        <div className="flex flex-col items-center sm:items-start min-w-0 pb-2 sm:py-1">
+            <p className="text-[18px] xl:text-[20px] font-bold text-[#0b1f4b] leading-tight"><BadgeTitle text={title} /></p>
+            <p className="text-[14px] text-slate-500 mt-1">{subtitle}</p>
+            <a
+                href={PEPFINDER_URL}
+                target="_blank"
+                rel="noopener"
+                className="group inline-flex items-center gap-1.5 mt-2 text-[14.5px] font-semibold text-[#1a4494] hover:text-[#0650b3] whitespace-nowrap"
+            >
+                <span className="group-hover:underline underline-offset-4">{linkText}</span>
+                <ArrowRight size={16} strokeWidth={2.25} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+            </a>
         </div>
     </div>
-);
+)
+
+// Phones: one card with three rows. sm+: three cards side by side.
+const Features = () => (
+    <ul className="mt-6 lg:mt-7 min-[1440px]:-mr-4 grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
+        {FEATURES.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
+                <Icon className="w-9 h-9 sm:w-8 sm:h-8 shrink-0 text-[#1a73e8]" strokeWidth={1.6} aria-hidden="true" />
+                <span className="flex flex-col text-left min-w-0">
+                    <span className="text-[14px] lg:text-[13px] xl:text-[13.5px] font-bold text-[#0b1f4b] leading-tight"><KeepHyphenated text={title} /></span>
+                    <span className="text-[12.5px] lg:text-[12px] xl:text-[13px] text-slate-600 leading-snug mt-0.5">{text}</span>
+                </span>
+            </li>
+        ))}
+    </ul>
+)
 
 const HeroSection = () => {
     // ready=false: content not known yet (no prerendered data) — keep the image slots and text empty
     // (space reserved) rather than flashing the built-in image/text before the saved ones
     const { hero, ready } = useHomepageContent()
+
     // Images uploaded in the Hub replace the built-in ones (same slots, same sizing behaviour)
     const desktop = hero.desktopImage
         ? { src: cloudinarySized(hero.desktopImage.url, 2000), w: hero.desktopImage.width, h: hero.desktopImage.height }
@@ -127,14 +122,14 @@ const HeroSection = () => {
     const alt = hero.imageAlt
 
     return (
-
-        <section className="relative w-full overflow-hidden bg-white flex flex-col lg:flex-row items-stretch lg:items-center min-h-0 lg:min-h-[860px] pt-0 lg:pt-[130px] pb-0 lg:pb-[80px]">
+        <section className="relative w-full overflow-hidden bg-[#e4dbf8] lg:bg-white flex flex-col lg:flex-row lg:items-center lg:min-h-[860px] lg:pt-[170px] lg:pb-[64px]">
+            {/* Desktop: full-width background photo, text on its calm left side */}
             <div className="absolute inset-0 z-0 hidden lg:block">
                 <picture className="block w-full h-full">
                     {ready && <source media="(min-width: 1024px)" srcSet={desktop.src} width={desktop.w} height={desktop.h} />}
                     <img
                         src={BLANK_GIF}
-                        className="w-full h-full object-cover object-[72%_center] xl:object-center select-none pointer-events-none"
+                        className="w-full h-full object-cover object-[40%_center] xl:object-[35%_center] select-none pointer-events-none"
                         alt={alt}
                         width={desktop.w}
                         height={desktop.h}
@@ -146,133 +141,70 @@ const HeroSection = () => {
                 </picture>
             </div>
 
-            {/* Mobile Hero Image & Content Wrapper */}
-            <div className="flex flex-col lg:block w-full relative z-10 flex-1">
+            {/* Phones & tablets: the portrait product image on top (unchanged), content below on the same lilac */}
+            <div className="lg:hidden w-full relative z-10">
+                <picture className="block w-full">
+                    {ready && <source media="(max-width: 1023px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />}
+                    <img
+                        src={BLANK_GIF}
+                        className="w-full h-auto object-contain select-none pointer-events-none"
+                        alt={alt}
+                        width={mobile.w}
+                        height={mobile.h}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="sync"
+                    />
+                </picture>
+            </div>
 
-                {/* Mobile Background Image */}
-                <div className="w-full md:hidden relative z-10">
-                    <picture className="block w-full">
-                        {ready && <source media="(max-width: 767px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />}
-                        <img
-                            src={BLANK_GIF}
-                            className="w-full h-auto object-contain select-none pointer-events-none"
-                            alt={alt}
-                            width={mobile.w}
-                            height={mobile.h}
-                            loading="eager"
-                            fetchPriority="high"
-                            decoding="sync"
-                        />
-                    </picture>
-                </div>
-
-                {/* Tablet Dedicated Layout (768px - 1023px) */}
-                <div className="hidden md:flex lg:hidden flex-col w-full relative z-10 flex-1">
-                    {/* Tablet Specific Background Image */}
-                    <div className="w-full relative z-10">
-                        <picture className="block w-full">
-                            {ready && <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={mobile.src} width={mobile.w} height={mobile.h} />}
-                            <img
-                                src={BLANK_GIF}
-                                className="w-full h-auto object-contain select-none pointer-events-none"
-                                alt={alt}
-                                width={mobile.w}
-                                height={mobile.h}
-                                loading="eager"
-                                fetchPriority="high"
-                            />
-                        </picture>
-                    </div>
-
-                    {/* Text Content sitting below bottles */}
-                    <div className="flex flex-col justify-end w-full relative z-20 pb-0 pt-8 bg-[#e4dbf8] -mt-2">
+            <div className="relative z-20 w-full">
+                <div className="main-container w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
                         {/* key: remount when content arrives so the fade-in plays then, not while hidden */}
-                        <div key={String(ready)} className={`main-container w-full flex flex-col items-center text-center opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`} style={{ animationDelay: '100ms' }}>
-                            <h2 className="text-[38px] font-bold tracking-tight text-[#1a4494] leading-[1.15] mb-5 max-w-[650px]">
-                                <Lines text={hero.headline} />
-                            </h2>
-                            <p className="text-[16px] text-[#475569] font-medium leading-relaxed mb-6 w-[90%] max-w-[600px]">
-                                {hero.subtext}
+                        <div
+                            key={String(ready)}
+                            className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`}
+                            style={{ animationDelay: '100ms' }}
+                        >
+                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[38px] xl:text-[48px] min-[1440px]:text-[56px] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08]">
+                                <Headline text={hero.headline} />
+                            </h1>
+
+                            <span className="block w-16 lg:w-24 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:mt-5 lg:mb-5" aria-hidden="true" />
+
+                            <p className="text-[15px] lg:text-[17px] xl:text-[19px] min-[1440px]:text-[20px] text-[#1e2a44] leading-[1.5] max-w-[680px]">
+                                <KeepHyphenated text={hero.subtext} />
                             </p>
-                            <div className="flex flex-row items-center justify-center gap-4 mb-2">
-                                <Link to="/collections/all" className="inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px' }}>
-                                    Shop Peptides →
+
+                            <div className="mt-6 lg:mt-7 flex flex-col sm:flex-row gap-3 sm:gap-5">
+                                <Link
+                                    to="/collections/all"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[56px] px-8 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[17px] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
+                                >
+                                    {hero.primaryButtonText} <ArrowRight size={20} strokeWidth={2.25} />
                                 </Link>
-                                <Link to="/pages/coa" className="inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 transition-all border w-[210px]" style={{ height: '46px', borderRadius: '9999px', fontSize: '15px', borderColor: '#007DD0' }}>
-                                    <FileText size={18} strokeWidth={2.5} /> View Documents →
+                                <Link
+                                    to="/pages/coa"
+                                    className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[56px] px-8 rounded-full border-[1.5px] border-[#0b4fa8] bg-white/80 text-[#0b2a66] font-semibold text-[16px] lg:text-[17px] whitespace-nowrap hover:bg-white transition-colors duration-200"
+                                >
+                                    <FileText size={20} strokeWidth={1.9} /> {hero.secondaryButtonText}
                                 </Link>
                             </div>
 
+                            {hero.showBadge && (
+                                <PepFinderCard title={hero.badgeTitle} subtitle={hero.badgeSubtitle} linkText={hero.badgeLinkText} />
+                            )}
+
+                            <Features />
+
+                            <p className="mt-5 text-[12.5px] lg:text-[13px] xl:text-[14px] text-slate-600">{hero.disclaimer}</p>
                         </div>
-                    </div>
-                </div>
 
-                {/* Mobile/Desktop Content Section */}
-                <div className="md:hidden lg:flex flex-col justify-start w-full relative z-20 pb-0 pt-6 lg:pb-0 lg:pt-0 bg-[#e4dbf8] lg:bg-transparent -mt-2">
-                    <div className="main-container w-full">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center w-full">
-
-                            <div key={String(ready)} className={`lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-left relative z-20 opacity-0 animate-fade-in-up ${ready ? '' : 'invisible'}`} style={{ animationDelay: '100ms' }}>
-
-                                <h1 className="text-[24px] min-[360px]:text-[28px] sm:text-[42px] lg:text-[48px] xl:text-[48px] font-bold tracking-tight text-[#1a4494] leading-[1.12] mb-3 sm:mb-5">
-                                    <Lines text={hero.headline} />
-                                </h1>
-
-                                <p className="text-[12px] min-[360px]:text-[13px] sm:text-[14px] lg:text-[16px] text-[#475569] font-medium leading-relaxed mb-3 sm:mb-4 w-[95%] sm:w-[90%]">
-                                    {hero.subtext}
-                                </p>
-                                <div className="flex flex-col sm:flex-row items-start gap-2 min-[360px]:gap-2.5 sm:gap-3.5 mb-2 lg:mb-8">
-
-                                    <Link
-                                        to="/collections/all"
-                                        className="h-[40px] min-[360px]:h-[46px] inline-flex items-center bg-gradient-to-r from-[#00ACEE] to-[#0079CD] justify-center gap-2 text-white font-semibold whitespace-nowrap transition-all duration-200 w-full sm:w-[210px]"
-                                        style={{
-                                            borderRadius: '9999px',
-                                            fontSize: '14px',
-                                            flexShrink: 0,
-                                        }}
-                                        onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.95)' }}
-                                        onMouseLeave={e => { e.currentTarget.style.filter = 'brightness(1)' }}
-                                    >
-                                        Shop Peptides →
-                                    </Link>
-
-                                    <Link
-                                        to="/pages/coa"
-                                        className="h-[40px] min-[360px]:h-[46px] inline-flex items-center justify-center gap-2 bg-transparent font-bold text-[#1a4494] hover:bg-slate-50 active:bg-slate-100 transition-all duration-200 whitespace-nowrap border w-full sm:w-[210px]"
-                                        style={{
-                                            borderRadius: '9999px',
-                                            fontSize: '14px',
-                                            borderColor: '#007DD0',
-                                            flexShrink: 0,
-                                        }}
-                                    >
-                                        <FileText size={18} strokeWidth={2.5} /> View Documents →
-                                    </Link>
-
-                                </div>
-
-                                {/* Features Container */}
-                                <div className="mt-4 w-full lg:w-fit max-w-full">
-                                    <div className="hidden lg:block opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                                        <FeatureCards />
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div className="hidden lg:block lg:col-span-5 xl:col-span-5" aria-hidden="true" />
-
-                        </div>
+                        <div className="hidden lg:block lg:col-span-5" aria-hidden="true" />
                     </div>
                 </div>
             </div>
-
-            {/* Mobile/Tablet Analytical Evidence - Ends the Hero Section */}
-            <div className="lg:hidden w-full relative z-30">
-                <MobileEvidenceSection />
-            </div>
-
         </section>
     )
 }

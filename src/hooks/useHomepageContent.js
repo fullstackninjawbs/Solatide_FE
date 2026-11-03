@@ -18,9 +18,16 @@ export const HOMEPAGE_KEY = '/api/v1/content/homepage';
 
 export const HOMEPAGE_DEFAULTS = {
     hero: {
-        headline: 'Your Trusted Source For\nResearch Grade Peptides.',
-        subtext: 'Solatide Biosciences delivers research grade peptides and laboratory solutions for researchers who demand purity, consistency, and results.',
-        imageAlt: 'Solatide Biosciences – Research Grade Peptides',
+        headline: 'Research Peptides Australia\nLab-Tested. Batch-Verified.',
+        subtext: 'Solatide Biosciences is an Australian research peptide supplier providing research-grade peptides with independent HPLC and LC-MS testing, batch-specific Certificates of Analysis, and tracked worldwide shipping.',
+        imageAlt: 'Solatide research peptide vials – BPC-157, Retatrutide and Tirzepatide',
+        primaryButtonText: 'Shop Research Peptides',
+        secondaryButtonText: 'View COAs',
+        disclaimer: 'For laboratory research only. Not for human use.',
+        showBadge: true,
+        badgeTitle: 'Ranked #1 Australian Supplier',
+        badgeSubtitle: 'Independent supplier ranking',
+        badgeLinkText: 'View ranking',
         desktopImage: null,
         mobileImage: null,
     },
