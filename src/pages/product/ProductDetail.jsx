@@ -12,7 +12,7 @@ import { apiService } from '../../services/api';
 import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
-import { trackEvent } from '../../utils/analytics';
+import { trackProductView } from '../../utils/analytics';
 import { getProductImageAltText } from '../../utils/imageHelpers';
 import { getRouteData, sameData, stripInternal, reviewsKeyFor } from '../../utils/routeData';
 import { sanitizedMarkup } from '../../utils/sanitize';
@@ -154,11 +154,8 @@ const ProductDetail = () => {
                     setProduct(prev => (sameData(prev, fetchedProduct) ? prev : fetchedProduct));
                     setNotFound(false);
                     saveToRecentlyViewed(fetchedProduct);
-                    trackEvent('product_view', {
-                        productId: fetchedProduct._id,
-                        productName: fetchedProduct.name,
-                        path: window.location.pathname
-                    });
+                    // Once per history entry: the background refresh of prerendered data doesn't count again
+                    trackProductView(fetchedProduct, window.history.state?.key);
                 } else if (!embedded) {
                     // API returned success:false / 404 — this slug doesn't exist
                     setNotFound(true);

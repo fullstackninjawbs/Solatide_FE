@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { trackEvent } from '../utils/analytics';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
+import { trackCartChange } from '../utils/analytics';
 import { toast } from 'react-hot-toast';
 
 const CartContext = createContext();
@@ -64,6 +64,25 @@ export const CartProvider = ({ children }) => {
         }
     }, [cartItems, isCartInitialized]);
 
+    // Analytics: cart changes are sent after the cart state updated, with the real new cart. A change
+    // that was refused (stock limit) leaves the quantity as it was and is not sent. Changes taken
+    // over from another tab are not this tab's actions and are not sent either.
+    const pendingCartEvents = useRef([]);
+    const sameItem = (item, id) => item.cartItemId === id || item.id === id || item._id === id;
+    useEffect(() => {
+        if (!pendingCartEvents.current.length) return;
+        const events = pendingCartEvents.current;
+        pendingCartEvents.current = [];
+        try {
+            for (const e of events) {
+                const now = cartItems.find(i => sameItem(i, e.cartItemId));
+                const qty = now ? now.quantity : 0;
+                if (qty === e.beforeQty) continue;
+                trackCartChange(e.type, now || e.item, qty - e.beforeQty, cartItems);
+            }
+        } catch { /* analytics never breaks the cart */ }
+    }, [cartItems]);
+
     const addToCart = (product, quantity = 1, selectedVariant = null) => {
         const resolvedVariant = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
         const variantSku = resolvedVariant?.sku || '';
@@ -113,21 +132,12 @@ export const CartProvider = ({ children }) => {
         });
         
         setIsCartOpen(true);
-        // Analytics: fire add_to_cart
-        try {
-            const resolvedVariantForAnalytics = selectedVariant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
-            const price = resolvedVariantForAnalytics ? resolvedVariantForAnalytics.price : product.price;
-            const numericPrice = typeof price === 'string' ? parseFloat(price.replace(/[^0-9.]/g, '')) : price;
-            trackEvent('add_to_cart', {
-                productId: product._id || product.id,
-                productName: product.name || 'Research Compound',
-                cartValue: (numericPrice || 0) * quantity,
-                path: window.location.pathname
-            });
-        } catch { /* analytics never breaks the cart */ }
+        pendingCartEvents.current.push({ type: 'add_to_cart', cartItemId, beforeQty: currentQty });
     };
 
     const removeFromCart = (cartItemId) => {
+        const item = cartItems.find(i => sameItem(i, cartItemId));
+        if (item) pendingCartEvents.current.push({ type: 'remove_from_cart', cartItemId, beforeQty: item.quantity, item });
         setCartItems(prevItems => prevItems.filter(item =>
             item.cartItemId !== cartItemId && item.id !== cartItemId && item._id !== cartItemId
         ));
@@ -135,7 +145,11 @@ export const CartProvider = ({ children }) => {
 
     const updateQuantity = (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
-        
+        const current = cartItems.find(i => sameItem(i, cartItemId));
+        if (current && current.quantity !== newQuantity) {
+            pendingCartEvents.current.push({ type: 'cart_quantity_change', cartItemId, beforeQty: current.quantity, item: current });
+        }
+
         setCartItems(prevItems => {
             const item = prevItems.find(i => i.cartItemId === cartItemId || i.id === cartItemId || i._id === cartItemId);
             if (item) {

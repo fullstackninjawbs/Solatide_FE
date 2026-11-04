@@ -4,7 +4,6 @@ import { CheckCircle, Package, ArrowRight, Loader2, Clock, XCircle } from 'lucid
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { useCart } from '../../context/CartContext';
-import { trackEvent } from '../../utils/analytics';
 import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
 
 const POLL_INTERVAL_MS = 3000;
@@ -32,7 +31,7 @@ const firePurchaseTracking = (order) => {
     // ignore
   }
   try {
-    trackEvent('purchase', { orderId: order._id, cartValue: order.grandTotal });
+    // Internal analytics: the server records order placed / payment confirmed itself
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'purchase',
