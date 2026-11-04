@@ -273,6 +273,12 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
           <span className="text-[11px] font-semibold text-amber-700 mt-2">
             {data?.abandonedCarts ?? 0} abandoned checkouts
           </span>
+          {/* Submitted bank transfer / PayID orders: awaiting payment, never abandoned */}
+          {(data?.awaitingPayment ?? 0) > 0 && (
+            <span className="text-[11px] font-medium text-slate-500 mt-0.5">
+              {data.awaitingPayment} awaiting bank transfer ({formatCurrency(data.awaitingPaymentValue)}), not counted
+            </span>
+          )}
         </div>
       </div>
 
@@ -434,6 +440,8 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
             {recentEvents.slice(0, 6).map((evt, index) => {
               const isCart = evt.eventType === 'add_to_cart';
               const isCheckout = evt.eventType === 'begin_checkout';
+              // order_placed = order submitted (bank transfer may still be unpaid); purchase = payment confirmed
+              const isOrderPlaced = evt.eventType === 'order_placed';
               const isPurchase = evt.eventType === 'purchase';
               const isProduct = evt.eventType === 'product_view';
 
@@ -450,6 +458,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         isPurchase ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' :
+                        isOrderPlaced ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/80' :
                         isCheckout ? 'bg-blue-50 text-blue-700 border border-blue-200/80' :
                         isCart ? 'bg-amber-50 text-amber-800 border border-amber-200/80' :
                         isProduct ? 'bg-purple-50 text-purple-700 border border-purple-200/80' :
@@ -470,7 +479,8 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
                        evt.eventType === 'product_view' ? (evt.productName || 'Viewed Product') :
                        evt.eventType === 'add_to_cart' ? `Added ${evt.productName || 'Item'} to Cart` :
                        evt.eventType === 'begin_checkout' ? 'Started Checkout' :
-                       evt.eventType === 'purchase' ? 'Purchased Order' : evt.eventType}
+                       evt.eventType === 'order_placed' ? 'Placed Order' :
+                       evt.eventType === 'purchase' ? 'Payment Confirmed' : evt.eventType}
                     </h4>
                     <div className="mt-2 flex items-center">
                       <span className="text-[11px] font-mono text-[#0079CD] font-semibold bg-blue-50/80 px-2 py-0.5 rounded-md border border-blue-100 truncate max-w-full">

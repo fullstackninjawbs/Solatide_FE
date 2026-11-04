@@ -291,7 +291,8 @@ const Dashboard = () => {
                     <div className="space-y-2">
                       {[
                         { label: 'Sessions', value: liveData?.sessions, color: 'bg-[#1a3f8f]' },
-                        { label: 'Checkout Started', value: (liveData?.orders ?? 0) + (liveData?.abandonedCarts ?? 0), color: 'bg-amber-400' },
+                        // Paid + unpaid card checkouts + bank transfer orders awaiting payment (no longer counted as abandoned)
+                        { label: 'Checkout Started', value: (liveData?.orders ?? 0) + (liveData?.abandonedCarts ?? 0) + (liveData?.awaitingPayment ?? 0), color: 'bg-amber-400' },
                         { label: 'Orders Completed', value: liveData?.orders, color: 'bg-emerald-500' },
                       ].map(({ label, value, color }) => {
                         const max = liveData?.sessions || 1;
