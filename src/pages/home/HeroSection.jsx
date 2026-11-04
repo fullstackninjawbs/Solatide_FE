@@ -14,6 +14,17 @@ import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageCont
 // shows the hero straight away (images are already cached, the fade made it feel slow).
 let heroShownOnce = false
 
+// Entrance: the elements fade up one after another (60 ms apart, 0.6 s each: done in ~1.1 s).
+// motion-safe: people who turned on "reduce motion" see everything at once.
+const REVEAL_START_MS = 60
+const REVEAL_STEP_MS = 50
+const reveal = (animate, step) => (animate
+    ? {
+        className: 'motion-safe:opacity-0 motion-safe:animate-fade-in-up',
+        style: { animationDelay: `${REVEAL_START_MS + step * REVEAL_STEP_MS}ms`, animationDuration: '0.5s' },
+    }
+    : { className: '', style: undefined })
+
 // Each hero image is in a <picture> whose <source> only matches at its own breakpoint; the <img>
 // fallback is this 1×1 GIF. So phones never download the desktop image and desktops never
 // download the mobile one (images inside display:none containers are still downloaded).
@@ -78,8 +89,8 @@ const BadgeTitle = ({ text }) => String(text).split(/(#\d+)/).map((part, i) => (
 
 // PepFinder card: one clean white card (the badge already has its own frame, so no inner panel),
 // badge on the left, title / subtitle / link on the right. Phones: stacked and centred.
-const PepFinderCard = ({ title, subtitle, linkText }) => (
-    <div className="mt-6 lg:mt-[clamp(12px,2.2vh,24px)] w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left">
+const PepFinderCard = ({ title, subtitle, linkText, revealProps }) => (
+    <div style={revealProps.style} className={`mt-6 lg:mt-[clamp(12px,2.2vh,24px)] w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left ${revealProps.className}`}>
         {/* Badge scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding */}
         <a href={PEPFINDER_URL} target="_blank" rel="noopener" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
             <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[clamp(190px,min(calc((100vh_-_200px)*0.44),19vw),270px)] h-auto aspect-[220/64]" />
@@ -102,10 +113,11 @@ const PepFinderCard = ({ title, subtitle, linkText }) => (
 )
 
 // Phones: one card with three rows. sm+: three cards side by side.
-const Features = () => (
+// Each card reveals on its own step, starting at firstStep.
+const Features = ({ animate, firstStep }) => (
     <ul className="mt-6 lg:mt-[clamp(12px,2.2vh,24px)] grid grid-cols-1 sm:grid-cols-3 sm:gap-3 bg-white sm:bg-transparent rounded-[16px] sm:rounded-none shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:shadow-none divide-y divide-slate-100 sm:divide-y-0">
-        {FEATURES.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 lg:py-[clamp(8px,1.5vh,14px)] sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)]">
+        {FEATURES.map(({ icon: Icon, title, text }, i) => (
+            <li key={title} style={reveal(animate, firstStep + i).style} className={`flex items-center gap-3 sm:gap-2.5 px-4 py-3 sm:px-3 sm:py-3.5 lg:py-[clamp(8px,1.5vh,14px)] sm:bg-white sm:rounded-[14px] sm:shadow-[0_4px_16px_rgba(15,40,90,0.08)] ${reveal(animate, firstStep + i).className}`}>
                 <Icon className="w-9 h-9 sm:w-8 sm:h-8 shrink-0 text-[#1a73e8]" strokeWidth={1.6} aria-hidden="true" />
                 <span className="flex flex-col text-left min-w-0">
                     <span className="text-[14px] lg:text-[clamp(13px,1.85vh,15px)] font-bold text-[#0b1f4b] leading-tight"><KeepHyphenated text={title} /></span>
@@ -133,6 +145,8 @@ const HeroSection = () => {
         ? { src: cloudinarySized(hero.mobileImage.url, 900), w: hero.mobileImage.width, h: hero.mobileImage.height }
         : { src: mobileHeroImageWebp, w: MOBILE_HERO_W, h: MOBILE_HERO_H }
     const alt = hero.imageAlt
+    // Reveal order: headline, line, paragraph, buttons, PepFinder card (when shown), feature cards, disclaimer
+    const featuresStep = hero.showBadge ? 5 : 4
 
     return (
         <section className="relative w-full overflow-hidden bg-[#e4dbf8] lg:bg-white flex flex-col lg:flex-row lg:items-center lg:min-h-[min(100svh,860px)] lg:pt-[160px] lg:pb-8">
@@ -177,20 +191,19 @@ const HeroSection = () => {
                         {/* key: remount when content arrives so the fade-in plays then, not while hidden */}
                         <div
                             key={String(ready)}
-                            className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 ${animate ? 'opacity-0 animate-fade-in-up' : ''} ${ready ? '' : 'invisible'}`}
-                            style={animate ? { animationDelay: '100ms' } : undefined}
+                            className={`lg:col-span-7 flex flex-col text-left -mt-2 pt-6 pb-8 sm:pb-10 lg:mt-0 lg:pt-0 lg:pb-0 md:max-w-[680px] md:mx-auto md:w-full lg:max-w-none lg:mx-0 ${ready ? '' : 'invisible'}`}
                         >
-                            <h1 className="text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[clamp(32px,min(calc((100vh_-_200px)*0.087),3.5vw),52px)] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08] lg:leading-[1.06]">
+                            <h1 style={reveal(animate, 0).style} className={`text-[28px] min-[380px]:text-[31px] sm:text-[42px] lg:text-[clamp(32px,min(calc((100vh_-_200px)*0.087),3.5vw),52px)] font-extrabold tracking-[-0.02em] text-[#0b1f4b] leading-[1.08] lg:leading-[1.06] ${reveal(animate, 0).className}`}>
                                 <Headline text={hero.headline} />
                             </h1>
 
-                            <span className="block w-16 lg:w-20 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:my-[clamp(10px,2vh,20px)]" aria-hidden="true" />
+                            <span style={reveal(animate, 1).style} className={`block w-16 lg:w-20 h-[4px] rounded-full bg-[#10b9dc] mt-4 mb-4 lg:my-[clamp(10px,2vh,20px)] ${reveal(animate, 1).className}`} aria-hidden="true" />
 
-                            <p className="text-[15px] lg:text-[clamp(14.5px,calc((100vh_-_200px)*0.031),19px)] text-[#1e2a44] leading-[1.5] max-w-[680px] lg:max-w-[620px] min-[1680px]:max-w-[700px]">
+                            <p style={reveal(animate, 2).style} className={`text-[15px] lg:text-[clamp(14.5px,calc((100vh_-_200px)*0.031),19px)] text-[#1e2a44] leading-[1.5] max-w-[680px] lg:max-w-[620px] min-[1680px]:max-w-[700px] ${reveal(animate, 2).className}`}>
                                 <KeepHyphenated text={hero.subtext} />
                             </p>
 
-                            <div className="mt-6 lg:mt-[clamp(14px,2.6vh,28px)] flex flex-col sm:flex-row gap-3 sm:gap-5 lg:gap-4">
+                            <div style={reveal(animate, 3).style} className={`mt-6 lg:mt-[clamp(14px,2.6vh,28px)] flex flex-col sm:flex-row gap-3 sm:gap-5 lg:gap-4 ${reveal(animate, 3).className}`}>
                                 <Link
                                     to="/collections/all"
                                     className="inline-flex items-center justify-center gap-2.5 h-[52px] lg:h-[clamp(44px,calc((100vh_-_200px)*0.1),58px)] px-8 lg:px-7 rounded-full bg-gradient-to-r from-[#1a4494] to-[#0650b3] text-white font-semibold text-[16px] lg:text-[clamp(15px,2vh,17px)] whitespace-nowrap shadow-[0_8px_22px_rgba(11,102,214,0.28)] hover:brightness-95 transition-[filter] duration-200"
@@ -206,12 +219,12 @@ const HeroSection = () => {
                             </div>
 
                             {hero.showBadge && (
-                                <PepFinderCard title={hero.badgeTitle} subtitle={hero.badgeSubtitle} linkText={hero.badgeLinkText} />
+                                <PepFinderCard title={hero.badgeTitle} subtitle={hero.badgeSubtitle} linkText={hero.badgeLinkText} revealProps={reveal(animate, 4)} />
                             )}
 
-                            <Features />
+                            <Features animate={animate} firstStep={featuresStep} />
 
-                            <p className="mt-5 lg:mt-[clamp(8px,1.4vh,16px)] text-[12.5px] lg:text-[clamp(12.5px,1.7vh,14px)] text-slate-600">{hero.disclaimer}</p>
+                            <p style={reveal(animate, featuresStep + FEATURES.length).style} className={`mt-5 lg:mt-[clamp(8px,1.4vh,16px)] text-[12.5px] lg:text-[clamp(12.5px,1.7vh,14px)] text-slate-600 ${reveal(animate, featuresStep + FEATURES.length).className}`}>{hero.disclaimer}</p>
                         </div>
 
                         <div className="hidden lg:block lg:col-span-5" aria-hidden="true" />

@@ -58,9 +58,9 @@ const Header = () => {
     const moreDropdownRef = React.useRef(null)
     const lastScrollY = React.useRef(0);
     const { announcement, ready: announcementReady } = useHomepageContent()
-    // Until the saved messages are known the bar keeps its space but stays empty (no default-text flash)
+    // The bar's 36px strip is always there, so switching the bar off (or messages not loaded yet) never
+    // shifts the header, homepage hero or page content up; it is just left empty
     const announcements = announcementReady && announcement.enabled ? announcement.messages : []
-    const showAnnouncementBar = !announcementReady || announcements.length > 0
 
     useEffect(() => {
         let ticking = false;
@@ -183,8 +183,8 @@ const Header = () => {
     return (
         <>
             {!isHome && (
-                // Space for the fixed header; 36px less when the announcement bar is switched off
-                <div className={`w-full shrink-0 ${showAnnouncementBar ? 'h-[122px] lg:h-[175px]' : 'h-[86px] lg:h-[139px]'}`} aria-hidden="true" />
+                // Space for the fixed header (same height with or without announcement messages)
+                <div className="w-full shrink-0 h-[122px] lg:h-[175px]" aria-hidden="true" />
             )}
             <header
                 className={`top-0 left-0 w-full z-[999] transform-gpu transition-[background-color,border-color,box-shadow,height] duration-0 lg:duration-300 ease-in-out fixed ${(!isScrolled && !isMobileMenuOpen)
@@ -192,22 +192,23 @@ const Header = () => {
                     : 'bg-white/95 border-b border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md'
                     }`}
             >
-                {showAnnouncementBar && (
-                    <div className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
-                        }`}>
-                        {announcements.map((msg, i) => {
-                            const active = i === announcementIndex % announcements.length
-                            // Earlier messages leave upwards, later ones wait below (same motion as before)
-                            const hidden = i < announcementIndex % announcements.length ? '-translate-y-4' : 'translate-y-4'
-                            return (
-                                <div key={i} className={`absolute flex items-center justify-center gap-2 px-4 text-center transition-all duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : `opacity-0 ${hidden} pointer-events-none`}`}>
-                                    <span className="tracking-wide truncate">{msg.text}</span>
-                                    <AnnouncementIcon icon={msg.icon} />
-                                </div>
-                            )
-                        })}
-                    </div>
-                )}
+                <div
+                    aria-hidden={announcements.length ? undefined : true}
+                    className={`w-full relative overflow-hidden transition-[height,opacity] duration-300 ease-in-out flex justify-center items-center text-[13.5px] lg:text-[14.5px] font-bold text-[#1a4494] ${(!isScrolled && !isMobileMenuOpen) ? 'h-[36px] opacity-100' : 'h-0 opacity-0 pointer-events-none'
+                        }`}
+                >
+                    {announcements.map((msg, i) => {
+                        const active = i === announcementIndex % announcements.length
+                        // Earlier messages leave upwards, later ones wait below (same motion as before)
+                        const hidden = i < announcementIndex % announcements.length ? '-translate-y-4' : 'translate-y-4'
+                        return (
+                            <div key={i} className={`absolute flex items-center justify-center gap-2 px-4 text-center transition-all duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : `opacity-0 ${hidden} pointer-events-none`}`}>
+                                <span className="tracking-wide truncate">{msg.text}</span>
+                                <AnnouncementIcon icon={msg.icon} />
+                            </div>
+                        )
+                    })}
+                </div>
 
                 <div className="main-container py-0">
                     <div className={`flex py-2 lg:py-3 items-center justify-between gap-6 transition-[min-height] duration-300 ${(!isScrolled && !isMobileMenuOpen) ? 'min-h-[72px] lg:min-h-[100px]' : 'min-h-[60px] lg:min-h-[76px]'}`}>
