@@ -143,10 +143,9 @@ export function getSessionId() {
 
 // ─── Location (fallback) ──────────────────────────────────────────────────────
 // The server looks the location up from the IP (local GeoIP database). Until that database is
-// installed, the browser's own lookup below is sent along and used instead.
+// installed, a country/state guess from the browser's timezone is sent along and used instead.
 
 const LOC_KEY = 'slat_loc';
-const LOC_TTL_MS = 24 * 60 * 60 * 1000;
 let locationCache = null;
 let locationPromise = null;
 
@@ -175,57 +174,21 @@ function detectLocationFromTimezone() {
   return null;
 }
 
-function readCachedLocation() {
-  const parsed = store.getJson(LOC_KEY);
-  if (!parsed || !parsed.at || Date.now() - parsed.at > LOC_TTL_MS) return null;
-  return { country: parsed.country || '', region: parsed.region || '', city: parsed.city || '' };
-}
-
-const fetchJson = async (url) => {
-  const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const t = ctrl ? setTimeout(() => ctrl.abort(), 3000) : null;
-  try {
-    const res = await fetch(url, ctrl ? { signal: ctrl.signal } : undefined);
-    return res.ok ? await res.json() : null;
-  } finally {
-    if (t) clearTimeout(t);
-  }
-};
-
-const LOCATION_PROVIDERS = [
-  async () => {
-    const d = await fetchJson('https://ipapi.co/json/');
-    return d && !d.error ? { country: d.country_name || d.country, region: d.region, city: d.city } : null;
-  },
-  async () => {
-    const d = await fetchJson('https://get.geojs.io/v1/ip/geo.json');
-    return d ? { country: d.country, region: d.region, city: d.city } : null;
-  },
-];
-
-async function fetchLocationDetails() {
-  const cached = readCachedLocation();
-  if (cached) return (locationCache = cached);
-  for (const lookup of LOCATION_PROVIDERS) {
-    try {
-      const loc = await lookup();
-      if (loc && loc.country) {
-        locationCache = { country: loc.country, region: loc.region || '', city: loc.city || '' };
-        store.setJson(LOC_KEY, { ...locationCache, at: Date.now() });
-        return locationCache;
-      }
-    } catch { /* blocked / network / rate-limit: try the next provider */ }
-  }
-  locationCache = detectLocationFromTimezone();
-  return locationCache;
-}
-
+// No third-party lookup (that would send the visitor's IP to another company): only the browser's
+// own timezone, which needs no network request. The server's IP lookup replaces it when installed.
 function ensureLocation() {
-  if (!locationPromise) locationPromise = fetchLocationDetails().catch(() => detectLocationFromTimezone());
+  if (!locationPromise) {
+    locationCache = detectLocationFromTimezone();
+    locationPromise = Promise.resolve(locationCache);
+  }
   return locationPromise;
 }
 
-if (hasWindow() && !isPrerendering()) runWhenIdle(() => { ensureLocation(); });
+if (hasWindow() && !isPrerendering()) {
+  // Forget the location saved by the earlier third-party lookup
+  try { localStorage.removeItem(LOC_KEY); } catch { /* storage unavailable */ }
+  runWhenIdle(() => { ensureLocation(); });
+}
 
 // ─── Bots & 404s ──────────────────────────────────────────────────────────────
 
