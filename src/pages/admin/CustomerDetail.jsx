@@ -673,20 +673,39 @@ const CustomerDetail = () => {
         {/* ════════════════ RIGHT COLUMN ════════════════ */}
         <div className="space-y-8">
           {/* Customer Overview Card */}
-          <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden p-6 space-y-5">
-            <div className="pb-3 border-b border-slate-100">
-              <h2 className="text-[16px] font-bold text-brand-navy">Customer</h2>
+          <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden p-6 sm:p-7">
+            {/* Header: Avatar + Title + Status Pill */}
+            <div className="flex items-center justify-between pb-6 border-b border-slate-100">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-brand-blue flex items-center justify-center shrink-0">
+                  <User size={22} className="text-brand-blue" />
+                </div>
+                <h2 className="text-[19px] font-black text-brand-navy leading-tight">
+                  Customer<br />Overview
+                </h2>
+              </div>
+
+              {customer.banned ? (
+                <span className="px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-rose-50 text-rose-600 border border-rose-200/70 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                  <div className="text-right leading-tight">Banned<br />Account</div>
+                </span>
+              ) : (
+                <span className="px-4 py-1.5 rounded-full bg-[#EBFDF5] text-[#059669] border border-[#A7F3D0]/80 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] shrink-0"></span>
+                  <div className="text-[12px] font-bold text-[#059669] leading-tight text-left">
+                    Active<br />Account
+                  </div>
+                </span>
+              )}
             </div>
 
-            <p className="text-[13px] text-slate-500 font-medium">
-              {customer.banned ? 'Account is currently banned' : 'Has an active account'}
-            </p>
-
             {/* Contact Information */}
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Contact Information</h3>
+            <div className="py-6 border-b border-slate-100">
+              <div className="flex justify-between items-center mb-3.5">
+                <h3 className="text-[11.5px] font-black text-slate-400 uppercase tracking-wider">CONTACT INFORMATION</h3>
                 <button
+                  type="button"
                   onClick={() => {
                     setEditContactForm({
                       email: customer?.email || '',
@@ -697,30 +716,30 @@ const CustomerDetail = () => {
                   className="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-brand-blue flex items-center justify-center transition-colors cursor-pointer"
                   title="Edit Contact Info"
                 >
-                  <Edit2 size={13} />
+                  <Edit2 size={14} />
                 </button>
               </div>
 
-              <div className="space-y-2 mt-1">
+              <div className="space-y-3">
                 <a
                   href={`mailto:${customer.email}`}
-                  className="text-[14px] font-semibold text-brand-blue hover:underline flex items-center gap-2 break-all"
+                  className="text-[14.5px] font-bold text-brand-blue hover:underline flex items-center gap-2.5 break-all transition-colors"
                 >
-                  <Mail size={15} className="shrink-0 text-slate-400" />
-                  {customer.email}
+                  <Mail size={16} className="shrink-0 text-brand-blue" />
+                  <span>{customer.email}</span>
                 </a>
 
                 {phoneToDisplay ? (
                   <a
                     href={`tel:${phoneToDisplay}`}
-                    className="text-[13.5px] font-medium text-slate-700 hover:text-brand-blue flex items-center gap-2 transition-colors"
+                    className="text-[14.5px] font-bold text-brand-navy hover:text-brand-blue flex items-center gap-2.5 transition-colors"
                   >
-                    <Phone size={14} className="shrink-0 text-slate-400" />
-                    {phoneToDisplay}
+                    <Phone size={16} className="shrink-0 text-slate-400" />
+                    <span>{phoneToDisplay}</span>
                   </a>
                 ) : (
-                  <p className="text-[13px] text-slate-400 italic flex items-center gap-2">
-                    <Phone size={14} className="shrink-0 text-slate-300" />
+                  <p className="text-[13px] text-slate-400 italic flex items-center gap-2.5">
+                    <Phone size={16} className="shrink-0 text-slate-300" />
                     No phone recorded
                   </p>
                 )}
@@ -728,10 +747,11 @@ const CustomerDetail = () => {
             </div>
 
             {/* Default Address */}
-            <div className="pt-4 border-t border-slate-100">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Default Address</h3>
+            <div className="pt-6">
+              <div className="flex justify-between items-center mb-3.5">
+                <h3 className="text-[11.5px] font-black text-slate-400 uppercase tracking-wider">DEFAULT ADDRESS</h3>
                 <button
+                  type="button"
                   onClick={() => {
                     setEditAddressForm({
                       name: address?.name || '',
@@ -747,21 +767,23 @@ const CustomerDetail = () => {
                   className="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-brand-blue flex items-center justify-center transition-colors cursor-pointer"
                   title="Edit Address"
                 >
-                  <Edit2 size={13} />
+                  <Edit2 size={14} />
                 </button>
               </div>
 
               {address ? (
-                <div className="text-[13.5px] text-slate-600 leading-relaxed bg-slate-50/70 p-4 rounded-xl border border-slate-100 flex items-start gap-3 mt-1">
-                  <MapPin size={16} className="text-brand-blue shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold text-brand-navy text-[14px]">{address.name || customer.name}</p>
-                    <p>{address.street1}</p>
-                    {address.street2 && <p>{address.street2}</p>}
-                    <p>
+                <div className="bg-[#f8fafc] border border-slate-200/70 rounded-2xl p-4 flex items-start gap-3 mt-1">
+                  <div className="w-7 h-7 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin size={15} className="text-brand-blue" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="font-extrabold text-brand-navy text-[14.5px]">{address.name || customer.name}</p>
+                    <p className="text-[13.5px] text-slate-600 font-medium">{address.street1}</p>
+                    {address.street2 && <p className="text-[13.5px] text-slate-600 font-medium">{address.street2}</p>}
+                    <p className="text-[13.5px] text-slate-600 font-medium">
                       {[address.city, address.state, address.zip].filter(Boolean).join(' ')}
                     </p>
-                    <p className="font-semibold text-slate-700 mt-0.5">{address.country || 'Australia'}</p>
+                    <p className="font-bold text-brand-navy text-[13.5px] pt-0.5">{address.country || 'AU'}</p>
                   </div>
                 </div>
               ) : (

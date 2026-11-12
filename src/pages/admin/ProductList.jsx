@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, Search, Edit2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Plus, Search, Edit2, SlidersHorizontal, AlertCircle, ShoppingBag, ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -268,6 +268,8 @@ const ProductList = () => {
             align="right"
             options={[
               { value: '', label: 'Sort: Default' },
+              { value: 'Inventory: Low to High', label: 'Stock: Low → High' },
+              { value: 'Inventory: High to Low', label: 'Stock: High → Low' },
               { value: 'Alphabetically, A-Z', label: 'Name A → Z' },
               { value: 'Alphabetically, Z-A', label: 'Name Z → A' },
               { value: 'Date, new to old', label: 'Newest first' },
@@ -346,7 +348,30 @@ const ProductList = () => {
                     </th>
                     <th className="py-4 pl-2 pr-8">Product</th>
                     <th className="py-4">Status</th>
-                    <th className="py-4">Inventory</th>
+                    <th 
+                      className="py-4 cursor-pointer select-none group/inv hover:text-slate-700 transition-colors"
+                      onClick={() => {
+                        if (selectedSort === 'Inventory: Low to High') {
+                          handleSortChange('Inventory: High to Low');
+                        } else if (selectedSort === 'Inventory: High to Low') {
+                          handleSortChange('');
+                        } else {
+                          handleSortChange('Inventory: Low to High');
+                        }
+                      }}
+                      title="Sort by inventory count"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Inventory</span>
+                        {selectedSort === 'Inventory: Low to High' ? (
+                          <ArrowUp className="h-3.5 w-3.5 text-brand-blue" />
+                        ) : selectedSort === 'Inventory: High to Low' ? (
+                          <ArrowDown className="h-3.5 w-3.5 text-brand-blue" />
+                        ) : (
+                          <ArrowUpDown className="h-3.5 w-3.5 text-slate-300 group-hover/inv:text-slate-500 transition-colors" />
+                        )}
+                      </div>
+                    </th>
                     <th className="py-4">Category</th>
                     <th className="py-4">Research Focus</th>
                     <th className="py-4">Product type</th>

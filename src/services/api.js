@@ -555,6 +555,20 @@ export const apiService = {
     });
   },
 
+  getAdminOrderTracking: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/tracking`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
+  updateAdminOrderTracking: async (id, data) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/tracking`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  },
+
   revalidateAdminOrderAddress: async (id) => {
     return customFetch(`${API_URL}/api/admin/order/${id}/revalidate-address`, {
       method: 'POST',

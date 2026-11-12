@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import CountryFlag from '../../components/CountryFlag';
 import {
   Search,
   Package,
@@ -9,7 +10,16 @@ import {
   RefreshCw,
   Download,
   Trash2,
-  RotateCcw
+  RotateCcw,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  CheckCircle2,
+  Truck,
+  AlertTriangle,
+  Clock,
+  Printer,
+  MinusCircle
 } from 'lucide-react';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
@@ -18,54 +28,183 @@ function formatOrderDate(dateStr) {
   if (!dateStr) return '—';
   const date = new Date(dateStr);
   
-  // Format for Australia/Sydney
-  const timeStr = date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' });
-  const datePart = date.toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'Australia/Sydney' });
+  // Format for Australia/Sydney e.g. "Tue, 10 Nov at 4:30 pm"
+  const timeStr = date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' }).toLowerCase();
+  const datePart = date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Australia/Sydney' });
   
-  return `${datePart} at ${timeStr} AEST`;
+  return `${datePart} at ${timeStr}`;
 }
+
+const SYD = { timeZone: 'Australia/Sydney' };
+const formatOrderDay = (d) => (d ? new Date(d).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', ...SYD }) : '—');
+const formatOrderTime = (d) => (d ? new Date(d).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true, ...SYD }).toLowerCase() : '');
 
 function fmtAUD(amount) {
   if (amount == null) return '—';
   return `$${Number(amount).toFixed(2)}`;
 }
 
-// ─── Status badge components ──────────────────────────────────────────────────
+// ─── Status badges (same pill style as the rest of the admin) ─────────────────
 const PAYMENT_BADGE = {
-  paid: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-  pending: 'bg-amber-100 text-amber-700 border border-amber-200',
-  failed: 'bg-red-100 text-red-700 border border-red-200',
+  paid: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  pending: 'bg-amber-50 text-amber-700 border border-amber-200',
+  awaiting_payment: 'bg-amber-50 text-amber-700 border border-amber-200',
+  failed: 'bg-red-50 text-red-700 border border-red-200',
+  partially_refunded: 'bg-slate-100 text-slate-600 border border-slate-200',
   refunded: 'bg-slate-100 text-slate-600 border border-slate-200',
-  awaiting_payment: 'bg-amber-100 text-amber-800 border border-amber-300',
   cancelled: 'bg-slate-100 text-slate-500 border border-slate-200',
+};
+
+const PAYMENT_LABEL = {
+  paid: 'Paid',
+  pending: 'Pending',
+  awaiting_payment: 'Awaiting Payment',
+  failed: 'Failed',
+  partially_refunded: 'Partially Refunded',
+  refunded: 'Refunded',
+  cancelled: 'Cancelled',
 };
 
 // Bank transfer / PayID orders (our own checkout) — payment confirmed manually by the admin
 const BANK_METHODS = ['payid', 'bank_transfer', 'international_bank_transfer'];
-const BANK_METHOD_LABEL = { payid: 'PayID', bank_transfer: 'Bank transfer', international_bank_transfer: 'Intl transfer' };
 const paymentBadgeText = (o) => (o.paymentStatus === 'pending' && BANK_METHODS.includes(o.paymentMethod) ? 'awaiting_payment' : o.paymentStatus);
 
 const FULFIL_BADGE = {
   unfulfilled: 'bg-amber-50 text-amber-700 border border-amber-200',
-  fulfilled: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-  partial: 'bg-blue-100 text-blue-700 border border-blue-200',
+  fulfilled: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  partial: 'bg-blue-50 text-blue-700 border border-blue-200',
 };
 
-const DELIVERY_BADGE = {
-  pending: 'bg-slate-100 text-slate-500 border border-slate-200',
-  tracking_added: 'bg-blue-100 text-blue-700 border border-blue-200',
-  in_transit: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
-  delivered: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+const FULFIL_LABEL = {
+  unfulfilled: 'Unfulfilled',
+  fulfilled: 'Fulfilled',
+  partial: 'Partial',
 };
 
-function Badge({ text, styleMap, fallback = 'bg-slate-100 text-slate-500 border border-slate-200' }) {
-  const cls = styleMap?.[text] ?? fallback;
-  const label = text ? text.replace(/_/g, ' ') : '—';
+function Pill({ value, styles, labels }) {
+  const cls = styles[value] || 'bg-slate-100 text-slate-500 border border-slate-200';
+  const label = labels[value] || (value ? value.replace(/_/g, ' ') : '—');
   return (
-    <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold capitalize whitespace-nowrap ${cls}`}>
+    <span className={`inline-block px-2.5 py-1 rounded-full text-[11.5px] font-semibold whitespace-nowrap ${cls}`}>
       {label}
     </span>
   );
+}
+
+// ─── Traffic source ───────────────────────────────────────────────────────────
+// As recorded at checkout (utils/attribution.ts already gives a clean label such as
+// "Google Organic", "Google Ads", "Instagram Ads", "ChatGPT" or a referring site)
+function trafficSource(o) {
+  const touch = o.attribution?.lastTouch || o.attribution?.firstTouch;
+  const source = String(touch?.source || '').trim();
+  if (!source || /^(\(?direct\)?|none)$/i.test(source) || /^direct\b/i.test(source)) return 'Direct';
+  return source;
+}
+
+// ─── Delivery status ──────────────────────────────────────────────────────────
+// `order.delivery` comes from the server (services/shipping/deliveryStatus.ts), the same
+// logic as the tracking timeline on the order page, so both always agree.
+const DELIVERY_STYLE = {
+  not_shipped: { label: 'Not Shipped', Icon: MinusCircle, pill: 'bg-slate-100 text-slate-500 border-slate-200', dot: 'bg-slate-100 text-slate-400' },
+  label_pending: { label: 'Label Pending', Icon: Clock, pill: 'bg-amber-50 text-amber-700 border-amber-200', dot: 'bg-amber-50 text-amber-600' },
+  label_created: { label: 'Label Created', Icon: Printer, pill: 'bg-violet-50 text-violet-700 border-violet-200', dot: 'bg-violet-50 text-violet-600' },
+  in_transit: { label: 'In Transit', Icon: Truck, pill: 'bg-blue-50 text-blue-700 border-blue-200', dot: 'bg-blue-50 text-blue-600' },
+  out_for_delivery: { label: 'Out for Delivery', Icon: Truck, pill: 'bg-indigo-50 text-indigo-700 border-indigo-200', dot: 'bg-indigo-50 text-indigo-600' },
+  delayed: { label: 'Delayed', Icon: Clock, pill: 'bg-amber-50 text-amber-700 border-amber-200', dot: 'bg-amber-50 text-amber-600' },
+  exception: { label: 'Delivery Issue', Icon: AlertTriangle, pill: 'bg-red-50 text-red-700 border-red-200', dot: 'bg-red-50 text-red-600' },
+  returned: { label: 'Returned to Sender', Icon: AlertTriangle, pill: 'bg-red-50 text-red-700 border-red-200', dot: 'bg-red-50 text-red-600' },
+  delivered: { label: 'Delivered', Icon: CheckCircle2, pill: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-50 text-emerald-600' },
+};
+
+const shortDate = (d) => (d
+  ? new Date(d).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Australia/Sydney' })
+  : '');
+
+function deliveryNote(d) {
+  switch (d.stage) {
+    case 'delivered': return shortDate(d.at);
+    case 'in_transit': return d.at ? `Dispatched ${shortDate(d.at)}` : '';
+    case 'out_for_delivery': return d.at ? shortDate(d.at) : '';
+    case 'delayed': return `No update for ${d.days} days`;
+    case 'exception': return 'Check with the carrier';
+    case 'returned': return d.at ? shortDate(d.at) : '';
+    case 'label_created': return 'Awaiting carrier scan';
+    case 'label_pending': return 'Print it in Starshipit';
+    default: return '';
+  }
+}
+
+function DeliveryStatus({ order }) {
+  const d = order.delivery || { stage: 'not_shipped' };
+  const style = DELIVERY_STYLE[d.stage] || DELIVERY_STYLE.not_shipped;
+  const { Icon } = style;
+  const note = deliveryNote(d);
+  return (
+    <div className="flex items-center gap-2" title={d.source === 'manual' ? 'Tracking entered manually' : undefined}>
+      <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${style.dot}`}>
+        <Icon size={13} strokeWidth={2.5} />
+      </span>
+      <div className="leading-tight">
+        <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold border whitespace-nowrap ${style.pill}`}>
+          {style.label}
+        </span>
+        {note && <div className="text-[11px] text-slate-400 font-medium mt-0.5">{note}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ─── Country ──────────────────────────────────────────────────────────────────
+// Shipping country as a 2-letter code. Website orders store the code already ("AU");
+// older / imported orders may store the name. Unknown → "—" (never guessed).
+const COUNTRY_NAME_TO_ISO = {
+  AUSTRALIA: 'AU', 'NEW ZEALAND': 'NZ', 'UNITED STATES': 'US', 'UNITED STATES OF AMERICA': 'US', USA: 'US',
+  'UNITED KINGDOM': 'GB', UK: 'GB', 'GREAT BRITAIN': 'GB', CANADA: 'CA', INDIA: 'IN', GERMANY: 'DE',
+  FRANCE: 'FR', SINGAPORE: 'SG', MALAYSIA: 'MY', INDONESIA: 'ID', PHILIPPINES: 'PH', JAPAN: 'JP',
+  CHINA: 'CN', IRELAND: 'IE', NETHERLANDS: 'NL', SWITZERLAND: 'CH', SWEDEN: 'SE', NORWAY: 'NO',
+  DENMARK: 'DK', FINLAND: 'FI', BELGIUM: 'BE', AUSTRIA: 'AT', ITALY: 'IT', SPAIN: 'ES', PORTUGAL: 'PT',
+  GREECE: 'GR', POLAND: 'PL', 'SOUTH AFRICA': 'ZA', BRAZIL: 'BR', MEXICO: 'MX', 'UNITED ARAB EMIRATES': 'AE',
+  UAE: 'AE', 'SAUDI ARABIA': 'SA', ISRAEL: 'IL', TURKEY: 'TR', THAILAND: 'TH', VIETNAM: 'VN',
+  'HONG KONG': 'HK', TAIWAN: 'TW', 'SOUTH KOREA': 'KR', FIJI: 'FJ', 'PAPUA NEW GUINEA': 'PG',
+};
+const ISO3_TO_ISO2 = { AUS: 'AU', NZL: 'NZ', USA: 'US', GBR: 'GB', CAN: 'CA', IND: 'IN' };
+
+function orderCountryCode(o) {
+  const raw = o.shippingAddressObj?.country
+    || o.billingAddressObj?.country
+    || (typeof o.shippingAddress === 'object' && o.shippingAddress?.country)
+    || o.customer?.defaultAddress?.country
+    || '';
+  const v = String(raw).trim().toUpperCase();
+  if (!v) return '';
+  if (/^[A-Z]{2}$/.test(v)) return v;
+  return ISO3_TO_ISO2[v] || COUNTRY_NAME_TO_ISO[v] || '';
+}
+
+function CountryCell({ order }) {
+  const code = orderCountryCode(order);
+  if (!code) return <span className="text-slate-400">—</span>;
+  return (
+    <div className="flex items-center gap-1.5 whitespace-nowrap" title={code}>
+      <CountryFlag countryCode={code} alt="" className="rounded-sm ring-1 ring-slate-200 shrink-0" style={{ width: 18, height: 13, objectFit: 'cover' }} />
+      <span className="text-[13px] font-semibold text-slate-700">{code}</span>
+    </div>
+  );
+}
+
+// ─── Items: total quantity ────────────────────────────────────────────────────
+function itemQuantity(o) {
+  const lines = o.lineItems?.length ? o.lineItems : (o.products || []);
+  if (!lines.length) return '—';
+  const qty = lines.reduce((sum, l) => sum + (Number(l?.quantity) || 0), 0);
+  return qty || lines.length;
+}
+
+function SortIcon({ active, order }) {
+  if (!active) return <ArrowUpDown className="h-3.5 w-3.5 text-slate-300 group-hover:text-slate-500 transition-colors" />;
+  return order === 'asc'
+    ? <ArrowUp className="h-3.5 w-3.5 text-brand-blue" />
+    : <ArrowDown className="h-3.5 w-3.5 text-brand-blue" />;
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -78,6 +217,8 @@ const TABS = [
   { label: 'Deleted Orders', filter: { isDeleted: 'true' } },
 ];
 
+const TH = 'text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap';
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 const OrderList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,6 +227,8 @@ const OrderList = () => {
   const limit = parseInt(searchParams.get('limit') || '25', 10);
   const activeTab = parseInt(searchParams.get('tab') || '0', 10);
   const urlQ = searchParams.get('q') || '';
+  const sortBy = searchParams.get('sortBy') || '';
+  const sortOrder = searchParams.get('sortOrder') || 'desc';
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,6 +277,10 @@ const OrderList = () => {
 
       const q = searchParams.get('q');
       if (q) params.set('q', q);
+      if (sortBy) {
+        params.set('sortBy', sortBy);
+        params.set('sortOrder', sortOrder);
+      }
       params.set('page', String(page));
       params.set('limit', String(limit));
 
@@ -148,7 +295,7 @@ const OrderList = () => {
     } finally {
       setLoading(false);
     }
-  }, [activeTab, page, limit, searchParams]);
+  }, [activeTab, page, limit, searchParams, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchOrders();
@@ -261,17 +408,28 @@ const OrderList = () => {
     }
   };
 
+  const handleSort = (field) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (sortBy === field) {
+      if (sortOrder === 'asc') {
+        nextParams.set('sortOrder', 'desc');
+      } else {
+        nextParams.delete('sortBy');
+        nextParams.delete('sortOrder');
+      }
+    } else {
+      nextParams.set('sortBy', field);
+      nextParams.set('sortOrder', 'asc');
+    }
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
   const customerName = (o) => {
     if (o.customer?.firstName || o.customer?.lastName) {
       return [o.customer.firstName, o.customer.lastName].filter(Boolean).join(' ');
     }
     return o.customerName || o.customerEmail || '—';
-  };
-
-  const itemCount = (o) => {
-    if (o.lineItems?.length) return `${o.lineItems.length} item${o.lineItems.length !== 1 ? 's' : ''}`;
-    if (o.products?.length) return `${o.products.length} item${o.products.length !== 1 ? 's' : ''}`;
-    return '—';
   };
 
   const orderTotal = (o) => fmtAUD(o.grandTotal ?? o.totalAmount);
@@ -340,12 +498,12 @@ const OrderList = () => {
         {/* ── Filter Tabs + Search ────────────────────────────────────────── */}
         <div className="border-b border-slate-100">
           {/* Tabs */}
-          <div className="flex items-center gap-1 px-4 pt-3">
+          <div className="flex items-center gap-1 px-4 pt-3 overflow-x-auto">
             {TABS.map((tab, idx) => (
               <button
                 key={tab.label}
                 onClick={() => handleTabChange(idx)}
-                className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 ${activeTab === idx
+                className={`px-4 py-2 text-[13px] font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap ${activeTab === idx
                   ? 'border-brand-navy text-brand-navy bg-slate-50'
                   : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
                   }`}
@@ -405,12 +563,12 @@ const OrderList = () => {
           </div>
         </div>
 
-        {/* ── Table ──────────────────────────────────────────────────────── */}
+        {/* ── Table: columns in the order of the client's mock-up ────────────── */}
         <div className="overflow-x-auto">
           <table className="w-full text-[13px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/60">
-                <th className="px-4 py-3 w-10">
+                <th className="px-3 py-3 w-10">
                   <input
                     type="checkbox"
                     checked={orders.length > 0 && selectedOrders.length === orders.length}
@@ -418,17 +576,25 @@ const OrderList = () => {
                     className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
                   />
                 </th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Order</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Date</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Customer</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Platform</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Traffic Source</th>
-                <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Total</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Payment</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Fulfilment</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Items</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">Shipping Method</th>
-                <th className="text-right px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap"></th>
+                <th className={TH}>
+                  <button type="button" onClick={() => handleSort('orderNumber')} className="group inline-flex items-center gap-1.5 uppercase hover:text-slate-700 transition-colors">
+                    Order # <SortIcon active={sortBy === 'orderNumber'} order={sortOrder} />
+                  </button>
+                </th>
+                <th className={TH}>
+                  <button type="button" onClick={() => handleSort('createdAt')} className="group inline-flex items-center gap-1.5 uppercase hover:text-slate-700 transition-colors">
+                    Date <SortIcon active={sortBy === 'createdAt' || sortBy === 'date'} order={sortOrder} />
+                  </button>
+                </th>
+                <th className={TH}>Customer</th>
+                <th className={`${TH} text-center`}>Items</th>
+                <th className={`${TH} text-right`}>Total</th>
+                <th className={TH}>Payment</th>
+                <th className={TH}>Fulfilment</th>
+                <th className={TH}>Delivery Status</th>
+                <th className={TH}>Traffic Source</th>
+                <th className={TH}>Country</th>
+                <th className={TH}></th>
               </tr>
             </thead>
             <tbody>
@@ -436,7 +602,7 @@ const OrderList = () => {
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50 animate-pulse">
                     {Array.from({ length: 12 }).map((__, j) => (
-                      <td key={j} className="px-4 py-3">
+                      <td key={j} className="px-3 py-3">
                         <div className="h-4 bg-slate-100 rounded-md w-full max-w-[80px]" />
                       </td>
                     ))}
@@ -453,126 +619,118 @@ const OrderList = () => {
                   </td>
                 </tr>
               ) : (
-                orders.map((order) => (
-                  <tr
-                    key={order._id}
-                    className={`border-b border-slate-50 hover:bg-slate-50/60 transition-colors group ${selectedOrders.includes(order._id) ? 'bg-slate-50' : ''}`}
-                  >
-                    {/* Checkbox */}
-                    <td className="px-4 py-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedOrders.includes(order._id)}
-                        onChange={() => handleSelectOne(order._id)}
-                        className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
-                      />
-                    </td>
+                orders.map((order) => {
+                  const email = order.customer?.email || order.customerEmail || '';
+                  const name = customerName(order);
+                  return (
+                    <tr
+                      key={order._id}
+                      className={`border-b border-slate-50 hover:bg-slate-50/60 transition-colors group ${selectedOrders.includes(order._id) ? 'bg-slate-50' : ''}`}
+                    >
+                      {/* Checkbox */}
+                      <td className="px-3 py-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedOrders.includes(order._id)}
+                          onChange={() => handleSelectOne(order._id)}
+                          className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+                        />
+                      </td>
 
-                    {/* Order # */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <Link
-                        to={`/admin/orders/${order._id}`}
-                        className="font-semibold text-brand-navy hover:text-brand-blue transition-colors flex items-center gap-1 group-hover:underline"
-                      >
-                        #{order.orderNumber ?? String(order._id).slice(-6).toUpperCase()}
-                        <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
-                      </Link>
-                    </td>
+                      {/* Order # */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <Link
+                          to={`/admin/orders/${order._id}`}
+                          className="font-semibold text-brand-navy hover:text-brand-blue transition-colors flex items-center gap-1 group-hover:underline"
+                        >
+                          #{order.orderNumber ?? String(order._id).slice(-6).toUpperCase()}
+                          <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+                        </Link>
+                      </td>
 
-                    {/* Date */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      {formatOrderDate(order.createdAt)}
-                    </td>
+                      {/* Date */}
+                      <td className="px-3 py-3 whitespace-nowrap leading-snug" title={formatOrderDate(order.createdAt)}>
+                        <p className="text-slate-600">{formatOrderDay(order.createdAt)}</p>
+                        <p className="text-[12px] text-slate-400">{formatOrderTime(order.createdAt)}</p>
+                      </td>
 
-                    {/* Customer */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-slate-700 font-medium">{customerName(order)}</span>
-                    </td>
+                      {/* Customer: name + email */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <div className="leading-snug max-w-[190px]">
+                          <p className="text-slate-700 font-semibold truncate">{name}</p>
+                          {email && email !== name && <p className="text-[12px] text-slate-400 truncate">{email}</p>}
+                        </div>
+                      </td>
 
-                    {/* Platform */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      {order.source === 'admin_manual' ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
-                          Admin Manual
-                        </span>
-                      ) : BANK_METHODS.includes(order.paymentMethod) ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200">
-                          {BANK_METHOD_LABEL[order.paymentMethod]}
-                        </span>
-                      ) : order.source === 'shopify_import' ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-lime-50 text-lime-700 border border-lime-200">
-                          Shopify
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-                          Tagadacrm
-                        </span>
-                      )}
-                    </td>
+                      {/* Items: total quantity */}
+                      <td className="px-3 py-3 text-center text-slate-700 font-medium whitespace-nowrap">
+                        {itemQuantity(order)}
+                      </td>
 
-                    {/* Attribution Source */}
-                    <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
-                      {(order.attribution?.lastTouch?.source || order.attribution?.firstTouch?.source) || 'Direct / Unknown'}
-                    </td>
+                      {/* Total */}
+                      <td className="px-3 py-3 text-right font-semibold text-slate-800 whitespace-nowrap">
+                        {orderTotal(order)}
+                      </td>
 
-                    {/* Total */}
-                    <td className="px-4 py-3 text-right font-semibold text-slate-800 whitespace-nowrap">
-                      {orderTotal(order)}
-                    </td>
+                      {/* Payment */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <Pill value={paymentBadgeText(order)} styles={PAYMENT_BADGE} labels={PAYMENT_LABEL} />
+                      </td>
 
-                    {/* Payment */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <Badge text={paymentBadgeText(order)} styleMap={PAYMENT_BADGE} />
-                    </td>
+                      {/* Fulfilment */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <div className="flex flex-col gap-1.5 items-start">
+                          <Pill value={order.fulfilmentStatus || 'unfulfilled'} styles={FULFIL_BADGE} labels={FULFIL_LABEL} />
+                          {order.addressValidation?.needsReview && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-200" title="Address needs review">
+                              ⚠️ Address Review
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                    {/* Fulfilment */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex flex-col gap-1.5 items-start">
-                        <Badge text={order.fulfilmentStatus} styleMap={FULFIL_BADGE} />
-                        {order.addressValidation?.needsReview && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-200" title="Address needs review">
-                            ⚠️ Address Review
-                          </span>
+                      {/* Delivery Status */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <DeliveryStatus order={order} />
+                      </td>
+
+                      {/* Traffic Source */}
+                      <td className="px-3 py-3 text-slate-700 whitespace-nowrap">
+                        {trafficSource(order)}
+                      </td>
+
+                      {/* Country */}
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <CountryCell order={order} />
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-3 py-3 whitespace-nowrap text-right">
+                        {TABS[activeTab]?.filter?.isDeleted ? (
+                          <button
+                            onClick={() => handleRestore(order._id)}
+                            className="text-slate-400 hover:text-emerald-500 transition-colors p-1 rounded hover:bg-emerald-50"
+                            title="Restore Order"
+                          >
+                            <RotateCcw size={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setOrderToDelete(order);
+                              setDeleteModalMode('single');
+                              setDeleteModalOpen(true);
+                            }}
+                            className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50"
+                            title="Delete Order"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         )}
-                      </div>
-                    </td>
-
-                    {/* Items */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      {itemCount(order)}
-                    </td>
-
-                    {/* Shipping Method */}
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap max-w-[180px] truncate">
-                      {order.shippingMethodName ?? '—'}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-4 py-3 whitespace-nowrap text-right">
-                      {TABS[activeTab]?.filter?.isDeleted ? (
-                        <button
-                          onClick={() => handleRestore(order._id)}
-                          className="text-slate-400 hover:text-emerald-500 transition-colors p-1 rounded hover:bg-emerald-50"
-                          title="Restore Order"
-                        >
-                          <RotateCcw size={16} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setOrderToDelete(order);
-                            setDeleteModalMode('single');
-                            setDeleteModalOpen(true);
-                          }}
-                          className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50"
-                          title="Delete Order"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

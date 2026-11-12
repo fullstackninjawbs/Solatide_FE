@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { AdminPrimaryButton } from '../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../components/admin/AdminSecondaryButton';
+import ShipmentPanel from '../../components/admin/orders/ShipmentPanel';
 import { toast } from 'react-hot-toast';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
 
@@ -645,16 +646,25 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     }
   }
 
-  // Shipments
-  if (order.shippedAt || !isUnfulfilled) {
-    const shippedDate = order.shippedAt || order.updatedAt;
+  // Shipments & Labels
+  if (order.labelUrl || order.trackingNumber) {
+    const labelDate = order.shippedAt || order.updatedAt;
     const carrier = order.trackingCarrier || 'a carrier';
-    
     addEvent(
-      <span>A shipping label was generated via <span className="font-bold text-brand-navy">{carrier}</span>.</span>,
-      shippedDate
+      <span>A shipping label was generated via <span className="font-bold text-brand-navy">{carrier}</span>{order.trackingNumber ? ` (Tracking: ${order.trackingNumber})` : ''}.</span>,
+      labelDate
     );
+  } else if (order.starshipitOrderId) {
+    addEvent(
+      <span>Order was created in Starshipit (label pending print/dispatch in Starshipit).</span>,
+      order.updatedAt || order.createdAt
+    );
+  }
 
+  // Shipment Confirmation Email (only shown when the email was actually sent)
+  // Only when the email was recorded as sent (manual tracking can be saved without emailing)
+  const emailSentAt = order.shipmentEmailSentAt || null;
+  if (emailSentAt) {
     let shipEmailText = 'Shipment confirmation email was sent.';
     if (customerEmail && !isMissingCustomer) {
       shipEmailText = `Shipment confirmation email was sent to ${customerName} (${customerEmail}).`;
@@ -664,7 +674,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
 
     addEvent(
       <span>{shipEmailText}</span>,
-      shippedDate,
+      emailSentAt,
       true
     );
   }
@@ -887,112 +897,20 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   )}
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  {order.starshipitOrderId ? (
-                    <div className="w-full flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4">
-                      <div>
-                        <p className="text-[13px] font-semibold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1">
-                          <Check size={14} /> Shipment Created {order.shipmentStatus ? `(${order.shipmentStatus})` : ''}
-                        </p>
-                        <p className="text-[14.5px] font-bold text-brand-navy">
-                          {order.trackingCarrier} - {order.trackingNumber ? (
-                            <a href={order.trackingUrl || `https://www.google.com/search?q=${order.trackingNumber}`} target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline">{order.trackingNumber}</a>
-                          ) : (
-                            <span className="text-slate-400 italic font-medium">Label Pending (Check Starshipit)</span>
-                          )}
-                        </p>
-                        {order.shipmentWeight?.totalGrams > 0 && (
-                          <p className="text-[12.5px] text-slate-500 mt-1">
-                            Parcel weight sent: <span className="font-semibold text-slate-700">{order.shipmentWeight.totalGrams} g</span>
-                            {' '}(items {order.shipmentWeight.itemsGrams} g + {order.shipmentWeight.packageName || 'package'} {order.shipmentWeight.packageGrams} g)
-                          </p>
-                        )}
-                        {order.shipmentWeight?.packageName && order.shipmentWeight?.packageReason && (
-                          <p className="text-[12px] text-slate-400 mt-0.5">
-                            Package: {order.shipmentWeight.packageName} — {order.shipmentWeight.packageReason}
-                          </p>
-                        )}
-                        {order.shipmentWeight?.warnings?.length > 0 && (
-                          <p className="text-[12.5px] text-amber-700 mt-1">⚠ {order.shipmentWeight.warnings.join(' · ')}</p>
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        {order.labelUrl && (
-                          <AdminSecondaryButton href={order.labelUrl} className="!text-[13.5px] px-4 !py-2">
-                            Download Label
-                          </AdminSecondaryButton>
-                        )}
-                        <button onClick={handleFulfill} disabled={fulfilling || !isUnfulfilled || awaitingPayment} className="px-4 py-2 text-[13.5px] font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all disabled:opacity-50">
-                          {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex flex-col items-end gap-2 ml-auto">
-                        {order.addressValidation?.needsReview && (
-                          <p className="text-[12px] font-medium text-red-500 flex items-center gap-1">
-                            ⚠️ Verify address before creating label
-                          </p>
-                        )}
-                        {shipmentError && (
-                          <div className="flex flex-col items-end gap-1.5">
-                            <div className="group relative">
-                              <p className="text-[12px] font-medium text-red-500 flex items-center gap-1 cursor-help">
-                                ⚠️ Shipment failed (hover for details)
-                              </p>
-                              <div className="absolute bottom-full right-0 mb-2 w-max max-w-sm lg:max-w-md p-3 bg-slate-800 text-white text-[13px] rounded-lg shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 pointer-events-none text-left leading-relaxed">
-                                {shipmentError}
-                                <div className="absolute top-full right-4 border-[5px] border-transparent border-t-slate-800"></div>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                              <span className="text-[11.5px] text-slate-500 font-medium">Stuck?</span>
-                              <a
-                                href="https://next.starshipit.com/orders?tab=new"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[12px] font-bold text-[#0275d8] hover:text-[#025aa5] hover:underline flex items-center gap-1 transition-colors"
-                              >
-                                Resolve manually in Starshipit ↗
-                              </a>
-                            </div>
-                            <p className="text-[10.5px] text-slate-400 max-w-[280px] text-right mt-0.5 leading-snug">
-                              If you process the label there, Solatide will automatically sync the tracking details via webhook.
-                            </p>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-3">
-                          <AdminSecondaryButton
-                            onClick={handleFulfill}
-                            disabled={fulfilling || !isUnfulfilled || awaitingPayment}
-                            className="shadow-sm"
-                          >
-                            {fulfilling ? 'Updating...' : 'Mark as fulfilled'}
-                          </AdminSecondaryButton>
-                          <div
-                            title={
-                              isShopifyImport
-                                ? 'Historical Shopify order: shipping labels cannot be created.'
-                                : (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending'))
-                                ? (isBankOrder ? 'Mark the order as paid first.' : 'Payment is pending from tagada, refresh to update..')
-                                : (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : '')
-                            }
-                            className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "cursor-not-allowed" : ""}
-                          >
-                            <AdminPrimaryButton
-                              onClick={handleCreateLabel}
-                              disabled={isShopifyImport || creatingLabel || order.refundStatus === 'refunded' || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview}
-                              className={isShopifyImport || (!isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending')) || order.addressValidation?.needsReview ? "pointer-events-none opacity-50" : ""}
-                            >
-                              {creatingLabel ? 'Generating...' : 'Create shipping label'}
-                            </AdminPrimaryButton>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <ShipmentPanel
+                  order={order}
+                  setOrder={setOrder}
+                  isUnfulfilled={isUnfulfilled}
+                  awaitingPayment={awaitingPayment}
+                  isManual={isManual}
+                  isShopifyImport={isShopifyImport}
+                  isBankOrder={isBankOrder}
+                  fulfilling={fulfilling}
+                  onFulfill={handleFulfill}
+                  creatingLabel={creatingLabel}
+                  onCreateLabel={handleCreateLabel}
+                  shipmentError={shipmentError}
+                />
               </div>
             </div>
 

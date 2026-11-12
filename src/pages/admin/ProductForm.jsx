@@ -620,9 +620,13 @@ const ProductForm = () => {
     const finalImageUrl = finalImages.length > 0 ? finalImages[0].url : formData.imageUrl;
 
     // Determine selected shipping package ID
-    const selectedPackageId = formData.packageTemplate && formData.packageTemplate !== 'default'
-      ? formData.packageTemplate
-      : (packagesList.find(p => p.isDefault)?._id || null);
+    // A package that is inactive / deleted is replaced by the Default package (it caused the
+    // "uses a shipping package that is inactive" warning when creating labels). Only when the
+    // package list actually loaded: a failed load must not wipe the product's package.
+    const savedPackage = formData.packageTemplate && formData.packageTemplate !== 'default' ? formData.packageTemplate : null;
+    const selectedPackageId = packagesList.length === 0
+      ? savedPackage
+      : (packagesList.some(p => p._id === savedPackage) ? savedPackage : (packagesList.find(p => p.isDefault)?._id || null));
 
     // Construct variants array matching structure
     let updatedVariants = [...formData._originalVariants];
@@ -1167,10 +1171,17 @@ const ProductForm = () => {
                         }))
                         : [{ value: 'default', label: packagesLoaded ? 'No packages found!' : 'Loading packages...' }]
                       }
-                      value={formData.packageTemplate || (packagesList.find(p => p.isDefault)?._id || 'default')}
+                      value={packagesList.some(p => p._id === formData.packageTemplate)
+                        ? formData.packageTemplate
+                        : (packagesList.find(p => p.isDefault)?._id || 'default')}
                       onChange={(val) => setFormData(prev => ({ ...prev, packageTemplate: val }))}
                       className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-[13.5px] cursor-pointer"
                     />
+                    {packagesList.length > 0 && formData.packageTemplate && formData.packageTemplate !== 'default' && !packagesList.some(p => p._id === formData.packageTemplate) && (
+                      <p className="mt-2 text-[12px] font-medium text-amber-700">
+                        ⚠ The package saved on this product is no longer active. Choose a package and save the product (the Default package is used until then).
+                      </p>
+                    )}
                   </div>
 
                   <div className="sm:col-span-4">
