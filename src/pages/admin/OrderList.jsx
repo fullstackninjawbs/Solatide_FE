@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import CustomDropdown from '../../components/CustomDropdown';
 import CountryFlag from '../../components/CountryFlag';
 import {
   Search,
@@ -19,7 +20,8 @@ import {
   AlertTriangle,
   Clock,
   Printer,
-  MinusCircle
+  MinusCircle,
+  X
 } from 'lucide-react';
 import { useToast } from '../../components/admin/feedback/ToastProvider';
 import { getUserFriendlyErrorMessage } from '../../utils/getUserFriendlyErrorMessage';
@@ -217,6 +219,84 @@ const TABS = [
   { label: 'Deleted Orders', filter: { isDeleted: 'true' } },
 ];
 
+// ─── Filters (dropdowns next to the search) ───────────────────────────────────
+// Each is kept in the URL and sent to GET /api/admin/order (validated on the server).
+const FILTERS = [
+  { key: 'payment', param: 'paymentStatus', placeholder: 'Payment', allLabel: 'All payments', options: [
+    { value: 'paid', label: 'Paid' },
+    { value: 'awaiting_payment', label: 'Awaiting payment' },
+    { value: 'partially_refunded', label: 'Partially refunded' },
+    { value: 'refunded', label: 'Refunded' },
+    { value: 'cancelled', label: 'Cancelled' },
+    { value: 'failed', label: 'Failed' },
+  ] },
+  { key: 'fulfilment', param: 'fulfilmentStatus', placeholder: 'Fulfilment', allLabel: 'All fulfilment', options: [
+    { value: 'unfulfilled', label: 'Unfulfilled' },
+    { value: 'fulfilled', label: 'Fulfilled' },
+  ] },
+  { key: 'delivery', param: 'delivery', placeholder: 'Delivery', allLabel: 'All deliveries', options: [
+    { value: 'not_shipped', label: 'Not shipped' },
+    { value: 'label_pending', label: 'Label pending' },
+    { value: 'label_created', label: 'Label created' },
+    { value: 'in_transit', label: 'In transit' },
+    { value: 'out_for_delivery', label: 'Out for delivery' },
+    { value: 'delayed', label: 'Delayed' },
+    { value: 'issue', label: 'Delivery issue' },
+    { value: 'delivered', label: 'Delivered' },
+  ] },
+  { key: 'destination', param: 'destination', placeholder: 'Destination', allLabel: 'All destinations', options: [
+    { value: 'au', label: 'Australia' },
+    { value: 'international', label: 'International' },
+  ] },
+  { key: 'method', param: 'paymentMethod', placeholder: 'Payment method', allLabel: 'All methods', options: [
+    { value: 'payid', label: 'PayID' },
+    { value: 'bank_transfer', label: 'Bank transfer' },
+    { value: 'international_bank_transfer', label: 'International transfer' },
+    { value: 'tagada', label: 'Card (Tagada)' },
+    { value: 'manual_offline', label: 'Manual (admin)' },
+  ] },
+  { key: 'date', param: null, placeholder: 'Date', allLabel: 'All dates', options: [
+    { value: 'today', label: 'Today' },
+    { value: 'yesterday', label: 'Yesterday' },
+    { value: '7d', label: 'Last 7 days' },
+    { value: '30d', label: 'Last 30 days' },
+    { value: 'this_month', label: 'This month' },
+    { value: 'last_month', label: 'Last month' },
+  ] },
+];
+const FILTER_KEYS = FILTERS.map((x) => x.key);
+
+// Start of a calendar day in Sydney time, as an exact instant (handles daylight saving)
+function sydneyDayStart(y, m, d) {
+  const wall = Date.UTC(y, m, d);
+  const offsetAt = (utc) => {
+    const p = new Intl.DateTimeFormat('en-US', { timeZone: 'Australia/Sydney', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      .formatToParts(new Date(utc));
+    const g = (t) => Number(p.find((x) => x.type === t)?.value);
+    return Date.UTC(g('year'), g('month') - 1, g('day'), g('hour'), g('minute')) - utc;
+  };
+  let utc = wall - offsetAt(wall);
+  utc = wall - offsetAt(utc);
+  return new Date(utc);
+}
+
+/** Date preset → { from, to } (to exclusive), using Sydney calendar days. */
+function dateRange(preset) {
+  const p = new Intl.DateTimeFormat('en-US', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  const g = (t) => Number(p.find((x) => x.type === t)?.value);
+  const y = g('year'); const m = g('month') - 1; const d = g('day');
+  const day = (offset) => sydneyDayStart(y, m, d + offset);
+  switch (preset) {
+    case 'today': return { from: day(0), to: day(1) };
+    case 'yesterday': return { from: day(-1), to: day(0) };
+    case '7d': return { from: day(-6), to: day(1) };
+    case '30d': return { from: day(-29), to: day(1) };
+    case 'this_month': return { from: sydneyDayStart(y, m, 1), to: day(1) };
+    case 'last_month': return { from: sydneyDayStart(y, m - 1, 1), to: sydneyDayStart(y, m, 1) };
+    default: return null;
+  }
+}
+
 const TH = 'text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap';
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -229,6 +309,8 @@ const OrderList = () => {
   const urlQ = searchParams.get('q') || '';
   const sortBy = searchParams.get('sortBy') || '';
   const sortOrder = searchParams.get('sortOrder') || 'desc';
+  const filterValues = Object.fromEntries(FILTER_KEYS.map((k) => [k, searchParams.get(k) || '']));
+  const activeFilterCount = FILTER_KEYS.filter((k) => filterValues[k]).length;
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -275,6 +357,18 @@ const OrderList = () => {
       const tabFilter = TABS[activeTab]?.filter || {};
       Object.entries(tabFilter).forEach(([k, v]) => params.set(k, v));
 
+      for (const flt of FILTERS) {
+        const v = searchParams.get(flt.key);
+        if (!v || !flt.param) continue;
+        if (flt.key === 'payment') params.delete('awaitingPayment');
+        params.set(flt.param, v);
+      }
+      const range = dateRange(searchParams.get('date'));
+      if (range) {
+        params.set('from', range.from.toISOString());
+        params.set('to', range.to.toISOString());
+      }
+
       const q = searchParams.get('q');
       if (q) params.set('q', q);
       if (sortBy) {
@@ -305,6 +399,23 @@ const OrderList = () => {
     setSelectedOrders([]);
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('tab', String(idx));
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setSelectedOrders([]);
+    const nextParams = new URLSearchParams(searchParams);
+    if (value) nextParams.set(key, value);
+    else nextParams.delete(key);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const clearFilters = () => {
+    setSelectedOrders([]);
+    const nextParams = new URLSearchParams(searchParams);
+    FILTER_KEYS.forEach((k) => nextParams.delete(k));
     nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
@@ -549,15 +660,41 @@ const OrderList = () => {
                 </button>
               </div>
             ) : (
-              <div className="relative max-w-sm w-full">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Search order # or email…"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 text-[13px] border border-slate-200 rounded-xl focus:outline-none focus:border-brand-blue bg-slate-50 text-slate-700 placeholder-slate-400"
-                />
+              <div className="w-full flex flex-wrap items-center gap-2">
+                <div className="relative w-full sm:w-60 shrink-0">
+                  <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Search order # or email…"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 text-[13px] border border-slate-200 rounded-xl focus:outline-none focus:border-brand-blue bg-slate-50 text-slate-700 placeholder-slate-400"
+                  />
+                </div>
+                <>
+                  {FILTERS.map((flt, i) => (
+                    <CustomDropdown
+                      key={flt.key}
+                      value={filterValues[flt.key]}
+                      onChange={(v) => handleFilterChange(flt.key, v)}
+                      placeholder={flt.placeholder}
+                      align={i >= FILTERS.length - 2 ? 'right' : 'left'}
+                      options={[{ value: '', label: flt.allLabel }, ...flt.options]}
+                      className={`flex items-center justify-between gap-2 px-3 py-2 rounded-xl border text-[13px] font-medium transition-colors cursor-pointer ${filterValues[flt.key]
+                        ? 'bg-blue-50 border-blue-200 text-brand-navy'
+                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                    />
+                  ))}
+                  {activeFilterCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="inline-flex items-center gap-1 px-2.5 py-2 text-[12.5px] font-semibold text-slate-500 hover:text-red-600 transition-colors"
+                    >
+                      <X size={14} /> Clear filters ({activeFilterCount})
+                    </button>
+                  )}
+                </>
               </div>
             )}
           </div>
@@ -614,7 +751,13 @@ const OrderList = () => {
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Package size={40} strokeWidth={1.2} />
                       <p className="text-[14px] font-medium">No orders found</p>
-                      <p className="text-[12px]">Orders will appear here once customers complete checkout.</p>
+                      {activeFilterCount > 0 || urlQ ? (
+                        <button type="button" onClick={clearFilters} className="text-[12.5px] font-semibold text-brand-blue hover:underline">
+                          Clear the filters to see all orders
+                        </button>
+                      ) : (
+                        <p className="text-[12px]">Orders will appear here once customers complete checkout.</p>
+                      )}
                     </div>
                   </td>
                 </tr>
