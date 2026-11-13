@@ -297,6 +297,9 @@ function dateRange(preset) {
   }
 }
 
+// Delivery stages the Orders list re-checks with Starshipit after loading (see syncAdminOrdersTracking)
+const TRACKABLE_STAGES = new Set(['label_created', 'in_transit', 'delayed', 'out_for_delivery', 'exception']);
+
 const TH = 'text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap';
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -315,6 +318,8 @@ const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  // Shown orders on their way, set on every list load (incl. the Refresh button) → tracking refresh
+  const [trackingSync, setTrackingSync] = useState({ ids: '', at: 0 });
   const [searchValue, setSearchValue] = useState(urlQ);
   const debounceRef = useRef(null);
   const toast = useToast();
@@ -383,6 +388,13 @@ const OrderList = () => {
       if (data.success) {
         setOrders(data.data.orders);
         setTotal(data.total ?? 0);
+        setTrackingSync({
+          ids: data.data.orders
+            .filter((o) => o.delivery?.source !== 'manual' && TRACKABLE_STAGES.has(o.delivery?.stage))
+            .map((o) => o._id)
+            .join(','),
+          at: Date.now(),
+        });
       }
     } catch (err) {
       console.error('Failed to fetch orders', err);
@@ -394,6 +406,38 @@ const OrderList = () => {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  // After the list loads: re-read the carrier scans of the shown orders that are on their way
+  // (Starshipit, checked > 10 min ago — the server decides) and update their Delivery Status in place.
+  // Set once per list load (not when rows update), so updating a row never restarts the refresh.
+  const [syncingTracking, setSyncingTracking] = useState(false);
+  const syncRunRef = useRef(0);
+  useEffect(() => {
+    const inFlightIds = trackingSync.ids;
+    if (!inFlightIds) return undefined;
+    const run = ++syncRunRef.current;
+    let cancelled = false;
+    (async () => {
+      setSyncingTracking(true);
+      try {
+        // A few rounds at most: each call checks up to 20 orders
+        for (let round = 0; round < 3 && !cancelled; round++) {
+          const res = await apiService.syncAdminOrdersTracking(inFlightIds.split(','));
+          if (!res.ok) break; // e.g. a role without shipping access: the list just keeps what it has
+          const { data } = await res.json();
+          if (cancelled || run !== syncRunRef.current) return;
+          const byId = new Map((data?.updated || []).map((u) => [u._id, u.delivery]));
+          if (byId.size) setOrders((prev) => prev.map((o) => (byId.has(o._id) ? { ...o, delivery: byId.get(o._id) } : o)));
+          if (!data?.pending) break;
+        }
+      } catch {
+        // Tracking refresh is best effort; the scheduled refresh catches up
+      } finally {
+        if (run === syncRunRef.current) setSyncingTracking(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [trackingSync]);
 
   const handleTabChange = (idx) => {
     setSelectedOrders([]);
@@ -573,6 +617,11 @@ const OrderList = () => {
           <h2 className="text-2xl font-bold text-brand-navy">Orders</h2>
           <p className="text-slate-500 text-[14px] mt-0.5">
             {loading ? 'Loading…' : `${total.toLocaleString()} total order${total !== 1 ? 's' : ''}`}
+            {!loading && syncingTracking && (
+              <span className="ml-2 inline-flex items-center gap-1 text-[12.5px] text-slate-400">
+                <RefreshCw size={12} className="animate-spin" /> Updating delivery status…
+              </span>
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">

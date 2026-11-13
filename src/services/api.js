@@ -561,6 +561,14 @@ export const apiService = {
     });
   },
 
+  syncAdminOrdersTracking: async (ids) => {
+    return customFetch(`${API_URL}/api/admin/order/tracking-sync`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids })
+    });
+  },
+
   updateAdminOrderTracking: async (id, data) => {
     return customFetch(`${API_URL}/api/admin/order/${id}/tracking`, {
       method: 'POST',
