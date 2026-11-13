@@ -31,6 +31,8 @@ const MANUAL_STAGE_OPTIONS = [
   { value: 'in_transit', label: 'In transit' },
   { value: 'out_for_delivery', label: 'Out for delivery' },
   { value: 'delivered', label: 'Delivered' },
+  { value: 'exception', label: 'Delivery issue' },
+  { value: 'returned', label: 'Returned to sender' },
 ];
 
 const STATUS_PILL = {
@@ -127,7 +129,8 @@ function TrackingModal({ isOpen, onClose, order, tracking, onSaved }) {
   const knownCarrier = carrierChoice(order.trackingCarrier);
   // Tracking currently kept up to date by Starshipit (saving here switches it to manual)
   const starshipitTracked = editing && order.trackingSource !== 'manual' && Boolean(order.starshipitOrderId);
-  const currentStage = tracking?.summary?.stage || order.tracking?.stage;
+  // The saved stage, not the list's derived one ("delayed" is still in transit underneath)
+  const currentStage = order.tracking?.stage || (tracking?.summary?.stage === 'delayed' ? 'in_transit' : tracking?.summary?.stage);
   const emailAlreadySent = Boolean(order.shipmentEmailSentAt);
   const [form, setForm] = useState(() => ({
     trackingNumber: order.trackingNumber || '',
@@ -306,7 +309,9 @@ function TrackingCard({ order, tracking, loading, onEdit, onRefresh }) {
       )}
       {(stage === 'exception' || stage === 'returned') && (
         <p className="mt-4 text-[12.5px] text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
-          {stage === 'returned' ? 'The carrier reports the parcel is being returned to sender.' : 'The carrier reported a delivery issue. Check the latest scan below or on the carrier\'s site.'}
+          {manual
+            ? (stage === 'returned' ? 'Marked as returned to sender. Use "Edit tracking" to update the status once it changes.' : 'Marked as a delivery issue. Use "Edit tracking" to update the status once it changes.')
+            : (stage === 'returned' ? 'The carrier reports the parcel is being returned to sender.' : 'The carrier reported a delivery issue. Check the latest scan below or on the carrier\'s site.')}
         </p>
       )}
 
