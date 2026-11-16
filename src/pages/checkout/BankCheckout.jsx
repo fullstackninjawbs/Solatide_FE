@@ -5,7 +5,7 @@ import Logo from '../../components/Logo';
 import DiscountCodeBox from '../../components/checkout/DiscountCodeBox';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
-import { trackEvent, getVisitorContext } from '../../utils/analytics';
+import { getVisitorContext, trackBeginCheckout, trackCheckoutStage, trackCheckoutContact, trackCheckoutError, finishCheckout } from '../../utils/analytics';
 import { getCheckoutAttributionPayload } from '../../utils/attribution';
 import { COUNTRIES, AU_STATES } from '../../utils/countries';
 
@@ -69,6 +69,12 @@ function validate(f, country) {
   return e;
 }
 
+// Checkout stages for analytics (the checkout is one page): Information = contact details entered,
+// Shipping = delivery address complete, Payment = method chosen and "Complete order" clicked.
+const contactComplete = (f) => !!(f.firstName.trim() && f.lastName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim()));
+const addressComplete = (f, country) => !!(f.street1.trim() && f.city.trim()
+  && (country === 'AU' ? f.state && /^\d{4}$/.test(f.zip.trim()) : f.zip.trim()));
+
 const inputCls = (err) =>
   `w-full h-[48px] px-4 rounded-xl border bg-white text-[14.5px] text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-2 ${
     err ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#0079CE] focus:ring-[#0079CE]/15'
@@ -130,10 +136,30 @@ const BankCheckout = ({ config }) => {
     if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [errorTick]);
 
+  // Analytics: checkout started — once the cart has loaded from storage (it is empty on the first render)
+  const checkoutTracked = useRef(false);
   useEffect(() => {
-    if (cartItems.length > 0) trackEvent('begin_checkout', { cartValue: cartTotalPrice });
+    if (checkoutTracked.current || cartItems.length === 0) return;
+    checkoutTracked.current = true;
+    trackBeginCheckout(cartItems);
+  }, [cartItems]);
+
+  // Analytics: stage reached / contact corrected, after typing pauses (1.5 s). Sends email, name
+  // and country only, so an abandoned checkout shows who it was; never address, phone or notes.
+  const lastContact = useRef('');
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!contactComplete(form)) return;
+      const contact = { email: form.email.trim(), firstName: form.firstName.trim(), lastName: form.lastName.trim(), country };
+      trackCheckoutStage('information', { contact, cartItems });
+      if (addressComplete(form, country)) trackCheckoutStage('shipping', { contact });
+      const key = JSON.stringify(contact);
+      if (lastContact.current && lastContact.current !== key) trackCheckoutContact(contact);
+      lastContact.current = key;
+    }, 1500);
+    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [form.email, form.firstName, form.lastName, form.street1, form.city, form.state, form.zip, country]);
 
   const methods = useMemo(() => (country === 'AU' ? config.methods.AU : config.methods.international) || [], [country, config]);
   // A method chosen for another country (AU ↔ international switch) no longer counts
@@ -169,7 +195,16 @@ const BankCheckout = ({ config }) => {
     const e = validate(form, country);
     if (!method) e.method = 'Select a payment method';
     setErrors(e);
+    if (method) {
+      trackCheckoutStage('payment', {
+        paymentMethod: method,
+        cartItems,
+        ...(contactComplete(form) ? { contact: { email: form.email.trim(), firstName: form.firstName.trim(), lastName: form.lastName.trim(), country } } : {}),
+      });
+    }
     if (Object.keys(e).length) {
+      // Which fields failed (names only, never what was typed)
+      trackCheckoutError(method ? 'payment' : 'shipping', `Invalid: ${Object.keys(e).join(', ')}`);
       setErrorTick((n) => n + 1);
       return;
     }
@@ -188,10 +223,13 @@ const BankCheckout = ({ config }) => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.success) {
+        trackCheckoutError('payment', `Order not placed (${res.status}): ${data?.message || 'unknown error'}`);
         setSubmitError(data?.message || 'Something went wrong placing your order. Please try again.');
         setSubmitting(false);
         return;
       }
+      // The server recorded "order placed"; the next checkout is a new attempt
+      finishCheckout();
       const { orderId, accessToken, grandTotal } = data.data;
       // Prices are re-checked on the server; tell the customer if the total changed since the cart was filled
       const priceChanged = Number.isFinite(Number(grandTotal)) && Math.abs(Number(grandTotal) - total) > 0.009;
@@ -199,6 +237,7 @@ const BankCheckout = ({ config }) => {
       clearCart();
       navigate(`/checkout/payment/${orderId}?accessToken=${encodeURIComponent(accessToken)}`, { replace: true });
     } catch {
+      trackCheckoutError('payment', 'Order not placed: network error');
       setSubmitError('We could not reach the store. Please check your connection and try again.');
       setSubmitting(false);
     }

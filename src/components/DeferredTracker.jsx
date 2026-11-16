@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
-import { trackEvent } from '../utils/analytics';
 import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../hooks/useTagadaCheckout';
 
 const DeferredTracker = () => {
@@ -38,13 +37,8 @@ const DeferredTracker = () => {
             if (!hasPushed) {
               console.log('[Deferred Tracker] Recovered a missed purchase conversion!');
               
-              // 1. Internal tracking
-              trackEvent('purchase', {
-                orderId: ord._id,
-                cartValue: ord.grandTotal || ord.totalAmount,
-              });
-
-              // 2. GTM DataLayer
+              // Internal analytics: the server records payment confirmed itself
+              // GTM DataLayer
               window.dataLayer = window.dataLayer || [];
               window.dataLayer.push({
                 event: 'purchase',

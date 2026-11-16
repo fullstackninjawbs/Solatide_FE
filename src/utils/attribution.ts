@@ -30,33 +30,21 @@ export interface AttributionPayload {
   lastTouch?: AttributionTouch;
 }
 
+import { getSessionId as getAnalyticsSessionId } from './analytics';
+
 const COOKIE_FIRST_TOUCH = 'attribution_first_touch';
 const COOKIE_LAST_TOUCH = 'attribution_last_touch';
-const SESSION_ID_KEY = 'solatide_session_id';
 
 /**
- * Generate a random session ID
- */
-function generateSessionId(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-/**
- * Get or create session ID
+ * The analytics session (utils/analytics.js), so a touch on an order points at the same visit as
+ * the visitor's tracked events (it used to be a separate, permanent ID).
  */
 function getSessionId(): string {
-  let sessionId = '';
   try {
-    sessionId = localStorage.getItem(SESSION_ID_KEY) || '';
-  } catch (e) {}
-
-  if (!sessionId) {
-    sessionId = generateSessionId();
-    try {
-      localStorage.setItem(SESSION_ID_KEY, sessionId);
-    } catch (e) {}
+    return getAnalyticsSessionId();
+  } catch (e) {
+    return '';
   }
-  return sessionId;
 }
 
 /**

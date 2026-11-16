@@ -4,7 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Lock } from 'lucide-react';
-import { trackEvent } from '../../utils/analytics';
+import { trackBeginCheckout } from '../../utils/analytics';
 import useCheckoutConfig from '../../hooks/useCheckoutConfig';
 import BankCheckout from './BankCheckout';
 import OrderRequestCheckout from './OrderRequestCheckout';
@@ -25,12 +25,10 @@ const TagadaCheckout = () => {
   // Shipping cost will be calculated and added natively by TagadaPay at checkout
   const total = subtotal - discount;
 
-  // Fire begin_checkout analytics event on mount
+  // Analytics: checkout started, once the cart has loaded (once per checkout attempt)
   useEffect(() => {
-    if (cartItems.length > 0) {
-      trackEvent('begin_checkout', { cartValue: cartTotalPrice });
-    }
-  }, []);
+    if (cartItems.length > 0) trackBeginCheckout(cartItems);
+  }, [cartItems]);
 
   const handleApplyDiscount = () => {
     if (discountCode.trim() === '') return;

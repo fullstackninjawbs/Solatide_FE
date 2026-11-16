@@ -5,7 +5,7 @@ import Logo from '../../components/Logo';
 import DiscountCodeBox from '../../components/checkout/DiscountCodeBox';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
-import { trackEvent, getVisitorContext } from '../../utils/analytics';
+import { trackBeginCheckout, getVisitorContext } from '../../utils/analytics';
 import { COUNTRIES, AU_STATES } from '../../utils/countries';
 
 /**
@@ -110,10 +110,10 @@ const OrderRequestCheckout = ({ config }) => {
   const [discount, setDiscount] = useState(null); // { code, amount, label } from the server
   const requestId = useRef(newId());
 
+  // Analytics: checkout started, once the cart has loaded (once per checkout attempt)
   useEffect(() => {
-    if (cartItems.length > 0) trackEvent('begin_checkout', { cartValue: cartTotalPrice });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (cartItems.length > 0) trackBeginCheckout(cartItems);
+  }, [cartItems]);
 
   useEffect(() => {
     if (!errorTick) return;

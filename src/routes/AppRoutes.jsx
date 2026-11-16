@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import { trackEvent } from '../utils/analytics'
+import { trackPageView } from '../utils/analytics'
 import { lazyWithRetry } from './lazyWithRetry'
 
 // ─── Storefront pages: imported EAGERLY ────────────────────────────────────────
@@ -41,15 +41,16 @@ const appRole = import.meta.env.VITE_APP_ROLE || 'all';
 const isStore = appRole === 'store' || appRole === 'all';
 
 // ─── Page View Tracker ─────────────────────────────────────────────────────────
-// Fires page_view on every route change. Rendered inside BrowserRouter so
-// useLocation works. Admin routes are excluded (no admin tracking).
+// Fires page_view per history entry (location.key): re-renders / hydration don't count again,
+// a new navigation or back/forward does. Rendered inside BrowserRouter so useLocation works.
+// Admin routes are excluded (no admin tracking).
 const PageViewTracker = () => {
     const location = useLocation();
     useEffect(() => {
         // Skip admin panel pages
         if (location.pathname.startsWith('/admin')) return;
-        trackEvent('page_view', { page: location.pathname, path: location.pathname });
-    }, [location.pathname]);
+        trackPageView(location.pathname, location.key);
+    }, [location.pathname, location.key]);
     return null;
 };
 
