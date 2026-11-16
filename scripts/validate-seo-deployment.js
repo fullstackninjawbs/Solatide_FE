@@ -209,9 +209,15 @@ for (const file of htmlFiles) {
 }
 
 console.log('\n==================================================');
+// Set the exit code and let the process end on its own. process.exit() here tears Node down while
+// its background threads (GC after decompressing every page) can still be busy, and on the live
+// server (Node 24) that intermittently deadlocked in shutdown: the "passed" line was printed, the
+// process never exited, and deploy-store.sh waited forever. Everything above is synchronous, so
+// nothing keeps the event loop alive and the script exits as soon as this line runs.
 if (errors === 0) {
   console.log(`🎉 SEO deployment validation passed (${checks} checks, ${sitemapUrls.length} sitemap URLs, ${indexableCount} indexable files).`);
-  process.exit(0);
+  process.exitCode = 0;
+} else {
+  console.error(`🚨 ${errors} validation failure(s).`);
+  process.exitCode = 1;
 }
-console.error(`🚨 ${errors} validation failure(s).`);
-process.exit(1);

@@ -232,9 +232,23 @@ npx cross-env NODE_ENV=production DIST_STORE_DIR="$RELEASE_DIR" node prerender.j
 log_success "Prerender completed."
 
 # Step C: SEO Deployment Validation Suite
+# Safety net: the validator's Node process has been seen to deadlock in its own shutdown AFTER
+# printing the pass line (Node 24, intermittent), which left this script waiting forever and the
+# deploy lock held. The validator no longer calls process.exit(), but if the process still does
+# not end within the time limit, the pass line in its output is what counts.
 log_info "Step 3/4: Running SEO Deployment Validation Suite on $RELEASE_DIR..."
-DIST_STORE_DIR="$RELEASE_DIR" node scripts/validate-seo-deployment.js || handle_failure "SEO Validation Suite"
-log_success "SEO validation passed."
+VALIDATOR_LOG="$META_DIR/validate-seo.log"
+VALIDATOR_PASS_LINE="SEO deployment validation passed"
+if DIST_STORE_DIR="$RELEASE_DIR" timeout -k 10 120 node scripts/validate-seo-deployment.js 2>&1 | tee "$VALIDATOR_LOG"; then
+    log_success "SEO validation passed."
+else
+    validator_status=${PIPESTATUS[0]}
+    if [ "$validator_status" = "124" ] && grep -q "$VALIDATOR_PASS_LINE" "$VALIDATOR_LOG"; then
+        log_warn "SEO validation passed, but its Node process did not exit within 120s and was killed (Node shutdown hang). Continuing."
+    else
+        handle_failure "SEO Validation Suite (exit $validator_status)"
+    fi
+fi
 
 # Step D: Smoke-test required files
 log_info "Step 4/4: Smoke-testing required release files in $RELEASE_DIR..."
