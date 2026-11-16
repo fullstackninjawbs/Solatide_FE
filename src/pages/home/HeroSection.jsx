@@ -4,6 +4,8 @@ import heroImageWebp from '../../assets/images/homePageFirstSection.webp'
 import mobileHeroImageWebp from '../../assets/images/mobile_products_img.webp'
 import { Fragment, useEffect, useState } from 'react'
 import useHomepageContent, { cloudinarySized } from '../../hooks/useHomepageContent'
+import { isPrerendering } from '../../utils/routeData'
+import pepfinderLogo from '../../assets/icons/pepfinder-logo.svg'
 
 // Desktop (lg+) sizes scale with the screen height so the whole hero, down to the feature cards,
 // fills the first screen without being cut off: "(100vh - 200px)" is the room below the header.
@@ -87,13 +89,40 @@ const BadgeTitle = ({ text }) => String(text).split(/(#\d+)/).map((part, i) => (
     /^#\d+$/.test(part) ? <span key={i} className="text-[#1a4494]">{part}</span> : part
 ))
 
+// Badge box: scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding
+const BADGE_BOX = 'block w-[280px] lg:w-[clamp(190px,min(calc((100vh_-_200px)*0.44),19vw),270px)] h-auto aspect-[220/64]'
+
+// Shown in the badge's place when pepfinder.com can't serve it (their badge endpoint has returned
+// errors): PepFinder's logo mark + name in the same box, so the card keeps its size and the
+// link still reaches their page. The live badge is back as soon as their server serves it again.
+const PepFinderLockup = () => (
+    <span className={`${BADGE_BOX} flex items-center justify-center gap-3 lg:gap-2.5 rounded-[12px] border border-[#d6e9e2] bg-[#f3faf7] px-4`}>
+        <img src={pepfinderLogo} width={80} height={80} alt="" className="block h-[62%] w-auto rounded-[9px]" />
+        <span className="flex flex-col items-start leading-none">
+            <span className="text-[19px] lg:text-[clamp(15px,1.95vw,19px)] font-bold tracking-tight text-[#0E5A4B]">PepFinder</span>
+            <span className="mt-1 text-[12px] lg:text-[clamp(10.5px,1.2vw,12px)] font-medium text-slate-500 whitespace-nowrap">Supplier profile</span>
+        </span>
+    </span>
+)
+
+// The badge, or the lockup once the badge has failed to load. The prerenderer blocks third-party
+// requests, so the swap is skipped there: the captured HTML always holds the <img>, the same as
+// the first client render, and hydration matches. A prerendered <img> can fail before React
+// attaches onError, so the mount effect also checks the element's own state.
+const PepFinderBadge = () => {
+    const [failed, setFailed] = useState(false)
+    const fail = () => { if (!isPrerendering()) setFailed(true) }
+    const check = (el) => { if (el && el.complete && el.naturalWidth === 0) fail() }
+    if (failed) return <PepFinderLockup />
+    return <img ref={check} src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" onError={fail} className={BADGE_BOX} />
+}
+
 // PepFinder card: one clean white card (the badge already has its own frame, so no inner panel),
 // badge on the left, title / subtitle / link on the right. Phones: stacked and centred.
 const PepFinderCard = ({ title, subtitle, linkText, revealProps }) => (
     <div style={revealProps.style} className={`mt-6 lg:mt-[clamp(12px,2.2vh,24px)] w-full sm:w-fit max-w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-5 lg:gap-4 bg-white rounded-[20px] lg:rounded-[16px] border border-[#cfe9f4] shadow-[0_10px_30px_rgba(11,60,120,0.08)] p-3 sm:pr-7 lg:p-2.5 lg:pr-6 text-center sm:text-left ${revealProps.className}`}>
-        {/* Badge scaled up (SVG, stays sharp, aspect 220:64) to fill the card height with an even small padding */}
-        <a href={PEPFINDER_URL} target="_blank" rel="noopener" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
-            <img src={PEPFINDER_BADGE} width={220} height={64} alt={PEPFINDER_ALT} loading="eager" className="block w-[280px] lg:w-[clamp(190px,min(calc((100vh_-_200px)*0.44),19vw),270px)] h-auto aspect-[220/64]" />
+        <a href={PEPFINDER_URL} target="_blank" rel="noopener" aria-label="Solatide Biosciences on PepFinder" className="block shrink-0 hover:scale-[101%] transition-all duration-200">
+            <PepFinderBadge />
         </a>
         <span className="hidden sm:block w-px self-stretch my-2 bg-slate-200" aria-hidden="true" />
         <div className="flex flex-col items-center sm:items-start min-w-0 pb-2 sm:py-1 lg:py-0">
