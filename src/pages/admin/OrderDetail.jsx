@@ -536,6 +536,9 @@ The order becomes Paid / Processing and the customer is emailed their order conf
   const isBankOrder = Object.prototype.hasOwnProperty.call(BANK_LABELS, order.paymentMethod);
   const bankLabel = BANK_LABELS[order.paymentMethod];
   const awaitingPayment = isBankOrder && paymentStatus === 'pending';
+  // Card orders from the previous TagadaPay checkout (no longer used). Their refunds are record-only:
+  // the money is returned outside the admin.
+  const isTagadaOrder = order.paymentMethod === 'tagada' || Boolean(order.tagadaOrderId);
 
   // ─── Timeline Events Logic ───────────────────────────────────────────────────
 
@@ -583,14 +586,14 @@ The order becomes Paid / Processing and the customer is emailed their order conf
   const isMissingCustomer = customerName === 'No customer name';
 
   addEvent(
-    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on {isManual ? 'Admin' : isBankOrder ? 'the website' : 'Tagadacrm'}.</span>,
+    <span>{isMissingCustomer ? 'This order was placed' : <><span className="font-bold text-brand-navy">{customerName}</span> placed this order</>} on {isManual ? 'Admin' : isShopifyImport ? 'Shopify (historical import)' : isTagadaOrder ? 'the website (TagadaPay, legacy)' : 'the website'}.</span>,
     order.createdAt
   );
 
-  // Tagada ID
+  // Legacy TagadaPay order ID (reference only)
   if (order.tagadaOrderId) {
     addEvent(
-      <span>Confirmation <span className="font-bold text-brand-navy">#{order.tagadaOrderId}</span> was generated for this order.</span>,
+      <span>TagadaPay (legacy) confirmation <span className="font-bold text-brand-navy">#{order.tagadaOrderId}</span> was generated for this order.</span>,
       order.createdAt
     );
   }
@@ -598,7 +601,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
   // Admin note
   if (order.adminNotes) {
     addEvent(
-      <span>{isManual ? 'An admin' : 'Tagadacrm'} added a note to this order.</span>,
+      <span>{isManual ? 'An admin added a note to this order.' : 'A note was added to this order.'}</span>,
       order.updatedAt || order.createdAt
     );
   }
@@ -622,7 +625,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
   } else if (isPaid) {
     if (!hasMarkedPaidEntry) {
       addEvent(
-        <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was processed {order.source === 'admin_manual' ? 'manually by admin' : 'on Tagada Pay'}.</span>,
+        <span>A <span className="font-bold text-brand-navy">{fmtAUD(grandTotal)}</span> payment was {order.source === 'admin_manual' ? 'processed manually by admin' : isTagadaOrder ? 'processed via TagadaPay (legacy)' : 'recorded'}.</span>,
         order.paidAt || order.createdAt
       );
     }
@@ -694,21 +697,25 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     });
 
     uniqueRefunds.forEach(refund => {
+      // Legacy TagadaPay orders: refunds made through TagadaPay carry its refund id; newer ones are record-only
+      const tagadaRecordOnly = !isManual && !isBankOrder && isTagadaOrder && !refund.tagadaRefundId;
       addEvent(
-        <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span>{isManual ? '.' : isBankOrder ? ' (recorded; paid back from the bank account).' : ' to Tagada Pay.'}</span>,
+        <span>An admin refunded <span className="font-bold text-brand-navy">{fmtAUD(refund.amount)}</span>{isManual ? '.' : isBankOrder ? ' (recorded; paid back from the bank account).' : tagadaRecordOnly ? ' (recorded; money returned outside the admin).' : isTagadaOrder ? ' via TagadaPay (legacy).' : '.'}</span>,
         refund.createdAt
       );
       if (refund.type === 'full') {
         addEvent(
-          <span>{isManual ? 'An admin' : 'Tagadacrm'} refunded shipping.</span>,
+          <span>Shipping was refunded.</span>,
           refund.createdAt
         );
       }
-      addEvent(
-        <span>{isManual ? 'An admin' : 'Tagadacrm'} sent a refund notification email to {customerName} ({customerEmail}).</span>,
-        refund.createdAt,
-        true
-      );
+      if (!tagadaRecordOnly) {
+        addEvent(
+          <span>A refund notification email was sent to {customerName} ({customerEmail}).</span>,
+          refund.createdAt,
+          true
+        );
+      }
     });
   }
 
@@ -741,18 +748,18 @@ The order becomes Paid / Processing and the customer is emailed their order conf
 
         {/* ─── Header Section ─── */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-4 mb-2">
-              <Link to="/admin/orders" className="p-2 text-slate-400 hover:text-brand-navy hover:bg-white rounded-xl transition-colors bg-slate-100 border border-slate-200">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-4 mb-2">
+              <Link to="/admin/orders" className="shrink-0 p-2 text-slate-400 hover:text-brand-navy hover:bg-white rounded-xl transition-colors bg-slate-100 border border-slate-200">
                 <ArrowLeft size={18} />
               </Link>
-              <h1 className="text-3xl font-bold text-brand-navy tracking-tight flex items-center gap-4">
+              <h1 className="min-w-0 text-3xl font-bold text-brand-navy tracking-tight flex flex-wrap items-center gap-x-4 gap-y-2">
                 #{order.orderNumber ?? String(order._id).slice(-8).toUpperCase()}
 
-                <div className="flex items-center gap-2 mt-1">
-                  {/* Payment Badge */}
-                  <div className="flex items-center gap-2">
-                    <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${isPaid
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  {/* Payment Badge (contents: its chips wrap together with the fulfilment chip) */}
+                  <div className="contents">
+                    <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal ${isPaid
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       : 'bg-amber-50 text-amber-700 border-amber-200'
                       }`}>
@@ -763,7 +770,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                       <button
                         onClick={handleMarkPaid}
                         disabled={updating}
-                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-blue-50 text-brand-blue border-blue-200 hover:bg-blue-100 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal bg-blue-50 text-brand-blue border-blue-200 hover:bg-blue-100 transition-colors disabled:opacity-50"
                       >
                         <Check size={14} />
                         Mark Paid
@@ -774,7 +781,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                         onClick={handleSendConfirmation}
                         disabled={updating}
                         title="Email the customer their order confirmation"
-                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
                       >
                         <Mail size={14} />
                         Send confirmation email
@@ -785,7 +792,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                         onClick={handleResendPaymentDetails}
                         disabled={updating}
                         title="Email the customer their payment instructions again"
-                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50 print:hidden"
                       >
                         <Mail size={14} />
                         Resend payment details
@@ -795,7 +802,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                       <button
                         onClick={handleCancelUnpaid}
                         disabled={updating}
-                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal bg-white text-slate-600 border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50"
                       >
                         Cancel & release stock
                       </button>
@@ -803,7 +810,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   </div>
 
                   {/* Fulfillment Badge */}
-                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border ${!isUnfulfilled
+                  <span className={`flex items-center gap-1.5 px-3 py-1 text-[13px] font-semibold rounded-full border whitespace-nowrap shrink-0 leading-5 tracking-normal ${!isUnfulfilled
                     ? 'bg-blue-50 text-blue-700 border-blue-200'
                     : 'bg-slate-100 text-slate-600 border-slate-200'
                     }`}>
@@ -814,7 +821,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
               </h1>
             </div>
             <p className="text-[14px] text-slate-500 ml-[52px] font-medium">
-              {fmtDate(order.createdAt)} from {isShopifyImport ? 'Shopify (Historical Import)' : isManual ? 'Admin' : isBankOrder ? `Website checkout · ${bankLabel}` : 'Tagadacrm'}
+              {fmtDate(order.createdAt)} from {isShopifyImport ? 'Shopify (Historical Import)' : isManual ? 'Admin' : isBankOrder ? `Website checkout · ${bankLabel}` : isTagadaOrder ? 'Website checkout · TagadaPay (legacy)' : 'Website checkout'}
             </p>
           </div>
 
@@ -924,7 +931,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   <div>
                     <h2 className="text-lg font-bold text-brand-navy">Payment</h2>
                     <p className="text-[13px] text-slate-500 font-medium">
-                      {order.source === 'admin_manual' ? 'Completed via Admin' : isBankOrder ? (isPaid ? `${bankLabel} · confirmed manually` : awaitingPayment ? `${bankLabel} · awaiting payment` : bankLabel) : 'Completed via TagadaPay'}
+                      {order.source === 'admin_manual' ? 'Completed via Admin' : isBankOrder ? (isPaid ? `${bankLabel} · confirmed manually` : awaitingPayment ? `${bankLabel} · awaiting payment` : bankLabel) : isTagadaOrder ? 'Card · TagadaPay (legacy)' : 'Website checkout'}
                     </p>
                   </div>
                 </div>
@@ -1165,7 +1172,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
               </h3>
               <p className="text-[14px] text-slate-600 leading-relaxed bg-amber-50/50 p-3 rounded-xl border border-amber-100/50">
                 {order.adminNotes ? order.adminNotes : (
-                  order.tagadaOrderId ? `TagadaPay Order ID: ${order.tagadaOrderId}` : 'No special notes left for this order.'
+                  order.tagadaOrderId ? `TagadaPay (legacy) order ID: ${order.tagadaOrderId}` : 'No special notes left for this order.'
                 )}
               </p>
             </div>
@@ -1568,14 +1575,11 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   This only records the refund on the order. Send the money back to the customer from your bank account yourself. No email is sent to the customer.
                 </p>
               </div>
-            ) : order?.tagadaEnv === 'sandbox' ? (
-              <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
-                <p className="text-sm font-semibold text-orange-800 mb-1 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                  TEST MODE WARNING
-                </p>
-                <p className="text-xs text-orange-700">
-                  You are about to process a refund in the TEST Tagada funnel. No real money will be affected. Do you want to continue?
+            ) : isTagadaOrder ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                <p className="text-sm font-semibold text-blue-800 mb-1">RECORD A REFUND (TAGADAPAY, LEGACY)</p>
+                <p className="text-xs text-blue-700">
+                  This order was paid by card through TagadaPay, which is no longer connected. This only records the refund on the order. Return the money to the customer outside the admin yourself.
                 </p>
               </div>
             ) : (

@@ -50,8 +50,6 @@ function getFallbackMessage(context) {
     case 'productCreate':
     case 'productUpdate':
       return 'Unable to save product details. Please check your inputs and try again.';
-    case 'couponImport':
-      return 'Unable to import coupons from Tagada. Please try again.';
     case 'collectionDelete':
       return 'Unable to delete this collection. Please try again.';
     case 'batchDelete':

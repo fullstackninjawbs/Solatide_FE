@@ -28,7 +28,7 @@ export function loadCheckoutConfig() {
   return inflight;
 }
 
-/** { config, error } — config.mode is 'order_request', 'bank_transfer' or 'tagada'. */
+/** { config, error } — config.mode is 'order_request' or 'bank_transfer'. */
 export default function useCheckoutConfig() {
   const [config, setConfig] = useState(fresh);
   const [error, setError] = useState(false);

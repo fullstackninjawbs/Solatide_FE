@@ -3,7 +3,6 @@ import { X, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
-import { useTagadaCheckout } from '../hooks/useTagadaCheckout';
 import { loadCheckoutConfig } from '../hooks/useCheckoutConfig';
 
 const CartDrawer = () => {
@@ -19,9 +18,8 @@ const CartDrawer = () => {
     const navigate = useNavigate();
     const drawerRef = useRef(null);
     const { formatPrice } = useCurrency();
-    const { initiateCheckout, isCheckingOut, checkoutError, setCheckoutError } = useTagadaCheckout();
 
-    // Close when clicking outside and clear errors when closing
+    // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (drawerRef.current && !drawerRef.current.contains(event.target)) {
@@ -35,14 +33,13 @@ const CartDrawer = () => {
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
-            setCheckoutError(null); // Clear error when closed
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = '';
         };
-    }, [isCartOpen, setIsCartOpen, setCheckoutError]);
+    }, [isCartOpen, setIsCartOpen]);
 
     // Deleted local formatPrice helper in favor of context-level formatting
 
@@ -180,26 +177,17 @@ const CartDrawer = () => {
                         <p className="text-[13px] text-slate-500 leading-relaxed">
                             Taxes included. Discounts and shipping calculated at checkout.
                         </p>
-                        {checkoutError && <p className="text-[12px] text-red-500 font-medium">{checkoutError}</p>}
                         <button
-                            onClick={async () => {
-                                // Order Request / Bank Transfer (Admin → Settings → Checkout mode) → our checkout page; Tagada as before
-                                const cfg = await loadCheckoutConfig().catch(() => null);
-                                if (!cfg || cfg.mode !== 'tagada') {
-                                    setIsCartOpen(false);
-                                    navigate('/checkout');
-                                    return;
-                                }
-                                initiateCheckout(cartItems);
+                            onClick={() => {
+                                // Always our checkout page (Order Request / Bank Transfer, per Admin → Settings → Checkout mode).
+                                // Start loading the config now so /checkout shares this request.
+                                loadCheckoutConfig().catch(() => {});
+                                setIsCartOpen(false);
+                                navigate('/checkout');
                             }}
-                            disabled={isCheckingOut}
                             className="w-full bg-[#008fe2] hover:bg-[#007cc5] text-white text-[15px] font-bold py-4 rounded-xl transition-all shadow-sm focus:outline-none mt-2 flex items-center justify-center gap-2"
                         >
-                            {isCheckingOut ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                'Check out'
-                            )}
+                            Check out
                         </button>
                     </div>
                 )}

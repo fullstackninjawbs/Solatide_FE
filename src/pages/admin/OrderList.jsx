@@ -252,7 +252,7 @@ const FILTERS = [
     { value: 'payid', label: 'PayID' },
     { value: 'bank_transfer', label: 'Bank transfer' },
     { value: 'international_bank_transfer', label: 'International transfer' },
-    { value: 'tagada', label: 'Card (Tagada)' },
+    { value: 'tagada', label: 'Card (TagadaPay, legacy)' },
     { value: 'manual_offline', label: 'Manual (admin)' },
   ] },
   { key: 'date', param: null, placeholder: 'Date', allLabel: 'All dates', options: [

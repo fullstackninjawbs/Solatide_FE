@@ -52,6 +52,7 @@ if (!fs.existsSync(distDir)) {
 }
 
 // ─── Shared with src/utils/routeData.js (keep in sync) ───────────────────────────
+// tagada*: legacy TagadaPay fields still present on older product documents.
 const INTERNAL_FIELDS = new Set([
     'costPerItem', 'tagadaSync', 'syncStatus', 'pendingBatchDocs', 'slugHistory', 'hsCode',
     'lowStockThreshold', 'cloudinarySync', 'tagadaProductId', 'tagadaPriceId', 'barcode', 'tagadaUpdatedAt', '__v',
@@ -64,7 +65,7 @@ const CARD_FIELDS = [
 ];
 const VARIANT_FIELDS = [
     '_id', 'id', 'sku', 'title', 'name', 'price', 'compareAtPrice', 'stockQty',
-    'inventoryPolicy', 'continueSellingWhenOutOfStock', 'option1', 'option2', 'option3', 'tagadaVariantId',
+    'inventoryPolicy', 'continueSellingWhenOutOfStock', 'option1', 'option2', 'option3',
 ];
 const stripInternal = (v) => {
     if (Array.isArray(v)) return v.map(stripInternal);

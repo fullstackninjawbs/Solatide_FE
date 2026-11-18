@@ -4,10 +4,7 @@ import { CheckCircle, Package, ArrowRight, Loader2, Clock, XCircle } from 'lucid
 import { apiService } from '../../services/api';
 import Logo from '../../components/Logo';
 import { useCart } from '../../context/CartContext';
-import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
-
-const POLL_INTERVAL_MS = 3000;
-const MAX_POLLS = 10; // ~30 s
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../utils/lastOrderStorage';
 
 const readStorage = (key) => {
   try {
@@ -19,6 +16,14 @@ const readStorage = (key) => {
 
 // The public endpoints require the order's access token (?accessToken=).
 const withToken = (orderId, token) => `${encodeURIComponent(orderId)}?accessToken=${encodeURIComponent(token)}`;
+
+// The public order view (GET /api/v1/orders/:id) lists lineItems (or legacy products).
+const toSummaryItems = (order) => {
+  if (Array.isArray(order?.lineItems) && order.lineItems.length > 0) {
+    return order.lineItems.map((li) => ({ name: li.title, variant: li.variantTitle, price: li.unitPrice, quantity: li.quantity }));
+  }
+  return (order?.products || []).map((p) => ({ name: p.name, price: p.price, quantity: p.quantity }));
+};
 
 const fmt = (amount, currency = 'AUD') =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: currency || 'AUD' }).format(amount || 0);
@@ -66,10 +71,8 @@ const CheckoutSuccess = () => {
     if (!orderId || !accessToken) return undefined;
 
     let cancelled = false;
-    let timer = null;
-    let polls = 0;
 
-    const onPaid = async (ord) => {
+    const onPaid = (ord) => {
       setPhase('paid');
       firePurchaseTracking(ord);
       try {
@@ -78,55 +81,34 @@ const CheckoutSuccess = () => {
       } catch {
         // non-critical
       }
-      // Optional: full order details (shipping/contact) when the order API returns them for this token.
+    };
+
+    const load = async () => {
       try {
         const res = await apiService.getOrderById(withToken(orderId, accessToken));
-        const data = await res.json();
-        if (!cancelled && res.ok && data?.data?.order) setDetails(data.data.order);
-      } catch {
-        // non-critical
-      }
-    };
-
-    const poll = async () => {
-      polls += 1;
-      try {
-        const res = await apiService.syncOrderWithTagada(withToken(orderId, accessToken));
         const data = await res.json().catch(() => ({}));
         if (cancelled) return;
-        if (!res.ok) {
-          if (res.status === 404 || res.status === 403) {
-            setPhase('error');
-            return;
-          }
-          throw new Error(data?.message || 'Sync failed');
-        }
-        const ord = data?.data?.order;
-        if (ord) setOrder(ord);
-        const status = ord?.paymentStatus;
-        if (status === 'paid' || status === 'partially_refunded') {
-          await onPaid(ord);
+        const ord = res.ok ? data?.data?.order : null;
+        if (!ord) {
+          setPhase('error');
           return;
         }
-        if (status === 'failed' || status === 'cancelled') {
-          setPhase('failed');
-          return;
-        }
+        const normalized = { ...ord, items: toSummaryItems(ord) };
+        setOrder(normalized);
+        setDetails(ord);
+        const status = ord.paymentStatus;
+        if (status === 'paid' || status === 'partially_refunded') onPaid(normalized);
+        else if (status === 'failed' || status === 'cancelled') setPhase('failed');
+        else setPhase('processing');
       } catch (err) {
-        console.warn('Order sync attempt failed:', err);
-      }
-      if (cancelled) return;
-      if (polls < MAX_POLLS) {
-        timer = setTimeout(poll, POLL_INTERVAL_MS);
-      } else {
-        setPhase('processing');
+        console.warn('Order lookup failed:', err);
+        if (!cancelled) setPhase('error');
       }
     };
 
-    poll();
+    load();
     return () => {
       cancelled = true;
-      if (timer) clearTimeout(timer);
     };
   }, [orderId, accessToken]);
 

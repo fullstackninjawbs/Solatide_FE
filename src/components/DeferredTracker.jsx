@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiService } from '../services/api';
-import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../hooks/useTagadaCheckout';
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../utils/lastOrderStorage';
 
 const DeferredTracker = () => {
   const location = useLocation();

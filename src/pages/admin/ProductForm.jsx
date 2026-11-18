@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import UrlRedirectNotice from '../../components/admin/UrlRedirectNotice';
-import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, AlertCircle, Upload, X } from 'lucide-react';
 import { apiService } from '../../services/api';
 import JoditEditor from 'jodit-react';
 import CustomDropdown from '../../components/CustomDropdown';
@@ -67,7 +67,6 @@ const ProductForm = () => {
     tag: '', // Badge text
     inStock: true,
     sku: '',
-    tagadaVariantId: '',
     stockQuantity: 10,
     lowStockThreshold: 5,
     imageUrl: '',
@@ -302,7 +301,6 @@ const ProductForm = () => {
               description: product.seo?.description || '',
               canonicalUrl: product.seo?.canonicalUrl || ''
             },
-            tagadaVariantId: product.tagadaVariantId || product.variants?.[0]?.tagadaVariantId || '',
             _originalVariants: product.variants || [],
             currentBatch: product.currentBatch || null,
             slug: product.slug || '',
@@ -586,12 +584,6 @@ const ProductForm = () => {
       return;
     }
 
-    if (!formData.tagadaVariantId || formData.tagadaVariantId.trim() === '') {
-      setError('Tagada Variant ID is required.');
-      setLoading(false);
-      return;
-    }
-
     // Format weight to grams for database storage
     const weightGrams = formData.weightUnit === 'kg'
       ? parseFloat(formData.weightGrams) * 1000
@@ -641,13 +633,11 @@ const ProductForm = () => {
         requiresShipping: formData.requiresShipping,
         shippingPackage: selectedPackageId,
         taxable: formData.taxable,
-        weightGrams: weightGrams,
-        tagadaVariantId: formData.tagadaVariantId
+        weightGrams: weightGrams
       });
     } else {
       updatedVariants[0] = {
         ...updatedVariants[0],
-        tagadaVariantId: formData.tagadaVariantId,
         sku: formData.sku || updatedVariants[0].sku,
         price: parseFloat(formData.price) || updatedVariants[0].price,
         compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
@@ -687,7 +677,6 @@ const ProductForm = () => {
       imageUrl: finalImageUrl,
       images: finalImages,
       sku: formData.sku,
-      tagadaVariantId: formData.tagadaVariantId,
       variants: mappedVariants,
       seo: formData.seo,
       slug: formData.slug || slugifiedName,
@@ -1011,27 +1000,6 @@ const ProductForm = () => {
                     className="w-full pl-8 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue transition-all text-[14px]"
                   />
                 </div>
-              </div>
-
-              <div className="flex flex-col">
-                <label className="flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Tagada Variant ID <span className="text-red-500">*</span>
-                  <div className="relative group flex items-center">
-                    <HelpCircle className="h-3.5 w-3.5 text-slate-400 cursor-help hover:text-brand-blue transition-colors" />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2.5 bg-slate-800 text-white text-[11px] font-normal leading-relaxed rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
-                      This ID is required for placing the order and processing payments securely through Tagada.
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                    </div>
-                  </div>
-                </label>
-                <input
-                  type="text"
-                  name="tagadaVariantId"
-                  value={formData.tagadaVariantId || ''}
-                  onChange={handleChange}
-                  placeholder="e.g. prod_..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:bg-white focus:border-brand-blue transition-all text-[14px] font-mono"
-                />
               </div>
             </div>
           </div>

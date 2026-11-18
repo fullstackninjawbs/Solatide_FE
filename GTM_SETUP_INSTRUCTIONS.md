@@ -24,4 +24,4 @@ We need to trigger a `purchase` event ONLY once per paid order, using the local 
    - `attribution_source`
    - `attribution_channel`
 
-**CRITICAL RULE:** Do NOT make GTM responsible for saving the order attribution in MongoDB. That is already handled by our backend Checkout API (`POST /api/payments/tagada/create`). GTM is exclusively for pushing data to Google Analytics.
+**CRITICAL RULE:** Do NOT make GTM responsible for saving the order attribution in MongoDB. That is already handled by our backend Checkout API (`POST /api/checkout/bank-order`, which receives the attribution payload; `POST /api/checkout/order-request` is the Order Request checkout). GTM is exclusively for pushing data to Google Analytics.

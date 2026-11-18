@@ -20,7 +20,6 @@ const LABELS = {
   bank_transfer: 'Manual Bank Transfer / PayID',
   external_processor: 'External Payment Processor',
   pay_by_bank: 'Pay by Bank',
-  tagada: 'Previous TagadaPay checkout',
 };
 
 // TEMPORARY (display only — the server logic is unchanged): hide modes not offered yet, and show

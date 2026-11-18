@@ -46,6 +46,7 @@ export const isPrerendering = () => typeof window !== 'undefined' && window.__PR
 /**
  * Fields that must never be embedded in HTML and are never rendered by the storefront.
  * Kept in sync with prerender.js (which applies the same list before embedding).
+ * tagada*: legacy TagadaPay fields still present on older product documents.
  */
 export const INTERNAL_FIELDS = [
     'costPerItem',
@@ -107,7 +108,7 @@ const CARD_FIELDS = [
 ];
 const VARIANT_FIELDS = [
     '_id', 'id', 'sku', 'title', 'name', 'price', 'compareAtPrice', 'stockQty',
-    'inventoryPolicy', 'continueSellingWhenOutOfStock', 'option1', 'option2', 'option3', 'tagadaVariantId',
+    'inventoryPolicy', 'continueSellingWhenOutOfStock', 'option1', 'option2', 'option3',
 ];
 
 const pick = (obj, fields) => {

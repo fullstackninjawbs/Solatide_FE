@@ -9,7 +9,6 @@ import ProductSuggestionsSection from './ProductSuggestionsSection';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { apiService } from '../../services/api';
-import { useTagadaCheckout } from '../../hooks/useTagadaCheckout';
 import CurrentBatchCard from './CurrentBatchCard';
 import { optimizeCloudinaryUrl } from '../../utils/imageOptimization';
 import { trackProductView } from '../../utils/analytics';
@@ -72,7 +71,6 @@ const ProductDetail = () => {
     const { formatPrice } = useCurrency();
     // Initialised synchronously so the first client render matches the prerendered DOM.
     const [selectedVariant, setSelectedVariant] = useState(() => defaultVariant(getEmbeddedProduct(id)));
-    const { checkoutError } = useTagadaCheckout();
     const [fetchedReviewCount, setFetchedReviewCount] = useState(() => getEmbeddedReviewCount(getEmbeddedProduct(id)));
     const [notFound, setNotFound] = useState(false);
     // API unreachable and nothing prerendered: show a retry state — never a static/sample catalogue.
@@ -698,7 +696,6 @@ const ProductDetail = () => {
                                     >
                                         {isOutOfStock ? 'Sold Out' : 'Add to cart'}
                                     </button>
-                                    {checkoutError && <p className="text-[12px] text-red-550 font-medium text-center">{checkoutError}</p>}
                                 </div>
                             </div>
                         </div>

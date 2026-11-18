@@ -11,12 +11,6 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// Storefront customer authentication (excludes adminToken to avoid pre-filling admin credentials on checkout)
-const getCustomerAuthHeaders = () => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
 // Public product GETs stay anonymous on the storefront (cacheable public projection: active
 // products only, no internal fields). Inside the admin panel the same endpoints need the staff
 // token so drafts and internal fields (stock thresholds, cost, sync state…) are returned.
@@ -165,20 +159,6 @@ export const apiService = {
   },
 
   // Checkout / Orders
-  createOrder: async (data) => {
-    return customFetch(`${API_URL}/api/v1/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
-      body: JSON.stringify(data)
-    });
-  },
-  createTagadaPayment: async (data) => {
-    return customFetch(`${API_URL}/api/payments/tagada/create`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getCustomerAuthHeaders() },
-      body: JSON.stringify(data)
-    });
-  },
   getOrderById: async (id) => {
     return customFetch(`${API_URL}/api/v1/orders/${id}`, {
       headers: { ...getAuthHeaders() }
@@ -213,33 +193,6 @@ export const apiService = {
   getBankOrder: async (id, accessToken) => {
     return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?accessToken=${encodeURIComponent(accessToken)}`);
   },
-  syncOrderWithTagada: async (id) => {
-    return customFetch(`${API_URL}/api/payments/tagada/sync/${id}`, {
-      method: 'POST',
-      headers: { ...getAuthHeaders() }
-    });
-  },
-
-  // Admin Settings
-  getTagadaSettings: async () => {
-    return customFetch(`${API_URL}/api/admin/settings/tagada`, {
-      headers: { ...getAuthHeaders() }
-    });
-  },
-  saveTagadaSettings: async (data) => {
-    return customFetch(`${API_URL}/api/admin/settings/tagada`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify(data)
-    });
-  },
-  // GET (server route) — tests the SAVED credentials
-  testTagadaConnection: async () => {
-    return customFetch(`${API_URL}/api/admin/settings/tagada/test`, {
-      headers: { ...getAuthHeaders() }
-    });
-  },
-
   // ─── Analytics (Admin) ────────────────────────────────────────────────────────
   getAnalyticsSummary: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/analytics/orders/summary${queryString ? `?${queryString}` : ''}`, {

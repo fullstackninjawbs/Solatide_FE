@@ -16,7 +16,6 @@
     "test:cold-load": "node scripts/test-cold-load.mjs"
   },
   "dependencies": {
-    "@tagadapay/headless-sdk": "^1.6.0",
     "axios": "^1.18.1",
     "country-state-city": "^3.2.1",
     "dompurify": "^3.4.14",

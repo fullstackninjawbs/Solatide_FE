@@ -384,12 +384,13 @@ export default function ShipmentPanel({
   // Data for another tracking number (just edited) is not shown while the new one loads
   const currentTracking = tracking && tracking.trackingNumber === trackingNumber ? tracking : null;
 
+  // tagadaPaymentStatus: legacy TagadaPay orders only
   const paymentPending = !isManual && (order.paymentStatus === 'pending' || order.tagadaPaymentStatus === 'pending');
   const cancelled = order.status === 'cancelled' || ['cancelled', 'failed', 'refunded'].includes(order.paymentStatus);
   const shipBlocked = isShopifyImport
     ? 'Historical Shopify order: shipping labels cannot be created.'
     : cancelled ? 'This order is cancelled or refunded.'
-      : paymentPending ? (isBankOrder ? 'Mark the order as paid first.' : 'Payment is pending from Tagada, refresh to update.')
+      : paymentPending ? (isBankOrder ? 'Mark the order as paid first.' : 'Payment is still pending for this order.')
         : null;
   const labelBlocked = shipBlocked || (order.addressValidation?.needsReview ? 'Please verify and correct the address before creating a shipping label.' : null);
 

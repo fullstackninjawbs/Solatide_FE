@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../hooks/useTagadaCheckout';
+import { LAST_ORDER_ID_KEY, LAST_ORDER_TOKEN_KEY } from '../../utils/lastOrderStorage';
 
 // GET /api/v1/orders/:id requires the order's access token (?accessToken=). It comes from the
 // link (?accessToken=) or, for the browser that placed the order, from localStorage.
