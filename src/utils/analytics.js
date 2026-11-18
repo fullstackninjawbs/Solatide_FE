@@ -22,8 +22,11 @@ import { runWhenIdle } from './runWhenIdle';
 
 const ENDPOINT = `${API_URL}/api/analytics/collect`;
 export const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
-const PING_EVERY_MS = 60 * 1000;
-// "Active now" pings only while the visitor interacted recently (not for a forgotten open tab)
+// Activity heartbeat for "active now" (admin live activity). The server counts a visitor as active
+// for 75 s after their last activity/heartbeat (Server/src/services/analytics/config.ts), so one
+// lost heartbeat is tolerated. Sent only while the tab is visible and the visitor interacted
+// recently (not for a forgotten open tab). Hiding or closing the tab sends a "left" signal.
+const PING_EVERY_MS = 30 * 1000;
 const PING_IF_INTERACTED_WITHIN_MS = 2 * 60 * 1000;
 const FLUSH_DELAY_MS = 1000;
 const MAX_BATCH = 30;
@@ -250,10 +253,17 @@ const send = (payload) => {
   } catch { /* never propagate */ }
 };
 
-/** @param {boolean} [closing] page is being hidden/unloaded: keep the events in the outbox */
-function flush(closing = false) {
+/**
+ * @param {boolean} [closing] page is being hidden/unloaded: keep the events in the outbox
+ * @param {boolean} [left] the visitor hid/closed the tab: the batches carry the "left" signal (in the
+ *   same request as the last events, so it can never arrive before them)
+ */
+function flush(closing = false, left = false) {
   if (flushTimer) { clearTimeout(flushTimer); flushTimer = null; }
-  if (!queue.length) return;
+  if (!queue.length) {
+    if (left) sendLeft();
+    return;
+  }
   const items = queue;
   queue = [];
   saveOutbox(closing ? items : []);
@@ -267,12 +277,18 @@ function flush(closing = false) {
   }
   for (const [sessionId, { context, events }] of bySession) {
     for (let i = 0; i < events.length; i += MAX_BATCH) {
-      send(JSON.stringify({ visitorId, sessionId, context: withLocation(context), events: events.slice(i, i + MAX_BATCH) }));
+      send(JSON.stringify({ visitorId, sessionId, context: withLocation(context), events: events.slice(i, i + MAX_BATCH), ...(left ? { ping: true, left: true } : {}) }));
     }
   }
 }
 
-const withLocation = (context) => (locationCache ? { ...context, location: locationCache } : context);
+// The timezone guess is instant, so it is worked out before the first batch is sent (not only when
+// the browser is idle): the server creates the visit from the first batch, and without an IP match
+// it relies on this guess for the location.
+const withLocation = (context) => {
+  ensureLocation();
+  return locationCache ? { ...context, location: locationCache } : context;
+};
 
 function scheduleFlush() {
   if (!flushTimer) flushTimer = setTimeout(flush, FLUSH_DELAY_MS);
@@ -292,12 +308,42 @@ function enqueue(type, data = {}) {
 // ─── Activity ping ("active now") ─────────────────────────────────────────────
 
 let lastInteractionAt = Date.now();
+
+/** The open visit, without starting a new one or extending it (null when it already expired). */
+function openSession() {
+  const s = store.getJson(SESSION_KEY);
+  return s && ID_RE.test(s.id || '') && Date.now() - (s.lastActivityAt || 0) <= SESSION_TIMEOUT_MS ? s : null;
+}
+
+function sendPing() {
+  if (trackingOff() || document.visibilityState !== 'visible') return;
+  if (Date.now() - lastInteractionAt > PING_IF_INTERACTED_WITHIN_MS) return;
+  const session = currentSession();
+  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true }));
+}
+
+/** "Left": the tab was hidden or closed, so the visitor stops counting as active right away. */
+function sendLeft() {
+  if (trackingOff()) return;
+  const session = openSession();
+  if (!session) return;
+  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true, left: true }));
+}
+
 if (hasWindow() && !isPrerendering()) {
   const markInteraction = () => { lastInteractionAt = Date.now(); };
   try {
     ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((t) => window.addEventListener(t, markInteraction, { passive: true }));
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(true); });
-    window.addEventListener('pagehide', () => flush(true));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        flush(true, true);
+      } else if (openSession()) {
+        // Back on the tab: active again straight away (not at the next heartbeat)
+        markInteraction();
+        sendPing();
+      }
+    });
+    window.addEventListener('pagehide', () => flush(true, true));
     // Events from the previous page that may not have been delivered (see Outbox): send them again
     if (!trackingOff()) {
       const pending = readOutbox();
@@ -308,12 +354,7 @@ if (hasWindow() && !isPrerendering()) {
         saveOutbox([]);
       }
     }
-    setInterval(() => {
-      if (trackingOff() || document.visibilityState !== 'visible') return;
-      if (Date.now() - lastInteractionAt > PING_IF_INTERACTED_WITHIN_MS) return;
-      const session = currentSession();
-      send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true }));
-    }, PING_EVERY_MS);
+    setInterval(sendPing, PING_EVERY_MS);
   } catch { /* ignore */ }
 }
 

@@ -271,6 +271,26 @@ export const apiService = {
       headers: getAuthHeaders(),
     });
   },
+  // Live customer activity (dashboard)
+  getLiveVisitors: async (limit = 6) => {
+    return customFetch(`${API_URL}/api/admin/analytics/live/visitors?limit=${limit}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
+  },
+  getLiveVisitor: async (sessionId) => {
+    return customFetch(`${API_URL}/api/admin/analytics/live/visitors/${encodeURIComponent(sessionId)}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
+  },
+  getLiveActivity: async (params = {}) => {
+    const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')).toString();
+    return customFetch(`${API_URL}/api/admin/analytics/live/activity${qs ? `?${qs}` : ''}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
+  },
+  /** Server-Sent Events over fetch (EventSource can't send the Bearer token). Caller reads response.body. */
+  openLiveStream: async (signal) => {
+    return customFetch(`${API_URL}/api/admin/analytics/live/stream`, {
+      method: 'GET',
+      headers: { ...getAuthHeaders(), Accept: 'text/event-stream' },
+      cache: 'no-store',
+      signal,
+    });
+  },
   getAnalyticsOverview: async (queryString = '') => {
     return customFetch(`${API_URL}/api/admin/analytics/overview${queryString ? `?${queryString}` : ''}`, {
       method: 'GET',
