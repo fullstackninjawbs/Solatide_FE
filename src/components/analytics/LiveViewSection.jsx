@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Globe, RefreshCw, TrendingUp, ShoppingBag, Activity, ShieldAlert, ArrowRight, Eye, ShoppingCart, CreditCard, CheckCircle2, Clock, BarChart3 } from 'lucide-react';
 import { apiService } from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
+import CountryFlag from '../CountryFlag';
+import useLiveActivity from '../admin/live/useLiveActivity';
+import { eventLabel, eventMeta, locationLabel, timeAgo, TONES } from '../admin/live/liveFormat';
+
+const STREAM_SIZE = 6;
+const LIVE_REFRESH_GAP_MS = 4000; // at most one overview re-read per 4 s while actions stream in
 
 // Helper for country flags
 const getCountryFlag = (country) => {
@@ -31,27 +37,6 @@ const getCountryFullName = (country) => {
   if (c === 'FR' || c === 'FRANCE') return 'France';
   if (c === 'NZ' || c === 'NEW ZEALAND') return 'New Zealand';
   return country;
-};
-
-const formatLocation = (evt) => {
-  if (!evt) return '';
-  const parts = [];
-  if (evt.city) parts.push(evt.city);
-  if (evt.region) parts.push(evt.region);
-  parts.push(getCountryFullName(evt.country));
-  return parts.join(', ');
-};
-
-// Helper for relative time
-const formatTimeAgo = (timestamp) => {
-  if (!timestamp) return 'just now';
-  const seconds = Math.max(0, Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000));
-  if (seconds < 10) return 'just now';
-  if (seconds < 60) return `${seconds}s ago`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  return `${hours}h ago`;
 };
 
 // Helper component for mini SVG sparklines
@@ -90,9 +75,14 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
   const [lastRefreshed, setLastRefreshed] = useState('Just now');
   const [showAllCountriesModal, setShowAllCountriesModal] = useState(false);
 
-  const fetchLiveData = async () => {
+  // Live (Server-Sent Events, same feed as the dashboard's Live Customer Activity): the visitor count
+  // updates the moment someone arrives or leaves, and each new action re-reads the numbers below.
+  const { onlineNow, loaded: liveLoaded, connection, now, subscribeActivity, definitions } = useLiveActivity({ cardLimit: STREAM_SIZE });
+  const [stream, setStream] = useState([]);
+
+  const fetchLiveData = useCallback(async ({ quiet = false } = {}) => {
     try {
-      setLoading(true);
+      if (!quiet) setLoading(true);
       const res = await apiService.getAnalyticsOverview('from=' + new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
       const json = await res.json();
       if (json.success) {
@@ -102,15 +92,54 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
     } catch (err) {
       console.error('Failed to fetch live overview', err);
     } finally {
-      setLoading(false);
+      if (!quiet) setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchLiveData();
-    const interval = setInterval(fetchLiveData, 20000); // 20s auto refresh
-    return () => clearInterval(interval);
-  }, []);
+    const first = setTimeout(fetchLiveData, 0);
+    const interval = setInterval(() => fetchLiveData({ quiet: true }), 20000); // safety net
+    return () => { clearTimeout(first); clearInterval(interval); };
+  }, [fetchLiveData]);
+
+  // Throttled re-read when something happens live (an action, or someone arriving / leaving)
+  const refreshTimer = useRef(null);
+  const lastRefresh = useRef(0);
+  const refreshSoon = useCallback(() => {
+    if (refreshTimer.current) return;
+    const wait = Math.max(0, LIVE_REFRESH_GAP_MS - (Date.now() - lastRefresh.current));
+    refreshTimer.current = setTimeout(() => {
+      refreshTimer.current = null;
+      lastRefresh.current = Date.now();
+      fetchLiveData({ quiet: true });
+    }, wait);
+  }, [fetchLiveData]);
+  useEffect(() => () => clearTimeout(refreshTimer.current), []);
+  useEffect(() => { if (liveLoaded) refreshSoon(); }, [onlineNow, liveLoaded, refreshSoon]);
+
+  // Live Visitor Stream: latest actions (bots and admin tabs excluded), new ones added as they happen
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await apiService.getLiveActivity({ limit: STREAM_SIZE });
+        const json = await res.json();
+        if (!cancelled && json.success) {
+          setStream((prev) => {
+            const seen = new Set(prev.map((x) => x.id));
+            return [...prev, ...json.data.items.filter((x) => !seen.has(x.id))].slice(0, STREAM_SIZE);
+          });
+        }
+      } catch { /* the live feed still fills it */ }
+    })();
+    const off = subscribeActivity((item) => {
+      setStream((prev) => (prev.some((x) => x.id === item.id) ? prev : [item, ...prev].slice(0, STREAM_SIZE)));
+      refreshSoon();
+    });
+    return () => { cancelled = true; off(); };
+  }, [subscribeActivity, refreshSoon]);
+
+  const activeSeconds = definitions?.activeWindowSeconds ?? data?.activeWindowSeconds ?? 75;
 
   const formatCurrency = (amount) => {
     if (formatAUD) return formatAUD(amount || 0);
@@ -123,7 +152,6 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
 
   const totalSessionsCount = data?.sessions || 1;
   const sessionsByCountry = data?.sessionsByCountry || [];
-  const recentEvents = data?.recentEvents || [];
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -181,12 +209,12 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
               Visitors right now
             </span>
             <div className="text-3xl font-extrabold text-white mt-2 flex items-center gap-2">
-              <span>{loading && !data ? '—' : (data?.visitorsRightNow ?? data?.liveVisitors ?? 0)}</span>
+              <span>{liveLoaded ? onlineNow : (data ? (data.visitorsRightNow ?? 0) : '—')}</span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
             </div>
           </div>
           <div className="text-[11px] text-blue-200/80 font-medium mt-3 relative z-10">
-            Active in last 5 mins
+            {connection === 'live' ? `Active now · last ${activeSeconds}s` : 'Reconnecting…'}
           </div>
         </div>
 
@@ -302,7 +330,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
               <div className="pb-4 md:pb-0 md:pr-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <ShoppingCart className="w-4 h-4 text-amber-500" />
-                  <span>Active Carts (Last 5 mins)</span>
+                  <span>In cart now</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
@@ -314,7 +342,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
               <div className="py-4 md:py-0 md:px-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <CreditCard className="w-4 h-4 text-blue-500" />
-                  <span>Checking Out (Last 5 mins)</span>
+                  <span>Checking out now</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
@@ -326,7 +354,7 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
               <div className="pt-4 md:pt-0 md:pl-6 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>Purchased (Last 5 mins)</span>
+                  <span>Ordered this visit</span>
                 </div>
                 <div className="text-2xl font-extrabold text-slate-900">
                   {loading && !data ? '—' : (data?.customerBehavior?.purchased ?? 0)}
@@ -420,80 +448,56 @@ const LiveViewSection = ({ className = "", showViewAdvancedButton = true }) => {
         </div>
       </div>
 
-      {/* Live Activity Feed Stream Ticker */}
-      {recentEvents.length > 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs">
-          <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
-                <Activity className="w-4 h-4 animate-pulse" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900">Live Visitor Stream</h3>
+      {/* Live Visitor Stream: newest actions, live */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs">
+        <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
+              <Activity className="w-4 h-4" />
             </div>
-            <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              Live Stream
-            </span>
+            <h3 className="text-base font-bold text-slate-900">Live Visitor Stream</h3>
           </div>
+          <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full ${connection === 'live' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></span>
+            {connection === 'live' ? 'Live' : 'Reconnecting…'}
+          </span>
+        </div>
 
+        {stream.length === 0 ? (
+          <div className="py-6 text-center text-slate-400 text-xs font-medium">No store activity yet</div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {recentEvents.slice(0, 6).map((evt, index) => {
-              const isCart = evt.eventType === 'add_to_cart';
-              const isCheckout = evt.eventType === 'begin_checkout';
-              // order_placed = order submitted (bank transfer may still be unpaid); purchase = payment confirmed
-              const isOrderPlaced = evt.eventType === 'order_placed';
-              const isPurchase = evt.eventType === 'purchase';
-              const isProduct = evt.eventType === 'product_view';
-
+            {stream.map((item) => {
+              const meta = eventMeta(item.type);
+              const loc = item.visitor?.location;
+              const who = item.visitor?.name || item.visitor?.anonymousId;
               return (
-                <div 
-                  key={evt._id || index} 
-                  className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between space-y-3.5 group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-bold bg-slate-50 border border-slate-200/80 text-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xs max-w-[170px] sm:max-w-[200px] truncate" title={formatLocation(evt)}>
-                        <span className="text-base shrink-0">{getCountryFlag(evt.country)}</span>
-                        <span className="font-bold text-slate-800 text-[12px] truncate">{formatLocation(evt)}</span>
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        isPurchase ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' :
-                        isOrderPlaced ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/80' :
-                        isCheckout ? 'bg-blue-50 text-blue-700 border border-blue-200/80' :
-                        isCart ? 'bg-amber-50 text-amber-800 border border-amber-200/80' :
-                        isProduct ? 'bg-purple-50 text-purple-700 border border-purple-200/80' :
-                        'bg-slate-100 text-slate-600 border border-slate-200'
-                      }`}>
-                        {evt.eventType.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-slate-400" />
-                      {formatTimeAgo(evt.timestamp)}
+                <div key={item.id} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between gap-3 min-w-0">
+                  <div className="flex items-center justify-between gap-2 min-w-0">
+                    <span className="text-xs font-bold bg-slate-50 border border-slate-200/80 text-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-1.5 min-w-0" title={locationLabel(loc)}>
+                      {loc?.countryCode && <CountryFlag countryCode={loc.countryCode} alt="" style={{ width: '1.15em', height: '0.85em', borderRadius: 2 }} />}
+                      <span className="truncate text-[12px]">{locationLabel(loc)}</span>
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1 shrink-0">
+                      <Clock className="w-3 h-3" />
+                      {timeAgo(item.at, now)}
                     </span>
                   </div>
-
-                  <div>
-                    <h4 className="font-bold text-slate-800 text-[13.5px] line-clamp-1 group-hover:text-[#214A9E] transition-colors">
-                      {evt.eventType === 'page_view' ? 'Visited Page' :
-                       evt.eventType === 'product_view' ? (evt.productName || 'Viewed Product') :
-                       evt.eventType === 'add_to_cart' ? `Added ${evt.productName || 'Item'} to Cart` :
-                       evt.eventType === 'begin_checkout' ? 'Started Checkout' :
-                       evt.eventType === 'order_placed' ? 'Placed Order' :
-                       evt.eventType === 'purchase' ? 'Payment Confirmed' : evt.eventType}
+                  <div className="min-w-0">
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${TONES[meta.tone] || TONES.slate}`}>
+                      {eventLabel(item)}
+                    </span>
+                    <h4 className="mt-1.5 font-bold text-slate-800 text-[13.5px] truncate">
+                      {item.productName || (item.orderNumber ? `Order #${item.orderNumber}` : item.path || '/')}
                     </h4>
-                    <div className="mt-2 flex items-center">
-                      <span className="text-[11px] font-mono text-[#0079CD] font-semibold bg-blue-50/80 px-2 py-0.5 rounded-md border border-blue-100 truncate max-w-full">
-                        {evt.path || evt.page || '/'}
-                      </span>
-                    </div>
+                    {who && <p className="text-[11px] text-slate-500 truncate mt-0.5">{who}</p>}
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* All Countries Modal */}
       {showAllCountriesModal && (
