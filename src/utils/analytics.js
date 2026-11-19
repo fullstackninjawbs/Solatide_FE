@@ -207,7 +207,18 @@ function isAutomatedVisitor() {
   }
 }
 
-const trackingOff = () => !hasWindow() || isPrerendering() || isAutomatedVisitor();
+// The admin hub is never a store visit: staff working in the admin must not be tracked, keep a
+// storefront visit "active now", or create visits of their own (the admin build, and /admin pages
+// when the store and admin run together on one address, as in local development).
+const isAdminApp = () => {
+  try {
+    return import.meta.env.VITE_APP_ROLE === 'admin' || /^\/admin(\/|$)/.test(window.location.pathname);
+  } catch {
+    return false;
+  }
+};
+
+const trackingOff = () => !hasWindow() || isPrerendering() || isAutomatedVisitor() || isAdminApp();
 
 /**
  * Called by the 404 screens so the page view for a URL that does not exist is not recorded
@@ -318,6 +329,9 @@ function openSession() {
 function sendPing() {
   if (trackingOff() || document.visibilityState !== 'visible') return;
   if (Date.now() - lastInteractionAt > PING_IF_INTERACTED_WITHIN_MS) return;
+  // Only keeps an open visit alive; never starts one (a visit starts with a recorded page view)
+  const open = openSession();
+  if (!open) return;
   const session = currentSession();
   send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true }));
 }
