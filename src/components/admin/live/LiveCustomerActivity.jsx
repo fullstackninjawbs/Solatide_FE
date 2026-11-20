@@ -2,7 +2,7 @@
 // "All activity" feed, which expands below on the same page. Updates arrive on their own (no
 // refresh). Closing the visitor panel or collapsing the feed keeps the page where it was.
 // Styling: the standard admin dashboard panel (white, slate border, 24px corners).
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Activity, ChevronDown, ChevronUp, Loader2, Users } from 'lucide-react';
 import useLiveActivity from './useLiveActivity';
 import useActivityFeed from './useActivityFeed';
@@ -13,9 +13,20 @@ import VisitorPanel from './VisitorPanel';
 export default function LiveCustomerActivity() {
   const live = useLiveActivity({ cardLimit: 6 });
   const [feedOpen, setFeedOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
+  // The open visit and where it was opened from (cards or the feed): previous/next follow that list
+  const [selection, setSelection] = useState(null); // { id, from: 'cards' | 'feed' }
+  const selected = selection?.id || null;
   const feed = useActivityFeed({ enabled: feedOpen, subscribeActivity: live.subscribeActivity });
-  const close = useCallback(() => setSelected(null), []);
+  const close = useCallback(() => setSelection(null), []);
+  const selectFromCards = useCallback((id) => setSelection({ id, from: 'cards' }), []);
+  const selectFromFeed = useCallback((id) => setSelection({ id, from: 'feed' }), []);
+  const navigate = useCallback((id) => setSelection((s) => (s ? { ...s, id } : s)), []);
+  const cardIds = useMemo(() => live.cards.map((c) => c.sessionId), [live.cards]);
+  const feedIds = useMemo(
+    () => [...new Set(feed.items.filter((i) => i.visitor && i.sessionId).map((i) => i.sessionId))],
+    [feed.items]
+  );
+  const navIds = selection?.from === 'feed' ? feedIds : cardIds;
   const isLive = live.connection === 'live';
 
   return (
@@ -65,7 +76,7 @@ export default function LiveCustomerActivity() {
       ) : live.cards.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1800px]:grid-cols-6 gap-4">
           {live.cards.map((c) => (
-            <VisitorCard key={c.sessionId} card={c} now={live.now} selected={selected === c.sessionId} onSelect={setSelected} />
+            <VisitorCard key={c.sessionId} card={c} now={live.now} windowHours={live.windowHours} selected={selected === c.sessionId} onSelect={selectFromCards} />
           ))}
         </div>
       ) : (
@@ -78,11 +89,11 @@ export default function LiveCustomerActivity() {
 
       {feedOpen && (
         <div className="mt-5">
-          <ActivityFeed feed={feed} now={live.now} statusOf={live.statusOf} onSelect={setSelected} selectedSessionId={selected} />
+          <ActivityFeed feed={feed} now={live.now} statusOf={live.statusOf} onSelect={selectFromFeed} selectedSessionId={selected} />
         </div>
       )}
 
-      <VisitorPanel sessionId={selected} live={live} onClose={close} />
+      <VisitorPanel sessionId={selected} live={live} onClose={close} navIds={navIds} onNavigate={navigate} />
     </section>
   );
 }

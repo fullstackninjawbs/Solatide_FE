@@ -96,7 +96,7 @@ export function ActionBlock({ ev, compact = false }) {
   );
 }
 
-export default function VisitorCard({ card, now, selected, onSelect }) {
+export default function VisitorCard({ card, now, selected, onSelect, windowHours = 24 }) {
   const last = card.lastEvent || { at: card.lastActivityAt };
   return (
     <button
@@ -127,6 +127,11 @@ export default function VisitorCard({ card, now, selected, onSelect }) {
         <div className="flex items-center gap-1.5 flex-wrap">
           <StatusPill status={card.status} />
           <VisitorTypePill isNew={card.isNewVisitor} />
+          {card.recentVisitCount > 1 && (
+            <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap" title="This card shows their latest visit">
+              {card.recentVisitCount} visits in {windowHours}h
+            </span>
+          )}
         </div>
       </div>
     </button>

@@ -4,6 +4,7 @@
 //   recorded action and heartbeat arrives as an "update" with the session's fresh card.
 // - Reconnects by itself (backoff) and re-reads the snapshot after reconnecting and once a minute,
 //   so nothing missed while disconnected stays wrong.
+// - One card per visitor (their latest visit). "online now" still counts visits.
 // - Statuses (active / inactive / ended) are worked out from timestamps with the server's
 //   definitions and the server clock offset, re-checked every few seconds.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -37,6 +38,8 @@ export default function useLiveActivity({ cardLimit = 6 } = {}) {
   const [loaded, setLoaded] = useState(false);
   const [offset, setOffset] = useState(0); // server clock - browser clock
   const [tick, setTick] = useState(() => Date.now());
+  const [visitCounts, setVisitCounts] = useState(() => new Map()); // visitorId → visits in the card window (snapshot)
+  const [windowHours, setWindowHours] = useState(24);
   const listeners = useRef(new Set());
 
   const applySession = useCallback((card) => {
@@ -72,6 +75,8 @@ export default function useLiveActivity({ cardLimit = 6 } = {}) {
         return next;
       });
       setPresence(new Map(d.presence.map((p) => [p.sessionId, p])));
+      setVisitCounts(new Map(d.visitors.filter((c) => c.visitorId).map((c) => [c.visitorId, c.recentVisitCount || 1])));
+      if (d.recentWindowHours) setWindowHours(d.recentWindowHours);
       setLoaded(true);
     } catch { /* keep what we have; the next snapshot retries */ }
   }, [cardLimit]);
@@ -133,13 +138,29 @@ export default function useLiveActivity({ cardLimit = 6 } = {}) {
 
   const now = tick + offset;
 
-  const visibleCards = useMemo(
-    () => [...cards.values()]
-      .sort((a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt))
-      .slice(0, cardLimit)
-      .map((c) => ({ ...c, status: liveStatus(presence.get(c.sessionId) || c, now, definitions) })),
-    [cards, presence, cardLimit, now, definitions]
-  );
+  const visibleCards = useMemo(() => {
+    const sorted = [...cards.values()].sort((a, b) => new Date(b.lastActivityAt) - new Date(a.lastActivityAt));
+    // Visits seen per visitor (snapshot count, or more if new visits arrived on the stream)
+    const seen = new Map();
+    for (const c of sorted) {
+      const key = c.visitorId || c.sessionId;
+      seen.set(key, (seen.get(key) || 0) + 1);
+    }
+    const shown = new Set();
+    const out = [];
+    for (const c of sorted) {
+      const key = c.visitorId || c.sessionId;
+      if (shown.has(key)) continue;
+      shown.add(key);
+      out.push({
+        ...c,
+        recentVisitCount: Math.max(visitCounts.get(c.visitorId) || 1, seen.get(key) || 1),
+        status: liveStatus(presence.get(c.sessionId) || c, now, definitions),
+      });
+      if (out.length >= cardLimit) break;
+    }
+    return out;
+  }, [cards, presence, cardLimit, now, definitions, visitCounts]);
 
   const onlineNow = useMemo(() => {
     let n = 0;
@@ -160,5 +181,5 @@ export default function useLiveActivity({ cardLimit = 6 } = {}) {
     return () => listeners.current.delete(fn);
   }, []);
 
-  return { cards: visibleCards, onlineNow, connection, loaded, now, definitions, statusOf, cardOf, subscribeActivity };
+  return { cards: visibleCards, windowHours, onlineNow, connection, loaded, now, definitions, statusOf, cardOf, subscribeActivity };
 }
