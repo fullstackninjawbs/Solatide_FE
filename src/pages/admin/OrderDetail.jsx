@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import { State } from 'country-state-city';
 import CustomAddressAutocomplete from '../../components/admin/CustomAddressAutocomplete';
@@ -99,6 +99,9 @@ const OrderDetail = () => {
   const [refundType, setRefundType] = useState('full'); // 'full' | 'partial'
   const [refundReason, setRefundReason] = useState('');
 
+  // Inside your component:
+  const navigate = useNavigate();
+
   // Load Order
 
   useEffect(() => {
@@ -162,7 +165,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
         toast.success(emailsCustomer ? 'Order marked as paid — confirmation email is being sent' : 'Order marked as paid');
         // The email is sent in the background; reload shortly so its timeline entry shows
         setTimeout(() => {
-          apiService.getAdminOrderById(id).then((r) => r.json()).then((d) => { if (d.success && d.data?.order) setOrder(d.data.order); }).catch(() => {});
+          apiService.getAdminOrderById(id).then((r) => r.json()).then((d) => { if (d.success && d.data?.order) setOrder(d.data.order); }).catch(() => { });
         }, 4000);
         return true;
       } else {
@@ -568,14 +571,14 @@ The order becomes Paid / Processing and the customer is emailed their order conf
   const getGroupKey = (dateStr) => {
     if (!dateStr) return 'Past';
     const date = new Date(dateStr);
-    
+
     const today = new Date();
     const tz = 'Australia/Sydney';
-    
+
     // Get AEST date strings (e.g. "9/29/2026")
     const dateAestStr = date.toLocaleDateString('en-US', { timeZone: tz });
     const todayAestStr = today.toLocaleDateString('en-US', { timeZone: tz });
-    
+
     const yesterday = new Date(today.getTime());
     yesterday.setDate(today.getDate() - 1);
     const yesterdayAestStr = yesterday.toLocaleDateString('en-US', { timeZone: tz });
@@ -773,9 +776,14 @@ The order becomes Paid / Processing and the customer is emailed their order conf
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="min-w-0 flex-1">
             <div className="flex items-start gap-4 mb-2">
-              <Link to="/admin/orders" className="shrink-0 p-2 text-slate-400 hover:text-brand-navy hover:bg-white rounded-xl transition-colors bg-slate-100 border border-slate-200">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="shrink-0 p-2 text-slate-400 hover:text-brand-navy hover:bg-white rounded-xl transition-colors bg-slate-100 border border-slate-200"
+                aria-label="Go back"
+              >
                 <ArrowLeft size={18} />
-              </Link>
+              </button>
               <h1 className="min-w-0 text-3xl font-bold text-brand-navy tracking-tight flex flex-wrap items-center gap-x-4 gap-y-2">
                 #{order.orderNumber ?? String(order._id).slice(-8).toUpperCase()}
 
@@ -1265,7 +1273,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   )}
                   {customerPhone ? (
                     <a href={`tel:${customerPhone}`} className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-brand-blue transition-colors mt-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l1.27-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l1.27-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
                       {customerPhone}
                     </a>
                   ) : (
