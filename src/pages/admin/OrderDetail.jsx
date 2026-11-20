@@ -79,6 +79,7 @@ const OrderDetail = () => {
   const [updating, setUpdating] = useState(false);
   const [shipmentError, setShipmentError] = useState(null);
   const [creatingLabel, setCreatingLabel] = useState(false);
+  const [checkingStarshipit, setCheckingStarshipit] = useState(false);
   const [refunding, setRefunding] = useState(false);
   const [revalidating, setRevalidating] = useState(false);
 
@@ -356,6 +357,28 @@ The order becomes Paid / Processing and the customer is emailed their order conf
       setShipmentError(err.message || 'Network error while creating label');
     } finally {
       setCreatingLabel(false);
+    }
+  };
+
+  // "Check Starshipit now": read-only sync of tracking from Starshipit — never buys a label
+  const handleCheckStarshipit = async () => {
+    if (checkingStarshipit || creatingLabel) return;
+    setCheckingStarshipit(true);
+    try {
+      const res = await apiService.refreshAdminShipment(id);
+      const data = await res.json();
+      if (data.success) {
+        setOrder(data.data.order);
+        if (data.data.order?.trackingNumber) toast.success(data.message || 'Tracking synced from Starshipit');
+        else toast(data.message || 'No label in Starshipit yet', { duration: 7000 });
+      } else {
+        toast.error(data.message || 'Could not check Starshipit');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Network error while checking Starshipit');
+    } finally {
+      setCheckingStarshipit(false);
     }
   };
 
@@ -916,6 +939,8 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                   onFulfill={handleFulfill}
                   creatingLabel={creatingLabel}
                   onCreateLabel={handleCreateLabel}
+                  checkingStarshipit={checkingStarshipit}
+                  onCheckStarshipit={handleCheckStarshipit}
                   shipmentError={shipmentError}
                 />
               </div>

@@ -521,6 +521,14 @@ export const apiService = {
     });
   },
 
+  /** Read-only: sync tracking / label from Starshipit (never buys a label). */
+  refreshAdminShipment: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/shipment/refresh`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
   createAdminShipment: async (id) => {
     return customFetch(`${API_URL}/api/admin/order/${id}/shipment`, {
       method: 'POST',

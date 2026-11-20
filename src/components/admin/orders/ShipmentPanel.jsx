@@ -354,7 +354,7 @@ function TrackingCard({ order, tracking, loading, onEdit, onRefresh }) {
 
 export default function ShipmentPanel({
   order, setOrder, isUnfulfilled, awaitingPayment, isManual, isShopifyImport, isBankOrder,
-  fulfilling, onFulfill, creatingLabel, onCreateLabel, shipmentError,
+  fulfilling, onFulfill, creatingLabel, onCreateLabel, checkingStarshipit, onCheckStarshipit, shipmentError,
 }) {
   const [tracking, setTracking] = useState(null);
   const [refreshTick, setRefreshTick] = useState(0);
@@ -434,7 +434,9 @@ export default function ShipmentPanel({
             <div className="min-w-0 flex-1">
               <p className="text-[14.5px] font-bold text-brand-navy">Order created in Starshipit — label not printed yet</p>
               <p className="text-[13px] text-slate-600 mt-1 leading-relaxed">
-                Print the label in the Starshipit dashboard. The tracking number syncs back here and the customer gets their
+                Open this order in Starshipit first. If it is under <strong>Printed</strong>, the label already exists: use
+                <strong> Reprint label</strong> (no charge, never <em>Redo shipping</em>), then click Check Starshipit now. If it is
+                under <strong>New</strong>, print the label there. The tracking number syncs back here and the customer gets their
                 shipping email automatically. Made the label somewhere else? Add the tracking manually.
               </p>
               <ParcelDetails order={order} />
@@ -442,8 +444,9 @@ export default function ShipmentPanel({
                 <AdminSecondaryButton href={STARSHIPIT_NEW_ORDERS} className="!text-[13px] !px-3.5 !py-2">
                   Open Starshipit <ExternalLink size={13} />
                 </AdminSecondaryButton>
-                <AdminSecondaryButton onClick={onCreateLabel} disabled={creatingLabel} className="!text-[13px] !px-3.5 !py-2">
-                  <RefreshCw size={13} className={creatingLabel ? 'animate-spin' : ''} /> {creatingLabel ? 'Checking…' : 'Check Starshipit now'}
+                {/* Read-only: syncs tracking from Starshipit, never buys a label */}
+                <AdminSecondaryButton onClick={onCheckStarshipit} disabled={checkingStarshipit} className="!text-[13px] !px-3.5 !py-2">
+                  <RefreshCw size={13} className={checkingStarshipit ? 'animate-spin' : ''} /> {checkingStarshipit ? 'Checking…' : 'Check Starshipit now'}
                 </AdminSecondaryButton>
                 <AdminPrimaryButton onClick={() => setModalOpen(true)} disabled={Boolean(shipBlocked)} className="!text-[13px] !px-4 !py-2">
                   <Plus size={14} /> Add tracking manually
