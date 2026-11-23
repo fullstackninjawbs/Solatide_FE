@@ -229,7 +229,7 @@ const CheckoutSuccess = () => {
           <div style={card}>
             {banner('neutral', Package, 'No Order Specified',
               'We could not find a recent checkout on this device. If you completed a payment, your confirmation email contains your order details.')}
-            <div style={{ padding: '32px 40px' }}>{actions}</div>
+            <div style={{ padding: '32px 40px' }} ø>{actions}</div>
           </div>
         )}
 

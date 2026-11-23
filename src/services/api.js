@@ -529,6 +529,14 @@ export const apiService = {
     });
   },
 
+  /** Possible duplicate label checked by the team: hides the warning (changes nothing else). */
+  resolveLabelDuplicate: async (id) => {
+    return customFetch(`${API_URL}/api/admin/order/${id}/label-duplicate/resolve`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
+
   createAdminShipment: async (id) => {
     return customFetch(`${API_URL}/api/admin/order/${id}/shipment`, {
       method: 'POST',

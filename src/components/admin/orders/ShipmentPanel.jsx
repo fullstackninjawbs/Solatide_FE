@@ -7,6 +7,7 @@ import { apiService } from '../../../services/api';
 import { AdminPrimaryButton } from '../AdminPrimaryButton';
 import { AdminSecondaryButton } from '../AdminSecondaryButton';
 import { Modal } from '../feedback/Modal';
+import LabelDuplicateBanner from './LabelDuplicateBanner';
 
 /**
  * Order page → Fulfillment: create a label OR add tracking manually, the "label pending in
@@ -398,6 +399,8 @@ export default function ShipmentPanel({
 
   return (
     <div className="flex flex-col gap-4 pt-2">
+      {/* Possible duplicate label (alert only; shown above whichever state the shipment is in) */}
+      <LabelDuplicateBanner order={order} setOrder={setOrder} />
       {hasTracking ? (
         <>
           {/* Shipment summary: label + parcel details (only when there is something to show) */}
