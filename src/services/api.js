@@ -190,8 +190,13 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
-  getBankOrder: async (id, accessToken) => {
-    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?accessToken=${encodeURIComponent(accessToken)}`);
+  // visit = { visitorId, sessionId } of this browser: lets the server show the order's customer on
+  // this visit in the live view when the link is opened in another browser (e.g. from the email)
+  getBankOrder: async (id, accessToken, visit = {}) => {
+    const q = new URLSearchParams({ accessToken });
+    if (visit.visitorId) q.set('vid', visit.visitorId);
+    if (visit.sessionId) q.set('sid', visit.sessionId);
+    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?${q.toString()}`);
   },
   // ─── Analytics (Admin) ────────────────────────────────────────────────────────
   getAnalyticsSummary: async (queryString = '') => {
