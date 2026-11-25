@@ -23,10 +23,10 @@ import { runWhenIdle } from './runWhenIdle';
 const ENDPOINT = `${API_URL}/api/analytics/collect`;
 export const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 // Activity heartbeat for "active now" (admin live activity). The server counts a visitor as active
-// for 75 s after their last activity/heartbeat (Server/src/services/analytics/config.ts), so one
+// for 40 s after their last activity/heartbeat (Server/src/services/analytics/config.ts), so one
 // lost heartbeat is tolerated. Sent only while the tab is visible and the visitor interacted
 // recently (not for a forgotten open tab). Hiding or closing the tab sends a "left" signal.
-const PING_EVERY_MS = 30 * 1000;
+const PING_EVERY_MS = 15 * 1000;
 const PING_IF_INTERACTED_WITHIN_MS = 2 * 60 * 1000;
 const FLUSH_DELAY_MS = 1000;
 const MAX_BATCH = 30;
@@ -252,6 +252,8 @@ const readOutbox = () => {
   return Array.isArray(items) ? items.filter((it) => it && it.event && Date.now() - it.event.ts < OUTBOX_MAX_AGE_MS) : [];
 };
 
+// Every request carries sentAt (this browser's clock): requests sent while a tab closes can reach
+// different server workers in any order, and the server uses sentAt to keep the newest signal.
 // Sent as text/plain (JSON inside): a "simple" cross-origin request needs no CORS preflight, so
 // events sent while the page is closing (sendBeacon on pagehide) are not dropped by the browser.
 const send = (payload) => {
@@ -288,7 +290,7 @@ function flush(closing = false, left = false) {
   }
   for (const [sessionId, { context, events }] of bySession) {
     for (let i = 0; i < events.length; i += MAX_BATCH) {
-      send(JSON.stringify({ visitorId, sessionId, context: withLocation(context), events: events.slice(i, i + MAX_BATCH), ...(left ? { ping: true, left: true } : {}) }));
+      send(JSON.stringify({ visitorId, sessionId, sentAt: Date.now(), context: withLocation(context), events: events.slice(i, i + MAX_BATCH), ...(left ? { ping: true, left: true } : {}) }));
     }
   }
 }
@@ -333,7 +335,7 @@ function sendPing() {
   const open = openSession();
   if (!open) return;
   const session = currentSession();
-  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true }));
+  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, sentAt: Date.now(), context: withLocation(session.context), ping: true }));
 }
 
 /** "Left": the tab was hidden or closed, so the visitor stops counting as active right away. */
@@ -341,7 +343,7 @@ function sendLeft() {
   if (trackingOff()) return;
   const session = openSession();
   if (!session) return;
-  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, context: withLocation(session.context), ping: true, left: true }));
+  send(JSON.stringify({ visitorId: getVisitorId(), sessionId: session.id, sentAt: Date.now(), context: withLocation(session.context), ping: true, left: true }));
 }
 
 if (hasWindow() && !isPrerendering()) {

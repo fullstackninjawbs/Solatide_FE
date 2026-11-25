@@ -40,7 +40,7 @@ export default function LiveCustomerActivity() {
           {/* Genuinely active visitors only (heartbeat within the active window, tab still open) */}
           <div
             className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200/80"
-            title={`Active in the last ${live.definitions?.activeWindowSeconds ?? 75} seconds with the store open`}
+            title={`Active in the last ${live.definitions?.activeWindowSeconds ?? 40} seconds with the store open`}
           >
             <span className="relative flex h-2.5 w-2.5">
               {live.onlineNow > 0 && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-70" />}
