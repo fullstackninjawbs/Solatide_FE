@@ -277,6 +277,17 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
+  getStorefrontRebuildStatus: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/storefront-rebuild`, {
+      headers: { ...getAuthHeaders() }
+    });
+  },
+  requestStorefrontRebuild: async () => {
+    return customFetch(`${API_URL}/api/admin/settings/storefront-rebuild`, {
+      method: 'POST',
+      headers: { ...getAuthHeaders() }
+    });
+  },
   getCheckoutMode: async () => {
     return customFetch(`${API_URL}/api/admin/settings/checkout-mode`, {
       headers: { ...getAuthHeaders() }

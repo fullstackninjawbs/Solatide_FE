@@ -230,9 +230,14 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     }
   };
 
-  // Bank transfer / PayID: cancel an unpaid order and give its reserved stock back
+  // Bank transfer / PayID or manual order: cancel an unpaid order and give its reserved stock back.
+  // Manual orders created before stock reservations were recorded have none to give back.
   const handleCancelUnpaid = async () => {
-    if (!window.confirm(`Cancel order ${order.orderNumber}? The reserved stock is released. No email is sent to the customer.`)) return;
+    const hasReservation = Array.isArray(order.stockReservations) && order.stockReservations.length > 0;
+    const stockNote = hasReservation || !isManual
+      ? 'The reserved stock is released.'
+      : 'This older manual order has no stock record, so its stock is NOT released automatically: adjust it on the Inventory page if needed.';
+    if (!window.confirm(`Cancel order ${order.orderNumber}? ${stockNote} No email is sent to the customer.`)) return;
     try {
       setUpdating(true);
       const res = await apiService.updateAdminOrderStatus(id, { paymentStatus: 'cancelled', status: 'cancelled' });
@@ -439,8 +444,9 @@ The order becomes Paid / Processing and the customer is emailed their order conf
     if (refunding) return;
     setRefunding(true);
     try {
+      // The server takes full: true for a full refund of the remaining balance (it rejects a `type` field)
       const payload = {
-        type: 'full',
+        full: true,
         reason: refundReason || 'Admin initiated refund'
       };
 
@@ -829,7 +835,7 @@ The order becomes Paid / Processing and the customer is emailed their order conf
                         Resend payment details
                       </button>
                     )}
-                    {awaitingPayment && (
+                    {(awaitingPayment || (isManual && paymentStatus === 'pending')) && (
                       <button
                         onClick={handleCancelUnpaid}
                         disabled={updating}

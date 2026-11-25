@@ -138,6 +138,7 @@ const BatchForm = () => {
           ...batchData,
           products: mappedProducts,
           setAsCurrent: isCurrent,
+          _isCurrentBatch: isCurrent, // as loaded (UI only; the server ignores unknown fields)
           qcLevel: batchData.qcLevel,
           verificationDetails: {
             labName: '', coaReportId: '', testDate: '', verificationUrl: '',
@@ -720,6 +721,31 @@ const BatchForm = () => {
                 ]}
               />
             </div>
+
+            {/* Current batch: the batch whose COA and results show on the product page */}
+            {isEditMode && formData._isCurrentBatch ? (
+              <p className="text-[13px] text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+                This is the product's <strong>current batch</strong> (its COA is shown on the product page).
+              </p>
+            ) : (
+              <label className={`flex items-start gap-2.5 text-[13px] text-slate-700 ${formData.status === 'inactive' ? 'opacity-50' : 'cursor-pointer'}`}>
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4 accent-[#214A9E]"
+                  checked={formData.status !== 'inactive' && formData.setAsCurrent === true}
+                  disabled={formData.status === 'inactive'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, setAsCurrent: e.target.checked }))}
+                />
+                <span>
+                  <span className="font-semibold">Make this the current batch</span>
+                  <span className="block text-slate-500">
+                    {formData.status === 'inactive'
+                      ? 'Inactive batches are never shown on the product page.'
+                      : 'Its COA replaces the one shown on the product page.'}
+                  </span>
+                </span>
+              </label>
+            )}
 
 
 

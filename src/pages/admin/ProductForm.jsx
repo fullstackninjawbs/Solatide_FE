@@ -302,6 +302,16 @@ const ProductForm = () => {
               canonicalUrl: product.seo?.canonicalUrl || ''
             },
             _originalVariants: product.variants || [],
+            // Stock as loaded: sent on save so the server applies only the admin's change to the
+            // CURRENT stock (orders placed while this page is open are not undone). The first
+            // variant's value is the Stock field (product total), which is what the form sends for it.
+            _stockBaseline: {
+              stockQuantity: product.stockQuantity || 0,
+              variants: Object.fromEntries((product.variants || []).filter(v => v && v._id).map((v, i) => [
+                String(v._id),
+                i === 0 ? (product.stockQuantity || 0) : (parseInt(v.stockQty, 10) || 0),
+              ])),
+            },
             currentBatch: product.currentBatch || null,
             slug: product.slug || '',
             _loadedSlug: product.slug || '', // URL as saved (for the redirect notice; not sent)
@@ -678,6 +688,7 @@ const ProductForm = () => {
       images: finalImages,
       sku: formData.sku,
       variants: mappedVariants,
+      ...(isEditMode && formData._stockBaseline ? { stockBaseline: formData._stockBaseline } : {}),
       seo: formData.seo,
       slug: formData.slug || slugifiedName,
       inStock: parseInt(formData.stockQuantity, 10) > 0,

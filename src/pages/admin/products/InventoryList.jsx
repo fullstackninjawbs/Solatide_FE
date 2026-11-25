@@ -110,16 +110,21 @@ const InventoryList = () => {
         newQty = currentQty + newQty;
       }
 
+      // "Add" is applied to the CURRENT stock on the server (stockBaseline = the number shown here),
+      // so orders placed since this list loaded are not undone. "Set to" sets the exact number.
       const payload = {
         stockQuantity: newQty,
-        inStock: newQty > 0
+        inStock: newQty > 0,
+        ...(editAction === 'Add' ? { stockBaseline: { stockQuantity: currentQty } } : {})
       };
 
       const response = await apiService.saveProduct(product._id, JSON.stringify(payload));
       const result = await response.json();
 
       if (result.success) {
-        setProducts(products.map(p => p._id === product._id ? { ...p, stockQuantity: newQty, inStock: newQty > 0 } : p));
+        const saved = result.data?.product;
+        const savedQty = typeof saved?.stockQuantity === 'number' ? saved.stockQuantity : newQty;
+        setProducts(products.map(p => p._id === product._id ? { ...p, stockQuantity: savedQty, inStock: saved?.inStock ?? savedQty > 0 } : p));
         setEditingProductId(null);
         toast.success('Inventory updated successfully');
       } else {
@@ -169,7 +174,8 @@ const InventoryList = () => {
 
         const payload = {
           stockQuantity: newQty,
-          inStock: newQty > 0
+          inStock: newQty > 0,
+          ...(bulkAction === 'Add' ? { stockBaseline: { stockQuantity: currentQty } } : {})
         };
 
         const response = await apiService.saveProduct(productId, JSON.stringify(payload));
@@ -177,8 +183,10 @@ const InventoryList = () => {
         
         if (result.success) {
           successCount++;
-          // Update local state for this product
-          setProducts(prev => prev.map(p => p._id === productId ? { ...p, stockQuantity: newQty, inStock: newQty > 0 } : p));
+          // Update local state with the stock the server saved
+          const saved = result.data?.product;
+          const savedQty = typeof saved?.stockQuantity === 'number' ? saved.stockQuantity : newQty;
+          setProducts(prev => prev.map(p => p._id === productId ? { ...p, stockQuantity: savedQty, inStock: saved?.inStock ?? savedQty > 0 } : p));
         } else {
           failCount++;
         }

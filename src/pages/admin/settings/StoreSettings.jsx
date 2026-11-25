@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { AdminPrimaryButton } from '../../../components/admin/AdminPrimaryButton';
 import { AdminSecondaryButton } from '../../../components/admin/AdminSecondaryButton';
 import CheckoutModeCard from './CheckoutModeCard';
+import StorefrontRebuildCard from './StorefrontRebuildCard';
 
 const countryOptions = Country.getAllCountries().map(country => ({
     value: country.name,
@@ -190,6 +191,8 @@ const StoreSettings = () => {
             </div>
 
             <CheckoutModeCard />
+
+            <StorefrontRebuildCard />
 
             {/* Contact Modal */}
             {isContactModalOpen && createPortal(

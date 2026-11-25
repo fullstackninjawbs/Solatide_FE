@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { FileText, CheckCircle2, ShieldCheck, Copy, ExternalLink, FlaskConical, Hourglass, ChevronRight, Check } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import purityIcon from '../../assets/icons/purity.svg';
@@ -36,19 +36,6 @@ const CurrentBatchCard = ({ batch, product }) => {
 
 
 
-  const renderResultText = (text) => {
-    if (!text) return null;
-    const parts = text.split(/\\n|\n|\|/);
-    if (parts.length > 1) {
-      return (
-        <div className="my-0.5 leading-snug">
-          <div className="text-[12px] text-[#1a3a7d]">{parts[0].trim()}</div>
-          <div className="text-[11px] font-medium text-slate-400 mt-0.5">{parts.slice(1).join('\n').trim()}</div>
-        </div>
-      );
-    }
-    return <div className="text-[12px] text-[#1a3a7d] my-0.5 leading-snug">{text}</div>;
-  };
 
   const purityResult = tests.purityHplc?.result || '';
   const identityResult = tests.identityHplc?.result || '';
@@ -75,6 +62,20 @@ const CurrentBatchCard = ({ batch, product }) => {
 
   const isPartialQc = hasQcData && !isFullQc;
   const completedTestsCount = [hasPurity, hasIdentity, hasFentanyl, hasEndotoxin, hasSterility, hasNetContent, hasHeavyMetals].filter(Boolean).length;
+
+  // Tests shown in the summary grid (same order and labels as before)
+  const qcTests = [
+    hasPurity && { key: 'purity', label: 'Purity', method: 'HPLC', icon: purityIcon, result: purityResult },
+    hasIdentity && { key: 'identity', label: 'Identity', method: 'LC-MS', icon: identityIcon, result: identityResult },
+    hasNetContent && { key: 'net', label: 'Net Peptide Content', icon: netPeptideIcon, result: netContentResult },
+    hasFentanyl && { key: 'fentanyl', label: 'Fentanyl Screen', method: 'Safety screen', icon: fentanylScreenIcon, result: fentanylResult },
+    hasHeavyMetals && { key: 'metals', label: 'Heavy Metals', method: 'ICP-MS', icon: heavyMetalIcon, result: heavyMetalsResult },
+    hasSterility && { key: 'sterility', label: 'Microbial / Sterility', icon: microbialIcon, result: sterilityResult },
+    hasEndotoxin && { key: 'endotoxin', label: 'Endotoxin', method: 'USP <85>', icon: endotoxinIcon, result: endotoxinResult },
+  ].filter(Boolean);
+  // Empty slots needed to complete the last row (2 columns on phones, 3 from md)
+  const fillTwoCol = qcTests.length % 2;
+  const fillThreeCol = (3 - (qcTests.length % 3)) % 3;
 
   const showPendingResultsSection = product?.showPendingResultsSection ?? true;
   const isBacteriostaticWater = product?.name?.toLowerCase().includes('bacteriostatic water');
@@ -213,117 +214,44 @@ const CurrentBatchCard = ({ batch, product }) => {
 
           {/* Test Summary Horizontal List (Only if hasQcData) */}
           {hasQcData && (
-            <div className="mx-4 mb-4 border border-slate-100 rounded-xl overflow-hidden bg-white shadow-sm">
-              <div className="px-5 py-3 border-b border-slate-100">
+            <div className="mx-4 mb-4 border border-slate-100 rounded-xl bg-white shadow-sm">
+              <div className="px-5 py-3 border-b border-slate-100 rounded-t-xl">
                 <h5 className="text-[12px] font-bold text-[#1a3a7d] mb-0">Test Summary</h5>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 bg-white -mb-[1px] -mr-[1px]">
-                {hasPurity && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={purityIcon} alt="Purity" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Purity</p>
-                      {renderResultText(purityResult)}
-                      <p className="text-[10px] text-slate-500 mt-0.5">HPLC</p>
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
+              {/* Equal-height cards: gap-px on a tinted grid draws even dividers for any number of
+                  tests; "Pass" sits on the same bottom line in every card of a row; empty slots in
+                  the last row are filled so no divider is left hanging. */}
+              <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-px bg-slate-100">
+                {qcTests.map((t) => (
+                  <div key={t.key} className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white min-w-0">
+                    <img src={t.icon} alt="" aria-hidden="true" className="w-[34px] h-[34px] sm:w-[44px] sm:h-[44px] shrink-0 object-contain" />
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <p className="text-[11.5px] font-bold text-[#1a3a7d] leading-tight line-clamp-2" title={t.label}>{t.label}</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5 h-[15px] leading-[15px] truncate">{t.method || ' '}</p>
+                      <ResultText text={t.result} />
+                      <p className="mt-auto pt-1.5 text-[11px] text-[#137333] font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" /> Pass
                       </p>
                     </div>
                   </div>
-                )}
-
-                {hasIdentity && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={identityIcon} alt="Identity" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Identity</p>
-                      {renderResultText(identityResult)}
-                      <p className="text-[10px] text-slate-500 mt-0.5">LC-MS</p>
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {hasNetContent && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={netPeptideIcon} alt="Net Peptide Content" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Net Peptide Content</p>
-                      {renderResultText(netContentResult)}
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {hasFentanyl && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={fentanylScreenIcon} alt="Fentanyl Screen" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Fentanyl Screen</p>
-                      {renderResultText(fentanylResult)}
-                      <p className="text-[10px] text-slate-500 mt-0.5">Safety screen</p>
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {hasHeavyMetals && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={heavyMetalIcon} alt="Heavy Metals" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Heavy Metals</p>
-                      {renderResultText(heavyMetalsResult)}
-                      <p className="text-[10px] text-slate-500 mt-0.5">ICP-MS</p>
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {hasSterility && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={microbialIcon} alt="Microbial / Sterility" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Microbial / Sterility</p>
-                      {renderResultText(sterilityResult)}
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {hasEndotoxin && (
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3.5 sm:p-4 bg-white border-r border-b border-slate-100">
-                    <img src={endotoxinIcon} alt="Endotoxin" className="w-[34px] h-[34px] sm:w-[48px] sm:h-[48px] shrink-0 mt-0.5 object-contain" />
-                    <div>
-                      <p className="text-[11px] font-bold text-[#1a3a7d]">Endotoxin</p>
-                      {renderResultText(endotoxinResult)}
-                      <p className="text-[10px] text-slate-500 mt-0.5">USP &lt;85&gt;</p>
-                      <p className="text-[11px] text-[#137333] font-bold flex items-center gap-1 mt-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Pass
-                      </p>
-                    </div>
-                  </div>
-                )}
-
+                ))}
+                {Array.from({ length: Math.max(fillTwoCol, fillThreeCol) }).map((_, i) => (
+                  <div
+                    key={`fill-${i}`}
+                    aria-hidden="true"
+                    className={`bg-white ${i < fillTwoCol ? 'block' : 'hidden'} ${i < fillThreeCol ? 'md:block' : 'md:hidden'}`}
+                  />
+                ))}
               </div>
 
-              <div className="px-5 py-3 border-t border-slate-100 flex items-center gap-2">
-                <FlaskConical className="w-4 h-4 text-[#214A9E]" />
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Verified by <span className="font-bold text-[#214A9E]">{batch.verificationDetails?.labName || 'ILS Laboratories'}</span>
+              <div className="px-5 py-3 border-t border-slate-100 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="flex items-center gap-2 text-[11px] text-slate-500 font-medium">
+                  <FlaskConical className="w-4 h-4 text-[#214A9E] shrink-0" aria-hidden="true" />
+                  <span>Verified by <span className="font-bold text-[#214A9E]">{batch.verificationDetails?.labName || 'ILS Laboratories'}</span></span>
                 </span>
-                <span className="text-slate-300 mx-1">|</span>
-                <span className="text-[11px] text-slate-500 font-medium">ISO/IEC 17025 Accredited</span>
+                <span className="hidden min-[420px]:inline text-slate-300" aria-hidden="true">|</span>
+                <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">ISO/IEC 17025 Accredited</span>
               </div>
             </div>
           )}
@@ -400,5 +328,73 @@ const CurrentBatchCard = ({ batch, product }) => {
 };
 
 
+/**
+ * One-line test result. Long values end with "…" and the full text shows in a small tooltip on
+ * hover, keyboard focus or tap (phones have no hover), so every test card keeps the same size.
+ * "a | b" or two-line values show "a" with "b" in the tooltip. The line is reserved even when
+ * there is no result, so cards in different rows line up too.
+ */
+const ResultText = ({ text }) => {
+  const ref = useRef(null);
+  const [truncated, setTruncated] = useState(false);
+  const [open, setOpen] = useState(false);
+  // Same separators as before: a literal "\n" typed in the admin, a real line break, or "|"
+  const parts = text ? String(text).split(/\\n|\n|\|/).map((x) => x.trim()).filter(Boolean) : [];
+  const main = parts[0] || '';
+  const full = parts.join(' · ');
+  const hasMore = parts.length > 1 || truncated;
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const check = () => setTruncated(el.scrollWidth > el.clientWidth + 1);
+    check();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [main]);
+
+  // Close a tapped-open tooltip when tapping anywhere else
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => { if (!ref.current?.parentElement?.contains(e.target)) setOpen(false); };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [open]);
+
+  if (!main) return <div className="h-[18px] mt-1" aria-hidden="true" />;
+
+  return (
+    <div
+      className="relative mt-1 h-[18px] group/result"
+      onMouseEnter={() => hasMore && setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <span
+        ref={ref}
+        tabIndex={hasMore ? 0 : undefined}
+        role={hasMore ? 'button' : undefined}
+        aria-label={hasMore ? full : undefined}
+        // A tap fires focus and then click: both only open (tapping elsewhere or blur closes it)
+        onClick={() => hasMore && setOpen(true)}
+        onKeyDown={(e) => { if (hasMore && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setOpen((v) => !v); } if (e.key === 'Escape') setOpen(false); }}
+        onFocus={() => hasMore && setOpen(true)}
+        onBlur={() => setOpen(false)}
+        className={`block truncate text-[12px] leading-[18px] text-[#1a3a7d] ${hasMore ? 'cursor-help underline decoration-dotted decoration-slate-300 underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 rounded-sm' : ''}`}
+      >
+        {main}
+      </span>
+      {hasMore && open && (
+        <span
+          role="tooltip"
+          className="absolute left-0 bottom-full mb-1.5 z-20 w-max max-w-[220px] rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11.5px] leading-snug text-white shadow-lg whitespace-normal break-words pointer-events-none"
+        >
+          {full}
+        </span>
+      )}
+    </div>
+  );
+};
 
 export default CurrentBatchCard;
