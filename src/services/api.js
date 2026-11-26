@@ -32,6 +32,10 @@ const customFetch = async (url, options = {}) => {
 };
 
 export const apiService = {
+  // Running backend version (staff only; used by AdminVersionLabel, which is not shown at the moment)
+  getBackendVersion: async () => {
+    return customFetch(`${API_URL}/api/admin/version`, { headers: { ...getAuthHeaders() } });
+  },
   // Products
   getProducts: async (queryParams = '') => {
     return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`, {

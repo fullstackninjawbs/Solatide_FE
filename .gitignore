@@ -34,3 +34,7 @@ release-meta
 dist-admin
 dist-test
 .prerender-report.json
+
+# Local AI assistant notes (not committed)
+CLAUDE.md
+CLAUDE.local.md
