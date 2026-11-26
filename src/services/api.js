@@ -32,6 +32,10 @@ const customFetch = async (url, options = {}) => {
 };
 
 export const apiService = {
+  // Running backend version (staff only; used by AdminVersionLabel, which is not shown at the moment)
+  getBackendVersion: async () => {
+    return customFetch(`${API_URL}/api/admin/version`, { headers: { ...getAuthHeaders() } });
+  },
   // Products
   getProducts: async (queryParams = '') => {
     return customFetch(`${API_URL}/api/products${queryParams ? `?${queryParams}` : ''}`, {
@@ -190,8 +194,13 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
-  getBankOrder: async (id, accessToken) => {
-    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?accessToken=${encodeURIComponent(accessToken)}`);
+  // visit = { visitorId, sessionId } of this browser: lets the server show the order's customer on
+  // this visit in the live view when the link is opened in another browser (e.g. from the email)
+  getBankOrder: async (id, accessToken, visit = {}) => {
+    const q = new URLSearchParams({ accessToken });
+    if (visit.visitorId) q.set('vid', visit.visitorId);
+    if (visit.sessionId) q.set('sid', visit.sessionId);
+    return customFetch(`${API_URL}/api/checkout/bank-order/${encodeURIComponent(id)}?${q.toString()}`);
   },
   // ─── Analytics (Admin) ────────────────────────────────────────────────────────
   getAnalyticsSummary: async (queryString = '') => {

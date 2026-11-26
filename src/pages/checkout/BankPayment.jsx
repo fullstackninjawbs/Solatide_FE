@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Copy, Check, AlertTriangle, Clock, XCircle, Mail, Lock, ShoppingBag } from 'lucide-react';
 import Logo from '../../components/Logo';
 import { apiService } from '../../services/api';
+import { getVisitorId, getSessionId } from '../../utils/analytics';
 import { countryName } from '../../utils/countries';
 import { BANK_ORDER_KEY } from './BankCheckout';
 
@@ -90,7 +91,9 @@ const BankPayment = () => {
   useEffect(() => {
     if (!accessToken) return undefined;
     let alive = true;
-    apiService.getBankOrder(orderId, accessToken)
+    let visit = {};
+    try { visit = { visitorId: getVisitorId(), sessionId: getSessionId() }; } catch { /* storage unavailable */ }
+    apiService.getBankOrder(orderId, accessToken, visit)
       .then(async (r) => ({ ok: r.ok, body: await r.json().catch(() => ({})) }))
       .then(({ ok, body }) => {
         if (!alive) return;

@@ -84,7 +84,7 @@ export function liveStatus(p, now, definitions) {
   const idle = now - last;
   if (idle > (definitions?.sessionTimeoutMinutes ?? 30) * 60_000) return 'ended';
   const left = p.leftAt ? new Date(p.leftAt).getTime() >= last : false;
-  return !left && idle <= (definitions?.activeWindowSeconds ?? 75) * 1000 ? 'active' : 'inactive';
+  return !left && idle <= (definitions?.activeWindowSeconds ?? 40) * 1000 ? 'active' : 'inactive';
 }
 
 export const STATUS_META = {
