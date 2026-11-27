@@ -240,6 +240,10 @@ export const apiService = {
   getLiveVisitor: async (sessionId) => {
     return customFetch(`${API_URL}/api/admin/analytics/live/visitors/${encodeURIComponent(sessionId)}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
   },
+  /** Visitor panel tabs: the visit, the visitor, their other visits (paged) and their orders. */
+  getVisitorProfile: async (sessionId, page = 1) => {
+    return customFetch(`${API_URL}/api/admin/analytics/live/visitors/${encodeURIComponent(sessionId)}/profile?page=${page}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
+  },
   getLiveActivity: async (params = {}) => {
     const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')).toString();
     return customFetch(`${API_URL}/api/admin/analytics/live/activity${qs ? `?${qs}` : ''}`, { method: 'GET', headers: getAuthHeaders(), cache: 'no-store' });
