@@ -68,6 +68,7 @@ export default function CartTab({ card, checkout, isEarlierVisit, now }) {
                 <span className="inline-flex items-center gap-1 text-red-700"><AlertTriangle className="w-3.5 h-3.5" />{checkout.errorCount}{checkout.lastError ? ` · ${checkout.lastError}` : ''}</span>
               </Row>
             )}
+            {checkout.requestNumber && <Row label="Order request">{checkout.requestNumber}</Row>}
             {checkout.orderId && (
               <Row label="Order"><Link to={`/admin/orders/${checkout.orderId}`} className="text-brand-blue hover:underline">View order</Link></Row>
             )}

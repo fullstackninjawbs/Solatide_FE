@@ -5,7 +5,7 @@ import Logo from '../../components/Logo';
 import DiscountCodeBox from '../../components/checkout/DiscountCodeBox';
 import { useCart } from '../../context/CartContext';
 import { apiService } from '../../services/api';
-import { trackBeginCheckout, getVisitorContext } from '../../utils/analytics';
+import { trackBeginCheckout, trackCheckoutStage, trackCheckoutContact, trackCheckoutError, finishCheckout, getVisitorContext } from '../../utils/analytics';
 import { COUNTRIES, AU_STATES } from '../../utils/countries';
 
 /**
@@ -50,6 +50,11 @@ function validate(f, country) {
   }
   return e;
 }
+
+// Analytics stages (same rules as BankCheckout): Information = name + valid email, Shipping = address complete
+const contactComplete = (f) => !!(f.firstName.trim() && f.lastName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim()));
+const addressComplete = (f, country) => !!(f.street1.trim() && f.city.trim()
+  && (country === 'AU' ? f.state && /^\d{4}$/.test(f.zip.trim()) : f.zip.trim()));
 
 /** Shipping for the selected country (config from the server); null = to be confirmed. */
 function shippingFor(shipping, country, subtotal) {
@@ -115,6 +120,25 @@ const OrderRequestCheckout = ({ config }) => {
     if (cartItems.length > 0) trackBeginCheckout(cartItems);
   }, [cartItems]);
 
+  // Analytics: stage reached / contact corrected, after typing pauses (1.5 s). Sends email, name
+  // and country only (so the live view and abandoned checkouts show who it was); never the address,
+  // phone or notes. Same as the bank transfer checkout.
+  const lastContact = useRef('');
+  useEffect(() => {
+    if (done) return undefined;
+    const t = setTimeout(() => {
+      if (!contactComplete(form)) return;
+      const contact = { email: form.email.trim(), firstName: form.firstName.trim(), lastName: form.lastName.trim(), country };
+      trackCheckoutStage('information', { contact, cartItems });
+      if (addressComplete(form, country)) trackCheckoutStage('shipping', { contact });
+      const key = JSON.stringify(contact);
+      if (lastContact.current && lastContact.current !== key) trackCheckoutContact(contact);
+      lastContact.current = key;
+    }, 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.email, form.firstName, form.lastName, form.street1, form.city, form.state, form.zip, country, done]);
+
   useEffect(() => {
     if (!errorTick) return;
     const first = document.querySelector('[data-or-error="true"]');
@@ -144,11 +168,17 @@ const OrderRequestCheckout = ({ config }) => {
     const e = validate(form, country);
     setErrors(e);
     if (Object.keys(e).length) {
+      // Which fields failed (names only, never what was typed)
+      trackCheckoutError(contactComplete(form) ? 'shipping' : 'information', `Invalid: ${Object.keys(e).join(', ')}`);
       setErrorTick((n) => n + 1);
       return;
     }
     setSubmitting(true);
     try {
+      // Stages first (the debounce may not have fired yet), so the attempt shows how far they got
+      const contact = { email: form.email.trim(), firstName: form.firstName.trim(), lastName: form.lastName.trim(), country };
+      trackCheckoutStage('information', { contact, cartItems });
+      trackCheckoutStage('shipping', { contact });
       const visitor = await getVisitorContext().catch(() => undefined);
       const res = await apiService.submitOrderRequest({
         clientRequestId: requestId.current,
@@ -160,14 +190,18 @@ const OrderRequestCheckout = ({ config }) => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.success) {
+        trackCheckoutError('shipping', `Request not sent (${res.status}): ${data?.message || 'unknown error'}`);
         setSubmitError(data?.message || 'Something went wrong sending your order request. Please try again.');
         setSubmitting(false);
         return;
       }
+      // The server recorded "order request sent"; the next checkout is a new attempt
+      finishCheckout();
       setDone({ requestNumber: data.data.requestNumber, email: form.email.trim(), total: data.data.total, shippingAmount: data.data.shippingAmount });
       clearCart();
       window.scrollTo({ top: 0 });
     } catch {
+      trackCheckoutError('shipping', 'Request not sent: network error');
       setSubmitError('We could not reach the store. Please check your connection and try again.');
       setSubmitting(false);
     }

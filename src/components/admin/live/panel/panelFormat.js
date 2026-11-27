@@ -1,5 +1,5 @@
 // Wording for the visitor panel tabs. Dates and times are always Melbourne (the store's reporting zone).
-import { Eye, ShoppingCart, CreditCard, Receipt } from 'lucide-react';
+import { Eye, ShoppingCart, CreditCard, Receipt, Send } from 'lucide-react';
 
 const MEL = 'Australia/Melbourne';
 
@@ -28,6 +28,7 @@ export const PAYMENT_METHOD = {
   international_bank_transfer: 'International bank transfer',
   manual_offline: 'Manual / offline',
   tagada: 'Card (legacy)',
+  order_request: 'Order request (details emailed)',
 };
 export const paymentMethodLabel = (m) => (m ? PAYMENT_METHOD[m] || m.replace(/_/g, ' ') : '—');
 
@@ -41,6 +42,7 @@ export const CHECKOUT_STATUS = {
 
 export const OUTCOME = {
   ordered: { label: 'Ordered', icon: Receipt, pill: 'bg-indigo-50 text-indigo-700 border-indigo-200/80' },
+  requested: { label: 'Order request sent', icon: Send, pill: 'bg-indigo-50 text-indigo-700 border-indigo-200/80' },
   checkout: { label: 'Checkout started', icon: CreditCard, pill: 'bg-blue-50 text-blue-700 border-blue-200/80' },
   cart: { label: 'Added to cart', icon: ShoppingCart, pill: 'bg-amber-50 text-amber-800 border-amber-200/80' },
   browsed: { label: 'Browsed', icon: Eye, pill: 'bg-slate-100 text-slate-600 border-slate-200' },

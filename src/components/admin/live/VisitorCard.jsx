@@ -67,7 +67,7 @@ export function LocationText({ location, className = '' }) {
 
 /** Latest action with product image / name / URL where recorded. */
 export function ActionBlock({ ev, compact = false }) {
-  const isOrder = ['order_placed', 'purchase', 'order_cancelled', 'order_refunded'].includes(ev?.type);
+  const isOrder = ['order_placed', 'order_request', 'purchase', 'order_cancelled', 'order_refunded'].includes(ev?.type);
   const gap = compact ? 'mt-2' : 'mt-3';
   return (
     <div className="min-w-0">
@@ -88,6 +88,7 @@ export function ActionBlock({ ev, compact = false }) {
         <p className={`${gap} text-[13px] text-slate-700`}>
           {typeof ev.value === 'number' ? <span className="font-bold text-slate-800">${ev.value.toFixed(2)}</span> : null}
           {ev.orderNumber ? <span className="text-slate-500"> · Order #{ev.orderNumber}</span> : null}
+          {ev.requestNumber ? <span className="text-slate-500"> · Request {ev.requestNumber}</span> : null}
         </p>
       ) : ev?.path ? (
         <div className={gap}><PathChip path={ev.path} /></div>

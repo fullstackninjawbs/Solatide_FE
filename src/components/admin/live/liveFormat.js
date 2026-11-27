@@ -3,7 +3,7 @@
 // (Server/src/services/analytics/config.ts liveStatus), passed down with every snapshot.
 import {
   Eye, FileText, Layers, ShoppingCart, MinusCircle, SlidersHorizontal, CreditCard, AlertTriangle,
-  Receipt, BadgeCheck, XCircle, Undo2, MousePointerClick,
+  Receipt, BadgeCheck, XCircle, Undo2, MousePointerClick, Send,
 } from 'lucide-react';
 
 const STAGE_LABEL = { information: 'Information', shipping: 'Shipping', payment: 'Payment' };
@@ -30,6 +30,8 @@ export const EVENT_META = {
   checkout_step: { label: 'Checkout step', icon: CreditCard, tone: 'blue' },
   checkout_error: { label: 'Checkout error', icon: AlertTriangle, tone: 'red' },
   order_placed: { label: 'Order placed', icon: Receipt, tone: 'indigo' },
+  // Order Request checkout: the request was sent (the admin creates the order and emails payment details)
+  order_request: { label: 'Order request sent', icon: Send, tone: 'indigo' },
   purchase: { label: 'Payment confirmed', icon: BadgeCheck, tone: 'green' },
   order_cancelled: { label: 'Order cancelled', icon: XCircle, tone: 'red' },
   order_refunded: { label: 'Refunded', icon: Undo2, tone: 'red' },
@@ -51,7 +53,7 @@ export const FEED_FILTERS = [
   { key: 'products', label: 'Product views', types: ['product_view', 'variant_select'] },
   { key: 'cart', label: 'Cart', types: ['add_to_cart', 'remove_from_cart', 'cart_quantity_change'] },
   { key: 'checkout', label: 'Checkout', types: ['begin_checkout', 'checkout_step', 'checkout_error'] },
-  { key: 'orders', label: 'Orders & payments', types: ['order_placed', 'purchase', 'order_cancelled', 'order_refunded'] },
+  { key: 'orders', label: 'Orders & payments', types: ['order_placed', 'order_request', 'purchase', 'order_cancelled', 'order_refunded'] },
 ];
 
 export const sourceLabel = (source) => source?.source || 'Unknown source';

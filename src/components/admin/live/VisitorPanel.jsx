@@ -192,7 +192,7 @@ export default function VisitorPanel({ sessionId, live, onClose, navIds = [], on
                       ? <VisitsTab visits={profile.otherVisits} onOpen={openVisit} onLoadMore={loadMoreVisits} loadingMore={loadingMore} />
                       : <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-brand-blue" /></div>)}
                     {tab === 'details' && (profile
-                      ? <DetailsTab card={card} visitor={profile.visitor} orders={profile.orders} />
+                      ? <DetailsTab card={card} visitor={profile.visitor} orders={profile.orders} visit={profile.visit} />
                       : <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-brand-blue" /></div>)}
                   </div>
                 </div>

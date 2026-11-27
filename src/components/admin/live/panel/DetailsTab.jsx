@@ -8,9 +8,12 @@ import { SectionCard, Row, Pill } from './panelUi';
 import { dateTime, money, paymentMethodLabel, PAYMENT_STATUS } from './panelFormat';
 
 const GEO_METHOD = { ip: 'From IP address', browser: "From the browser's time zone (approximate)" };
+const UTM_LABEL = { source: 'UTM source', medium: 'UTM medium', campaign: 'UTM campaign', content: 'UTM content', term: 'UTM term' };
+const CLICK_LABEL = { gclid: 'Google Ads click', fbclid: 'Facebook / Instagram click', ttclid: 'TikTok click', msclkid: 'Microsoft Ads click' };
 
-export default function DetailsTab({ card, visitor, orders }) {
+export default function DetailsTab({ card, visitor, orders, visit }) {
   const loc = card.location;
+  const utm = visit?.utm || {};
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
       <SectionCard title="Identity" icon={UserRound}>
@@ -18,6 +21,12 @@ export default function DetailsTab({ card, visitor, orders }) {
           <Row label="Name">{visitor.identity?.name || '—'}</Row>
           <Row label="Email">{visitor.identity?.email || '—'}</Row>
           <Row label="Visitor ID"><span className="font-mono">{visitor.anonymousId}</span></Row>
+          {visit?.sessionId && <Row label="Visit (session) ID"><span className="font-mono text-[12px] break-all">{visit.sessionId}</span></Row>}
+          {visitor.identity?.customerId && (
+            <Row label="Customer record">
+              <Link to={`/admin/customers/${visitor.identity.customerId}`} className="font-bold text-brand-blue hover:underline">View customer</Link>
+            </Row>
+          )}
           <Row label="Known from">
             {visitor.identity ? (visitor.identity.from === 'this_visit' ? 'Checkout or order in this visit' : 'Checkout or order in an earlier visit') : 'Not identified yet'}
           </Row>
@@ -56,6 +65,9 @@ export default function DetailsTab({ card, visitor, orders }) {
           {visitor.firstVisit?.landingPage && <Row label="First landing page"><PathChip path={visitor.firstVisit.landingPage} /></Row>}
           <Row label="This visit">{sourceLabel(card.source)}{card.source?.campaign ? ` · ${card.source.campaign}` : ''}</Row>
           {card.landingPage && <Row label="This landing page"><PathChip path={card.landingPage} /></Row>}
+          <Row label="Referrer">{visit?.referrerDomain || 'None (typed in, bookmark or app)'}</Row>
+          {Object.keys(UTM_LABEL).filter((k) => utm[k]).map((k) => <Row key={k} label={UTM_LABEL[k]}><span className="break-all">{utm[k]}</span></Row>)}
+          {visit?.clickId && <Row label="Ad click">{CLICK_LABEL[visit.clickId] || visit.clickId}</Row>}
         </div>
       </SectionCard>
 

@@ -33,6 +33,7 @@ function VisitRow({ visit, onOpen }) {
             <Pill meta={outcome}><Icon className="w-3 h-3" />{outcome.label}</Pill>
             {visit.orders.length > 0
               ? <span className="text-[12px] font-semibold text-indigo-700">{visit.orders.map((o) => (o.orderNumber ? `#${o.orderNumber}` : 'Order')).join(', ')}</span>
+              : visit.requestNumbers?.length ? <span className="text-[12px] font-semibold text-indigo-700">{visit.requestNumbers.join(', ')}</span>
               : visit.cart ? <span className="text-[12px] font-semibold text-slate-600">Cart {money(visit.cart.value)}</span> : null}
             <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-brand-blue transition-colors" />
           </div>
